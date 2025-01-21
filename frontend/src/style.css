@@ -1,0 +1,176 @@
+html {
+    background-color: rgba(27, 38, 54, 1);
+    text-align: center;
+    color: white;
+}
+
+body {
+    margin: 0;
+    color: white;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+@font-face {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""),
+    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+}
+
+#app {
+    height: 100vh;
+    text-align: center;
+}
+
+/* Container layout */
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100vh; /* Full height */
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* Keeps sidebar fixed */
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto; /* Enables scrolling if needed */
+}
+
+/* Remove default padding from the list */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 10px 0;
+}
+
+/* Ensures all menu items start at the same position */
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 10px 15px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background 0.3s;
+}
+
+/* Adds spacing so text aligns properly with icons */
+.sidebar ul li a::before {
+    content: "";
+    display: inline-block;
+    width: 30px; /* Ensures proper spacing */
+}
+
+.sidebar ul li a:hover {
+    background-color: #34495e;
+    border-radius: 5px;
+}
+
+/* Content area */
+.content {
+    flex-grow: 1;
+    margin-left: 250px; /* Prevents overlap with fixed sidebar */
+    height: 100vh; /* Full height */
+    overflow-y: auto; /* Allows scrolling */
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* Button */
+.btn {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Table styles */
+.package-table {
+    width: 70%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    min-width: 200px;
+    font-size: 12px;
+}
+
+.package-table th, .package-table td {
+    border: 1px solid #ddd;
+    padding: 15x;
+    text-align: center;
+}
+
+.package-table th {
+    background-color: #007bff;
+    color: white;
+}
+.package-table tr:hover {
+    background-color: #ddd;
+}
+
+.footer {
+    width: 100%;
+    height: 20px; /* Thin footer */
+    background-color: #2b4f85;
+    color: white;
+    text-align: center;
+    font-size: 10px;
+    line-height: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.app-version {
+    font-size: 12px;
+    color: #b0bec5;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    text-align: center;
+    padding-left: 10px;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between logo and text */
+    margin-bottom: 10px;
+}
+
+/* Sidebar logo styling */
+.sidebar-logo {
+    width: 30px; /* Adjust as needed */
+    height: 30px;
+}
