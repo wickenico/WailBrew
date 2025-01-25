@@ -5,3 +5,15 @@
 export function GetBrewPackages() {
   return window['go']['main']['App']['GetBrewPackages']();
 }
+
+export function GetBrewUpdatablePackages() {
+  return window['go']['main']['App']['GetBrewUpdatablePackages']();
+}
+
+export function RemoveBrewPackage(arg1) {
+  return window['go']['main']['App']['RemoveBrewPackage'](arg1);
+}
+
+export function UpdateBrewPackage(arg1) {
+  return window['go']['main']['App']['UpdateBrewPackage'](arg1);
+}

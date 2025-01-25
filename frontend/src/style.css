@@ -174,3 +174,39 @@ h2 {
     width: 30px; /* Adjust as needed */
     height: 30px;
 }
+
+.cancel-btn {
+    background-color: gray;
+}
+
+.cancel-btn:hover {
+    background-color: darkgray;
+}
+
+.delete-btn {
+    background-color: red;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    color: black;
+}
