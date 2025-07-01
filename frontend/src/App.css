@@ -1,59 +1,207 @@
-#app {
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    color: #eee;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Container */
+.wailbrew-container {
+    display: flex;
     height: 100vh;
-    text-align: center;
+    overflow: hidden;
 }
 
-#logo {
-    display: block;
-    width: 50%;
-    height: 50%;
-    margin: auto;
-    padding: 10% 0 0;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-origin: content-box;
+/* Sidebar */
+.sidebar {
+    width: 200px;
+    background: #2b2b2b;
+    color: #ddd;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    flex-shrink: 0;
 }
 
-.result {
-    height: 20px;
-    line-height: 20px;
-    margin: 1.5rem auto;
+.sidebar-title {
+    margin: 0 0 20px 0;
+    font-size: 20px;
 }
 
-.input-box .btn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 3px;
-    border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
+.sidebar-section {
+    margin-bottom: 20px;
+}
+
+.sidebar-section h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #888;
+    margin: 0 0 8px 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.sidebar ul li:hover {
+    background: #3b3b3b;
+}
+
+.sidebar ul li.active {
+    background: #555;
+    font-weight: 500;
+}
+
+.badge {
+    background: #444;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* Hauptinhalt */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px;
+}
+
+/* Header */
+.header-row {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.header-row h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.search-container {
+    position: relative;
+    display: inline-block;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.search-input {
+    background: #2b2b2b;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    padding-left: 36px;
+    border-radius: 6px;
+    color: #eee;
+    font-size: 14px;
+    transition: border 0.2s, background 0.2s;
+}
+
+.search-input::placeholder {
+    color: #888;
+}
+
+.search-input:focus {
+    outline: none;
+    border: 1px solid #666;
+    background: #333;
+}
+
+/* Tabelle */
+.table-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    border: 1px solid #333;
+    margin-bottom: 0;
+}
+
+.package-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.package-table th,
+.package-table td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #333;
+}
+
+.package-table th {
+    background: #333;
+}
+
+.package-table tbody tr:hover {
+    background: #2a2a2a;
     cursor: pointer;
 }
 
-.input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
+.package-table tbody tr.selected {
+    background: #0a84ff;
+    color: #fff;
 }
 
-.input-box .input {
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 10px;
-    background-color: rgba(240, 240, 240, 1);
-    -webkit-font-smoothing: antialiased;
+/* Info+Footer */
+.info-footer-container {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
 }
 
-.input-box .input:hover {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+/* Info Panel */
+.package-info {
+    background: #2b2b2b;
+    padding: 10px;
+    font-size: 13px;
+    color: #ccc;
+    text-align: left;
 }
 
-.input-box .input:focus {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+/* Footer */
+.package-footer {
+    background: #2b2b2b;
+    padding: 16px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: #ccc;
+    border-top: 1px solid #333;
+    text-align: right;
+    flex: 0 0 auto;
+}
+
+/* Lade-/Fehler */
+.result {
+    height: 20px;
+    line-height: 20px;
+    margin: 1rem 0;
+}
+
+.result.error {
+    color: #ff6b6b;
 }

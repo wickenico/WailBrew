@@ -4,18 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx      context.Context
+	brewPath string
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	brewPath := "/opt/homebrew/bin/brew" // ⬅️ Passe hier den Pfad bei Intel-Mac an
+	return &App{brewPath: brewPath}
 }
 
 // startup saves the application context
@@ -25,10 +28,13 @@ func (a *App) startup(ctx context.Context) {
 
 // GetBrewPackages retrieves the list of installed Homebrew packages
 func (a *App) GetBrewPackages() [][]string {
-	cmd := exec.Command("bash", "-c", "brew list --versions")
-	output, err := cmd.Output()
+	cmd := exec.Command("brew", "list", "--formula", "--versions")
+	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Println("❌ ERROR: 'brew list' failed:", err)
+		log.Println("❌ ERROR: 'brew list --versions' failed:", err)
+		log.Println("🔍 Output:", string(output))
 		return [][]string{{"Error", "fetching brew packages"}}
 	}
 
@@ -44,31 +50,36 @@ func (a *App) GetBrewPackages() [][]string {
 		}
 	}
 
-	//log.Println("✅ Installed Homebrew packages:", packages)
+	log.Println("✅ Installed Homebrew packages:", packages)
 	return packages
 }
 
 // GetBrewUpdatablePackages checks which packages have updates available
 func (a *App) GetBrewUpdatablePackages() [][]string {
-	// Get installed packages
 	installedPackages := a.GetBrewPackages()
-	log.Printf("✅ Installed Homebrew packages: %v\n", installedPackages)
-
-	// Build a map of installed package versions for quick lookup
-	installedMap := make(map[string]string)
-	for _, pkg := range installedPackages {
-		installedMap[pkg[0]] = pkg[1]
-	}
-
-	// Fetch all package info in a single call
-	cmd := exec.Command("bash", "-c", "brew info --json=v2 $(brew list)")
-	output, err := cmd.Output()
-	if err != nil {
-		log.Println("❌ ERROR: 'brew info --json=v2 $(brew list)' failed:", err)
+	if len(installedPackages) == 1 && installedPackages[0][0] == "Error" {
 		return [][]string{{"Error", "fetching updatable packages"}}
 	}
 
-	// Parse JSON output
+	// Build list of package names
+	var names []string
+	for _, pkg := range installedPackages {
+		names = append(names, pkg[0])
+	}
+
+	// Run brew info --json=v2 <packages>
+	cmd := exec.Command(a.brewPath, "info", "--json=v2")
+	cmd.Args = append(cmd.Args, names...)
+	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Println("❌ ERROR: 'brew info' failed:", err)
+		log.Println("🔍 Output:", string(output))
+		return [][]string{{"Error", "fetching updatable packages"}}
+	}
+
+	// Parse JSON
 	var brewInfo struct {
 		Formulae []struct {
 			Name     string `json:"name"`
@@ -77,21 +88,23 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 			} `json:"versions"`
 		} `json:"formulae"`
 	}
-
 	if err := json.Unmarshal(output, &brewInfo); err != nil {
 		log.Println("❌ ERROR: Parsing 'brew info' JSON failed:", err)
 		return [][]string{{"Error", "parsing brew info"}}
 	}
 
-	// Compare installed versions with latest versions
+	// Compare versions
+	installedMap := make(map[string]string)
+	for _, pkg := range installedPackages {
+		installedMap[pkg[0]] = pkg[1]
+	}
+
 	var updatablePackages [][]string
 	for _, formula := range brewInfo.Formulae {
-		installedVersion, exists := installedMap[formula.Name]
+		installedVersion := installedMap[formula.Name]
 		latestVersion := formula.Versions.Stable
-
-		// Check if the package exists in the installed list and is outdated
-		if exists && installedVersion != latestVersion {
-			log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)\n", formula.Name, installedVersion, latestVersion)
+		if installedVersion != latestVersion {
+			log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)", formula.Name, installedVersion, latestVersion)
 			updatablePackages = append(updatablePackages, []string{formula.Name, installedVersion, latestVersion})
 		}
 	}
@@ -102,26 +115,28 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 
 // RemoveBrewPackage uninstalls a package
 func (a *App) RemoveBrewPackage(packageName string) string {
-	cmd := exec.Command("bash", "-c", "brew uninstall "+packageName)
+	cmd := exec.Command(a.brewPath, "uninstall", packageName)
+	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("❌ ERROR: Failed to uninstall %s: %v\n", packageName, err)
+		log.Println("🔍 Output:", string(output))
 		return "Error: " + err.Error()
 	}
-
-	log.Printf("✅ Successfully uninstalled %s\n", packageName)
+	log.Printf("✅ Successfully uninstalled %s", packageName)
 	return string(output)
 }
 
-// UpdateBrewPackage Update a single package
+// UpdateBrewPackage upgrades a package
 func (a *App) UpdateBrewPackage(packageName string) string {
-	cmd := exec.Command("bash", "-c", "brew upgrade "+packageName)
+	cmd := exec.Command(a.brewPath, "upgrade", packageName)
+	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("❌ ERROR: Failed to upgrade %s: %v\n", packageName, err)
+		log.Println("🔍 Output:", string(output))
 		return "Error: " + err.Error()
 	}
-
-	log.Printf("✅ Successfully upgraded %s\n", packageName)
+	log.Printf("✅ Successfully upgraded %s", packageName)
 	return string(output)
 }

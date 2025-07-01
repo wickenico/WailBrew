@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./style.css";
 import "./app.css";
-import { GetBrewPackages, GetBrewUpdatablePackages, RemoveBrewPackage, UpdateBrewPackage } from "../wailsjs/go/main/App";
+import {
+    GetBrewPackages,
+    GetBrewUpdatablePackages,
+} from "../wailsjs/go/main/App";
 import packageJson from "../package.json";
-import logo from "./assets/images/WailBrew_Logo.png";
-import {FaArrowsRotate, FaTrash} from "react-icons/fa6"; // Import trash icon
 
-// Define the type for a package entry
 interface PackageEntry {
     name: string;
     installedVersion: string;
@@ -19,185 +19,161 @@ const WailBrewApp = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [view, setView] = useState<"installed" | "updatable">("installed");
-    const [confirmDelete, setConfirmDelete] = useState<{ show: boolean; packageName: string | null }>({ show: false, packageName: null });
+    const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
 
-    // Fetch installed packages
     const fetchPackages = () => {
         setLoading(true);
         setError("");
-
         GetBrewPackages()
             .then((result: string[][]) => {
-                const formattedPackages: PackageEntry[] = result.map(([name, installedVersion]) => ({
+                const formatted = result.map(([name, installedVersion]) => ({
                     name,
                     installedVersion,
                 }));
-
-                setPackages(formattedPackages);
+                setPackages(formatted);
+                setSelectedPackage(null);
                 setLoading(false);
             })
-            .catch((err) => {
-                console.error("❌ Error fetching packages:", err);
+            .catch(() => {
                 setError("❌ Error fetching packages!");
                 setLoading(false);
             });
     };
 
-    // Fetch updatable packages
     const fetchUpdatablePackages = () => {
         setLoading(true);
         setError("");
-
         GetBrewUpdatablePackages()
             .then((result: string[][]) => {
-                const formattedPackages: PackageEntry[] = result.map(([name, installedVersion, latestVersion]) => ({
+                const formatted = result.map(([name, installedVersion, latestVersion]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                 }));
-
-                setUpdatablePackages(formattedPackages);
+                setUpdatablePackages(formatted);
+                setSelectedPackage(null);
                 setLoading(false);
             })
-            .catch((err) => {
-                console.error("❌ Error fetching updatable packages:", err);
+            .catch(() => {
                 setError("❌ Error fetching updatable packages!");
                 setLoading(false);
             });
     };
 
-    // Confirm Delete Function
-    const confirmRemovePackage = (packageName: string) => {
-        setConfirmDelete({ show: true, packageName });
-    };
-
-    // Delete Package Function
-    const removePackage = () => {
-        if (!confirmDelete.packageName) return;
-        setLoading(true);
-
-        RemoveBrewPackage(confirmDelete.packageName)
-            .then(() => {
-                console.log(`✅ ${confirmDelete.packageName} removed successfully`);
-                fetchPackages(); // Refresh package list
-            })
-            .catch((err) => {
-                console.error(`❌ Error removing ${confirmDelete.packageName}:`, err);
-            })
-            .finally(() => {
-                setLoading(false);
-                setConfirmDelete({ show: false, packageName: null });
-            });
-    };
-
-    // Update Package Function
-    const updatePackage = (packageName: string) => {
-        setLoading(true);
-
-        UpdateBrewPackage(packageName)
-            .then(() => {
-                console.log(`✅ ${packageName} removed successfully`);
-                fetchUpdatablePackages(); // Refresh updatable package list
-            })
-            .catch((err) => {
-                console.error(`❌ Error removing ${packageName}:`, err);
-            })
-            .finally(() => {
-                setLoading(false);
-                setConfirmDelete({ show: false, packageName: null });
-            });
-    };
+    const activePackages = view === "installed" ? packages : updatablePackages;
 
     return (
-        <div className="container">
-            {/* Sidebar */}
+        <div className="wailbrew-container">
             <nav className="sidebar">
-                <div className="sidebar-header">
-                    <img src={logo} alt="WailBrew Logo" className="sidebar-logo" />
-                    <h3>WailBrew</h3>
+                <h2 className="sidebar-title">Wailbrew</h2>
+                <div className="sidebar-section">
+                    <h4>Formeln</h4>
+                    <ul>
+                        <li
+                            className={view === "installed" ? "active" : ""}
+                            onClick={() => {
+                                fetchPackages();
+                                setView("installed");
+                            }}
+                        >
+                            <span>📦 Installiert</span>
+                            <span className="badge">{packages.length}</span>
+                        </li>
+                        <li
+                            className={view === "updatable" ? "active" : ""}
+                            onClick={() => {
+                                fetchUpdatablePackages();
+                                setView("updatable");
+                            }}
+                        >
+                            <span>🔄 Veraltet</span>
+                            <span className="badge">{updatablePackages.length}</span>
+                        </li>
+                        <li>
+                            <span>📚 Alle Formeln</span>
+                            <span className="badge">7877</span>
+                        </li>
+                        <li>
+                            <span>🍃 Blätter</span>
+                            <span className="badge">17</span>
+                        </li>
+                        <li>
+                            <span>📂 Repositorys</span>
+                            <span className="badge">5</span>
+                        </li>
+                    </ul>
                 </div>
-                <p className="app-version">v{packageJson.version}</p>
-                <ul>
-                    <li><a href="#" onClick={() => { fetchPackages(); setView("installed"); }}>📦 Installed Packages</a></li>
-                    <li><a href="#" onClick={() => { fetchUpdatablePackages(); setView("updatable"); }}>
-                        📥 Updates
-                    </a></li>
-                    <li><a href="#">❓ About</a></li>
-                </ul>
+                <div className="sidebar-section">
+                    <h4>Werkzeuge</h4>
+                    <ul>
+                        <li><span>🩺 Doctor</span></li>
+                        <li><span>⬆️ Aktualisieren</span></li>
+                    </ul>
+                </div>
             </nav>
 
-            {/* Content */}
-            <div className="content">
-                <h2>{view === "installed" ? `Installed Packages (${packages.length})` : `Updates (${updatablePackages.length})`}</h2>
-                {loading && <div className="result">Fetching packages...</div>}
-                {error && <div className="result error">{error}</div>}
-
-                {/* Installed Packages Table */}
-                {view === "installed" && packages.length > 0 && (
-                    <table className="package-table">
-                        <thead>
-                        <tr>
-                            <th>Package</th>
-                            <th>Installed Version</th>
-                            <th>Options</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {packages.map((pkg) => (
-                            <tr key={pkg.name}>
-                                <td>{pkg.name}</td>
-                                <td>{pkg.installedVersion}</td>
-                                <td>
-                                    <button className="btn delete-btn" onClick={() => confirmRemovePackage(pkg.name)}>
-                                        <FaTrash />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                )}
-
-                {/* Updatable Packages Table */}
-                {view === "updatable" && updatablePackages.length > 0 && (
-                    <table className="package-table">
-                        <thead>
-                        <tr>
-                            <th>Package</th>
-                            <th>Installed Version</th>
-                            <th>Latest Version</th>
-                            <th>Options</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {updatablePackages.map((pkg) => (
-                            <tr key={pkg.name}>
-                                <td>{pkg.name}</td>
-                                <td>{pkg.installedVersion}</td>
-                                <td>{pkg.latestVersion}</td>
-                                <td><button className="btn" onClick={() => updatePackage(pkg.name)}><FaArrowsRotate /></button></td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
-
-            {/* Delete Modal */}
-            {confirmDelete.show && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <p>Are you sure you want to delete <strong>{confirmDelete.packageName}</strong>?</p>
-                        <button className="btn cancel-btn" onClick={() => setConfirmDelete({ show: false, packageName: null })}>Cancel</button>
-                        <button className="btn delete-btn" onClick={removePackage}>Yes, Delete</button>
+            <main className="content">
+                <div className="header-row">
+                    <h3>
+                        {view === "installed"
+                            ? `Installierte Formeln (${packages.length})`
+                            : `Veraltete Formeln (${updatablePackages.length})`}
+                    </h3>
+                    <div className="search-container">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Suchen"
+                            disabled
+                        />
                     </div>
                 </div>
-            )}
 
-            {/* Footer */}
-            <footer className="footer">
-                &copy; 2025 WailBrew | Built with ❤️ using Wails
-            </footer>
+                {loading && <div className="result">Lade Daten…</div>}
+                {error && <div className="result error">{error}</div>}
+
+                <div className="table-container">
+                    {activePackages.length > 0 && (
+                        <table className="package-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Version</th>
+                                {view === "updatable" && <th>Aktuellste Version</th>}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {activePackages.map((pkg) => (
+                                <tr
+                                    key={pkg.name}
+                                    className={selectedPackage?.name === pkg.name ? "selected" : ""}
+                                    onClick={() => setSelectedPackage(pkg)}
+                                >
+                                    <td>{pkg.name}</td>
+                                    <td>{pkg.installedVersion}</td>
+                                    {view === "updatable" && <td>{pkg.latestVersion}</td>}
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+
+                <div className="info-footer-container">
+                    <div className="package-info">
+                        <p><strong>Informationen über die ausgewählte Formel</strong></p>
+                        <p>Beschreibung: --</p>
+                        <p>Ort: --</p>
+                        <p>Version: {selectedPackage ? selectedPackage.installedVersion : "--"}</p>
+                        <p>Abhängigkeiten: --</p>
+                        <p>Konflikte: --</p>
+                    </div>
+                    <div className="package-footer">
+                        Diese Formeln sind bereits auf Ihrem System installiert.
+                    </div>
+                </div>
+            </main>
         </div>
     );
 };
