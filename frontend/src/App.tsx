@@ -4,12 +4,17 @@ import "./app.css";
 import {
     GetBrewPackages,
     GetBrewUpdatablePackages,
+    GetBrewPackageInfo,
 } from "../wailsjs/go/main/App";
 
 interface PackageEntry {
     name: string;
     installedVersion: string;
     latestVersion?: string;
+    desc?: string;
+    homepage?: string;
+    dependencies?: string[];
+    conflicts?: string[];
 }
 
 const WailBrewApp = () => {
@@ -19,20 +24,19 @@ const WailBrewApp = () => {
     const [error, setError] = useState<string>("");
     const [view, setView] = useState<"installed" | "updatable">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
+    const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
+    const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
 
-    // ⬇️ Nur einmal beim App-Start laden
+    // ⬇️ Einmal beim Start
     useEffect(() => {
         setLoading(true);
-        Promise.all([
-            GetBrewPackages(),
-            GetBrewUpdatablePackages(),
-        ])
-            .then(([installedResult, updatableResult]) => {
-                const installedFormatted = installedResult.map(([name, installedVersion]) => ({
+        Promise.all([GetBrewPackages(), GetBrewUpdatablePackages()])
+            .then(([installed, updatable]) => {
+                const installedFormatted = installed.map(([name, installedVersion]) => ({
                     name,
                     installedVersion,
                 }));
-                const updatableFormatted = updatableResult.map(([name, installedVersion, latestVersion]) => ({
+                const updatableFormatted = updatable.map(([name, installedVersion, latestVersion]) => ({
                     name,
                     installedVersion,
                     latestVersion,
@@ -47,47 +51,31 @@ const WailBrewApp = () => {
             });
     }, []);
 
-    // Wird nur manuell bei Klick ausgeführt
-    const fetchPackages = () => {
-        setLoading(true);
-        setError("");
-        GetBrewPackages()
-            .then((result: string[][]) => {
-                const formatted = result.map(([name, installedVersion]) => ({
-                    name,
-                    installedVersion,
-                }));
-                setPackages(formatted);
-                setSelectedPackage(null);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError("❌ Fehler beim Laden der Formeln!");
-                setLoading(false);
-            });
-    };
-
-    const fetchUpdatablePackages = () => {
-        setLoading(true);
-        setError("");
-        GetBrewUpdatablePackages()
-            .then((result: string[][]) => {
-                const formatted = result.map(([name, installedVersion, latestVersion]) => ({
-                    name,
-                    installedVersion,
-                    latestVersion,
-                }));
-                setUpdatablePackages(formatted);
-                setSelectedPackage(null);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError("❌ Fehler beim Laden der Formeln!");
-                setLoading(false);
-            });
-    };
-
     const activePackages = view === "installed" ? packages : updatablePackages;
+
+    const handleSelect = async (pkg: PackageEntry) => {
+        setSelectedPackage(pkg);
+
+        if (packageCache.has(pkg.name)) {
+            setSelectedPackage(packageCache.get(pkg.name)!);
+            return;
+        }
+
+        setLoadingDetailsFor(pkg.name);
+        const info = await GetBrewPackageInfo(pkg.name);
+
+        const enriched: PackageEntry = {
+            ...pkg,
+            desc: (info["desc"] as string) || "--",
+            homepage: (info["homepage"] as string) || "--",
+            dependencies: (info["dependencies"] as string[]) || [],
+            conflicts: (info["conflicts_with"] as string[]) || [],
+        };
+
+        setPackageCache(new Map(packageCache.set(pkg.name, enriched)));
+        setSelectedPackage(enriched);
+        setLoadingDetailsFor(null);
+    };
 
     return (
         <div className="wailbrew-container">
@@ -127,8 +115,8 @@ const WailBrewApp = () => {
                 <div className="sidebar-section">
                     <h4>Werkzeuge</h4>
                     <ul>
-                        <li onClick={() => fetchPackages()}><span>🩺 Doctor (Neu laden Installiert)</span></li>
-                        <li onClick={() => fetchUpdatablePackages()}><span>⬆️ Aktualisieren (Neu laden Veraltet)</span></li>
+                        <li><span>🩺 Doctor</span></li>
+                        <li><span>⬆️ Aktualisieren</span></li>
                     </ul>
                 </div>
             </nav>
@@ -175,7 +163,7 @@ const WailBrewApp = () => {
                                 <tr
                                     key={pkg.name}
                                     className={selectedPackage?.name === pkg.name ? "selected" : ""}
-                                    onClick={() => setSelectedPackage(pkg)}
+                                    onClick={() => handleSelect(pkg)}
                                 >
                                     <td>{pkg.name}</td>
                                     <td>{pkg.installedVersion}</td>
@@ -189,12 +177,44 @@ const WailBrewApp = () => {
 
                 <div className="info-footer-container">
                     <div className="package-info">
-                        <p><strong>Informationen über die ausgewählte Formel</strong></p>
-                        <p>Beschreibung: --</p>
-                        <p>Ort: --</p>
-                        <p>Version: {selectedPackage ? selectedPackage.installedVersion : "--"}</p>
-                        <p>Abhängigkeiten: --</p>
-                        <p>Konflikte: --</p>
+                        <p>
+                            <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
+                            {loadingDetailsFor === selectedPackage?.name && (
+                                <span style={{ fontSize: "12px", color: "#888" }}>
+                                    (Lade…)
+                                </span>
+                            )}
+                        </p>
+                        <p>
+                            Beschreibung:{" "}
+                            {selectedPackage?.desc !== undefined
+                                ? selectedPackage.desc
+                                : "--"}
+                        </p>
+                        <p>
+                            Homepage:{" "}
+                            {selectedPackage?.homepage !== undefined
+                                ? selectedPackage.homepage
+                                : "--"}
+                        </p>
+                        <p>
+                            Version:{" "}
+                            {selectedPackage?.installedVersion !== undefined
+                                ? selectedPackage.installedVersion
+                                : "--"}
+                        </p>
+                        <p>
+                            Abhängigkeiten:{" "}
+                            {selectedPackage?.dependencies !== undefined
+                                ? selectedPackage.dependencies.join(", ") || "--"
+                                : "--"}
+                        </p>
+                        <p>
+                            Konflikte:{" "}
+                            {selectedPackage?.conflicts !== undefined
+                                ? selectedPackage.conflicts.join(", ") || "--"
+                                : "--"}
+                        </p>
                     </div>
                     <div className="package-footer">
                         Diese Formeln sind bereits auf Ihrem System installiert.
