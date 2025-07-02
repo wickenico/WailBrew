@@ -248,3 +248,16 @@ html, body {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+.clear-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 16px;
+    cursor: pointer;
+}
+.clear-icon:hover {
+    color: #ccc;
+}

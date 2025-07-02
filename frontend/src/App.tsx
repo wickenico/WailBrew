@@ -20,14 +20,15 @@ interface PackageEntry {
 const WailBrewApp = () => {
     const [packages, setPackages] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
-    const [loading, setLoading] = useState<boolean>(true); // nur initial true
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [view, setView] = useState<"installed" | "updatable">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
-    // ⬇️ Einmal beim Start
+    // Einmal beim Start
     useEffect(() => {
         setLoading(true);
         Promise.all([GetBrewPackages(), GetBrewUpdatablePackages()])
@@ -52,6 +53,11 @@ const WailBrewApp = () => {
     }, []);
 
     const activePackages = view === "installed" ? packages : updatablePackages;
+
+    // Filter nach Suchtext
+    const filteredPackages = activePackages.filter((pkg) =>
+        pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const handleSelect = async (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
@@ -134,8 +140,18 @@ const WailBrewApp = () => {
                             type="text"
                             className="search-input"
                             placeholder="Suchen"
-                            disabled
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                         />
+                        {searchQuery && (
+                            <span
+                                className="clear-icon"
+                                onClick={() => setSearchQuery("")}
+                                title="Suche zurücksetzen"
+                            >
+                                ✕
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -149,7 +165,7 @@ const WailBrewApp = () => {
                         </div>
                     )}
 
-                    {activePackages.length > 0 && (
+                    {filteredPackages.length > 0 && (
                         <table className="package-table">
                             <thead>
                             <tr>
@@ -159,7 +175,7 @@ const WailBrewApp = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {activePackages.map((pkg) => (
+                            {filteredPackages.map((pkg) => (
                                 <tr
                                     key={pkg.name}
                                     className={selectedPackage?.name === pkg.name ? "selected" : ""}
@@ -173,6 +189,10 @@ const WailBrewApp = () => {
                             </tbody>
                         </table>
                     )}
+
+                    {!loading && filteredPackages.length === 0 && (
+                        <div className="result">Keine passenden Ergebnisse.</div>
+                    )}
                 </div>
 
                 <div className="info-footer-container">
@@ -185,36 +205,11 @@ const WailBrewApp = () => {
                                 </span>
                             )}
                         </p>
-                        <p>
-                            Beschreibung:{" "}
-                            {selectedPackage?.desc !== undefined
-                                ? selectedPackage.desc
-                                : "--"}
-                        </p>
-                        <p>
-                            Homepage:{" "}
-                            {selectedPackage?.homepage !== undefined
-                                ? selectedPackage.homepage
-                                : "--"}
-                        </p>
-                        <p>
-                            Version:{" "}
-                            {selectedPackage?.installedVersion !== undefined
-                                ? selectedPackage.installedVersion
-                                : "--"}
-                        </p>
-                        <p>
-                            Abhängigkeiten:{" "}
-                            {selectedPackage?.dependencies !== undefined
-                                ? selectedPackage.dependencies.join(", ") || "--"
-                                : "--"}
-                        </p>
-                        <p>
-                            Konflikte:{" "}
-                            {selectedPackage?.conflicts !== undefined
-                                ? selectedPackage.conflicts.join(", ") || "--"
-                                : "--"}
-                        </p>
+                        <p>Beschreibung: {selectedPackage?.desc || "--"}</p>
+                        <p>Homepage: {selectedPackage?.homepage || "--"}</p>
+                        <p>Version: {selectedPackage?.installedVersion || "--"}</p>
+                        <p>Abhängigkeiten: {selectedPackage?.dependencies?.join(", ") || "--"}</p>
+                        <p>Konflikte: {selectedPackage?.conflicts?.join(", ") || "--"}</p>
                     </div>
                     <div className="package-footer">
                         Diese Formeln sind bereits auf Ihrem System installiert.
