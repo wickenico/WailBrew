@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 import "./app.css";
 import {
     GetBrewPackages,
     GetBrewUpdatablePackages,
 } from "../wailsjs/go/main/App";
-import packageJson from "../package.json";
 
 interface PackageEntry {
     name: string;
@@ -16,11 +15,39 @@ interface PackageEntry {
 const WailBrewApp = () => {
     const [packages, setPackages] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true); // nur initial true
     const [error, setError] = useState<string>("");
     const [view, setView] = useState<"installed" | "updatable">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
 
+    // ⬇️ Nur einmal beim App-Start laden
+    useEffect(() => {
+        setLoading(true);
+        Promise.all([
+            GetBrewPackages(),
+            GetBrewUpdatablePackages(),
+        ])
+            .then(([installedResult, updatableResult]) => {
+                const installedFormatted = installedResult.map(([name, installedVersion]) => ({
+                    name,
+                    installedVersion,
+                }));
+                const updatableFormatted = updatableResult.map(([name, installedVersion, latestVersion]) => ({
+                    name,
+                    installedVersion,
+                    latestVersion,
+                }));
+                setPackages(installedFormatted);
+                setUpdatablePackages(updatableFormatted);
+                setLoading(false);
+            })
+            .catch(() => {
+                setError("❌ Fehler beim Laden der Formeln!");
+                setLoading(false);
+            });
+    }, []);
+
+    // Wird nur manuell bei Klick ausgeführt
     const fetchPackages = () => {
         setLoading(true);
         setError("");
@@ -35,7 +62,7 @@ const WailBrewApp = () => {
                 setLoading(false);
             })
             .catch(() => {
-                setError("❌ Error fetching packages!");
+                setError("❌ Fehler beim Laden der Formeln!");
                 setLoading(false);
             });
     };
@@ -55,7 +82,7 @@ const WailBrewApp = () => {
                 setLoading(false);
             })
             .catch(() => {
-                setError("❌ Error fetching updatable packages!");
+                setError("❌ Fehler beim Laden der Formeln!");
                 setLoading(false);
             });
     };
@@ -71,20 +98,14 @@ const WailBrewApp = () => {
                     <ul>
                         <li
                             className={view === "installed" ? "active" : ""}
-                            onClick={() => {
-                                fetchPackages();
-                                setView("installed");
-                            }}
+                            onClick={() => setView("installed")}
                         >
                             <span>📦 Installiert</span>
                             <span className="badge">{packages.length}</span>
                         </li>
                         <li
                             className={view === "updatable" ? "active" : ""}
-                            onClick={() => {
-                                fetchUpdatablePackages();
-                                setView("updatable");
-                            }}
+                            onClick={() => setView("updatable")}
                         >
                             <span>🔄 Veraltet</span>
                             <span className="badge">{updatablePackages.length}</span>
@@ -106,8 +127,8 @@ const WailBrewApp = () => {
                 <div className="sidebar-section">
                     <h4>Werkzeuge</h4>
                     <ul>
-                        <li><span>🩺 Doctor</span></li>
-                        <li><span>⬆️ Aktualisieren</span></li>
+                        <li onClick={() => fetchPackages()}><span>🩺 Doctor (Neu laden Installiert)</span></li>
+                        <li onClick={() => fetchUpdatablePackages()}><span>⬆️ Aktualisieren (Neu laden Veraltet)</span></li>
                     </ul>
                 </div>
             </nav>
@@ -130,10 +151,16 @@ const WailBrewApp = () => {
                     </div>
                 </div>
 
-                {loading && <div className="result">Lade Daten…</div>}
                 {error && <div className="result error">{error}</div>}
 
                 <div className="table-container">
+                    {loading && (
+                        <div className="table-loading-overlay">
+                            <div className="spinner"></div>
+                            <div className="loading-text">Formeln werden geladen…</div>
+                        </div>
+                    )}
+
                     {activePackages.length > 0 && (
                         <table className="package-table">
                             <thead>

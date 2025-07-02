@@ -131,12 +131,11 @@ html, body {
     background: #333;
 }
 
-/* Tabelle */
 .table-container {
+    position: relative;
     flex: 1 1 auto;
     overflow-y: auto;
     border: 1px solid #333;
-    margin-bottom: 0;
 }
 
 .package-table {
@@ -204,4 +203,39 @@ html, body {
 
 .result.error {
     color: #ff6b6b;
+}
+
+/* Spinner innerhalb der Tabelle */
+.table-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30,30,30,0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.spinner {
+    border: 4px solid #444;
+    border-top: 4px solid #0a84ff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    margin-top: 12px;
+    font-size: 16px;
+    color: #ddd;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
