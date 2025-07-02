@@ -89,11 +89,13 @@ html, body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    gap: 8px; /* Abstand zwischen Elementen */
 }
 
 .header-row h3 {
     margin: 0;
     font-size: 16px;
+    flex: 0 0 auto;
 }
 
 .search-container {
@@ -260,4 +262,95 @@ html, body {
 }
 .clear-icon:hover {
     color: #ccc;
+}
+
+.trash-button {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 8px;
+    transition: color 0.2s;
+}
+
+.trash-button:hover {
+    color: #ccc;
+}
+
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.confirm-box {
+    background: #2c2c2c;
+    border: 1px solid #444;
+    padding: 24px;
+    border-radius: 8px;
+    color: #ddd;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 0 0 1px #000, 0 6px 20px rgba(0,0,0,0.5);
+    animation: scaleIn 0.2s ease-out;
+}
+
+.confirm-box p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.confirm-box strong {
+    color: #fff;
+}
+
+.confirm-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.confirm-actions button {
+    background: #0a84ff;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.confirm-actions button:hover {
+    background: #006de1;
+}
+
+.confirm-actions button:last-child {
+    background: #555;
+}
+
+.confirm-actions button:last-child:hover {
+    background: #666;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes scaleIn {
+    from { transform: scale(0.95); }
+    to { transform: scale(1); }
 }

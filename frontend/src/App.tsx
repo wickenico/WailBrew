@@ -5,6 +5,7 @@ import {
     GetBrewPackages,
     GetBrewUpdatablePackages,
     GetBrewPackageInfo,
+    RemoveBrewPackage,
 } from "../wailsjs/go/main/App";
 
 interface PackageEntry {
@@ -27,8 +28,8 @@ const WailBrewApp = () => {
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
-    // Einmal beim Start
     useEffect(() => {
         setLoading(true);
         Promise.all([GetBrewPackages(), GetBrewUpdatablePackages()])
@@ -54,7 +55,6 @@ const WailBrewApp = () => {
 
     const activePackages = view === "installed" ? packages : updatablePackages;
 
-    // Filter nach Suchtext
     const filteredPackages = activePackages.filter((pkg) =>
         pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -81,6 +81,23 @@ const WailBrewApp = () => {
         setPackageCache(new Map(packageCache.set(pkg.name, enriched)));
         setSelectedPackage(enriched);
         setLoadingDetailsFor(null);
+    };
+
+    const handleRemoveConfirmed = async () => {
+        if (!selectedPackage) return;
+        setShowConfirm(false);
+        setLoading(true);
+        const result = await RemoveBrewPackage(selectedPackage.name);
+        alert(result);
+
+        const updated = await GetBrewPackages();
+        const formatted = updated.map(([name, installedVersion]) => ({
+            name,
+            installedVersion,
+        }));
+        setPackages(formatted);
+        setSelectedPackage(null);
+        setLoading(false);
     };
 
     return (
@@ -134,6 +151,17 @@ const WailBrewApp = () => {
                             ? `Installierte Formeln (${packages.length})`
                             : `Veraltete Formeln (${updatablePackages.length})`}
                     </h3>
+
+                    {selectedPackage && (
+                        <button
+                            className="trash-button"
+                            onClick={() => setShowConfirm(true)}
+                            title={`"${selectedPackage.name}" deinstallieren`}
+                        >
+                            ❌️
+                        </button>
+                    )}
+
                     <div className="search-container">
                         <span className="search-icon">🔍</span>
                         <input
@@ -215,6 +243,20 @@ const WailBrewApp = () => {
                         Diese Formeln sind bereits auf Ihrem System installiert.
                     </div>
                 </div>
+
+                {showConfirm && (
+                    <div className="confirm-overlay">
+                        <div className="confirm-box">
+                            <p>
+                                Möchten Sie <strong>{selectedPackage?.name}</strong> wirklich deinstallieren?
+                            </p>
+                            <div className="confirm-actions">
+                                <button onClick={handleRemoveConfirmed}>Ja, deinstallieren</button>
+                                <button onClick={() => setShowConfirm(false)}>Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );
