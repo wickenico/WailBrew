@@ -156,13 +156,22 @@ html, body {
 }
 
 .package-table tbody tr:hover {
-    background: #2a2a2a;
+    background: transparent;
     cursor: pointer;
 }
 
 .package-table tbody tr.selected {
-    background: #0a84ff;
+    background: #0a84ff !important;
     color: #fff;
+}
+
+.package-table tbody tr:nth-child(even) {
+    background: #262626;
+}
+
+/* Letzte Zeile mit einem weißen unteren Rand */
+.package-table tbody tr:last-child td {
+    border-bottom: 1px solid #eee;
 }
 
 /* Info+Footer */
