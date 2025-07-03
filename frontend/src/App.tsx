@@ -7,6 +7,8 @@ import {
     GetBrewPackageInfo,
     RemoveBrewPackage,
 } from "../wailsjs/go/main/App";
+import appIcon from "./assets/images/appicon_256.png";
+import packageJson from "../package.json";
 
 interface PackageEntry {
     name: string;
@@ -29,6 +31,7 @@ const WailBrewApp = () => {
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+    const appVersion = packageJson.version;
 
     useEffect(() => {
         setLoading(true);
@@ -103,7 +106,19 @@ const WailBrewApp = () => {
     return (
         <div className="wailbrew-container">
             <nav className="sidebar">
-                <h2 className="sidebar-title">Wailbrew</h2>
+                <div className="sidebar-title">
+                    <img
+                        src={appIcon}
+                        alt="Logo"
+                        style={{
+                            width: "28px",
+                            height: "28px",
+                            marginRight: "8px",
+                            verticalAlign: "middle",
+                        }}
+                    />
+                    Wailbrew
+                </div>
                 <div className="sidebar-section">
                     <h4>Formeln</h4>
                     <ul>
@@ -141,6 +156,9 @@ const WailBrewApp = () => {
                         <li><span>🩺 Doctor</span></li>
                         <li><span>⬆️ Aktualisieren</span></li>
                     </ul>
+                </div>
+                <div style={{ marginTop: "20px", marginBottom: "10px", fontSize: "10px", color: "#777", paddingTop: "1px" }}>
+                    Version {appVersion}
                 </div>
             </nav>
 

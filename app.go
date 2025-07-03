@@ -28,7 +28,7 @@ func (a *App) startup(ctx context.Context) {
 
 // GetBrewPackages retrieves the list of installed Homebrew packages
 func (a *App) GetBrewPackages() [][]string {
-	cmd := exec.Command("brew", "list", "--formula", "--versions")
+	cmd := exec.Command(a.brewPath, "list", "--formula", "--versions")
 	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
 
 	output, err := cmd.CombinedOutput()
@@ -101,7 +101,7 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 
 	var updatablePackages [][]string
 	for _, formula := range brewInfo.Formulae {
-		installedVersion := installedMap[formula.Name]
+		installedVersion := strings.Split(installedMap[formula.Name], "_")[0]
 		latestVersion := formula.Versions.Stable
 		if installedVersion != latestVersion {
 			log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)", formula.Name, installedVersion, latestVersion)
