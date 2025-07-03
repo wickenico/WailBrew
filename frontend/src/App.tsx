@@ -6,6 +6,7 @@ import {
     GetBrewUpdatablePackages,
     GetBrewPackageInfo,
     RemoveBrewPackage,
+    UpdateBrewPackage,
 } from "../wailsjs/go/main/App";
 import appIcon from "./assets/images/appicon_256.png";
 import packageJson from "../package.json";
@@ -31,6 +32,8 @@ const WailBrewApp = () => {
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+    const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
+    const [updateLogs, setUpdateLogs] = useState<string | null>(null);
     const appVersion = packageJson.version;
 
     useEffect(() => {
@@ -103,6 +106,29 @@ const WailBrewApp = () => {
         setLoading(false);
     };
 
+    const handleUpdateConfirmed = async () => {
+        if (!selectedPackage) return;
+        setShowUpdateConfirm(false);
+
+        // Zuerst das Log-Fenster anzeigen, aber leer
+        setUpdateLogs(`Aktualisiere "${selectedPackage.name}"...\nBitte warten...`);
+
+        // Starte das Update
+        const result = await UpdateBrewPackage(selectedPackage.name);
+
+        // Ersetze den Inhalt durch das echte Log
+        setUpdateLogs(result);
+
+        // (optional) Nach dem Update die Liste aktualisieren
+        const updated = await GetBrewUpdatablePackages();
+        const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
+            name,
+            installedVersion,
+            latestVersion,
+        }));
+        setUpdatablePackages(formatted);
+    };
+
     return (
         <div className="wailbrew-container">
             <nav className="sidebar">
@@ -170,13 +196,23 @@ const WailBrewApp = () => {
                             : `Veraltete Formeln (${updatablePackages.length})`}
                     </h3>
 
-                    {selectedPackage && (
+                    {selectedPackage && view === "installed" && (
                         <button
                             className="trash-button"
                             onClick={() => setShowConfirm(true)}
                             title={`"${selectedPackage.name}" deinstallieren`}
                         >
                             ❌️
+                        </button>
+                    )}
+
+                    {selectedPackage && view === "updatable" && (
+                        <button
+                            className="trash-button"
+                            onClick={() => setShowUpdateConfirm(true)}
+                            title={`"${selectedPackage.name}" aktualisieren`}
+                        >
+                            🔄
                         </button>
                     )}
 
@@ -258,7 +294,8 @@ const WailBrewApp = () => {
                         <p>Konflikte: {selectedPackage?.conflicts?.join(", ") || "--"}</p>
                     </div>
                     <div className="package-footer">
-                        Diese Formeln sind bereits auf Ihrem System installiert.
+                        {view === "installed" && "Diese Formeln sind bereits auf Ihrem System installiert."}
+                        {view === "updatable" && "Einige Formeln können aktualisiert werden."}
                     </div>
                 </div>
 
@@ -271,6 +308,44 @@ const WailBrewApp = () => {
                             <div className="confirm-actions">
                                 <button onClick={handleRemoveConfirmed}>Ja, deinstallieren</button>
                                 <button onClick={() => setShowConfirm(false)}>Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showUpdateConfirm && (
+                    <div className="confirm-overlay">
+                        <div className="confirm-box">
+                            <p>
+                                Möchten Sie <strong>{selectedPackage?.name}</strong> wirklich aktualisieren?
+                            </p>
+                            <div className="confirm-actions">
+                                <button onClick={handleUpdateConfirmed}>Ja, aktualisieren</button>
+                                <button onClick={() => setShowUpdateConfirm(false)}>Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {updateLogs && (
+                    <div className="confirm-overlay">
+                        <div className="confirm-box" style={{ maxWidth: "700px" }}>
+                            <p>
+                                <strong>Aktualisiere Formel: {selectedPackage?.name}</strong>
+                            </p>
+                            <pre style={{
+                                textAlign: "left",
+                                background: "#111",
+                                color: "#ccc",
+                                padding: "10px",
+                                borderRadius: "4px",
+                                maxHeight: "400px",
+                                overflowY: "auto"
+                            }}>
+                                {updateLogs}
+                            </pre>
+                            <div className="confirm-actions">
+                                <button onClick={() => setUpdateLogs(null)}>Ok</button>
                             </div>
                         </div>
                     </div>
