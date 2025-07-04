@@ -6,7 +6,12 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
+
+	"github.com/wailsapp/wails/v2/pkg/menu"
+	"github.com/wailsapp/wails/v2/pkg/menu/keys"
+	rt "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -24,6 +29,45 @@ func NewApp() *App {
 // startup saves the application context
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+}
+
+func (a *App) menu() *menu.Menu {
+	AppMenu := menu.NewMenu()
+
+	// App Menü (macOS-like)
+	AppSubmenu := AppMenu.AddSubmenu("Wailbrew")
+	AppSubmenu.AddText("Über Wailbrew", nil, func(cd *menu.CallbackData) {
+		rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
+			Type:    rt.InfoDialog,
+			Title:   "Über Wailbrew",
+			Message: "Wailbrew\nVersion 1.0.0\nEin Beispielprojekt.",
+		})
+	})
+	AppSubmenu.AddSeparator()
+	AppSubmenu.AddText("Nach Updates suchen…", nil, func(cd *menu.CallbackData) {
+		//go a.checkForUpdates()
+	})
+	AppSubmenu.AddSeparator()
+	AppSubmenu.AddText("Website besuchen", nil, func(cd *menu.CallbackData) {
+		//go a.checkForUpdates()
+	})
+	AppSubmenu.AddSeparator()
+	AppSubmenu.AddText("Beenden", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
+		rt.Quit(a.ctx)
+	})
+
+	// Datei-Menü
+	FileMenu := AppMenu.AddSubmenu("Datei")
+	FileMenu.AddText("Öffnen", keys.CmdOrCtrl("o"), func(cd *menu.CallbackData) {
+		// Implementiere Öffnen
+	})
+
+	// Edit-Menü (optional)
+	if runtime.GOOS == "darwin" {
+		AppMenu.Append(menu.EditMenu())
+	}
+
+	return AppMenu
 }
 
 // GetBrewPackages retrieves the list of installed Homebrew packages
