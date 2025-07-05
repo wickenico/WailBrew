@@ -192,7 +192,7 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	return string(output)
 }
 
-func (a *App) GetBrewPackageInfo(packageName string) map[string]interface{} {
+func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
 	cmd := exec.Command(a.brewPath, "info", "--json=v2", packageName)
 	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
 
@@ -220,4 +220,18 @@ func (a *App) GetBrewPackageInfo(packageName string) map[string]interface{} {
 	return map[string]interface{}{
 		"error": "No package info found",
 	}
+}
+
+func (a *App) GetBrewPackageInfo(packageName string) string {
+	cmd := exec.Command(a.brewPath, "info", packageName)
+	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("❌ ERROR: 'brew info' failed for %s: %v\n", packageName, err)
+		log.Println("🔍 Output:", string(output))
+		return "Fehler beim Abrufen der Paket-Informationen:\n" + err.Error()
+	}
+
+	return string(output)
 }

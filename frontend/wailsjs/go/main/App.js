@@ -6,6 +6,10 @@ export function GetBrewPackageInfo(arg1) {
   return window['go']['main']['App']['GetBrewPackageInfo'](arg1);
 }
 
+export function GetBrewPackageInfoAsJson(arg1) {
+  return window['go']['main']['App']['GetBrewPackageInfoAsJson'](arg1);
+}
+
 export function GetBrewPackages() {
   return window['go']['main']['App']['GetBrewPackages']();
 }
