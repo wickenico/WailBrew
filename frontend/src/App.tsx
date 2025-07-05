@@ -171,16 +171,16 @@ const WailBrewApp = () => {
                             <span className="badge">{updatablePackages.length}</span>
                         </li>
                         <li>
-                            <span>📚 Alle Formeln</span>
-                            <span className="badge">7877</span>
+                            <span>📚 Alle Formeln (tbd)</span>
+                            <span className="badge"></span>
                         </li>
                         <li>
-                            <span>🍃 Blätter</span>
-                            <span className="badge">17</span>
+                            <span>🍃 Blätter (tbd)</span>
+                            <span className="badge"></span>
                         </li>
                         <li>
-                            <span>📂 Repositorys</span>
-                            <span className="badge">5</span>
+                            <span>📂 Repositorys (tbd)</span>
+                            <span className="badge"></span>
                         </li>
                     </ul>
                 </div>
@@ -198,52 +198,56 @@ const WailBrewApp = () => {
 
             <main className="content">
                 <div className="header-row">
-                    <h3>
-                        {view === "installed"
-                            ? `Installierte Formeln (${packages.length})`
-                            : `Veraltete Formeln (${updatablePackages.length})`}
-                    </h3>
+                    <div className="header-title">
+                        <h3>
+                            {view === "installed"
+                                ? `Installierte Formeln (${packages.length})`
+                                : `Veraltete Formeln (${updatablePackages.length})`}
+                        </h3>
+                    </div>
 
-                    {selectedPackage && (
-                        <>
-                            {view === "installed" && (
-                                <>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => setShowConfirm(true)}
-                                        title={`"${selectedPackage.name}" deinstallieren`}
-                                    >
-                                        ❌️
-                                    </button>
-                                    <button
-                                        className="trash-button"
-                                        onClick={handleShowInfoLogs}
-                                        title={`Infos zu "${selectedPackage.name}" anzeigen`}
-                                    >
-                                        ℹ️
-                                    </button>
-                                </>
-                            )}
-                            {view === "updatable" && (
-                                <>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => setShowUpdateConfirm(true)}
-                                        title={`"${selectedPackage.name}" aktualisieren`}
-                                    >
-                                        🔄
-                                    </button>
-                                    <button
-                                        className="trash-button"
-                                        onClick={handleShowInfoLogs}
-                                        title={`Infos zu "${selectedPackage.name}" anzeigen`}
-                                    >
-                                        ℹ️
-                                    </button>
-                                </>
-                            )}
-                        </>
-                    )}
+                    <div className="header-actions">
+                        {selectedPackage && (
+                            <>
+                                {view === "installed" && (
+                                    <>
+                                        <button
+                                            className="trash-button"
+                                            onClick={() => setShowConfirm(true)}
+                                            title={`"${selectedPackage.name}" deinstallieren`}
+                                        >
+                                            ❌️
+                                        </button>
+                                        <button
+                                            className="trash-button"
+                                            onClick={handleShowInfoLogs}
+                                            title={`Infos zu "${selectedPackage.name}" anzeigen`}
+                                        >
+                                            ℹ️
+                                        </button>
+                                    </>
+                                )}
+                                {view === "updatable" && (
+                                    <>
+                                        <button
+                                            className="trash-button"
+                                            onClick={() => setShowUpdateConfirm(true)}
+                                            title={`"${selectedPackage.name}" aktualisieren`}
+                                        >
+                                            🔄
+                                        </button>
+                                        <button
+                                            className="trash-button"
+                                            onClick={handleShowInfoLogs}
+                                            title={`Infos zu "${selectedPackage.name}" anzeigen`}
+                                        >
+                                            ℹ️
+                                        </button>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
 
                     <div className="search-container">
                         <span className="search-icon">🔍</span>
@@ -260,8 +264,8 @@ const WailBrewApp = () => {
                                 onClick={() => setSearchQuery("")}
                                 title="Suche zurücksetzen"
                             >
-                                ✕
-                            </span>
+        ✕
+      </span>
                         )}
                     </div>
                 </div>

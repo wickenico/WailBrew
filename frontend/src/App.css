@@ -79,48 +79,51 @@ html, body {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding: 20px;
+    padding: 20px 16px; /* 16px rechts und links */
 }
 
-/* Header */
 .header-row {
-    flex-shrink: 0;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    gap: 8px; /* Abstand zwischen Elementen */
+    justify-content: space-between;
+    padding: 10px 16px; /* hier mehr horizontaler Abstand */
+    gap: 8px;
+}
+
+.header-title {
+    flex: 0 0 auto;
 }
 
 .header-row h3 {
     margin: 0;
     font-size: 16px;
-    flex: 0 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Weniger Abstand zwischen Buttons */
+    flex-shrink: 0;
 }
 
 .search-container {
-    position: relative;
-    display: inline-block;
-}
-
-.search-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    pointer-events: none;
+    display: flex;
+    align-items: center;
+    background: #222;
+    padding: 4px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-right: 8px; /* zusätzlicher Abstand */
 }
 
 .search-input {
+    width: 100%;
     background: #2b2b2b;
     border: 1px solid #444;
-    padding: 6px 12px;
-    padding-left: 36px;
+    padding: 6px 12px 6px 32px; /* Platz für Icon links */
     border-radius: 6px;
     color: #eee;
     font-size: 14px;
-    transition: border 0.2s, background 0.2s;
 }
 
 .search-input::placeholder {
@@ -131,6 +134,16 @@ html, body {
     outline: none;
     border: 1px solid #666;
     background: #333;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 14px;
+    pointer-events: none;
 }
 
 .table-container {
@@ -253,7 +266,7 @@ html, body {
 
 .clear-icon {
     position: absolute;
-    right: 10px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     color: #888;
@@ -267,16 +280,16 @@ html, body {
 .trash-button {
     background: transparent;
     border: none;
-    color: #888;
+    color: #ccc;
     font-size: 18px;
     cursor: pointer;
     padding: 4px;
-    margin-left: 8px;
+    margin: 0;
     transition: color 0.2s;
 }
 
 .trash-button:hover {
-    color: #ccc;
+    color: #fff;
 }
 
 .confirm-overlay {
