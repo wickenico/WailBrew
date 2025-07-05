@@ -367,3 +367,53 @@ html, body {
     from { transform: scale(0.95); }
     to { transform: scale(1); }
 }
+
+.doctor-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.doctor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.doctor-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.doctor-button {
+    background: #2b2b2b;
+    border: 1px solid #555;
+    color: #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.doctor-button:hover {
+    background: #333;
+}
+
+.doctor-log {
+    flex: 1;
+    background: #111;
+    border: 1px solid #333;
+    padding: 12px;
+    color: #ccc;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    min-height: 300px;
+}
+
+.doctor-footer {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #777;
+}

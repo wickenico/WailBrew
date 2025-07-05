@@ -235,3 +235,9 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 
 	return string(output)
 }
+
+func (a *App) RunBrewDoctor() string {
+	cmd := exec.Command(a.brewPath, "doctor")
+	out, _ := cmd.CombinedOutput()
+	return string(out)
+}

@@ -8,6 +8,7 @@ import {
     GetBrewPackageInfoAsJson,
     RemoveBrewPackage,
     UpdateBrewPackage,
+    RunBrewDoctor,
 } from "../wailsjs/go/main/App";
 import appIcon from "./assets/images/appicon_256.png";
 import packageJson from "../package.json";
@@ -27,7 +28,7 @@ const WailBrewApp = () => {
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "updatable">("installed");
+    const [view, setView] = useState<"installed" | "updatable" | "doctor">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
@@ -36,6 +37,7 @@ const WailBrewApp = () => {
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
+    const [doctorLog, setDoctorLog] = useState<string>("");
     const appVersion = packageJson.version;
 
     useEffect(() => {
@@ -125,15 +127,13 @@ const WailBrewApp = () => {
         setUpdatablePackages(formatted);
     };
 
-    const handleShowInfoLogs = async () => {
-        if (!selectedPackage) return;
+    const handleShowInfoLogs = async (pkg: PackageEntry) => {
+        if (!pkg) return;
 
-        setInfoLogs(`Hole Informationen für "${selectedPackage.name}"...\nBitte warten...`);
+        setInfoLogs(`Hole Informationen für "${pkg.name}"...\nBitte warten...`);
 
-        // Ruft den reinen Text von brew info
-        const info = await GetBrewPackageInfo(selectedPackage.name);
+        const info = await GetBrewPackageInfo(pkg.name);
 
-        // Direkt als Text setzen
         setInfoLogs(info);
     };
 
@@ -193,7 +193,15 @@ const WailBrewApp = () => {
                 <div className="sidebar-section">
                     <h4>Werkzeuge</h4>
                     <ul>
-                        <li><span>🩺 Doctor</span></li>
+                        <li
+                            className={view === "doctor" ? "active" : ""}
+                            onClick={() => {
+                                setView("doctor");
+                                setSelectedPackage(null);
+                            }}
+                        >
+                            <span>🩺 Doctor</span>
+                        </li>
                         <li><span>⬆️ Aktualisieren</span></li>
                     </ul>
                 </div>
@@ -203,19 +211,15 @@ const WailBrewApp = () => {
             </nav>
 
             <main className="content">
-                <div className="header-row">
-                    <div className="header-title">
-                        <h3>
-                            {view === "installed"
-                                ? `Installierte Formeln (${packages.length})`
-                                : `Veraltete Formeln (${updatablePackages.length})`}
-                        </h3>
-                    </div>
-
-                    <div className="header-actions">
-                        {selectedPackage && (
-                            <>
-                                {view === "installed" && (
+                {/* Installed */}
+                {view === "installed" && (
+                    <>
+                        <div className="header-row">
+                            <div className="header-title">
+                                <h3>Installierte Formeln ({packages.length})</h3>
+                            </div>
+                            <div className="header-actions">
+                                {selectedPackage && (
                                     <>
                                         <button
                                             className="trash-button"
@@ -226,14 +230,105 @@ const WailBrewApp = () => {
                                         </button>
                                         <button
                                             className="trash-button"
-                                            onClick={handleShowInfoLogs}
+                                            onClick={() => handleShowInfoLogs(selectedPackage)}
                                             title={`Infos zu "${selectedPackage.name}" anzeigen`}
                                         >
                                             ℹ️
                                         </button>
                                     </>
                                 )}
-                                {view === "updatable" && (
+                            </div>
+                            <div className="search-container">
+                                <span className="search-icon">🔍</span>
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Suchen"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                {searchQuery && (
+                                    <span
+                                        className="clear-icon"
+                                        onClick={() => setSearchQuery("")}
+                                        title="Suche zurücksetzen"
+                                    >
+              ✕
+            </span>
+                                )}
+                            </div>
+                        </div>
+
+                        {error && <div className="result error">{error}</div>}
+
+                        <div className="table-container">
+                            {loading && (
+                                <div className="table-loading-overlay">
+                                    <div className="spinner"></div>
+                                    <div className="loading-text">Formeln werden geladen…</div>
+                                </div>
+                            )}
+
+                            {filteredPackages.length > 0 && (
+                                <table className="package-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Version</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {filteredPackages.map((pkg) => (
+                                        <tr
+                                            key={pkg.name}
+                                            className={selectedPackage?.name === pkg.name ? "selected" : ""}
+                                            onClick={() => handleSelect(pkg)}
+                                        >
+                                            <td>{pkg.name}</td>
+                                            <td>{pkg.installedVersion}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
+
+                            {!loading && filteredPackages.length === 0 && (
+                                <div className="result">Keine passenden Ergebnisse.</div>
+                            )}
+                        </div>
+
+                        <div className="info-footer-container">
+                            <div className="package-info">
+                                <p>
+                                    <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
+                                    {loadingDetailsFor === selectedPackage?.name && (
+                                        <span style={{ fontSize: "12px", color: "#888" }}>
+                (Lade…)
+              </span>
+                                    )}
+                                </p>
+                                <p>Beschreibung: {selectedPackage?.desc || "--"}</p>
+                                <p>Homepage: {selectedPackage?.homepage || "--"}</p>
+                                <p>Version: {selectedPackage?.installedVersion || "--"}</p>
+                                <p>Abhängigkeiten: {selectedPackage?.dependencies?.join(", ") || "--"}</p>
+                                <p>Konflikte: {selectedPackage?.conflicts?.join(", ") || "--"}</p>
+                            </div>
+                            <div className="package-footer">
+                                Diese Formeln sind bereits auf Ihrem System installiert.
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Updatable */}
+                {view === "updatable" && (
+                    <>
+                        <div className="header-row">
+                            <div className="header-title">
+                                <h3>Veraltete Formeln ({updatablePackages.length})</h3>
+                            </div>
+                            <div className="header-actions">
+                                {selectedPackage && (
                                     <>
                                         <button
                                             className="trash-button"
@@ -244,99 +339,134 @@ const WailBrewApp = () => {
                                         </button>
                                         <button
                                             className="trash-button"
-                                            onClick={handleShowInfoLogs}
+                                            onClick={() => handleShowInfoLogs(selectedPackage)}
                                             title={`Infos zu "${selectedPackage.name}" anzeigen`}
                                         >
                                             ℹ️
                                         </button>
                                     </>
                                 )}
-                            </>
-                        )}
-                    </div>
-
-                    <div className="search-container">
-                        <span className="search-icon">🔍</span>
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Suchen"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        {searchQuery && (
-                            <span
-                                className="clear-icon"
-                                onClick={() => setSearchQuery("")}
-                                title="Suche zurücksetzen"
-                            >
-        ✕
-      </span>
-                        )}
-                    </div>
-                </div>
-
-                {error && <div className="result error">{error}</div>}
-
-                <div className="table-container">
-                    {loading && (
-                        <div className="table-loading-overlay">
-                            <div className="spinner"></div>
-                            <div className="loading-text">Formeln werden geladen…</div>
+                            </div>
+                            <div className="search-container">
+                                <span className="search-icon">🔍</span>
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Suchen"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                {searchQuery && (
+                                    <span
+                                        className="clear-icon"
+                                        onClick={() => setSearchQuery("")}
+                                        title="Suche zurücksetzen"
+                                    >
+              ✕
+            </span>
+                                )}
+                            </div>
                         </div>
-                    )}
 
-                    {filteredPackages.length > 0 && (
-                        <table className="package-table">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Version</th>
-                                {view === "updatable" && <th>Aktuellste Version</th>}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {filteredPackages.map((pkg) => (
-                                <tr
-                                    key={pkg.name}
-                                    className={selectedPackage?.name === pkg.name ? "selected" : ""}
-                                    onClick={() => handleSelect(pkg)}
-                                >
-                                    <td>{pkg.name}</td>
-                                    <td>{pkg.installedVersion}</td>
-                                    {view === "updatable" && <td>{pkg.latestVersion}</td>}
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    )}
+                        {error && <div className="result error">{error}</div>}
 
-                    {!loading && filteredPackages.length === 0 && (
-                        <div className="result">Keine passenden Ergebnisse.</div>
-                    )}
-                </div>
-
-                <div className="info-footer-container">
-                    <div className="package-info">
-                        <p>
-                            <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
-                            {loadingDetailsFor === selectedPackage?.name && (
-                                <span style={{ fontSize: "12px", color: "#888" }}>
-                                    (Lade…)
-                                </span>
+                        <div className="table-container">
+                            {loading && (
+                                <div className="table-loading-overlay">
+                                    <div className="spinner"></div>
+                                    <div className="loading-text">Formeln werden geladen…</div>
+                                </div>
                             )}
-                        </p>
-                        <p>Beschreibung: {selectedPackage?.desc || "--"}</p>
-                        <p>Homepage: {selectedPackage?.homepage || "--"}</p>
-                        <p>Version: {selectedPackage?.installedVersion || "--"}</p>
-                        <p>Abhängigkeiten: {selectedPackage?.dependencies?.join(", ") || "--"}</p>
-                        <p>Konflikte: {selectedPackage?.conflicts?.join(", ") || "--"}</p>
-                    </div>
-                    <div className="package-footer">
-                        {view === "installed" && "Diese Formeln sind bereits auf Ihrem System installiert."}
-                        {view === "updatable" && "Einige Formeln können aktualisiert werden."}
-                    </div>
-                </div>
+
+                            {filteredPackages.length > 0 && (
+                                <table className="package-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Version</th>
+                                        <th>Aktuellste Version</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {filteredPackages.map((pkg) => (
+                                        <tr
+                                            key={pkg.name}
+                                            className={selectedPackage?.name === pkg.name ? "selected" : ""}
+                                            onClick={() => handleSelect(pkg)}
+                                        >
+                                            <td>{pkg.name}</td>
+                                            <td>{pkg.installedVersion}</td>
+                                            <td>{pkg.latestVersion}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
+
+                            {!loading && filteredPackages.length === 0 && (
+                                <div className="result">Keine passenden Ergebnisse.</div>
+                            )}
+                        </div>
+
+                        <div className="info-footer-container">
+                            <div className="package-info">
+                                <p>
+                                    <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
+                                    {loadingDetailsFor === selectedPackage?.name && (
+                                        <span style={{ fontSize: "12px", color: "#888" }}>
+                (Lade…)
+              </span>
+                                    )}
+                                </p>
+                                <p>Beschreibung: {selectedPackage?.desc || "--"}</p>
+                                <p>Homepage: {selectedPackage?.homepage || "--"}</p>
+                                <p>Version: {selectedPackage?.installedVersion || "--"}</p>
+                                <p>Abhängigkeiten: {selectedPackage?.dependencies?.join(", ") || "--"}</p>
+                                <p>Konflikte: {selectedPackage?.conflicts?.join(", ") || "--"}</p>
+                            </div>
+                            <div className="package-footer">
+                                Einige Formeln können aktualisiert werden.
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Doctor */}
+                {view === "doctor" && (
+                    <>
+                        <div className="header-row">
+                            <div className="header-title">
+                                <h3>Homebrew Doctor</h3>
+                            </div>
+                            <div className="header-actions">
+                                <button
+                                    className="doctor-button"
+                                    onClick={() => setDoctorLog("")}
+                                >
+                                    Log leeren
+                                </button>
+                                <button
+                                    className="doctor-button"
+                                    onClick={async () => {
+                                        setDoctorLog("Führe brew doctor aus…\nBitte warten...");
+                                        const result = await RunBrewDoctor();
+                                        setDoctorLog(result);
+                                    }}
+                                >
+                                    Doctor ausführen
+                                </button>
+                            </div>
+                        </div>
+
+                        <pre className="doctor-log">
+        {doctorLog || "Noch keine Ausgabe. Klicken Sie auf „Doctor ausführen“."}
+      </pre>
+
+                        <div className="package-footer">
+                            Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.
+                        </div>
+                    </>
+                )}
 
                 {showConfirm && (
                     <div className="confirm-overlay">
@@ -386,6 +516,7 @@ const WailBrewApp = () => {
                     </div>
                 )}
             </main>
+
         </div>
     );
 };
