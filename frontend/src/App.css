@@ -107,13 +107,13 @@ html, body {
 }
 
 .search-container {
-    display: flex;
+    position: relative;
     align-items: center;
     background: #222;
     padding: 4px 8px;
     border-radius: 4px;
     flex-shrink: 0;
-    margin-right: 8px; /* zusätzlicher Abstand */
+    margin-right: 20px; /* zusätzlicher Abstand */
 }
 
 .search-input {
@@ -138,7 +138,7 @@ html, body {
 
 .search-icon {
     position: absolute;
-    left: 10px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
     color: #888;
