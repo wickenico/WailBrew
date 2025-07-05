@@ -158,14 +158,20 @@ const WailBrewApp = () => {
                     <ul>
                         <li
                             className={view === "installed" ? "active" : ""}
-                            onClick={() => setView("installed")}
+                            onClick={() => {
+                                setView("installed");
+                                setSelectedPackage(null);
+                            }}
                         >
                             <span>📦 Installiert</span>
                             <span className="badge">{packages.length}</span>
                         </li>
                         <li
                             className={view === "updatable" ? "active" : ""}
-                            onClick={() => setView("updatable")}
+                            onClick={() => {
+                                setView("updatable");
+                                setSelectedPackage(null);
+                            }}
                         >
                             <span>🔄 Veraltet</span>
                             <span className="badge">{updatablePackages.length}</span>
