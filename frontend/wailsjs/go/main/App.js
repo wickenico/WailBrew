@@ -14,6 +14,10 @@ export function GetBrewUpdatablePackages() {
   return window['go']['main']['App']['GetBrewUpdatablePackages']();
 }
 
+export function OpenURL(arg1) {
+  return window['go']['main']['App']['OpenURL'](arg1);
+}
+
 export function RemoveBrewPackage(arg1) {
   return window['go']['main']['App']['RemoveBrewPackage'](arg1);
 }

@@ -31,11 +31,15 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+func (a *App) OpenURL(url string) {
+	rt.BrowserOpenURL(a.ctx, url)
+}
+
 func (a *App) menu() *menu.Menu {
 	AppMenu := menu.NewMenu()
 
 	// App Menü (macOS-like)
-	AppSubmenu := AppMenu.AddSubmenu("Wailbrew")
+	AppSubmenu := AppMenu.AddSubmenu("WailBrew")
 	AppSubmenu.AddText("Über Wailbrew", nil, func(cd *menu.CallbackData) {
 		rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
 			Type:    rt.InfoDialog,
@@ -44,12 +48,15 @@ func (a *App) menu() *menu.Menu {
 		})
 	})
 	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText("Nach Updates suchen…", nil, func(cd *menu.CallbackData) {
+	AppSubmenu.AddText("Nach Updates suchen…(tbd)", nil, func(cd *menu.CallbackData) {
 		//go a.checkForUpdates()
 	})
 	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText("Website besuchen", nil, func(cd *menu.CallbackData) {
+	AppSubmenu.AddText("Website besuchen (tbd)", nil, func(cd *menu.CallbackData) {
 		//go a.checkForUpdates()
+	})
+	AppSubmenu.AddText("GitHub Repo besuchen", nil, func(cd *menu.CallbackData) {
+		a.OpenURL("https://github.com/wickenico/WailBrew")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText("Beenden", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
@@ -57,10 +64,10 @@ func (a *App) menu() *menu.Menu {
 	})
 
 	// Datei-Menü
-	FileMenu := AppMenu.AddSubmenu("Datei")
-	FileMenu.AddText("Öffnen", keys.CmdOrCtrl("o"), func(cd *menu.CallbackData) {
-		// Implementiere Öffnen
-	})
+	//FileMenu := AppMenu.AddSubmenu("Datei")
+	//FileMenu.AddText("Öffnen", keys.CmdOrCtrl("o"), func(cd *menu.CallbackData) {
+	//	// Implementiere Öffnen
+	//})
 
 	// Edit-Menü (optional)
 	if runtime.GOOS == "darwin" {

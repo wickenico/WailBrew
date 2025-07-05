@@ -143,7 +143,7 @@ const WailBrewApp = () => {
                             verticalAlign: "middle",
                         }}
                     />
-                    Wailbrew
+                    WailBrew
                 </div>
                 <div className="sidebar-section">
                     <h4>Formeln</h4>
