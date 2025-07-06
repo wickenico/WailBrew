@@ -23,14 +23,16 @@ jobs:
 
       - name: Install auto-changelog
         run: npm install --global auto-changelog
+        working-directory: frontend
 
       - name: Generate CHANGELOG.md
         run: auto-changelog --output CHANGELOG.md
+        working-directory: frontend
 
       - name: Commit and push if changed
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add CHANGELOG.md
+          git add frontend/CHANGELOG.md
           git diff --cached --quiet || git commit -m "Update changelog"
           git push
