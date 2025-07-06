@@ -5,7 +5,7 @@ WailBrew is a desktop GUI manager for Homebrew built with Wails, Go, and React. 
 
 ## 📸 Screenshots
 
-![WailBrew Screenshot](images/screenshot.png)
+![WailBrew Screenshot](images/Screenshot.png)
 ## ✨ Key Features
 ### 📦 Package Management
 - **View Installed Packages**: Clear table view of all installed Homebrew formulas
