@@ -12,6 +12,7 @@ import {
 } from "../wailsjs/go/main/App";
 import appIcon from "./assets/images/appicon_256.png";
 import packageJson from "../package.json";
+import { EventsOn } from "../wailsjs/runtime";
 
 interface PackageEntry {
     name: string;
@@ -64,11 +65,11 @@ const WailBrewApp = () => {
     }, []);
 
     useEffect(() => {
-        const unlisten = window.runtime.EventsOn("setView", (view) => {
-            setView(view);
+        const unlisten = EventsOn("setView", (data) => {
+            setView(data as any);
             setSelectedPackage(null);
         });
-        const unlistenRefresh = window.runtime.EventsOn("refreshPackages", () => {
+        const unlistenRefresh = EventsOn("refreshPackages", () => {
             window.location.reload();
         });
         return () => {
