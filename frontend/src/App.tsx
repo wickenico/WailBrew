@@ -202,11 +202,11 @@ const WailBrewApp = () => {
                         >
                             <span>🩺 Doctor</span>
                         </li>
-                        <li><span>⬆️ Aktualisieren</span></li>
+                        {/*<li><span>⬆️ Aktualisieren</span></li>*/}
                     </ul>
                 </div>
                 <div style={{ marginTop: "20px", marginBottom: "10px", fontSize: "10px", color: "#777", paddingTop: "1px" }}>
-                    Version {appVersion}
+                    v{appVersion}
                 </div>
             </nav>
 
@@ -492,11 +492,11 @@ const WailBrewApp = () => {
                     </div>
                 )}
 
-                {updateLogs && (
+                {updateLogs !== null && (
                     <div className="confirm-overlay">
                         <div className="confirm-box" style={{ maxWidth: "700px" }}>
                             <p><strong>Update-Logs für {selectedPackage?.name}</strong></p>
-                            <pre>{updateLogs}</pre>
+                            <pre className="log-output">{updateLogs}</pre>
                             <div className="confirm-actions">
                                 <button onClick={() => setUpdateLogs(null)}>Ok</button>
                             </div>

@@ -44,7 +44,7 @@ func (a *App) menu() *menu.Menu {
 		rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
 			Type:    rt.InfoDialog,
 			Title:   "Über Wailbrew",
-			Message: "Wailbrew\nVersion 1.0.0\nEin Beispielprojekt.",
+			Message: "Wailbrew\nv1.0.0\nEin Beispielprojekt.",
 		})
 	})
 	AppSubmenu.AddSeparator()
