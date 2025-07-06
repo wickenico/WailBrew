@@ -30,7 +30,6 @@ jobs:
 
       - name: Generate CHANGELOG.md
         run: auto-changelog --output CHANGELOG.md
-        working-directory: frontend
 
       - name: Commit and push if changed
         run: |
