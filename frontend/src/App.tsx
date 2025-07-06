@@ -192,16 +192,16 @@ const WailBrewApp = () => {
                             <span className="badge">{updatablePackages.length}</span>
                         </li>
                         <li>
-                            <span>📚 Alle Formeln (tbd)</span>
-                            <span className="badge"></span>
+                            <span>📚 Alle Formeln</span>
+                            <span className="badge">tbd</span>
                         </li>
                         <li>
-                            <span>🍃 Blätter (tbd)</span>
-                            <span className="badge"></span>
+                            <span>🍃 Blätter</span>
+                            <span className="badge">tbd</span>
                         </li>
                         <li>
-                            <span>📂 Repositories (tbd)</span>
-                            <span className="badge"></span>
+                            <span>📂 Repositories</span>
+                            <span className="badge">tbd</span>
                         </li>
                     </ul>
                 </div>
