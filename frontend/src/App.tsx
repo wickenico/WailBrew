@@ -63,6 +63,20 @@ const WailBrewApp = () => {
             });
     }, []);
 
+    useEffect(() => {
+        const unlisten = window.runtime.EventsOn("setView", (view) => {
+            setView(view);
+            setSelectedPackage(null);
+        });
+        const unlistenRefresh = window.runtime.EventsOn("refreshPackages", () => {
+            window.location.reload();
+        });
+        return () => {
+            unlisten();
+            unlistenRefresh();
+        };
+    }, []);
+
     const activePackages = view === "installed" ? packages : updatablePackages;
 
     const filteredPackages = activePackages.filter((pkg) =>
@@ -185,7 +199,7 @@ const WailBrewApp = () => {
                             <span className="badge"></span>
                         </li>
                         <li>
-                            <span>📂 Repositorys (tbd)</span>
+                            <span>📂 Repositories (tbd)</span>
                             <span className="badge"></span>
                         </li>
                     </ul>

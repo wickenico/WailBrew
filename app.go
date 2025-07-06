@@ -63,16 +63,41 @@ func (a *App) menu() *menu.Menu {
 		rt.Quit(a.ctx)
 	})
 
-	// Datei-Menü
-	//FileMenu := AppMenu.AddSubmenu("Datei")
-	//FileMenu.AddText("Öffnen", keys.CmdOrCtrl("o"), func(cd *menu.CallbackData) {
-	//	// Implementiere Öffnen
-	//})
+	ViewMenu := AppMenu.AddSubmenu("Ansicht")
+	ViewMenu.AddText("Installierte Formeln", keys.CmdOrCtrl("1"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "installed")
+	})
+	ViewMenu.AddText("Veraltete Formeln", keys.CmdOrCtrl("2"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "updatable")
+	})
+	ViewMenu.AddText("Alle Formeln", keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "all")
+	})
+	ViewMenu.AddText("Blätter", keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "casks")
+	})
+	ViewMenu.AddText("Repositorys", keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "repos")
+	})
+	ViewMenu.AddSeparator()
+	ViewMenu.AddText("Doctor", keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "doctor")
+	})
 
 	// Edit-Menü (optional)
 	if runtime.GOOS == "darwin" {
 		AppMenu.Append(menu.EditMenu())
+		AppMenu.Append(menu.WindowMenu())
 	}
+
+	HelpMenu := AppMenu.AddSubmenu("Hilfe")
+	HelpMenu.AddText("WailBrew-Hilfe", nil, func(cd *menu.CallbackData) {
+		rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
+			Type:    rt.InfoDialog,
+			Title:   "Hilfe",
+			Message: "Aktuell gibt es noch keine Hilfeseite.",
+		})
+	})
 
 	return AppMenu
 }
