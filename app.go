@@ -109,8 +109,8 @@ func (a *App) GetBrewPackages() [][]string {
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Println("❌ ERROR: 'brew list --versions' failed:", err)
-		log.Println("🔍 Output:", string(output))
+		////log.Println("❌ ERROR: 'brew list --versions' failed:", err)
+		////log.Println("🔍 Output:", string(output))
 		return [][]string{{"Error", "fetching brew packages"}}
 	}
 
@@ -150,8 +150,8 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Println("❌ ERROR: 'brew info' failed:", err)
-		log.Println("🔍 Output:", string(output))
+		////log.Println("❌ ERROR: 'brew info' failed:", err)
+		////log.Println("🔍 Output:", string(output))
 		return [][]string{{"Error", "fetching updatable packages"}}
 	}
 
@@ -165,7 +165,7 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		} `json:"formulae"`
 	}
 	if err := json.Unmarshal(output, &brewInfo); err != nil {
-		log.Println("❌ ERROR: Parsing 'brew info' JSON failed:", err)
+		////log.Println("❌ ERROR: Parsing 'brew info' JSON failed:", err)
 		return [][]string{{"Error", "parsing brew info"}}
 	}
 
@@ -180,12 +180,12 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		installedVersion := strings.Split(installedMap[formula.Name], "_")[0]
 		latestVersion := formula.Versions.Stable
 		if installedVersion != latestVersion {
-			log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)", formula.Name, installedVersion, latestVersion)
+			////log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)", formula.Name, installedVersion, latestVersion)
 			updatablePackages = append(updatablePackages, []string{formula.Name, installedVersion, latestVersion})
 		}
 	}
 
-	log.Printf("✅ Found %d updatable packages\n", len(updatablePackages))
+	////log.Printf("✅ Found %d updatable packages\n", len(updatablePackages))
 	return updatablePackages
 }
 
@@ -195,11 +195,11 @@ func (a *App) RemoveBrewPackage(packageName string) string {
 	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("❌ ERROR: Failed to uninstall %s: %v\n", packageName, err)
-		log.Println("🔍 Output:", string(output))
+		//log.Printf("❌ ERROR: Failed to uninstall %s: %v\n", packageName, err)
+		//log.Println("🔍 Output:", string(output))
 		return "Error: " + err.Error()
 	}
-	log.Printf("✅ Successfully uninstalled %s", packageName)
+	//log.Printf("✅ Successfully uninstalled %s", packageName)
 	return string(output)
 }
 
@@ -209,11 +209,11 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("❌ ERROR: Failed to upgrade %s: %v\n", packageName, err)
-		log.Println("🔍 Output:", string(output))
+		//log.Printf("❌ ERROR: Failed to upgrade %s: %v\n", packageName, err)
+		//log.Println("🔍 Output:", string(output))
 		return "Error: " + err.Error()
 	}
-	log.Printf("✅ Successfully upgraded %s", packageName)
+	//log.Printf("✅ Successfully upgraded %s", packageName)
 	return string(output)
 }
 
@@ -223,7 +223,7 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Println("❌ ERROR: 'brew info' failed:", err)
+		//log.Println("❌ ERROR: 'brew info' failed:", err)
 		return map[string]interface{}{
 			"error": "Failed to get package info",
 		}
@@ -233,7 +233,7 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 		Formulae []map[string]interface{} `json:"formulae"`
 	}
 	if err := json.Unmarshal(output, &result); err != nil {
-		log.Println("❌ ERROR: parsing brew info:", err)
+		//log.Println("❌ ERROR: parsing brew info:", err)
 		return map[string]interface{}{
 			"error": "Failed to parse package info",
 		}
@@ -253,8 +253,8 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("❌ ERROR: 'brew info' failed for %s: %v\n", packageName, err)
-		log.Println("🔍 Output:", string(output))
+		//log.Printf("❌ ERROR: 'brew info' failed for %s: %v\n", packageName, err)
+		//log.Println("🔍 Output:", string(output))
 		return "Fehler beim Abrufen der Paket-Informationen:\n" + err.Error()
 	}
 
