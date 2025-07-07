@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
-import "./app.css";
+import "./App.css";
 import {
     GetBrewPackages,
     GetBrewUpdatablePackages,
