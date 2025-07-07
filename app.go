@@ -223,6 +223,23 @@ func (a *App) GetBrewLeaves() []string {
 	return results
 }
 
+func (a *App) GetBrewTaps() [][]string {
+	cmd := exec.Command(a.brewPath, "tap")
+	output, err := cmd.Output()
+	if err != nil {
+		return [][]string{{"Fehler", err.Error()}}
+	}
+	lines := strings.Split(string(output), "\n")
+	var taps [][]string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			taps = append(taps, []string{line, "Aktiv"})
+		}
+	}
+	return taps
+}
+
 // RemoveBrewPackage uninstalls a package
 func (a *App) RemoveBrewPackage(packageName string) string {
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)

@@ -11,6 +11,8 @@ export function GetBrewPackageInfoAsJson(arg1:string):Promise<Record<string, any
 
 export function GetBrewPackages():Promise<Array<any>>;
 
+export function GetBrewTaps():Promise<Array<any>>;
+
 export function GetBrewUpdatablePackages():Promise<Array<any>>;
 
 export function OpenURL(arg1:string):Promise<void>;

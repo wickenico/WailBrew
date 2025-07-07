@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 import "./App.css";
 import {
@@ -11,10 +11,11 @@ import {
     RunBrewDoctor,
     GetAllBrewPackages,
     GetBrewLeaves,
+    GetBrewTaps,
 } from "../wailsjs/go/main/App";
 import appIcon from "./assets/images/appicon_256.png";
 import packageJson from "../package.json";
-import {EventsOn} from "../wailsjs/runtime";
+import { EventsOn } from "../wailsjs/runtime";
 
 interface PackageEntry {
     name: string;
@@ -27,15 +28,23 @@ interface PackageEntry {
     isInstalled?: boolean;
 }
 
+interface RepositoryEntry {
+    name: string;
+    status: string;
+    desc?: string;
+}
+
 const WailBrewApp = () => {
     const [packages, setPackages] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
     const [allPackages, setAllPackages] = useState<PackageEntry[]>([]);
     const [leavesPackages, setLeavesPackages] = useState<PackageEntry[]>([]);
+    const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "doctor">("installed");
+    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
+    const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -48,8 +57,8 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         setLoading(true);
-        Promise.all([GetBrewPackages(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves()])
-            .then(([installed, updatable, all, leaves]) => {
+        Promise.all([GetBrewPackages(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
+            .then(([installed, updatable, all, leaves, repos]) => {
                 const installedFormatted = installed.map(([name, installedVersion]) => ({
                     name,
                     installedVersion,
@@ -76,10 +85,18 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
 
+                // Format repositories
+                const reposFormatted = repos.map(([name, status]) => ({
+                    name,
+                    status,
+                    desc: "--",
+                }));
+
                 setPackages(installedFormatted);
                 setUpdatablePackages(updatableFormatted);
                 setAllPackages(allFormatted);
                 setLeavesPackages(leavesFormatted);
+                setRepositories(reposFormatted);
                 setLoading(false);
             })
             .catch(() => {
@@ -92,6 +109,7 @@ const WailBrewApp = () => {
         const unlisten = EventsOn("setView", (data) => {
             setView(data as any);
             setSelectedPackage(null);
+            setSelectedRepository(null);
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {
             window.location.reload();
@@ -117,14 +135,24 @@ const WailBrewApp = () => {
         }
     };
 
+    const getActiveRepositories = () => {
+        return repositories;
+    };
+
     const activePackages = getActivePackages();
+    const activeRepositories = getActiveRepositories();
 
     const filteredPackages = activePackages.filter((pkg) =>
         pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const filteredRepositories = activeRepositories.filter((repo) =>
+        repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     const handleSelect = async (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
+        setSelectedRepository(null);
 
         if (packageCache.has(pkg.name)) {
             setSelectedPackage(packageCache.get(pkg.name)!);
@@ -145,6 +173,11 @@ const WailBrewApp = () => {
         setPackageCache(new Map(packageCache.set(pkg.name, enriched)));
         setSelectedPackage(enriched);
         setLoadingDetailsFor(null);
+    };
+
+    const handleRepositorySelect = (repo: RepositoryEntry) => {
+        setSelectedRepository(repo);
+        setSelectedPackage(null);
     };
 
     const handleRemoveConfirmed = async () => {
@@ -226,6 +259,7 @@ const WailBrewApp = () => {
                             onClick={() => {
                                 setView("installed");
                                 setSelectedPackage(null);
+                                setSelectedRepository(null);
                             }}
                         >
                             <span>📦 Installiert</span>
@@ -236,6 +270,7 @@ const WailBrewApp = () => {
                             onClick={() => {
                                 setView("updatable");
                                 setSelectedPackage(null);
+                                setSelectedRepository(null);
                             }}
                         >
                             <span>🔄 Veraltet</span>
@@ -246,6 +281,7 @@ const WailBrewApp = () => {
                             onClick={() => {
                                 setView("all");
                                 setSelectedPackage(null);
+                                setSelectedRepository(null);
                             }}
                         >
                             <span>📚 Alle Formeln</span>
@@ -256,14 +292,22 @@ const WailBrewApp = () => {
                             onClick={() => {
                                 setView("leaves");
                                 setSelectedPackage(null);
+                                setSelectedRepository(null);
                             }}
                         >
                             <span>🍃 Blätter</span>
                             <span className="badge">{leavesPackages.length}</span>
                         </li>
-                        <li>
+                        <li
+                            className={view === "repositories" ? "active" : ""}
+                            onClick={() => {
+                                setView("repositories");
+                                setSelectedPackage(null);
+                                setSelectedRepository(null);
+                            }}
+                        >
                             <span>📂 Repositories</span>
-                            <span className="badge">tbd</span>
+                            <span className="badge">{repositories.length}</span>
                         </li>
                     </ul>
                 </div>
@@ -275,6 +319,7 @@ const WailBrewApp = () => {
                             onClick={() => {
                                 setView("doctor");
                                 setSelectedPackage(null);
+                                setSelectedRepository(null);
                             }}
                         >
                             <span>🩺 Doctor</span>
@@ -385,7 +430,7 @@ const WailBrewApp = () => {
                                 <p>
                                     <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
                                     {loadingDetailsFor === selectedPackage?.name && (
-                                        <span style={{fontSize: "12px", color: "#888"}}>
+                                        <span style={{ fontSize: "12px", color: "#888" }}>
                 (Lade…)
               </span>
                                     )}
@@ -496,7 +541,7 @@ const WailBrewApp = () => {
                                 <p>
                                     <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
                                     {loadingDetailsFor === selectedPackage?.name && (
-                                        <span style={{fontSize: "12px", color: "#888"}}>
+                                        <span style={{ fontSize: "12px", color: "#888" }}>
                 (Lade…)
               </span>
                                     )}
@@ -583,9 +628,9 @@ const WailBrewApp = () => {
                                             <td>{pkg.name}</td>
                                             <td>
                                                 {pkg.isInstalled ? (
-                                                    <span style={{color: "green"}}>✓ Installiert</span>
+                                                    <span style={{ color: "green" }}>✓ Installiert</span>
                                                 ) : (
-                                                    <span style={{color: "#888"}}>Nicht installiert</span>
+                                                    <span style={{ color: "#888" }}>Nicht installiert</span>
                                                 )}
                                             </td>
                                         </tr>
@@ -604,7 +649,7 @@ const WailBrewApp = () => {
                                 <p>
                                     <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
                                     {loadingDetailsFor === selectedPackage?.name && (
-                                        <span style={{fontSize: "12px", color: "#888"}}>
+                                        <span style={{ fontSize: "12px", color: "#888" }}>
                 (Lade…)
               </span>
                                     )}
@@ -713,7 +758,7 @@ const WailBrewApp = () => {
                                 <p>
                                     <strong>{selectedPackage?.name || "Kein Paket ausgewählt"}</strong>{" "}
                                     {loadingDetailsFor === selectedPackage?.name && (
-                                        <span style={{fontSize: "12px", color: "#888"}}>
+                                        <span style={{ fontSize: "12px", color: "#888" }}>
                 (Lade…)
               </span>
                                     )}
@@ -726,7 +771,93 @@ const WailBrewApp = () => {
                             </div>
                             <div className="package-footer">
                                 Blätter sind Formeln, die nicht als Abhängigkeit von anderen installierten Formeln
-                                benötigt werden. Diese können sicher entfernt werden.
+                                benötigt werden.
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Repositories */}
+                {view === "repositories" && (
+                    <>
+                        <div className="header-row">
+                            <div className="header-title">
+                                <h3>Repositories ({repositories.length})</h3>
+                            </div>
+                            <div className="header-actions">
+                                {/* Repository actions could be added here in the future */}
+                            </div>
+                            <div className="search-container">
+                                <span className="search-icon">🔍</span>
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Suchen"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                {searchQuery && (
+                                    <span
+                                        className="clear-icon"
+                                        onClick={() => setSearchQuery("")}
+                                        title="Suche zurücksetzen"
+                                    >
+              ✕
+            </span>
+                                )}
+                            </div>
+                        </div>
+
+                        {error && <div className="result error">{error}</div>}
+
+                        <div className="table-container">
+                            {loading && (
+                                <div className="table-loading-overlay">
+                                    <div className="spinner"></div>
+                                    <div className="loading-text">Repositories werden geladen…</div>
+                                </div>
+                            )}
+
+                            {filteredRepositories.length > 0 && (
+                                <table className="package-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {filteredRepositories.map((repo) => (
+                                        <tr
+                                            key={repo.name}
+                                            className={selectedRepository?.name === repo.name ? "selected" : ""}
+                                            onClick={() => handleRepositorySelect(repo)}
+                                        >
+                                            <td>{repo.name}</td>
+                                            <td>
+                                                <span style={{ color: "green" }}>✓ {repo.status}</span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
+
+                            {!loading && filteredRepositories.length === 0 && (
+                                <div className="result">Keine passenden Ergebnisse.</div>
+                            )}
+                        </div>
+
+                        <div className="info-footer-container">
+                            <div className="package-info">
+                                <p>
+                                    <strong>{selectedRepository?.name || "Kein Repository ausgewählt"}</strong>
+                                </p>
+                                <p>Status: {selectedRepository?.status || "--"}</p>
+                                <p>Beschreibung: {selectedRepository?.desc || "Homebrew Tap Repository"}</p>
+                            </div>
+                            <div className="package-footer">
+                                Repositories (Taps) sind Quellen für Formeln. Diese enthalten zusätzliche Pakete neben dem Standard-Repository.
                             </div>
                         </div>
                     </>
@@ -735,90 +866,89 @@ const WailBrewApp = () => {
                 {/* Doctor */}
                 {view === "doctor" && (
                     <>
-                        <div className="header-row">
-                            <div className="header-title">
-                                <h3>Homebrew Doctor</h3>
-                            </div>
-                            <div className="header-actions">
-                                <button
-                                    className="doctor-button"
-                                    onClick={() => setDoctorLog("")}
-                                >
-                                    Log leeren
-                                </button>
-                                <button
-                                    className="doctor-button"
-                                    onClick={async () => {
-                                        setDoctorLog("Führe brew doctor aus…\nBitte warten...");
-                                        const result = await RunBrewDoctor();
-                                        setDoctorLog(result);
-                                    }}
-                                >
-                                    Doctor ausführen
-                                </button>
-                            </div>
+                    <div className="header-row">
+                        <div className="header-title">
+                            <h3>Homebrew Doctor</h3>
                         </div>
+                        <div className="header-actions">
+                            <button
+                                className="doctor-button"
+                                onClick={() => setDoctorLog("")}
+                            >
+                                Log leeren
+                            </button>
+                            <button
+                                className="doctor-button"
+                                onClick={async () => {
+                                    setDoctorLog("Führe brew doctor aus…\nBitte warten...");
+                                    const result = await RunBrewDoctor();
+                                    setDoctorLog(result);
+                                }}
+                            >
+                                Doctor ausführen
+                            </button>
+                        </div>
+                    </div>
 
                         <pre className="doctor-log">
-                        {doctorLog || "Noch keine Ausgabe. Klicken Sie auf „Doctor ausführen“."}
-                    </pre>
+                            {doctorLog || "Noch keine Ausgabe. Klicken Sie auf „Doctor ausführen“."}
+                        </pre>
+                                <div className="package-footer">
+                                Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.
+                                </div>
+                                </>
+                                )}
 
-                        <div className="package-footer">
-                            Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.
-                        </div>
-                    </>
-                )}
-
-                {showConfirm && (
-                    <div className="confirm-overlay">
-                        <div className="confirm-box">
-                            <p>Möchten Sie <strong>{selectedPackage?.name}</strong> wirklich deinstallieren?</p>
-                            <div className="confirm-actions">
-                                <button onClick={handleRemoveConfirmed}>Ja, deinstallieren</button>
-                                <button onClick={() => setShowConfirm(false)}>Abbrechen</button>
+                        {showConfirm && (
+                            <div className="confirm-overlay">
+                                <div className="confirm-box">
+                                    <p>Möchten Sie <strong>{selectedPackage?.name}</strong> wirklich deinstallieren?</p>
+                                    <div className="confirm-actions">
+                                        <button onClick={handleRemoveConfirmed}>Ja, deinstallieren</button>
+                                        <button onClick={() => setShowConfirm(false)}>Abbrechen</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        )}
 
-                {showUpdateConfirm && (
-                    <div className="confirm-overlay">
-                        <div className="confirm-box">
-                            <p>Möchten Sie <strong>{selectedPackage?.name}</strong> wirklich aktualisieren?</p>
-                            <div className="confirm-actions">
-                                <button onClick={handleUpdateConfirmed}>Ja, aktualisieren</button>
-                                <button onClick={() => setShowUpdateConfirm(false)}>Abbrechen</button>
+                        {showUpdateConfirm && (
+                            <div className="confirm-overlay">
+                                <div className="confirm-box">
+                                    <p>Möchten Sie <strong>{selectedPackage?.name}</strong> wirklich aktualisieren?</p>
+                                    <div className="confirm-actions">
+                                        <button onClick={handleUpdateConfirmed}>Ja, aktualisieren</button>
+                                        <button onClick={() => setShowUpdateConfirm(false)}>Abbrechen</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        )}
 
-                {updateLogs !== null && (
-                    <div className="confirm-overlay">
-                        <div className="confirm-box" style={{maxWidth: "700px"}}>
-                            <p><strong>Update-Logs für {selectedPackage?.name}</strong></p>
-                            <pre className="log-output">{updateLogs}</pre>
-                            <div className="confirm-actions">
-                                <button onClick={() => setUpdateLogs(null)}>Ok</button>
+                        {updateLogs !== null && (
+                            <div className="confirm-overlay">
+                                <div className="confirm-box" style={{ maxWidth: "700px" }}>
+                                    <p><strong>Update-Logs für {selectedPackage?.name}</strong></p>
+                                    <pre className="log-output">{updateLogs}</pre>
+                                    <div className="confirm-actions">
+                                        <button onClick={() => setUpdateLogs(null)}>Ok</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        )}
 
-                {infoLogs && (
-                    <div className="confirm-overlay">
-                        <div className="confirm-box" style={{maxWidth: "700px"}}>
-                            <p><strong>Info für {selectedPackage?.name}</strong></p>
-                            <pre className="log-output">{infoLogs}</pre>
-                            <div className="confirm-actions">
-                                <button onClick={() => setInfoLogs(null)}>Ok</button>
+                        {infoLogs && (
+                            <div className="confirm-overlay">
+                                <div className="confirm-box" style={{ maxWidth: "700px" }}>
+                                    <p><strong>Info für {selectedPackage?.name}</strong></p>
+                                    <pre className="log-output">{infoLogs}</pre>
+                                    <div className="confirm-actions">
+                                        <button onClick={() => setInfoLogs(null)}>Ok</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        )}
             </main>
-        </div>
-    );
-};
+                    </div>
+                );
+                };
 
-export default WailBrewApp;
+                export default WailBrewApp;

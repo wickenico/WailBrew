@@ -22,6 +22,10 @@ export function GetBrewPackages() {
   return window['go']['main']['App']['GetBrewPackages']();
 }
 
+export function GetBrewTaps() {
+  return window['go']['main']['App']['GetBrewTaps']();
+}
+
 export function GetBrewUpdatablePackages() {
   return window['go']['main']['App']['GetBrewUpdatablePackages']();
 }
