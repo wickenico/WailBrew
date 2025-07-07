@@ -89,5 +89,6 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## 🏆 Acknowledgments
 - Wails community for the framework: https://wails.io
+- Cakebrew as inspiration: https://www.cakebrew.com/
 
 **WailBrew** makes Homebrew management simple and accessible for all macOS users. Try it out and streamline your package management workflow!
