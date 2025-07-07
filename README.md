@@ -1,5 +1,13 @@
 # WailBrew - Homebrew GUI Manager
 A modern, user-friendly graphical interface for Homebrew package management on macOS. WailBrew simplifies managing your Homebrew formulas with an intuitive desktop application.
+
+## 📥 Download
+
+**[Download Latest Version (v0.5.0)](https://github.com/wickenico/WailBrew/releases/download/v0.5.0/wailbrew-v0.5.0.zip)**
+
+*Alternatively, visit the [releases page](https://github.com/wickenico/WailBrew/releases) to download specific versions.*
+
+
 ## 🍺 About WailBrew
 WailBrew is a desktop GUI manager for Homebrew built with Wails, Go, and React. The application streamlines Homebrew package management through an intuitive user interface, providing all essential features for daily package administration.
 
