@@ -206,6 +206,23 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	return updatablePackages
 }
 
+func (a *App) GetBrewLeaves() []string {
+	cmd := exec.Command(a.brewPath, "leaves")
+	output, err := cmd.Output()
+	if err != nil {
+		return []string{"Fehler: " + err.Error()}
+	}
+	lines := strings.Split(string(output), "\n")
+	var results []string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			results = append(results, line)
+		}
+	}
+	return results
+}
+
 // RemoveBrewPackage uninstalls a package
 func (a *App) RemoveBrewPackage(packageName string) string {
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)

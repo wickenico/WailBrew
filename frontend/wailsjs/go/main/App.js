@@ -6,6 +6,10 @@ export function GetAllBrewPackages() {
   return window['go']['main']['App']['GetAllBrewPackages']();
 }
 
+export function GetBrewLeaves() {
+  return window['go']['main']['App']['GetBrewLeaves']();
+}
+
 export function GetBrewPackageInfo(arg1) {
   return window['go']['main']['App']['GetBrewPackageInfo'](arg1);
 }
