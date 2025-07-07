@@ -102,6 +102,23 @@ func (a *App) menu() *menu.Menu {
 	return AppMenu
 }
 
+func (a *App) GetAllBrewPackages() [][]string {
+	cmd := exec.Command(a.brewPath, "formulae")
+	output, err := cmd.Output()
+	if err != nil {
+		return [][]string{{"Fehler", err.Error()}}
+	}
+	lines := strings.Split(string(output), "\n")
+	var results [][]string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			results = append(results, []string{line, ""})
+		}
+	}
+	return results
+}
+
 // GetBrewPackages retrieves the list of installed Homebrew packages
 func (a *App) GetBrewPackages() [][]string {
 	cmd := exec.Command(a.brewPath, "list", "--formula", "--versions")
