@@ -12,9 +12,9 @@ import {
     GetAllBrewPackages,
     GetBrewLeaves,
     GetBrewTaps,
+    GetAppVersion,
 } from "../wailsjs/go/main/App";
 import appIcon from "./assets/images/appicon_256.png";
-import packageJson from "../package.json";
 import { EventsOn } from "../wailsjs/runtime";
 
 import Sidebar from "./components/Sidebar";
@@ -26,6 +26,7 @@ import RepositoryInfo from "./components/RepositoryInfo";
 import DoctorView from "./components/DoctorView";
 import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
+import AboutDialog from "./components/AboutDialog";
 
 interface PackageEntry {
     name: string;
@@ -63,9 +64,17 @@ const WailBrewApp = () => {
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
-    const appVersion = packageJson.version;
+    const [showAbout, setShowAbout] = useState<boolean>(false);
+    const [appVersion, setAppVersion] = useState<string>("0.5.0");
 
     useEffect(() => {
+        // Get app version from backend
+        GetAppVersion().then(version => {
+            setAppVersion(version);
+        }).catch(err => {
+            console.error("Failed to get app version:", err);
+        });
+
         setLoading(true);
         Promise.all([GetBrewPackages(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
             .then(([installed, updatable, all, leaves, repos]) => {
@@ -109,7 +118,8 @@ const WailBrewApp = () => {
                 setRepositories(reposFormatted);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((err) => {
+                console.error("Error loading packages:", err);
                 setError("❌ Fehler beim Laden der Formeln!");
                 setLoading(false);
             });
@@ -123,9 +133,13 @@ const WailBrewApp = () => {
         const unlistenRefresh = EventsOn("refreshPackages", () => {
             window.location.reload();
         });
+        const unlistenAbout = EventsOn("showAbout", () => {
+            setShowAbout(true);
+        });
         return () => {
             unlisten();
             unlistenRefresh();
+            unlistenAbout();
         };
     }, []);
 
@@ -524,6 +538,11 @@ const WailBrewApp = () => {
                     title={`Info für ${selectedPackage?.name}`}
                     log={infoLogs}
                     onClose={() => setInfoLogs(null)}
+                />
+                <AboutDialog
+                    open={showAbout}
+                    onClose={() => setShowAbout(false)}
+                    appVersion={appVersion}
                 />
             </main>
         </div>

@@ -3,6 +3,8 @@
 
 export function GetAllBrewPackages():Promise<Array<any>>;
 
+export function GetAppVersion():Promise<string>;
+
 export function GetBrewLeaves():Promise<Array<string>>;
 
 export function GetBrewPackageInfo(arg1:string):Promise<string>;

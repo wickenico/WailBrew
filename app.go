@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -41,11 +43,7 @@ func (a *App) menu() *menu.Menu {
 	// App Menü (macOS-like)
 	AppSubmenu := AppMenu.AddSubmenu("WailBrew")
 	AppSubmenu.AddText("Über Wailbrew", nil, func(cd *menu.CallbackData) {
-		rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
-			Type:    rt.InfoDialog,
-			Title:   "Über Wailbrew",
-			Message: "Wailbrew\nv1.0.0\nEin Beispielprojekt.",
-		})
+		rt.EventsEmit(a.ctx, "showAbout")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText("Nach Updates suchen…(tbd)", nil, func(cd *menu.CallbackData) {
@@ -316,4 +314,39 @@ func (a *App) RunBrewDoctor() string {
 	cmd := exec.Command(a.brewPath, "doctor")
 	out, _ := cmd.CombinedOutput()
 	return string(out)
+}
+
+// GetAppVersion reads the version from frontend/package.json
+func (a *App) GetAppVersion() string {
+	// Get the executable path
+	execPath, err := os.Executable()
+	if err != nil {
+		log.Printf("Error getting executable path: %v", err)
+		return "v.notfound" // fallback version
+	}
+
+	// Get the directory containing the executable
+	execDir := filepath.Dir(execPath)
+
+	// Try different possible paths for package.json
+	possiblePaths := []string{
+		filepath.Join(execDir, "frontend", "package.json"),
+		filepath.Join(execDir, "..", "frontend", "package.json"),
+		filepath.Join(execDir, "..", "..", "frontend", "package.json"),
+		"frontend/package.json", // relative to current working directory
+	}
+
+	for _, path := range possiblePaths {
+		if data, err := ioutil.ReadFile(path); err == nil {
+			var packageJSON struct {
+				Version string `json:"version"`
+			}
+			if err := json.Unmarshal(data, &packageJSON); err == nil && packageJSON.Version != "" {
+				return packageJSON.Version
+			}
+		}
+	}
+
+	// Fallback version if package.json cannot be read
+	return "v.notfound"
 }
