@@ -33,6 +33,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             />
             WailBrew
         </div>
+        <div className="version-badge">
+            v{appVersion}
+        </div>
         <div className="sidebar-section">
             <h4>Formeln</h4>
             <ul>
@@ -65,9 +68,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <span>🩺 Doctor</span>
                 </li>
             </ul>
-        </div>
-        <div style={{ marginTop: "20px", marginBottom: "10px", fontSize: "10px", color: "#777", paddingTop: "1px" }}>
-            v{appVersion}
         </div>
     </nav>
 );

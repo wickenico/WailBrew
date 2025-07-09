@@ -52,9 +52,26 @@ html, body {
   gap: 10px;
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   color: var(--accent);
   letter-spacing: 1px;
+}
+
+.version-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255,255,255,0.08);
+  color: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  margin: 0 auto 24px auto;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--glass-border);
+  width: fit-content;
+  text-align: center;
 }
 
 .sidebar-section {
