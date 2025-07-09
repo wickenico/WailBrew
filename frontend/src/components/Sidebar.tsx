@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <span className="badge">{updatableCount}</span>
                 </li>
                 <li className={view === "all" ? "active" : ""} onClick={() => { setView("all"); onClearSelection(); }}>
-                    <span>📚 Alle Formeln</span>
+                    <span>📚 Formeln</span>
                     <span className="badge">{allCount}</span>
                 </li>
                 <li className={view === "leaves" ? "active" : ""} onClick={() => { setView("leaves"); onClearSelection(); }}>
