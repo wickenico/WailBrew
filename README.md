@@ -3,7 +3,7 @@ A modern, user-friendly graphical interface for Homebrew package management on m
 
 ## 📥 Download
 
-**[Download Latest Version (v0.5.0)](https://github.com/wickenico/WailBrew/releases/download/v0.5.0/wailbrew-v0.5.0.zip)**
+**[Download Latest Version (v0.6.0)](https://github.com/wickenico/WailBrew/releases/download/v0.6.0/wailbrew-v0.6.0.zip)**
 
 *Alternatively, visit the [releases page](https://github.com/wickenico/WailBrew/releases) to download specific versions.*
 

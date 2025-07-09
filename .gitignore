@@ -5,3 +5,12 @@ frontend/package.json.md5
 
 /.idea/
 
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
