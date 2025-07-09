@@ -11,7 +11,7 @@ const LogDialog: React.FC<LogDialogProps> = ({ open, title, log, onClose }) => {
     if (!open) return null;
     return (
         <div className="confirm-overlay">
-            <div className="confirm-box" style={{ maxWidth: "700px" }}>
+            <div className="confirm-box log-dialog-box">
                 <p><strong>{title}</strong></p>
                 <pre className="log-output">{log}</pre>
                 <div className="confirm-actions">

@@ -516,17 +516,39 @@ html, body {
 }
 
 .log-output {
-  background: rgba(30,34,40,0.82);
-  border: 2px solid var(--glass-border-strong);
-  padding: 16px 20px;
+  background: rgba(30,34,40,0.85);
+  border: 1px solid var(--glass-border-strong);
+  padding: 20px 24px;
   color: var(--text-secondary);
-  font-family: monospace;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
   white-space: pre-wrap;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 450px;
   text-align: left;
-  border-radius: var(--radius);
-  box-shadow: var(--glass-shadow);
+  border-radius: 12px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  margin: 16px 0;
+}
+
+.log-dialog-box {
+  max-width: 800px;
+  width: 75vw;
+  min-width: 600px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow-strong);
+}
+
+.log-dialog-box p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 /* About Dialog Styles */
