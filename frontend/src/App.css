@@ -153,6 +153,12 @@ html, body {
   border-radius: var(--radius);
   margin-right: 18px;
   border: 1px solid var(--glass-border);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.search-container:focus-within {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.18);
 }
 
 .search-input {
@@ -163,7 +169,6 @@ html, body {
   border-radius: var(--radius);
   color: var(--text-main);
   font-size: 15px;
-  transition: background var(--transition);
 }
 
 .search-input::placeholder {
@@ -172,7 +177,6 @@ html, body {
 
 .search-input:focus {
   outline: none;
-  background: rgba(255,255,255,0.08);
 }
 
 .search-icon {
@@ -200,12 +204,10 @@ html, body {
 
 .package-table {
   width: 100%;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   font-size: 15px;
   background: transparent;
-  border-radius: var(--radius);
-  overflow: hidden;
 }
 
 .package-table th,
@@ -216,10 +218,19 @@ html, body {
 }
 
 .package-table th {
-  background: rgba(255,255,255,0.04);
-  color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 14px;
+  position: sticky;
+  top: 0;
+  background: rgba(40, 45, 52, 1);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--glass-border-strong);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10;
 }
 
 .package-table tbody tr {
