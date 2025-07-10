@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -18,7 +19,7 @@ import (
 	rt "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-var Version = "0.5.0"
+var Version = "0.dev"
 
 // GitHubRelease represents a GitHub release
 type GitHubRelease struct {
@@ -280,18 +281,73 @@ func (a *App) RemoveBrewPackage(packageName string) string {
 	return string(output)
 }
 
-// UpdateBrewPackage upgrades a package
+// UpdateBrewPackage upgrades a package with live progress updates
 func (a *App) UpdateBrewPackage(packageName string) string {
+	// Emit initial progress
+	rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("🔄 Starte Update für '%s'...", packageName))
+
 	cmd := exec.Command(a.brewPath, "upgrade", packageName)
 	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
-	output, err := cmd.CombinedOutput()
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		//log.Printf("❌ ERROR: Failed to upgrade %s: %v\n", packageName, err)
-		//log.Println("🔍 Output:", string(output))
-		return "Error: " + err.Error()
+		errorMsg := fmt.Sprintf("❌ Fehler beim Erstellen der Ausgabe-Pipe: %v", err)
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
+		return errorMsg
 	}
-	//log.Printf("✅ Successfully upgraded %s", packageName)
-	return string(output)
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := fmt.Sprintf("❌ Fehler beim Erstellen der Fehler-Pipe: %v", err)
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := fmt.Sprintf("❌ Fehler beim Starten des Updates: %v", err)
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("📦 %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+
+	var finalMessage string
+	if err != nil {
+		finalMessage = fmt.Sprintf("❌ Update für '%s' fehlgeschlagen: %v", packageName, err)
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+	} else {
+		finalMessage = fmt.Sprintf("✅ Update für '%s' erfolgreich abgeschlossen!", packageName)
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+	}
+
+	// Signal completion
+	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+
+	return finalMessage
 }
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {

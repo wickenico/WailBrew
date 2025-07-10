@@ -241,17 +241,34 @@ const WailBrewApp = () => {
         setShowUpdateConfirm(false);
         setUpdateLogs(`Aktualisiere "${selectedPackage.name}"...\nBitte warten...`);
 
-        const result = await UpdateBrewPackage(selectedPackage.name);
-        setUpdateLogs(result);
+        // Set up event listeners for live progress
+        const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
+            setUpdateLogs(prevLogs => {
+                if (!prevLogs) {
+                    return `Update-Logs für ${selectedPackage.name}\n${progress}`;
+                }
+                return prevLogs + '\n' + progress;
+            });
+        });
 
-        const updated = await GetBrewUpdatablePackages();
-        const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
-            name,
-            installedVersion,
-            latestVersion,
-            isInstalled: true,
-        }));
-        setUpdatablePackages(formatted);
+        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+            // Update the package list after successful update
+            const updated = await GetBrewUpdatablePackages();
+            const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
+                name,
+                installedVersion,
+                latestVersion,
+                isInstalled: true,
+            }));
+            setUpdatablePackages(formatted);
+            
+            // Clean up event listeners
+            progressListener();
+            completeListener();
+        });
+
+        // Start the update process
+        await UpdateBrewPackage(selectedPackage.name);
     };
 
     const handleShowInfoLogs = async (pkg: PackageEntry) => {

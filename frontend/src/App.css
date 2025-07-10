@@ -532,6 +532,7 @@ html, body {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   margin: 16px 0;
+  scroll-behavior: smooth;
 }
 
 .log-dialog-box {
