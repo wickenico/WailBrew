@@ -3,6 +3,10 @@ node_modules
 frontend/dist
 frontend/package.json.md5
 
+# pnpm
+.pnpm-store
+.pnpm-debug.log
+
 /.idea/
 
 # macOS system files
