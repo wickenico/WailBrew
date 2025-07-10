@@ -54,17 +54,30 @@ cd WailBrew
 go mod download
 
 # Install frontend dependencies
-cd frontend && npm install
+cd frontend && pnpm install
 
 # Start the app in development mode
-cd .. && wails dev
+cd .. && make dev
+# or alternatively: wails dev
 ```
 ### Production Build
 ``` bash
-# Build the app for production
+# Recommended: Build with automatic version from package.json
+make
+
+# Alternative: Standard build (uses hardcoded default version)
 wails build
 
 # The built app will be in the build/bin/ directory
+```
+
+**Note**: Use `make` for production builds as it automatically reads the version from `frontend/package.json` and embeds it in the binary. This ensures the About dialog displays the correct version in production.
+
+### Additional Make Commands
+``` bash
+make dev     # Start development server
+make clean   # Clean build directory
+make install # Build and install to /Applications
 ```
 
 ## 🛠️ Development

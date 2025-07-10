@@ -3,11 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -15,6 +13,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	rt "github.com/wailsapp/wails/v2/pkg/runtime"
 )
+
+var Version = "dev"
 
 // App struct
 type App struct {
@@ -316,37 +316,7 @@ func (a *App) RunBrewDoctor() string {
 	return string(out)
 }
 
-// GetAppVersion reads the version from frontend/package.json
+// GetAppVersion returns the application version
 func (a *App) GetAppVersion() string {
-	// Get the executable path
-	execPath, err := os.Executable()
-	if err != nil {
-		log.Printf("Error getting executable path: %v", err)
-		return "v.notfound" // fallback version
-	}
-
-	// Get the directory containing the executable
-	execDir := filepath.Dir(execPath)
-
-	// Try different possible paths for package.json
-	possiblePaths := []string{
-		filepath.Join(execDir, "frontend", "package.json"),
-		filepath.Join(execDir, "..", "frontend", "package.json"),
-		filepath.Join(execDir, "..", "..", "frontend", "package.json"),
-		"frontend/package.json", // relative to current working directory
-	}
-
-	for _, path := range possiblePaths {
-		if data, err := ioutil.ReadFile(path); err == nil {
-			var packageJSON struct {
-				Version string `json:"version"`
-			}
-			if err := json.Unmarshal(data, &packageJSON); err == nil && packageJSON.Version != "" {
-				return packageJSON.Version
-			}
-		}
-	}
-
-	// Fallback version if package.json cannot be read
-	return "v.notfound"
+	return Version
 }
