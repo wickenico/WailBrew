@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -170,7 +169,7 @@ func (a *App) GetBrewPackages() [][]string {
 		}
 	}
 
-	log.Println("✅ Installed Homebrew packages:", packages)
+	//log.Println("✅ Installed Homebrew packages:", packages)
 	return packages
 }
 
@@ -206,6 +205,8 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 			Versions struct {
 				Stable string `json:"stable"`
 			} `json:"versions"`
+			Deprecated bool `json:"deprecated"`
+			Disabled   bool `json:"disabled"`
 		} `json:"formulae"`
 	}
 	if err := json.Unmarshal(output, &brewInfo); err != nil {
@@ -223,6 +224,12 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	for _, formula := range brewInfo.Formulae {
 		installedVersion := strings.Split(installedMap[formula.Name], "_")[0]
 		latestVersion := formula.Versions.Stable
+
+		// Skip deprecated or disabled packages
+		if formula.Deprecated || formula.Disabled {
+			continue
+		}
+
 		if installedVersion != latestVersion {
 			////log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)", formula.Name, installedVersion, latestVersion)
 			updatablePackages = append(updatablePackages, []string{formula.Name, installedVersion, latestVersion})

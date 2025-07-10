@@ -80,19 +80,43 @@ const WailBrewApp = () => {
         setLoading(true);
         Promise.all([GetBrewPackages(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
             .then(([installed, updatable, all, leaves, repos]) => {
-                const installedFormatted = installed.map(([name, installedVersion]) => ({
+                // Ensure all responses are arrays, default to empty arrays if null/undefined
+                const safeInstalled = installed || [];
+                const safeUpdatable = updatable || [];
+                const safeAll = all || [];
+                const safeLeaves = leaves || [];
+                const safeRepos = repos || [];
+
+                // Check for errors in the responses
+                if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
+                    throw new Error(`Failed to get installed packages: ${safeInstalled[0][1]}`);
+                }
+                if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
+                    throw new Error(`Failed to get updatable packages: ${safeUpdatable[0][1]}`);
+                }
+                if (safeAll.length === 1 && safeAll[0][0] === "Error") {
+                    throw new Error(`Failed to get all packages: ${safeAll[0][1]}`);
+                }
+                if (safeLeaves.length === 1 && safeLeaves[0] && safeLeaves[0].startsWith("Fehler: ")) {
+                    throw new Error(`Failed to get leaves: ${safeLeaves[0]}`);
+                }
+                if (safeRepos.length === 1 && safeRepos[0][0] === "Fehler") {
+                    throw new Error(`Failed to get repositories: ${safeRepos[0][1]}`);
+                }
+
+                const installedFormatted = safeInstalled.map(([name, installedVersion]) => ({
                     name,
                     installedVersion,
                     isInstalled: true,
                 }));
-                const updatableFormatted = updatable.map(([name, installedVersion, latestVersion]) => ({
+                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                     isInstalled: true,
                 }));
                 const installedNames = new Set(installedFormatted.map(pkg => pkg.name));
-                const allFormatted = all.map(([name]) => ({
+                const allFormatted = safeAll.map(([name]) => ({
                     name,
                     installedVersion: "",
                     isInstalled: installedNames.has(name),
@@ -100,14 +124,14 @@ const WailBrewApp = () => {
 
                 // Format leaves packages with their versions from installed packages
                 const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, pkg.installedVersion]));
-                const leavesFormatted = leaves.map((name) => ({
+                const leavesFormatted = safeLeaves.map((name) => ({
                     name,
                     installedVersion: installedMap.get(name) || "Unknown",
                     isInstalled: true,
                 }));
 
                 // Format repositories
-                const reposFormatted = repos.map(([name, status]) => ({
+                const reposFormatted = safeRepos.map(([name, status]) => ({
                     name,
                     status,
                     desc: "--",
@@ -122,7 +146,13 @@ const WailBrewApp = () => {
             })
             .catch((err) => {
                 console.error("Error loading packages:", err);
-                setError("❌ Fehler beim Laden der Formeln!");
+                // Set empty arrays for all package types to show empty tables instead of crashing
+                setPackages([]);
+                setUpdatablePackages([]);
+                setAllPackages([]);
+                setLeavesPackages([]);
+                setRepositories([]);
+                setError("❌ Fehler beim Laden der Formeln!" + (err.message || err));
                 setLoading(false);
             });
     }, []);
