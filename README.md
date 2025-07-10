@@ -42,7 +42,7 @@ WailBrew is a desktop GUI manager for Homebrew built with Wails, Go, and React. 
 ### Prerequisites
 - macOS (Intel or Apple Silicon)
 - Homebrew must be installed
-- Node.js and npm (for development)
+- Node.js and pnpm (for development)
 
 ### Development Setup
 ``` bash

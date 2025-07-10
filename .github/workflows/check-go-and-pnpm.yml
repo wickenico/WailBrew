@@ -1,4 +1,4 @@
-name: Check Go and npm
+name: Check Go and pnpm
 
 on:
   push:
@@ -19,15 +19,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install frontend dependencies
-        run: npm install
+        run: pnpm install
         working-directory: frontend
 
       - name: Build frontend
-        run: npm run build
+        run: pnpm run build
         working-directory: frontend
 
       - name: Set up Go
