@@ -756,3 +756,324 @@ html, body {
 .about-close-button:hover {
   background: var(--accent-hover);
 }
+
+.about-footer .action-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Update Dialog Styles */
+.update-dialog {
+  width: 550px;
+  max-width: 90vw;
+}
+
+.update-checking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.update-checking p {
+  margin-top: 1rem;
+  color: var(--text-secondary);
+}
+
+.update-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.5rem 2rem;
+  background: rgba(255, 59, 48, 0.12);
+  border: 2px solid rgba(255, 59, 48, 0.25);
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.error-icon {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 4px 12px rgba(255, 59, 48, 0.3));
+}
+
+.update-error h3 {
+  margin: 0 0 0.75rem 0;
+  color: var(--error-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.update-error p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.update-available {
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.update-current {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.update-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+.update-details {
+  width: 100%;
+}
+
+.update-details h3 {
+  margin: 0 0 2rem 0;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.version-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.version-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.25rem;
+  border-radius: 12px;
+  min-width: 150px;
+  transition: all 0.3s ease;
+  position: relative;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.version-box.current {
+  background: rgba(255, 149, 0, 0.15);
+  border: 2px solid rgba(255, 149, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(255, 149, 0, 0.2);
+}
+
+.version-box.latest {
+  background: rgba(52, 199, 89, 0.15);
+  border: 2px solid rgba(52, 199, 89, 0.4);
+  box-shadow: 0 4px 20px rgba(52, 199, 89, 0.2);
+}
+
+.version-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.version-number {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.version-arrow {
+  font-size: 2rem;
+  color: var(--accent-color);
+  animation: pulse 2s infinite;
+  filter: drop-shadow(0 2px 8px rgba(0,122,255,0.3));
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.release-info {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.release-info p {
+  margin: 0.75rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.release-info strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.release-notes {
+  margin-bottom: 2rem;
+}
+
+.release-notes h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.release-notes-content {
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.release-notes-content p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.update-actions {
+  margin-top: 1.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.download-progress {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(0, 122, 255, 0.1);
+  border: 1px solid rgba(0, 122, 255, 0.2);
+  border-radius: var(--radius);
+}
+
+.download-progress p {
+  margin: 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.download-note {
+  font-size: 0.9rem;
+  color: var(--text-secondary) !important;
+  font-style: italic;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .update-dialog {
+    width: 95vw;
+    margin: 1rem;
+  }
+  
+  .version-comparison {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .version-arrow {
+    transform: rotate(90deg);
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .update-available {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .update-current {
+    flex-direction: column;
+    text-align: center;
+  }
+}

@@ -27,6 +27,7 @@ import DoctorView from "./components/DoctorView";
 import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
+import UpdateDialog from "./components/UpdateDialog";
 
 interface PackageEntry {
     name: string;
@@ -65,6 +66,7 @@ const WailBrewApp = () => {
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
+    const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
 
     useEffect(() => {
@@ -136,10 +138,14 @@ const WailBrewApp = () => {
         const unlistenAbout = EventsOn("showAbout", () => {
             setShowAbout(true);
         });
+        const unlistenUpdate = EventsOn("checkForUpdates", () => {
+            setShowUpdate(true);
+        });
         return () => {
             unlisten();
             unlistenRefresh();
             unlistenAbout();
+            unlistenUpdate();
         };
     }, []);
 
@@ -543,6 +549,10 @@ const WailBrewApp = () => {
                     open={showAbout}
                     onClose={() => setShowAbout(false)}
                     appVersion={appVersion}
+                />
+                <UpdateDialog
+                    isOpen={showUpdate}
+                    onClose={() => setShowUpdate(false)}
                 />
             </main>
         </div>

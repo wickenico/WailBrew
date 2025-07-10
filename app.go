@@ -3,18 +3,46 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	rt "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-var Version = "dev"
+var Version = "0.5.0"
+
+// GitHubRelease represents a GitHub release
+type GitHubRelease struct {
+	TagName     string `json:"tag_name"`
+	Name        string `json:"name"`
+	Body        string `json:"body"`
+	PublishedAt string `json:"published_at"`
+	Assets      []struct {
+		Name               string `json:"name"`
+		BrowserDownloadURL string `json:"browser_download_url"`
+		Size               int64  `json:"size"`
+	} `json:"assets"`
+}
+
+// UpdateInfo contains information about available updates
+type UpdateInfo struct {
+	Available      bool   `json:"available"`
+	CurrentVersion string `json:"currentVersion"`
+	LatestVersion  string `json:"latestVersion"`
+	ReleaseNotes   string `json:"releaseNotes"`
+	DownloadURL    string `json:"downloadUrl"`
+	FileSize       int64  `json:"fileSize"`
+	PublishedAt    string `json:"publishedAt"`
+}
 
 // App struct
 type App struct {
@@ -46,8 +74,8 @@ func (a *App) menu() *menu.Menu {
 		rt.EventsEmit(a.ctx, "showAbout")
 	})
 	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText("Nach Updates suchen…(tbd)", nil, func(cd *menu.CallbackData) {
-		//go a.checkForUpdates()
+	AppSubmenu.AddText("Auf Aktualisierungen prüfen...", nil, func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "checkForUpdates")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText("Website besuchen (tbd)", nil, func(cd *menu.CallbackData) {
@@ -319,4 +347,135 @@ func (a *App) RunBrewDoctor() string {
 // GetAppVersion returns the application version
 func (a *App) GetAppVersion() string {
 	return Version
+}
+
+// CheckForUpdates checks if a new version is available on GitHub
+func (a *App) CheckForUpdates() (*UpdateInfo, error) {
+	currentVersion := Version
+
+	// Fetch latest release from GitHub API
+	resp, err := http.Get("https://api.github.com/repos/wickenico/WailBrew/releases/latest")
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch release info: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GitHub API returned status: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response: %w", err)
+	}
+
+	var release GitHubRelease
+	if err := json.Unmarshal(body, &release); err != nil {
+		return nil, fmt.Errorf("failed to parse release info: %w", err)
+	}
+
+	// Find the macOS app asset
+	var downloadURL string
+	var fileSize int64
+	for _, asset := range release.Assets {
+		if strings.Contains(asset.Name, "wailbrew") && strings.Contains(asset.Name, ".zip") {
+			downloadURL = asset.BrowserDownloadURL
+			fileSize = asset.Size
+			break
+		}
+	}
+
+	// Compare versions (simple string comparison for now)
+	latestVersion := strings.TrimPrefix(release.TagName, "v")
+	currentVersionClean := strings.TrimPrefix(currentVersion, "v")
+
+	updateInfo := &UpdateInfo{
+		Available:      latestVersion != currentVersionClean && currentVersionClean != "dev",
+		CurrentVersion: currentVersion,
+		LatestVersion:  latestVersion,
+		ReleaseNotes:   release.Body,
+		DownloadURL:    downloadURL,
+		FileSize:       fileSize,
+		PublishedAt:    release.PublishedAt,
+	}
+
+	return updateInfo, nil
+}
+
+// DownloadAndInstallUpdate downloads and installs the update
+func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
+	// Create temporary directory
+	tempDir := "/tmp/wailbrew_update"
+	os.RemoveAll(tempDir)
+	os.MkdirAll(tempDir, 0755)
+
+	// Download the update
+	resp, err := http.Get(downloadURL)
+	if err != nil {
+		return fmt.Errorf("failed to download update: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Save to temporary file
+	zipPath := fmt.Sprintf("%s/wailbrew_update.zip", tempDir)
+	zipFile, err := os.Create(zipPath)
+	if err != nil {
+		return fmt.Errorf("failed to create temp file: %w", err)
+	}
+	defer zipFile.Close()
+
+	_, err = io.Copy(zipFile, resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to save update: %w", err)
+	}
+
+	// Unzip the update
+	cmd := exec.Command("unzip", "-q", zipPath, "-d", tempDir)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to unzip update: %w", err)
+	}
+
+	// Find the app bundle
+	appPath := fmt.Sprintf("%s/WailBrew.app", tempDir)
+	if _, err := os.Stat(appPath); os.IsNotExist(err) {
+		return fmt.Errorf("app bundle not found in update")
+	}
+
+	// Get current app location
+	currentAppPath, err := os.Executable()
+	if err != nil {
+		return fmt.Errorf("failed to get current app path: %w", err)
+	}
+
+	// Navigate to the .app bundle root
+	for strings.Contains(currentAppPath, ".app/") {
+		currentAppPath = strings.Split(currentAppPath, ".app/")[0] + ".app"
+		break
+	}
+
+	// Create backup
+	backupPath := currentAppPath + ".backup"
+	os.RemoveAll(backupPath)
+
+	// Replace the app (requires admin privileges)
+	script := fmt.Sprintf(`
+		osascript -e 'do shell script "rm -rf \\"%s\\" && mv \\"%s\\" \\"%s\\" && mv \\"%s\\" \\"%s\\"" with administrator privileges'
+	`, backupPath, currentAppPath, backupPath, appPath, currentAppPath)
+
+	cmd = exec.Command("sh", "-c", script)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to replace app: %w", err)
+	}
+
+	// Clean up
+	os.RemoveAll(tempDir)
+
+	// Schedule restart
+	go func() {
+		time.Sleep(1 * time.Second)
+		exec.Command("open", currentAppPath).Start()
+		rt.Quit(a.ctx)
+	}()
+
+	return nil
 }
