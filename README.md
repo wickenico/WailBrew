@@ -10,7 +10,7 @@ brew tap wickenico/wailbrew
 brew install --cask wailbrew
 ```
 
-**[Download Latest Version (v0.6.0)](https://github.com/wickenico/WailBrew/releases/download/v0.6.0/wailbrew-v0.6.0.zip)**
+**[Download Latest Version (v0.6.1)](https://github.com/wickenico/WailBrew/releases/download/v0.6.1/wailbrew-v0.6.1.zip)**
 
 *Alternatively, visit the [releases page](https://github.com/wickenico/WailBrew/releases) to download specific versions.*
 
