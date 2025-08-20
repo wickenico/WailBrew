@@ -18,4 +18,8 @@ install: build
 	@echo "Installing WailBrew to /Applications"
 	cp -r build/bin/WailBrew.app /Applications/
 
+release: build
+	@echo "==> Releasing WailBrew version: $(VERSION)"
+	./scripts/release.sh $(VERSION) build/bin/WailBrew.app
+
 .DEFAULT_GOAL := build 

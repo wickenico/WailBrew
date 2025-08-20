@@ -8,7 +8,7 @@
         <key>CFBundleExecutable</key>
         <string>{{.Name}}</string>
         <key>CFBundleIdentifier</key>
-        <string>com.wails.{{.Name}}</string>
+        <string>io.github.wickenico.wailbrew</string>
         <key>CFBundleVersion</key>
         <string>{{.Info.ProductVersion}}</string>
         <key>CFBundleGetInfoString</key>
@@ -48,7 +48,7 @@
           {{range .Info.Protocols}}
             <dict>
                 <key>CFBundleURLName</key>
-                <string>com.wails.{{.Scheme}}</string>
+                <string>io.github.wickenico.wailbrew</string>
                 <key>CFBundleURLSchemes</key>
                 <array>
                     <string>{{.Scheme}}</string>
