@@ -1,7 +1,14 @@
 # WailBrew - Homebrew GUI Manager
 A modern, user-friendly graphical interface for Homebrew package management on macOS. WailBrew simplifies managing your Homebrew formulas with an intuitive desktop application.
 
-## 📥 Download
+## 📥 Installation
+
+📦 **Installation via Homebrew (recommended):**
+
+```bash
+brew tap wickenico/wailbrew
+brew install --cask wailbrew
+```
 
 **[Download Latest Version (v0.6.0)](https://github.com/wickenico/WailBrew/releases/download/v0.6.0/wailbrew-v0.6.0.zip)**
 
