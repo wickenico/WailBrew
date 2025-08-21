@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface PackageEntry {
     name: string;
@@ -25,12 +26,15 @@ const PackageTable: React.FC<PackageTableProps> = ({
     loading,
     onSelect,
     columns,
-}) => (
+}) => {
+    const { t } = useTranslation();
+    
+    return (
     <div className="table-container">
         {loading && (
             <div className="table-loading-overlay">
                 <div className="spinner"></div>
-                <div className="loading-text">Formeln werden geladen…</div>
+                <div className="loading-text">{t('table.loadingFormulas')}</div>
             </div>
         )}
         {packages.length > 0 && (
@@ -53,8 +57,8 @@ const PackageTable: React.FC<PackageTableProps> = ({
                                 <td key={col.key}>
                                     {col.key === "isInstalled"
                                         ? pkg.isInstalled
-                                            ? <span style={{ color: "green" }}>✓ Installiert</span>
-                                            : <span style={{ color: "#888" }}>Nicht installiert</span>
+                                            ? <span style={{ color: "green" }}>{t('table.installedStatus')}</span>
+                                            : <span style={{ color: "#888" }}>{t('table.notInstalledStatus')}</span>
                                         : (pkg as any)[col.key]}
                                 </td>
                             ))}
@@ -64,9 +68,10 @@ const PackageTable: React.FC<PackageTableProps> = ({
             </table>
         )}
         {!loading && packages.length === 0 && (
-            <div className="result">Keine passenden Ergebnisse.</div>
+            <div className="result">{t('table.noResults')}</div>
         )}
     </div>
-);
+    );
+};
 
 export default PackageTable; 

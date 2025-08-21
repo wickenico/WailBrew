@@ -22,10 +22,14 @@ export function GetBrewTaps():Promise<Array<any>>;
 
 export function GetBrewUpdatablePackages():Promise<Array<any>>;
 
+export function GetCurrentLanguage():Promise<string>;
+
 export function OpenURL(arg1:string):Promise<void>;
 
 export function RemoveBrewPackage(arg1:string):Promise<string>;
 
 export function RunBrewDoctor():Promise<string>;
+
+export function SetLanguage(arg1:string):Promise<void>;
 
 export function UpdateBrewPackage(arg1:string):Promise<string>;

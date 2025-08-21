@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface DoctorViewProps {
     doctorLog: string;
@@ -6,28 +7,32 @@ interface DoctorViewProps {
     onRunDoctor: () => void;
 }
 
-const DoctorView: React.FC<DoctorViewProps> = ({ doctorLog, onClearLog, onRunDoctor }) => (
-    <>
-        <div className="header-row">
-            <div className="header-title">
-                <h3>Homebrew Doctor</h3>
+const DoctorView: React.FC<DoctorViewProps> = ({ doctorLog, onClearLog, onRunDoctor }) => {
+    const { t } = useTranslation();
+    
+    return (
+        <>
+            <div className="header-row">
+                <div className="header-title">
+                    <h3>{t('headers.homebrewDoctor')}</h3>
+                </div>
+                <div className="header-actions">
+                    <button className="doctor-button" onClick={onClearLog}>
+                        {t('buttons.clearLog')}
+                    </button>
+                    <button className="doctor-button" onClick={onRunDoctor}>
+                        {t('buttons.runDoctor')}
+                    </button>
+                </div>
             </div>
-            <div className="header-actions">
-                <button className="doctor-button" onClick={onClearLog}>
-                    Log leeren
-                </button>
-                <button className="doctor-button" onClick={onRunDoctor}>
-                    Doctor ausführen
-                </button>
+            <pre className="doctor-log">
+                {doctorLog || t('dialogs.noDoctorOutput')}
+            </pre>
+            <div className="package-footer">
+                {t('footers.doctor')}
             </div>
-        </div>
-        <pre className="doctor-log">
-            {doctorLog || "Noch keine Ausgabe. Klicken Sie auf „Doctor ausführen“."}
-        </pre>
-        <div className="package-footer">
-            Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.
-        </div>
-    </>
-);
+        </>
+    );
+};
 
 export default DoctorView; 

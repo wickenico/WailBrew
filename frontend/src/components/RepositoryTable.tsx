@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface RepositoryEntry {
     name: string;
@@ -18,20 +19,23 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
     selectedRepository,
     loading,
     onSelect,
-}) => (
+}) => {
+    const { t } = useTranslation();
+    
+    return (
     <div className="table-container">
         {loading && (
             <div className="table-loading-overlay">
                 <div className="spinner"></div>
-                <div className="loading-text">Repositories werden geladen…</div>
+                <div className="loading-text">{t('table.loadingRepositories')}</div>
             </div>
         )}
         {repositories.length > 0 && (
             <table className="package-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Status</th>
+                        <th>{t('tableColumns.name')}</th>
+                        <th>{t('tableColumns.status')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,9 +53,10 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
             </table>
         )}
         {!loading && repositories.length === 0 && (
-            <div className="result">Keine passenden Ergebnisse.</div>
+            <div className="result">{t('table.noResults')}</div>
         )}
     </div>
-);
+    );
+};
 
 export default RepositoryTable; 

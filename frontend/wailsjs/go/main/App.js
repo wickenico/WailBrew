@@ -42,6 +42,10 @@ export function GetBrewUpdatablePackages() {
   return window['go']['main']['App']['GetBrewUpdatablePackages']();
 }
 
+export function GetCurrentLanguage() {
+  return window['go']['main']['App']['GetCurrentLanguage']();
+}
+
 export function OpenURL(arg1) {
   return window['go']['main']['App']['OpenURL'](arg1);
 }
@@ -52,6 +56,10 @@ export function RemoveBrewPackage(arg1) {
 
 export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
+}
+
+export function SetLanguage(arg1) {
+  return window['go']['main']['App']['SetLanguage'](arg1);
 }
 
 export function UpdateBrewPackage(arg1) {

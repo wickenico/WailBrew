@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface PackageEntry {
     name: string;
@@ -18,30 +19,33 @@ interface PackageInfoProps {
 }
 
 const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view }) => {
-    const name = packageEntry?.name || "--";
-    const desc = packageEntry?.desc || "--";
-    const homepage = packageEntry?.homepage || "--";
-    const version = packageEntry?.installedVersion || "--";
-    const status = packageEntry ? (packageEntry.isInstalled ? "Installiert" : "Nicht installiert") : "--";
-    const dependencies = packageEntry?.dependencies?.length ? packageEntry.dependencies.join(", ") : "--";
-    const conflicts = packageEntry?.conflicts?.length ? packageEntry.conflicts.join(", ") : "--";
+    const { t } = useTranslation();
+    
+    const name = packageEntry?.name || t('common.notAvailable');
+    const desc = packageEntry?.desc || t('common.notAvailable');
+    const homepage = packageEntry?.homepage || t('common.notAvailable');
+    const version = packageEntry?.installedVersion || t('common.notAvailable');
+    const status = packageEntry ? (packageEntry.isInstalled ? t('packageInfo.installed') : t('packageInfo.notInstalled')) : t('common.notAvailable');
+    const dependencies = packageEntry?.dependencies?.length ? packageEntry.dependencies.join(", ") : t('common.notAvailable');
+    const conflicts = packageEntry?.conflicts?.length ? packageEntry.conflicts.join(", ") : t('common.notAvailable');
+    
     return (
         <>
             <p>
                 <strong>{name}</strong>{" "}
                 {packageEntry && loadingDetailsFor === packageEntry.name && (
-                    <span style={{ fontSize: "12px", color: "#888" }}>(Lade…)</span>
+                    <span style={{ fontSize: "12px", color: "#888" }}>{t('packageInfo.loading')}</span>
                 )}
             </p>
-            <p>Beschreibung: {desc}</p>
-            <p>Homepage: {homepage}</p>
+            <p>{t('packageInfo.description')}: {desc}</p>
+            <p>{t('packageInfo.homepage')}: {homepage}</p>
             {view === "all" ? (
-                <p>Status: {status}</p>
+                <p>{t('packageInfo.status')}: {status}</p>
             ) : (
-                <p>Version: {version}</p>
+                <p>{t('packageInfo.version')}: {version}</p>
             )}
-            <p>Abhängigkeiten: {dependencies}</p>
-            <p>Konflikte: {conflicts}</p>
+            <p>{t('packageInfo.dependencies')}: {dependencies}</p>
+            <p>{t('packageInfo.conflicts')}: {conflicts}</p>
         </>
     );
 };

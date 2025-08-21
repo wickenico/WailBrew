@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface LogDialogProps {
     open: boolean;
@@ -8,6 +9,7 @@ interface LogDialogProps {
 }
 
 const LogDialog: React.FC<LogDialogProps> = ({ open, title, log, onClose }) => {
+    const { t } = useTranslation();
     const logRef = useRef<HTMLPreElement>(null);
 
     // Auto-scroll to bottom when log content changes
@@ -25,7 +27,7 @@ const LogDialog: React.FC<LogDialogProps> = ({ open, title, log, onClose }) => {
                 <p><strong>{title}</strong></p>
                 <pre className="log-output" ref={logRef}>{log}</pre>
                 <div className="confirm-actions">
-                    <button onClick={onClose}>Ok</button>
+                    <button onClick={onClose}>{t('buttons.ok')}</button>
                 </div>
             </div>
         </div>

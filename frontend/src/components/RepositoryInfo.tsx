@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface RepositoryEntry {
     name: string;
@@ -11,14 +12,16 @@ interface RepositoryInfoProps {
 }
 
 const RepositoryInfo: React.FC<RepositoryInfoProps> = ({ repository }) => {
+    const { t } = useTranslation();
+    
     if (!repository) {
-        return <p><strong>Kein Repository ausgewählt</strong></p>;
+        return <p><strong>{t('repository.noSelection')}</strong></p>;
     }
     return (
         <>
             <p><strong>{repository.name}</strong></p>
-            <p>Status: {repository.status || "--"}</p>
-            <p>Beschreibung: {repository.desc || "Homebrew Tap Repository"}</p>
+            <p>{t('repository.status')}: {repository.status || t('common.notAvailable')}</p>
+            <p>{t('repository.description')}: {repository.desc || t('repository.defaultDescription')}</p>
         </>
     );
 };

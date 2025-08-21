@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface HeaderRowProps {
     title: string;
@@ -15,8 +16,12 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     searchQuery,
     onSearchChange,
     onClearSearch,
-    placeholder = "Suchen",
-}) => (
+    placeholder,
+}) => {
+    const { t } = useTranslation();
+    const searchPlaceholder = placeholder || t('search.placeholder');
+    
+    return (
     <div className="header-row">
         <div className="header-title">
             <h3>{title}</h3>
@@ -27,15 +32,16 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
             <input
                 type="text"
                 className="search-input"
-                placeholder={placeholder}
+                placeholder={searchPlaceholder}
                 value={searchQuery}
                 onChange={e => onSearchChange(e.target.value)}
             />
             {searchQuery && (
-                <span className="clear-icon" onClick={onClearSearch} title="Suche zurücksetzen">✕</span>
+                <span className="clear-icon" onClick={onClearSearch} title={t('search.clearSearch')}>✕</span>
             )}
         </div>
     </div>
-);
+    );
+};
 
 export default HeaderRow; 

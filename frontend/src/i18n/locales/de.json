@@ -1,0 +1,140 @@
+{
+  "sidebar": {
+    "formulas": "Formeln",
+    "tools": "Werkzeuge",
+    "installed": "Installiert",
+    "outdated": "Veraltet",
+    "all": "Formeln",
+    "leaves": "Blätter",
+    "repositories": "Repositories",
+    "doctor": "Doctor"
+  },
+  "headers": {
+    "installedFormulas": "Installierte Formeln ({{count}})",
+    "outdatedFormulas": "Veraltete Formeln ({{count}})",
+    "allFormulas": "Alle Formeln ({{count}})",
+    "leaves": "Blätter ({{count}})",
+    "repositories": "Repositories ({{count}})",
+    "homebrewDoctor": "Homebrew Doctor"
+  },
+  "search": {
+    "placeholder": "Suchen",
+    "clearSearch": "Suche zurücksetzen"
+  },
+  "buttons": {
+    "uninstall": "\"{{name}}\" deinstallieren",
+    "update": "\"{{name}}\" aktualisieren",
+    "showInfo": "Infos zu \"{{name}}\" anzeigen",
+    "clearLog": "Log leeren",
+    "runDoctor": "Doctor ausführen",
+    "yes": "Ja",
+    "cancel": "Abbrechen",
+    "yesUninstall": "Ja, deinstallieren",
+    "yesUpdate": "Ja, aktualisieren",
+    "ok": "Ok",
+    "close": "Schließen"
+  },
+  "packageInfo": {
+    "loading": "(Lade…)",
+    "description": "Beschreibung",
+    "homepage": "Homepage",
+    "version": "Version",
+    "status": "Status",
+    "dependencies": "Abhängigkeiten",
+    "conflicts": "Konflikte",
+    "installed": "Installiert",
+    "notInstalled": "Nicht installiert",
+    "noSelection": "Kein Paket ausgewählt"
+  },
+  "tableColumns": {
+    "name": "Name",
+    "version": "Version",
+    "latestVersion": "Aktuellste Version",
+    "status": "Status"
+  },
+  "footers": {
+    "installedFormulas": "Diese Formeln sind bereits auf Ihrem System installiert.",
+    "outdatedFormulas": "Einige Formeln können aktualisiert werden.",
+    "allFormulas": "Alle verfügbaren Homebrew-Formeln. Grüne Markierung zeigt installierte Formeln an.",
+    "leaves": "Blätter sind Formeln, die nicht als Abhängigkeit von anderen installierten Formeln benötigt werden.",
+    "repositories": "Repositories (Taps) sind Quellen für Formeln. Diese enthalten zusätzliche Pakete neben dem Standard-Repository.",
+    "doctor": "Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann."
+  },
+  "dialogs": {
+    "confirmUninstall": "Möchten Sie \"{{name}}\" wirklich deinstallieren?",
+    "confirmUpdate": "Möchten Sie \"{{name}}\" wirklich aktualisieren?",
+    "updateLogs": "Update-Logs für {{name}}",
+    "packageInfo": "Info für {{name}}",
+    "updating": "Aktualisiere \"{{name}}\"...\nBitte warten...",
+    "gettingInfo": "Hole Informationen für \"{{name}}\"...\nBitte warten...",
+    "runningDoctor": "Führe brew doctor aus…\nBitte warten...",
+    "noDoctorOutput": "Noch keine Ausgabe. Klicken Sie auf \"Doctor ausführen\"."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Fehler beim Laden der Formeln!",
+    "failedInstalledPackages": "Fehler beim Laden der installierten Pakete",
+    "failedUpdatablePackages": "Fehler beim Laden der aktualisierbaren Pakete",
+    "failedAllPackages": "Fehler beim Laden aller Pakete",
+    "failedLeaves": "Fehler beim Laden der Blätter",
+    "failedRepositories": "Fehler beim Laden der Repositories"
+  },
+  "about": {
+    "title": "Über",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – Minimalistische Homebrew GUI für macOS",
+    "createdBy": "Erstellt von Nico Wickersheim",
+    "developedWith": "Entwickelt mit {{wails}} und React",
+    "description": "WailBrew ist eine moderne grafische Benutzeroberfläche für Homebrew, die es einfach macht, Pakete zu verwalten, zu installieren und zu aktualisieren.",
+    "links": "Links:",
+    "githubRepo": "GitHub Repository",
+    "homebrewWebsite": "Homebrew Website",
+    "acknowledgments": "Danksagungen:",
+    "acknowledgmentText": "Inspiriert von {{cakebrew}} von Bruno Philipe.\\nVielen Dank für die großartige Arbeit an der ursprünglichen Homebrew GUI!",
+    "copyright": "Copyright © 2025 Nico Wickersheim. Alle Rechte vorbehalten."
+  },
+  "language": {
+    "switchLanguage": "Sprache wechseln",
+    "english": "English",
+    "german": "Deutsch"
+  },
+  "menu": {
+    "app": {
+      "about": "Über WailBrew",
+      "checkUpdates": "Auf Aktualisierungen prüfen...",
+      "visitWebsite": "Website besuchen (tbd)",
+      "visitGitHub": "GitHub Repo besuchen",
+      "quit": "Beenden"
+    },
+    "view": {
+      "title": "Ansicht",
+      "installed": "Installierte Formeln",
+      "outdated": "Veraltete Formeln",
+      "all": "Alle Formeln",
+      "leaves": "Blätter",
+      "repositories": "Repositories",
+      "doctor": "Doctor"
+    },
+    "help": {
+      "title": "Hilfe",
+      "wailbrewHelp": "WailBrew-Hilfe",
+      "helpTitle": "Hilfe",
+      "helpMessage": "Aktuell gibt es noch keine Hilfeseite."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Formeln werden geladen…",
+    "loadingRepositories": "Repositories werden geladen…",
+    "noResults": "Keine passenden Ergebnisse.",
+    "installedStatus": "✓ Installiert",
+    "notInstalledStatus": "Nicht installiert"
+  },
+  "repository": {
+    "noSelection": "Kein Repository ausgewählt",
+    "status": "Status",
+    "description": "Beschreibung",
+    "defaultDescription": "Homebrew Tap Repository"
+  },
+  "common": {
+    "notAvailable": "--"
+  }
+}

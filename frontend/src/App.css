@@ -78,6 +78,12 @@ html, body {
   margin-bottom: 24px;
 }
 
+.sidebar-section.language-switcher {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+}
+
 .sidebar-section h4 {
   font-size: 11px;
   text-transform: uppercase;

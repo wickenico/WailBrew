@@ -20,6 +20,130 @@ import (
 
 var Version = "0.dev"
 
+// MenuTranslations holds all menu translations
+type MenuTranslations struct {
+	App struct {
+		About        string `json:"about"`
+		CheckUpdates string `json:"checkUpdates"`
+		VisitWebsite string `json:"visitWebsite"`
+		VisitGitHub  string `json:"visitGitHub"`
+		Quit         string `json:"quit"`
+	} `json:"app"`
+	View struct {
+		Title        string `json:"title"`
+		Installed    string `json:"installed"`
+		Outdated     string `json:"outdated"`
+		All          string `json:"all"`
+		Leaves       string `json:"leaves"`
+		Repositories string `json:"repositories"`
+		Doctor       string `json:"doctor"`
+	} `json:"view"`
+	Help struct {
+		Title        string `json:"title"`
+		WailbrewHelp string `json:"wailbrewHelp"`
+		HelpTitle    string `json:"helpTitle"`
+		HelpMessage  string `json:"helpMessage"`
+	} `json:"help"`
+}
+
+// getMenuTranslations returns translations for the current language
+func (a *App) getMenuTranslations() MenuTranslations {
+	var translations MenuTranslations
+
+	if a.currentLanguage == "en" {
+		translations = MenuTranslations{
+			App: struct {
+				About        string `json:"about"`
+				CheckUpdates string `json:"checkUpdates"`
+				VisitWebsite string `json:"visitWebsite"`
+				VisitGitHub  string `json:"visitGitHub"`
+				Quit         string `json:"quit"`
+			}{
+				About:        "About WailBrew",
+				CheckUpdates: "Check for Updates...",
+				VisitWebsite: "Visit Website (tbd)",
+				VisitGitHub:  "Visit GitHub Repo",
+				Quit:         "Quit",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+			}{
+				Title:        "View",
+				Installed:    "Installed Formulas",
+				Outdated:     "Outdated Formulas",
+				All:          "All Formulas",
+				Leaves:       "Leaves",
+				Repositories: "Repositories",
+				Doctor:       "Doctor",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Help",
+				WailbrewHelp: "WailBrew Help",
+				HelpTitle:    "Help",
+				HelpMessage:  "Currently there is no help page available.",
+			},
+		}
+	} else {
+		// Default to German
+		translations = MenuTranslations{
+			App: struct {
+				About        string `json:"about"`
+				CheckUpdates string `json:"checkUpdates"`
+				VisitWebsite string `json:"visitWebsite"`
+				VisitGitHub  string `json:"visitGitHub"`
+				Quit         string `json:"quit"`
+			}{
+				About:        "Über WailBrew",
+				CheckUpdates: "Auf Aktualisierungen prüfen...",
+				VisitWebsite: "Website besuchen (tbd)",
+				VisitGitHub:  "GitHub Repo besuchen",
+				Quit:         "Beenden",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+			}{
+				Title:        "Ansicht",
+				Installed:    "Installierte Formeln",
+				Outdated:     "Veraltete Formeln",
+				All:          "Alle Formeln",
+				Leaves:       "Blätter",
+				Repositories: "Repositories",
+				Doctor:       "Doctor",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Hilfe",
+				WailbrewHelp: "WailBrew-Hilfe",
+				HelpTitle:    "Hilfe",
+				HelpMessage:  "Aktuell gibt es noch keine Hilfeseite.",
+			},
+		}
+	}
+
+	return translations
+}
+
 // GitHubRelease represents a GitHub release
 type GitHubRelease struct {
 	TagName     string `json:"tag_name"`
@@ -46,14 +170,15 @@ type UpdateInfo struct {
 
 // App struct
 type App struct {
-	ctx      context.Context
-	brewPath string
+	ctx             context.Context
+	brewPath        string
+	currentLanguage string
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	brewPath := "/opt/homebrew/bin/brew" // ⬅️ Passe hier den Pfad bei Intel-Mac an
-	return &App{brewPath: brewPath}
+	return &App{brewPath: brewPath, currentLanguage: "de"}
 }
 
 // startup saves the application context
@@ -65,48 +190,100 @@ func (a *App) OpenURL(url string) {
 	rt.BrowserOpenURL(a.ctx, url)
 }
 
+// SetLanguage updates the current language and rebuilds the menu
+func (a *App) SetLanguage(language string) {
+	a.currentLanguage = language
+	// Rebuild the menu with new language
+	newMenu := a.menu()
+	rt.MenuSetApplicationMenu(a.ctx, newMenu)
+}
+
+// GetCurrentLanguage returns the current language
+func (a *App) GetCurrentLanguage() string {
+	return a.currentLanguage
+}
+
+// getBackendMessage returns a translated backend message
+func (a *App) getBackendMessage(key string, params map[string]string) string {
+	messages := make(map[string]string)
+
+	if a.currentLanguage == "en" {
+		messages = map[string]string{
+			"updateStart":            "🔄 Starting update for '{{name}}'...",
+			"updateSuccess":          "✅ Update for '{{name}}' completed successfully!",
+			"updateFailed":           "❌ Update for '{{name}}' failed: {{error}}",
+			"errorCreatingPipe":      "❌ Error creating output pipe: {{error}}",
+			"errorCreatingErrorPipe": "❌ Error creating error pipe: {{error}}",
+			"errorStartingUpdate":    "❌ Error starting update: {{error}}",
+		}
+	} else {
+		// Default to German
+		messages = map[string]string{
+			"updateStart":            "🔄 Starte Update für '{{name}}'...",
+			"updateSuccess":          "✅ Update für '{{name}}' erfolgreich abgeschlossen!",
+			"updateFailed":           "❌ Update für '{{name}}' fehlgeschlagen: {{error}}",
+			"errorCreatingPipe":      "❌ Fehler beim Erstellen der Ausgabe-Pipe: {{error}}",
+			"errorCreatingErrorPipe": "❌ Fehler beim Erstellen der Fehler-Pipe: {{error}}",
+			"errorStartingUpdate":    "❌ Fehler beim Starten des Updates: {{error}}",
+		}
+	}
+
+	message, exists := messages[key]
+	if !exists {
+		return key // Return the key if translation not found
+	}
+
+	// Replace parameters
+	for param, value := range params {
+		message = strings.ReplaceAll(message, "{{"+param+"}}", value)
+	}
+
+	return message
+}
+
 func (a *App) menu() *menu.Menu {
+	translations := a.getMenuTranslations()
 	AppMenu := menu.NewMenu()
 
 	// App Menü (macOS-like)
 	AppSubmenu := AppMenu.AddSubmenu("WailBrew")
-	AppSubmenu.AddText("Über Wailbrew", nil, func(cd *menu.CallbackData) {
+	AppSubmenu.AddText(translations.App.About, nil, func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "showAbout")
 	})
 	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText("Auf Aktualisierungen prüfen...", nil, func(cd *menu.CallbackData) {
+	AppSubmenu.AddText(translations.App.CheckUpdates, nil, func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "checkForUpdates")
 	})
 	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText("Website besuchen (tbd)", nil, func(cd *menu.CallbackData) {
+	AppSubmenu.AddText(translations.App.VisitWebsite, nil, func(cd *menu.CallbackData) {
 		//go a.checkForUpdates()
 	})
-	AppSubmenu.AddText("GitHub Repo besuchen", nil, func(cd *menu.CallbackData) {
+	AppSubmenu.AddText(translations.App.VisitGitHub, nil, func(cd *menu.CallbackData) {
 		a.OpenURL("https://github.com/wickenico/WailBrew")
 	})
 	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText("Beenden", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
+	AppSubmenu.AddText(translations.App.Quit, keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
 		rt.Quit(a.ctx)
 	})
 
-	ViewMenu := AppMenu.AddSubmenu("Ansicht")
-	ViewMenu.AddText("Installierte Formeln", keys.CmdOrCtrl("1"), func(cd *menu.CallbackData) {
+	ViewMenu := AppMenu.AddSubmenu(translations.View.Title)
+	ViewMenu.AddText(translations.View.Installed, keys.CmdOrCtrl("1"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "installed")
 	})
-	ViewMenu.AddText("Veraltete Formeln", keys.CmdOrCtrl("2"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Outdated, keys.CmdOrCtrl("2"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "updatable")
 	})
-	ViewMenu.AddText("Alle Formeln", keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.All, keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "all")
 	})
-	ViewMenu.AddText("Blätter", keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(a.ctx, "setView", "casks")
+	ViewMenu.AddText(translations.View.Leaves, keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "leaves")
 	})
-	ViewMenu.AddText("Repositorys", keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(a.ctx, "setView", "repos")
+	ViewMenu.AddText(translations.View.Repositories, keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "repositories")
 	})
 	ViewMenu.AddSeparator()
-	ViewMenu.AddText("Doctor", keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Doctor, keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "doctor")
 	})
 
@@ -116,12 +293,12 @@ func (a *App) menu() *menu.Menu {
 		AppMenu.Append(menu.WindowMenu())
 	}
 
-	HelpMenu := AppMenu.AddSubmenu("Hilfe")
-	HelpMenu.AddText("WailBrew-Hilfe", nil, func(cd *menu.CallbackData) {
+	HelpMenu := AppMenu.AddSubmenu(translations.Help.Title)
+	HelpMenu.AddText(translations.Help.WailbrewHelp, nil, func(cd *menu.CallbackData) {
 		rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
 			Type:    rt.InfoDialog,
-			Title:   "Hilfe",
-			Message: "Aktuell gibt es noch keine Hilfeseite.",
+			Title:   translations.Help.HelpTitle,
+			Message: translations.Help.HelpMessage,
 		})
 	})
 
@@ -268,7 +445,7 @@ func (a *App) GetBrewTaps() [][]string {
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line != "" {
-			taps = append(taps, []string{line, "Aktiv"})
+			taps = append(taps, []string{line, "Active"})
 		}
 	}
 	return taps
@@ -291,7 +468,8 @@ func (a *App) RemoveBrewPackage(packageName string) string {
 // UpdateBrewPackage upgrades a package with live progress updates
 func (a *App) UpdateBrewPackage(packageName string) string {
 	// Emit initial progress
-	rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("🔄 Starte Update für '%s'...", packageName))
+	startMessage := a.getBackendMessage("updateStart", map[string]string{"name": packageName})
+	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade", packageName)
 	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
@@ -299,21 +477,21 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		errorMsg := fmt.Sprintf("❌ Fehler beim Erstellen der Ausgabe-Pipe: %v", err)
+		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
 		return errorMsg
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		errorMsg := fmt.Sprintf("❌ Fehler beim Erstellen der Fehler-Pipe: %v", err)
+		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
 		return errorMsg
 	}
 
 	// Start the command
 	if err := cmd.Start(); err != nil {
-		errorMsg := fmt.Sprintf("❌ Fehler beim Starten des Updates: %v", err)
+		errorMsg := a.getBackendMessage("errorStartingUpdate", map[string]string{"error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
 		return errorMsg
 	}
@@ -344,10 +522,10 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 
 	var finalMessage string
 	if err != nil {
-		finalMessage = fmt.Sprintf("❌ Update für '%s' fehlgeschlagen: %v", packageName, err)
+		finalMessage = a.getBackendMessage("updateFailed", map[string]string{"name": packageName, "error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
 	} else {
-		finalMessage = fmt.Sprintf("✅ Update für '%s' erfolgreich abgeschlossen!", packageName)
+		finalMessage = a.getBackendMessage("updateSuccess", map[string]string{"name": packageName})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
 	}
 
