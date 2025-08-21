@@ -101,7 +101,7 @@
     "app": {
       "about": "Über WailBrew",
       "checkUpdates": "Auf Aktualisierungen prüfen...",
-      "visitWebsite": "Website besuchen (tbd)",
+      "visitWebsite": "Website besuchen",
       "visitGitHub": "GitHub Repo besuchen",
       "quit": "Beenden"
     },

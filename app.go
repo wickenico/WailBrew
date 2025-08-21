@@ -61,7 +61,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 			}{
 				About:        "About WailBrew",
 				CheckUpdates: "Check for Updates...",
-				VisitWebsite: "Visit Website (tbd)",
+				VisitWebsite: "Visit Website",
 				VisitGitHub:  "Visit GitHub Repo",
 				Quit:         "Quit",
 			},
@@ -106,7 +106,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 			}{
 				About:        "Über WailBrew",
 				CheckUpdates: "Auf Aktualisierungen prüfen...",
-				VisitWebsite: "Website besuchen (tbd)",
+				VisitWebsite: "Website besuchen",
 				VisitGitHub:  "GitHub Repo besuchen",
 				Quit:         "Beenden",
 			},
@@ -256,7 +256,7 @@ func (a *App) menu() *menu.Menu {
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.App.VisitWebsite, nil, func(cd *menu.CallbackData) {
-		//go a.checkForUpdates()
+		a.OpenURL("https://wailbrew.app")
 	})
 	AppSubmenu.AddText(translations.App.VisitGitHub, nil, func(cd *menu.CallbackData) {
 		a.OpenURL("https://github.com/wickenico/WailBrew")
