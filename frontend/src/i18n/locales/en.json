@@ -7,7 +7,8 @@
     "all": "Formulas",
     "leaves": "Leaves",
     "repositories": "Repositories",
-    "doctor": "Doctor"
+    "doctor": "Doctor",
+    "cleanup": "Cleanup"
   },
   "headers": {
     "installedFormulas": "Installed Formulas ({{count}})",
@@ -15,7 +16,8 @@
     "allFormulas": "Formulas ({{count}})",
     "leaves": "Leaves ({{count}})",
     "repositories": "Repositories ({{count}})",
-    "homebrewDoctor": "Homebrew Doctor"
+    "homebrewDoctor": "Homebrew Doctor",
+    "homebrewCleanup": "Homebrew Cleanup"
   },
   "search": {
     "placeholder": "Search",
@@ -27,6 +29,7 @@
     "showInfo": "Show info for \"{{name}}\"",
     "clearLog": "Clear log",
     "runDoctor": "Run doctor",
+    "runCleanup": "Run cleanup",
     "yes": "Yes",
     "cancel": "Cancel",
     "yesUninstall": "Yes, uninstall",
@@ -58,7 +61,8 @@
     "allFormulas": "All available Homebrew formulas. Green highlighting shows installed formulas.",
     "leaves": "Leaves are formulas that are not required as dependencies by other installed formulas.",
     "repositories": "Repositories (Taps) are sources for formulas. These contain additional packages besides the standard repository.",
-    "doctor": "Doctor is a Homebrew feature that can detect the most common causes of errors."
+    "doctor": "Doctor is a Homebrew feature that can detect the most common causes of errors.",
+    "cleanup": "Cleanup removes outdated downloads and cached files to free up disk space."
   },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
@@ -68,7 +72,9 @@
     "updating": "Updating \"{{name}}\"...\nPlease wait...",
     "gettingInfo": "Getting information for \"{{name}}\"...\nPlease wait...",
     "runningDoctor": "Running brew doctor…\nPlease wait...",
-    "noDoctorOutput": "No output yet. Click \"Run doctor\"."
+    "runningCleanup": "Running brew cleanup…\nPlease wait...",
+    "noDoctorOutput": "No output yet. Click \"Run doctor\".",
+    "noCleanupOutput": "No output yet. Click \"Run cleanup\"."
   },
   "errors": {
     "loadingFormulas": "❌ Error loading formulas!",
@@ -112,7 +118,8 @@
       "all": "All Formulas",
       "leaves": "Leaves",
       "repositories": "Repositories",
-      "doctor": "Doctor"
+      "doctor": "Doctor",
+      "cleanup": "Cleanup"
     },
     "help": {
       "title": "Help",

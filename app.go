@@ -40,6 +40,7 @@ type MenuTranslations struct {
 		Leaves       string `json:"leaves"`
 		Repositories string `json:"repositories"`
 		Doctor       string `json:"doctor"`
+		Cleanup      string `json:"cleanup"`
 	} `json:"view"`
 	Help struct {
 		Title        string `json:"title"`
@@ -76,6 +77,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
 				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
 			}{
 				Title:        "View",
 				Installed:    "Installed Formulas",
@@ -84,6 +86,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Leaves:       "Leaves",
 				Repositories: "Repositories",
 				Doctor:       "Doctor",
+				Cleanup:      "Cleanup",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -121,6 +124,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
 				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
 			}{
 				Title:        "Ansicht",
 				Installed:    "Installierte Formeln",
@@ -129,6 +133,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Leaves:       "Blätter",
 				Repositories: "Repositories",
 				Doctor:       "Doctor",
+				Cleanup:      "Cleanup",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -312,6 +317,9 @@ func (a *App) menu() *menu.Menu {
 	ViewMenu.AddSeparator()
 	ViewMenu.AddText(translations.View.Doctor, keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "doctor")
+	})
+	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "cleanup")
 	})
 
 	// Edit-Menü (optional)
@@ -611,6 +619,13 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 
 func (a *App) RunBrewDoctor() string {
 	cmd := exec.Command(a.brewPath, "doctor")
+	cmd.Env = append(os.Environ(), brewEnvPath)
+	out, _ := cmd.CombinedOutput()
+	return string(out)
+}
+
+func (a *App) RunBrewCleanup() string {
+	cmd := exec.Command(a.brewPath, "cleanup")
 	cmd.Env = append(os.Environ(), brewEnvPath)
 	out, _ := cmd.CombinedOutput()
 	return string(out)

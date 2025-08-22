@@ -54,6 +54,10 @@ export function RemoveBrewPackage(arg1) {
   return window['go']['main']['App']['RemoveBrewPackage'](arg1);
 }
 
+export function RunBrewCleanup() {
+  return window['go']['main']['App']['RunBrewCleanup']();
+}
+
 export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
 }

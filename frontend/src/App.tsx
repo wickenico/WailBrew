@@ -10,6 +10,7 @@ import {
     RemoveBrewPackage,
     UpdateBrewPackage,
     RunBrewDoctor,
+    RunBrewCleanup,
     GetAllBrewPackages,
     GetBrewLeaves,
     GetBrewTaps,
@@ -25,6 +26,7 @@ import RepositoryTable from "./components/RepositoryTable";
 import PackageInfo from "./components/PackageInfo";
 import RepositoryInfo from "./components/RepositoryInfo";
 import DoctorView from "./components/DoctorView";
+import CleanupView from "./components/CleanupView";
 import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
@@ -56,7 +58,7 @@ const WailBrewApp = () => {
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor">("installed");
+    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -67,6 +69,7 @@ const WailBrewApp = () => {
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
+    const [cleanupLog, setCleanupLog] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
@@ -570,6 +573,17 @@ const WailBrewApp = () => {
                             setDoctorLog(t('dialogs.runningDoctor'));
                             const result = await RunBrewDoctor();
                             setDoctorLog(result);
+                        }}
+                    />
+                )}
+                {view === "cleanup" && (
+                    <CleanupView
+                        cleanupLog={cleanupLog}
+                        onClearLog={() => setCleanupLog("")}
+                        onRunCleanup={async () => {
+                            setCleanupLog(t('dialogs.runningCleanup'));
+                            const result = await RunBrewCleanup();
+                            setCleanupLog(result);
                         }}
                     />
                 )}

@@ -7,7 +7,8 @@
     "all": "Formeln",
     "leaves": "Blätter",
     "repositories": "Repositories",
-    "doctor": "Doctor"
+    "doctor": "Doctor",
+    "cleanup": "Cleanup"
   },
   "headers": {
     "installedFormulas": "Installierte Formeln ({{count}})",
@@ -15,7 +16,8 @@
     "allFormulas": "Alle Formeln ({{count}})",
     "leaves": "Blätter ({{count}})",
     "repositories": "Repositories ({{count}})",
-    "homebrewDoctor": "Homebrew Doctor"
+    "homebrewDoctor": "Homebrew Doctor",
+    "homebrewCleanup": "Homebrew Cleanup"
   },
   "search": {
     "placeholder": "Suchen",
@@ -27,6 +29,7 @@
     "showInfo": "Infos zu \"{{name}}\" anzeigen",
     "clearLog": "Log leeren",
     "runDoctor": "Doctor ausführen",
+    "runCleanup": "Cleanup ausführen",
     "yes": "Ja",
     "cancel": "Abbrechen",
     "yesUninstall": "Ja, deinstallieren",
@@ -58,7 +61,8 @@
     "allFormulas": "Alle verfügbaren Homebrew-Formeln. Grüne Markierung zeigt installierte Formeln an.",
     "leaves": "Blätter sind Formeln, die nicht als Abhängigkeit von anderen installierten Formeln benötigt werden.",
     "repositories": "Repositories (Taps) sind Quellen für Formeln. Diese enthalten zusätzliche Pakete neben dem Standard-Repository.",
-    "doctor": "Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann."
+    "doctor": "Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.",
+    "cleanup": "Cleanup entfernt veraltete Downloads und Cache-Dateien, um Speicherplatz freizugeben."
   },
   "dialogs": {
     "confirmUninstall": "Möchten Sie \"{{name}}\" wirklich deinstallieren?",
@@ -68,7 +72,9 @@
     "updating": "Aktualisiere \"{{name}}\"...\nBitte warten...",
     "gettingInfo": "Hole Informationen für \"{{name}}\"...\nBitte warten...",
     "runningDoctor": "Führe brew doctor aus…\nBitte warten...",
-    "noDoctorOutput": "Noch keine Ausgabe. Klicken Sie auf \"Doctor ausführen\"."
+    "runningCleanup": "Führe brew cleanup aus…\nBitte warten...",
+    "noDoctorOutput": "Noch keine Ausgabe. Klicken Sie auf \"Doctor ausführen\".",
+    "noCleanupOutput": "Noch keine Ausgabe. Klicken Sie auf \"Cleanup ausführen\"."
   },
   "errors": {
     "loadingFormulas": "❌ Fehler beim Laden der Formeln!",
@@ -112,7 +118,8 @@
       "all": "Alle Formeln",
       "leaves": "Blätter",
       "repositories": "Repositories",
-      "doctor": "Doctor"
+      "doctor": "Doctor",
+      "cleanup": "Cleanup"
     },
     "help": {
       "title": "Hilfe",

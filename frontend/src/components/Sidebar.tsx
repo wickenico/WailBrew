@@ -4,8 +4,8 @@ import { SetLanguage } from "../../wailsjs/go/main/App";
 import appIcon from "../assets/images/appicon_256.png";
 
 interface SidebarProps {
-    view: "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor";
-    setView: (view: "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor") => void;
+    view: "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup";
+    setView: (view: "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup") => void;
     packagesCount: number;
     updatableCount: number;
     allCount: number;
@@ -81,6 +81,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             <ul>
                 <li className={view === "doctor" ? "active" : ""} onClick={() => { setView("doctor"); onClearSelection(); }}>
                     <span>🩺 {t('sidebar.doctor')}</span>
+                </li>
+                <li className={view === "cleanup" ? "active" : ""} onClick={() => { setView("cleanup"); onClearSelection(); }}>
+                    <span>🧹 {t('sidebar.cleanup')}</span>
                 </li>
             </ul>
         </div>

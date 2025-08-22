@@ -28,6 +28,8 @@ export function OpenURL(arg1:string):Promise<void>;
 
 export function RemoveBrewPackage(arg1:string):Promise<string>;
 
+export function RunBrewCleanup():Promise<string>;
+
 export function RunBrewDoctor():Promise<string>;
 
 export function SetLanguage(arg1:string):Promise<void>;
