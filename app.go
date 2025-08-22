@@ -20,6 +20,9 @@ import (
 
 var Version = "0.dev"
 
+// Standard PATH for brew commands
+const brewEnvPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+
 // MenuTranslations holds all menu translations
 type MenuTranslations struct {
 	App struct {
@@ -175,9 +178,33 @@ type App struct {
 	currentLanguage string
 }
 
+// detectBrewPath automatically detects the brew binary path
+func detectBrewPath() string {
+	// Common brew paths for different Mac architectures
+	paths := []string{
+		"/opt/homebrew/bin/brew",              // M1 Macs (Apple Silicon)
+		"/usr/local/bin/brew",                 // Intel Macs
+		"/home/linuxbrew/.linuxbrew/bin/brew", // Linux (if supported)
+	}
+
+	for _, path := range paths {
+		if _, err := os.Stat(path); err == nil {
+			return path
+		}
+	}
+
+	// Fallback: try to find brew in PATH
+	if path, err := exec.LookPath("brew"); err == nil {
+		return path
+	}
+
+	// Last resort: default to M1 path
+	return "/opt/homebrew/bin/brew"
+}
+
 // NewApp creates a new App application struct
 func NewApp() *App {
-	brewPath := "/opt/homebrew/bin/brew" // ⬅️ Passe hier den Pfad bei Intel-Mac an
+	brewPath := detectBrewPath()
 	return &App{brewPath: brewPath, currentLanguage: "de"}
 }
 
@@ -307,9 +334,10 @@ func (a *App) menu() *menu.Menu {
 
 func (a *App) GetAllBrewPackages() [][]string {
 	cmd := exec.Command(a.brewPath, "formulae")
-	output, err := cmd.Output()
+	cmd.Env = append(os.Environ(), brewEnvPath)
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return [][]string{{"Fehler", err.Error()}}
+		return [][]string{{"Error", err.Error()}}
 	}
 	lines := strings.Split(string(output), "\n")
 	var results [][]string
@@ -325,7 +353,7 @@ func (a *App) GetAllBrewPackages() [][]string {
 // GetBrewPackages retrieves the list of installed Homebrew packages
 func (a *App) GetBrewPackages() [][]string {
 	cmd := exec.Command(a.brewPath, "list", "--formula", "--versions")
-	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -366,7 +394,7 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	// Run brew info --json=v2 <packages>
 	cmd := exec.Command(a.brewPath, "info", "--json=v2")
 	cmd.Args = append(cmd.Args, names...)
-	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -419,9 +447,10 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 
 func (a *App) GetBrewLeaves() []string {
 	cmd := exec.Command(a.brewPath, "leaves")
-	output, err := cmd.Output()
+	cmd.Env = append(os.Environ(), brewEnvPath)
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return []string{"Fehler: " + err.Error()}
+		return []string{"Error: " + err.Error()}
 	}
 	lines := strings.Split(string(output), "\n")
 	var results []string
@@ -436,9 +465,10 @@ func (a *App) GetBrewLeaves() []string {
 
 func (a *App) GetBrewTaps() [][]string {
 	cmd := exec.Command(a.brewPath, "tap")
-	output, err := cmd.Output()
+	cmd.Env = append(os.Environ(), brewEnvPath)
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return [][]string{{"Fehler", err.Error()}}
+		return [][]string{{"Error", err.Error()}}
 	}
 	lines := strings.Split(string(output), "\n")
 	var taps [][]string
@@ -454,7 +484,7 @@ func (a *App) GetBrewTaps() [][]string {
 // RemoveBrewPackage uninstalls a package
 func (a *App) RemoveBrewPackage(packageName string) string {
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)
-	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		//log.Printf("❌ ERROR: Failed to uninstall %s: %v\n", packageName, err)
@@ -472,7 +502,7 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade", packageName)
-	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -537,7 +567,7 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
 	cmd := exec.Command(a.brewPath, "info", "--json=v2", packageName)
-	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -567,13 +597,13 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 
 func (a *App) GetBrewPackageInfo(packageName string) string {
 	cmd := exec.Command(a.brewPath, "info", packageName)
-	cmd.Env = append(os.Environ(), "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		//log.Printf("❌ ERROR: 'brew info' failed for %s: %v\n", packageName, err)
 		//log.Println("🔍 Output:", string(output))
-		return "Fehler beim Abrufen der Paket-Informationen:\n" + err.Error()
+		return "Error: Failed to get package info: " + err.Error()
 	}
 
 	return string(output)
@@ -581,6 +611,7 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 
 func (a *App) RunBrewDoctor() string {
 	cmd := exec.Command(a.brewPath, "doctor")
+	cmd.Env = append(os.Environ(), brewEnvPath)
 	out, _ := cmd.CombinedOutput()
 	return string(out)
 }

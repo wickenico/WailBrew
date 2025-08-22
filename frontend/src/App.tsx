@@ -104,10 +104,10 @@ const WailBrewApp = () => {
                 if (safeAll.length === 1 && safeAll[0][0] === "Error") {
                     throw new Error(`${t('errors.failedAllPackages')}: ${safeAll[0][1]}`);
                 }
-                if (safeLeaves.length === 1 && safeLeaves[0] && safeLeaves[0].startsWith("Fehler: ")) {
+                if (safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")) {
                     throw new Error(`${t('errors.failedLeaves')}: ${safeLeaves[0]}`);
                 }
-                if (safeRepos.length === 1 && safeRepos[0][0] === "Fehler") {
+                if (safeRepos.length === 1 && safeRepos[0][0] === "Error") {
                     throw new Error(`${t('errors.failedRepositories')}: ${safeRepos[0][1]}`);
                 }
 
