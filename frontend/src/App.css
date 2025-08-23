@@ -852,8 +852,8 @@ html, body {
 }
 
 .update-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
 }
 
@@ -864,15 +864,14 @@ html, body {
 .update-details h3 {
   margin: 0 0 2rem 0;
   color: var(--text-primary);
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
 .version-comparison {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-bottom: 2.5rem;
   padding: 2rem 1.5rem;
   background: rgba(255, 255, 255, 0.08);
@@ -881,13 +880,20 @@ html, body {
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
 }
 
+.version-boxes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
 .version-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 1.25rem;
-  border-radius: 12px;
-  min-width: 150px;
+  padding: 1rem 1rem;
+  border-radius: 10px;
+  min-width: 120px;
   transition: all 0.3s ease;
   position: relative;
   backdrop-filter: blur(8px);
@@ -938,32 +944,44 @@ html, body {
 }
 
 .release-info {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.release-info p {
-  margin: 0.75rem 0;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.5;
+.release-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.release-info strong {
+.release-info-label {
   color: var(--text-primary);
+  font-size: 0.85rem;
   font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
 }
+
+.release-info-value {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+
 
 .release-notes {
-  margin-bottom: 2rem;
+  margin: 0;
 }
 
-.release-notes h4 {
+.release-notes-content h4 {
   margin: 0 0 1rem 0;
   color: var(--text-primary);
   font-size: 1.1rem;
@@ -1074,9 +1092,18 @@ html, body {
     margin: 1rem;
   }
   
-  .version-comparison {
+  .version-boxes {
     flex-direction: column;
     gap: 0.5rem;
+  }
+  
+  .release-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .release-info-item {
+    align-items: center;
   }
   
   .version-arrow {
@@ -1096,4 +1123,77 @@ html, body {
     flex-direction: column;
     text-align: center;
   }
+}
+
+/* Brew Command Section */
+.brew-command-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.brew-command-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.update-instruction {
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.command-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.brew-command {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.95rem;
+  user-select: all;
+}
+
+.copy-button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+}
+
+.copy-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.copy-success {
+  margin: 0.75rem 0 0 0;
+  color: #4CAF50;
+  font-size: 0.9rem;
+  font-weight: 500;
 }

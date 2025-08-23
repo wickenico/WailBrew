@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { CheckForUpdates, DownloadAndInstallUpdate } from '../../wailsjs/go/main/App';
+import { useTranslation } from 'react-i18next';
+import { CheckForUpdates } from '../../wailsjs/go/main/App';
+import { BrowserOpenURL } from '../../wailsjs/runtime/runtime';
 import { main } from '../../wailsjs/go/models';
 
 interface UpdateDialogProps {
@@ -8,10 +10,11 @@ interface UpdateDialogProps {
 }
 
 const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [updateInfo, setUpdateInfo] = useState<main.UpdateInfo | null>(null);
   const [isChecking, setIsChecking] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const checkForUpdates = async () => {
     setIsChecking(true);
@@ -27,16 +30,25 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const downloadUpdate = async () => {
-    if (!updateInfo?.downloadUrl) return;
-    
-    setIsDownloading(true);
+  const handleLinkClick = (url: string) => {
+    BrowserOpenURL(url);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, url: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      BrowserOpenURL(url);
+    }
+  };
+
+  const copyBrewCommand = async () => {
+    const command = 'brew install --cask wailbrew';
     try {
-      await DownloadAndInstallUpdate(updateInfo.downloadUrl);
-      // App will restart automatically
+      await navigator.clipboard.writeText(command);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to download update');
-      setIsDownloading(false);
+      console.error('Failed to copy to clipboard:', err);
     }
   };
 
@@ -49,7 +61,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
   };
 
   const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString('de-DE', {
+    return new Date(dateString).toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -68,26 +80,26 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
     <div className="about-overlay" onClick={onClose}>
       <div className="about-dialog update-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="about-header">
-          <h2>Nach Updates suchen</h2>
+          <h2>{t('updateDialog.title')}</h2>
         </div>
         
         <div className="about-content">
           {isChecking && (
             <div className="update-checking">
               <div className="loading-spinner"></div>
-              <p>Suche nach Updates...</p>
+              <p>{t('updateDialog.checking')}</p>
             </div>
           )}
 
-                     {error && (
-             <div className="update-error">
-               <div className="error-icon">⚠️</div>
-               <div>
-                 <h3>Fehler beim Überprüfen</h3>
-                 <p>{error}</p>
-               </div>
-             </div>
-           )}
+          {error && (
+            <div className="update-error">
+              <div className="error-icon">⚠️</div>
+              <div>
+                <h3>{t('updateDialog.error')}</h3>
+                <p>{error}</p>
+              </div>
+            </div>
+          )}
 
           {updateInfo && !isChecking && !error && (
             <div className="update-info">
@@ -95,52 +107,80 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                 <div className="update-available">
                   <div className="update-icon">🎉</div>
                   <div className="update-details">
-                    <h3>Update verfügbar!</h3>
+                    <h3>{t('updateDialog.available')}</h3>
                     <div className="version-comparison">
-                      <div className="version-box current">
-                        <span className="version-label">Aktuelle Version</span>
-                        <span className="version-number">{updateInfo.currentVersion}</span>
+                      <div className="version-boxes">
+                        <div className="version-box current">
+                          <span className="version-label">{t('updateDialog.currentVersion')}</span>
+                          <span className="version-number">{updateInfo.currentVersion}</span>
+                        </div>
+                        <div className="version-arrow">→</div>
+                        <div className="version-box latest">
+                          <span className="version-label">{t('updateDialog.newVersion')}</span>
+                          <span className="version-number">{updateInfo.latestVersion}</span>
+                        </div>
                       </div>
-                      <div className="version-arrow">→</div>
-                      <div className="version-box latest">
-                        <span className="version-label">Neue Version</span>
-                        <span className="version-number">{updateInfo.latestVersion}</span>
+                      <div className="release-info">
+                        <div className="release-info-item">
+                          <div className="release-info-label">{t('updateDialog.published')}:</div>
+                          <div className="release-info-value">{formatDate(updateInfo.publishedAt)}</div>
+                        </div>
+                        <div className="release-info-item">
+                          <div className="release-info-label">{t('updateDialog.size')}:</div>
+                          <div className="release-info-value">{formatFileSize(updateInfo.fileSize)}</div>
+                        </div>
+                        <div className="release-info-item">
+                          <span 
+                            className="clickable-link"
+                            onClick={() => handleLinkClick(`https://github.com/wickenico/WailBrew/releases/tag/v${updateInfo.latestVersion}`)}
+                            onKeyDown={(e) => handleKeyDown(e, `https://github.com/wickenico/WailBrew/releases/tag/v${updateInfo.latestVersion}`)}
+                            role="button"
+                            tabIndex={0}
+                          >
+                            {t('updateDialog.viewReleaseNotes')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    
-                    <div className="release-info">
-                      <p><strong>Veröffentlicht:</strong> {formatDate(updateInfo.publishedAt)}</p>
-                      <p><strong>Größe:</strong> {formatFileSize(updateInfo.fileSize)}</p>
+
+                    <div className="brew-command-section">
+                      <h4>{t('updateDialog.manualUpdate')}:</h4>
+                      <p className="update-instruction">{t('updateDialog.instruction')}</p>
+                      <div className="command-container">
+                        <code className="brew-command">brew install --cask wailbrew</code>
+                        <button 
+                          className="copy-button"
+                          onClick={copyBrewCommand}
+                          title={t('updateDialog.copyCommand')}
+                        >
+                          {copySuccess ? '✓' : '📋'}
+                        </button>
+                      </div>
+                      {copySuccess && (
+                        <p className="copy-success">{t('updateDialog.copied')}</p>
+                      )}
                     </div>
 
                     {updateInfo.releaseNotes && (
                       <div className="release-notes">
-                        <h4>Änderungen:</h4>
                         <div className="release-notes-content">
+                          <h4>{t('updateDialog.changes')}:</h4>
                           {updateInfo.releaseNotes.split('\n').map((line: string, index: number) => (
                             <p key={index}>{line}</p>
                           ))}
                         </div>
                       </div>
                     )}
-
-                    {isDownloading && (
-                      <div className="download-progress">
-                        <div className="loading-spinner"></div>
-                        <p>Update wird heruntergeladen und installiert...</p>
-                        <p className="download-note">Die App wird automatisch neu gestartet.</p>
-                      </div>
-                    )}
                   </div>
                 </div>
               ) : (
-                                 <div className="update-current">
-                   <div className="update-icon">✅</div>
-                   <div>
-                     <h3>Du bist auf dem neuesten Stand!</h3>
-                     <p>Version {updateInfo.currentVersion} ist die aktuelle Version.</p>
-                   </div>
-                 </div>
+                <div className="update-current">
+                  <div className="update-icon">✅</div>
+                  <div>
+                    <h3>{t('updateDialog.upToDate')}</h3>
+                    <p>{t('updateDialog.currentVersionIs', { version: updateInfo.currentVersion })}</p>
+                  </div>
+                </div>
               )}
                          </div>
            )}
@@ -150,24 +190,21 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
            {error ? (
              <div className="action-buttons">
                <button className="btn btn-secondary" onClick={onClose}>
-                 Schließen
+                 {t('buttons.close')}
                </button>
                <button className="btn btn-primary" onClick={checkForUpdates}>
-                 Erneut versuchen
+                 {t('updateDialog.tryAgain')}
                </button>
              </div>
-           ) : updateInfo?.available && !isDownloading ? (
+           ) : updateInfo?.available ? (
              <div className="action-buttons">
                <button className="btn btn-secondary" onClick={onClose}>
-                 Später
-               </button>
-               <button className="btn btn-primary" onClick={downloadUpdate}>
-                 Jetzt aktualisieren
+                 {t('updateDialog.gotIt')}
                </button>
              </div>
            ) : (
              <button onClick={onClose} className="about-close-button">
-               Schließen
+               {t('buttons.close')}
              </button>
            )}
          </div>

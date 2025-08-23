@@ -144,5 +144,25 @@
   },
   "common": {
     "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "Nach Updates suchen",
+    "checking": "Suche nach Updates...",
+    "error": "Fehler beim Überprüfen",
+    "available": "Update verfügbar!",
+    "currentVersion": "Aktuelle Version",
+    "newVersion": "Neue Version",
+    "published": "Veröffentlicht",
+    "size": "Größe",
+    "changes": "Änderungen",
+    "viewReleaseNotes": "Release-Notizen anzeigen",
+    "manualUpdate": "Manuelles Update",
+    "instruction": "Um WailBrew zu aktualisieren, führen Sie bitte den folgenden Befehl in Ihrem Terminal aus:",
+    "copyCommand": "Befehl in die Zwischenablage kopieren",
+    "copied": "Befehl in die Zwischenablage kopiert!",
+    "upToDate": "Sie sind auf dem neuesten Stand!",
+    "currentVersionIs": "Version {{version}} ist die aktuelle Version.",
+    "tryAgain": "Erneut versuchen",
+    "gotIt": "Verstanden"
   }
 }
