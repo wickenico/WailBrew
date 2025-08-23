@@ -699,6 +699,19 @@ html, body {
   text-decoration: underline;
 }
 
+.clickable-link {
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+  font-size: inherit;
+  transition: color var(--transition);
+}
+
+.clickable-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
 .about-acknowledgments {
   margin: 24px 0;
   text-align: left;

@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import appIcon from "../assets/images/appicon_256.png";
 
 interface AboutDialogProps {
@@ -10,6 +11,17 @@ interface AboutDialogProps {
 
 const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) => {
     const { t } = useTranslation();
+    
+    const handleLinkClick = (url: string) => {
+        BrowserOpenURL(url);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent, url: string) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            BrowserOpenURL(url);
+        }
+    };
     
     if (!open) return null;
 
@@ -32,10 +44,19 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                         <div className="about-description">
                             <h3>{t('about.subtitle')}</h3>
                             <p>{t('about.createdBy')}</p>
-                            <p>{t('about.developedWith', { 
-                                wails: '<a href="https://wails.io" target="_blank" rel="noopener noreferrer">Wails</a>',
-                                interpolation: { escapeValue: false }
-                            })}</p>
+                            <p>
+                                Developed with{' '}
+                                <span 
+                                    className="clickable-link"
+                                    onClick={() => handleLinkClick("https://wails.io")}
+                                    onKeyDown={(e) => handleKeyDown(e, "https://wails.io")}
+                                    role="button"
+                                    tabIndex={0}
+                                >
+                                    Wails
+                                </span>
+                                {' '}and React
+                            </p>
                         </div>
                         
                         <div className="about-info">
@@ -46,14 +67,37 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                             <h4>{t('about.links')}</h4>
                             <ul>
                                 <li>
-                                    <a href="https://github.com/wickenico/WailBrew" target="_blank" rel="noopener noreferrer">
-                                        {t('about.githubRepo')}
-                                    </a>
+                                    <span 
+                                        className="clickable-link"
+                                        onClick={() => handleLinkClick("https://wailbrew.app")}
+                                        onKeyDown={(e) => handleKeyDown(e, "https://wailbrew.app")}
+                                        role="button"
+                                        tabIndex={0}
+                                    >
+                                        {t('about.wailbrewWebsite')}
+                                    </span>
                                 </li>
                                 <li>
-                                    <a href="https://brew.sh" target="_blank" rel="noopener noreferrer">
+                                    <span 
+                                        className="clickable-link"
+                                        onClick={() => handleLinkClick("https://github.com/wickenico/WailBrew")}
+                                        onKeyDown={(e) => handleKeyDown(e, "https://github.com/wickenico/WailBrew")}
+                                        role="button"
+                                        tabIndex={0}
+                                    >
+                                        {t('about.githubRepo')}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span 
+                                        className="clickable-link"
+                                        onClick={() => handleLinkClick("https://brew.sh")}
+                                        onKeyDown={(e) => handleKeyDown(e, "https://brew.sh")}
+                                        role="button"
+                                        tabIndex={0}
+                                    >
                                         {t('about.homebrewWebsite')}
-                                    </a>
+                                    </span>
                                 </li>
                             </ul>
                         </div>
@@ -61,10 +105,19 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                         <div className="about-acknowledgments">
                             <h4>{t('about.acknowledgments')}</h4>
                             <p>
-                                {t('about.acknowledgmentText', { 
-                                    cakebrew: '<a href="https://github.com/brunophilipe/Cakebrew" target="_blank" rel="noopener noreferrer">Cakebrew</a>',
-                                    interpolation: { escapeValue: false }
-                                })}
+                                Inspired by{' '}
+                                <span 
+                                    className="clickable-link"
+                                    onClick={() => handleLinkClick("https://github.com/brunophilipe/Cakebrew")}
+                                    onKeyDown={(e) => handleKeyDown(e, "https://github.com/brunophilipe/Cakebrew")}
+                                    role="button"
+                                    tabIndex={0}
+                                >
+                                    Cakebrew
+                                </span>
+                                {' '}by Bruno Philipe.
+                                <br />
+                                Thanks for the great work on the original Homebrew GUI!
                             </p>
                         </div>
                         

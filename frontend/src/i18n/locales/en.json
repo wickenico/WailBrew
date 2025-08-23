@@ -92,6 +92,7 @@
     "developedWith": "Developed with {{wails}} and React",
     "description": "WailBrew is a modern graphical user interface for Homebrew that makes it easy to manage, install and update packages.",
     "links": "Links:",
+    "wailbrewWebsite": "WailBrew Website",
     "githubRepo": "GitHub Repository",
     "homebrewWebsite": "Homebrew Website",
     "acknowledgments": "Acknowledgments:",
