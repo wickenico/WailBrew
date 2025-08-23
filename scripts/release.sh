@@ -42,7 +42,10 @@ fi
 
 IDENTITY="${IDENTITY:-}"
 NOTARY_PROFILE="${NOTARY_PROFILE:-wailbrew-notary}"
-ZIP="wailbrew-v${VERSION}.zip"
+ZIP="releases/wailbrew-v${VERSION}.zip"
+
+# Ensure releases directory exists
+mkdir -p releases
 
 log()  { printf "\n\033[1;34m[INFO]\033[0m %s\n" "$*"; }
 warn() { printf "\n\033[1;33m[WARN]\033[0m %s\n" "$*"; }

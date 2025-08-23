@@ -3,6 +3,9 @@ node_modules
 frontend/dist
 frontend/package.json.md5
 
+# Release files
+releases/
+
 # pnpm
 .pnpm-store
 .pnpm-debug.log
