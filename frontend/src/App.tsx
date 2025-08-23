@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import toast, { Toaster } from 'react-hot-toast';
 import "./style.css";
 import "./App.css";
 import {
@@ -16,6 +17,7 @@ import {
     GetBrewTaps,
     GetAppVersion,
     SetLanguage,
+    CheckForUpdates,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -73,6 +75,7 @@ const WailBrewApp = () => {
     const [showAbout, setShowAbout] = useState<boolean>(false);
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
+    const updateCheckDone = useRef<boolean>(false);
 
     useEffect(() => {
         // Get app version from backend
@@ -165,7 +168,49 @@ const WailBrewApp = () => {
                 setError(t('errors.loadingFormulas') + (err.message || err));
                 setLoading(false);
             });
+        
+        // Check for app updates on startup
+        checkAppUpdatesOnStartup();
     }, []);
+
+    const checkAppUpdatesOnStartup = async () => {
+        // Prevent duplicate calls
+        if (updateCheckDone.current) return;
+        updateCheckDone.current = true;
+        
+        try {
+            // Wait a bit to let the app fully load first
+            setTimeout(async () => {
+                const updateInfo = await CheckForUpdates();
+                
+                if (updateInfo.available) {
+                    toast(
+                        () => (
+                            <div>
+                                <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
+                                <div style={{ fontSize: '0.85rem', opacity: 0.8 }}>
+                                    {t('toast.versionReady', { version: updateInfo.latestVersion })}
+                                </div>
+                            </div>
+                        ),
+                        {
+                            icon: '🎉',
+                            duration: 4000,
+                            position: 'bottom-center',
+                        }
+                    );
+                } else {
+                    toast.success(t('toast.upToDate'), {
+                        duration: 4000,
+                        position: 'bottom-center',
+                    });
+                }
+            }, 2000); // Delay 2 seconds after app load
+        } catch (error) {
+            // Silently fail - don't show error toasts for update checks on startup
+            console.log('Update check failed:', error);
+        }
+    };
 
     useEffect(() => {
         const unlisten = EventsOn("setView", (data) => {
@@ -621,6 +666,28 @@ const WailBrewApp = () => {
                 <UpdateDialog
                     isOpen={showUpdate}
                     onClose={() => setShowUpdate(false)}
+                />
+                <Toaster
+                    position="bottom-center"
+                    reverseOrder={false}
+                    gutter={8}
+                    toastOptions={{
+                        duration: 4000,
+                        style: {
+                            background: 'rgba(40, 44, 52, 0.95)',
+                            color: '#fff',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '12px',
+                            backdropFilter: 'blur(12px)',
+                            WebkitBackdropFilter: 'blur(12px)',
+                        },
+                        success: {
+                            iconTheme: {
+                                primary: '#4CAF50',
+                                secondary: '#fff',
+                            },
+                        },
+                    }}
                 />
             </main>
         </div>

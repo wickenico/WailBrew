@@ -164,5 +164,10 @@
     "currentVersionIs": "Version {{version}} ist die aktuelle Version.",
     "tryAgain": "Erneut versuchen",
     "gotIt": "Verstanden"
+  },
+  "toast": {
+    "updateAvailable": "Update verfügbar!",
+    "versionReady": "v{{version}} ist bereit",
+    "upToDate": "Sie verwenden die neueste Version!"
   }
 }
