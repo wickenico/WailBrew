@@ -308,10 +308,20 @@ html, body {
 }
 
 .result {
-  height: 22px;
-  line-height: 22px;
-  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  margin: 2rem 0;
   color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  min-height: 120px;
 }
 
 .result.error {
@@ -369,6 +379,40 @@ html, body {
   color: var(--accent);
 }
 
+/* Refresh button */
+.refresh-button {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: transparent;
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+.refresh-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .trash-button {
   background: transparent;
   border: none;
@@ -384,6 +428,81 @@ html, body {
 .trash-button:hover {
   color: var(--accent);
   background: rgba(80, 180, 255, 0.08);
+}
+
+/* Action buttons in table rows */
+.package-table .action-buttons {
+  display: flex;
+  gap: 1px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: -2px;
+}
+
+.action-button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px 8px;
+  margin: 0;
+  border-radius: calc(var(--radius) * 0.6);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.action-button:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.1);
+}
+
+.uninstall-button:hover {
+  color: #e57373;
+  background: rgba(229, 115, 115, 0.15);
+}
+
+.info-button:hover {
+  color: var(--accent);
+  background: rgba(80, 180, 255, 0.15);
+}
+
+.update-button:hover {
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.15);
+}
+
+
+
+
+
+
+
+.update-all-button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(80, 180, 255, 0.25);
+}
+
+.update-all-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(80, 180, 255, 0.35);
 }
 
 .confirm-overlay {
@@ -456,6 +575,17 @@ html, body {
 .confirm-actions button:last-child:hover {
   background: rgba(255,255,255,0.16);
   color: var(--accent);
+}
+
+/* Destructive confirm button */
+.confirm-actions button.destructive {
+  background: #e53e3e;
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(229, 62, 62, 0.3);
+}
+
+.confirm-actions button.destructive:hover {
+  background: #c53030;
 }
 
 @keyframes fadeIn {

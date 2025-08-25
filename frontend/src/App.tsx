@@ -10,6 +10,7 @@ import {
     GetBrewPackageInfoAsJson,
     RemoveBrewPackage,
     UpdateBrewPackage,
+    UpdateAllBrewPackages,
     RunBrewDoctor,
     RunBrewCleanup,
     GetAllBrewPackages,
@@ -68,8 +69,10 @@ const WailBrewApp = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
+    const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState<boolean>(false);
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
+    const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
     const [cleanupLog, setCleanupLog] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
@@ -213,8 +216,8 @@ const WailBrewApp = () => {
     };
 
     useEffect(() => {
-        const unlisten = EventsOn("setView", (data) => {
-            setView(data as any);
+        const unlisten = EventsOn("setView", (data: string) => {
+            setView(data as "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup");
             clearSelection();
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {
@@ -321,6 +324,11 @@ const WailBrewApp = () => {
         setLoading(false);
     };
 
+    const handleUpdate = (pkg: PackageEntry) => {
+        setSelectedPackage(pkg);
+        setShowUpdateConfirm(true);
+    };
+
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
         setShowUpdateConfirm(false);
@@ -356,9 +364,44 @@ const WailBrewApp = () => {
         await UpdateBrewPackage(selectedPackage.name);
     };
 
+    const handleUpdateAllConfirmed = async () => {
+        setShowUpdateAllConfirm(false);
+        setUpdateLogs(t('dialogs.updatingAll'));
+
+        // Set up event listeners for live progress
+        const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
+            setUpdateLogs(prevLogs => {
+                if (!prevLogs) {
+                    return `${t('dialogs.updateAllLogs')}\n${progress}`;
+                }
+                return prevLogs + '\n' + progress;
+            });
+        });
+
+        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+            // Update the package list after successful update
+            const updated = await GetBrewUpdatablePackages();
+            const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
+                name,
+                installedVersion,
+                latestVersion,
+                isInstalled: true,
+            }));
+            setUpdatablePackages(formatted);
+            
+            // Clean up event listeners
+            progressListener();
+            completeListener();
+        });
+
+        // Start the update all process
+        await UpdateAllBrewPackages();
+    };
+
     const handleShowInfoLogs = async (pkg: PackageEntry) => {
         if (!pkg) return;
 
+        setInfoPackage(pkg);
         setInfoLogs(t('dialogs.gettingInfo', { name: pkg.name }));
 
         const info = await GetBrewPackageInfo(pkg.name);
@@ -372,15 +415,112 @@ const WailBrewApp = () => {
         setSelectedRepository(null);
     };
 
+    const handleUninstallPackage = (pkg: PackageEntry) => {
+        setSelectedPackage(pkg);
+        setShowConfirm(true);
+    };
+
+    const handleShowPackageInfo = (pkg: PackageEntry) => {
+        handleShowInfoLogs(pkg);
+    };
+
+    const handleRefreshPackages = async () => {
+        setLoading(true);
+        setError("");
+        
+        try {
+            const [installed, updatable, all, leaves, repos] = await Promise.all([
+                GetBrewPackages(), 
+                GetBrewUpdatablePackages(), 
+                GetAllBrewPackages(), 
+                GetBrewLeaves(), 
+                GetBrewTaps()
+            ]);
+            
+            // Process the data same as in useEffect
+            const safeInstalled = installed || [];
+            const safeUpdatable = updatable || [];
+            const safeAll = all || [];
+            const safeLeaves = leaves || [];
+            const safeRepos = repos || [];
+
+            if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
+                setError(safeInstalled[0][1]);
+                setPackages([]);
+            } else {
+                const formatted = safeInstalled.map(([name, installedVersion]) => ({
+                    name,
+                    installedVersion,
+                    isInstalled: true,
+                }));
+                setPackages(formatted);
+            }
+
+            if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
+                setUpdatablePackages([]);
+            } else {
+                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion]) => ({
+                    name,
+                    installedVersion,
+                    latestVersion,
+                    isInstalled: true,
+                }));
+                setUpdatablePackages(formatted);
+            }
+
+            if (safeAll.length === 1 && safeAll[0][0] === "Error") {
+                setAllPackages([]);
+            } else {
+                const installedMap = new Map(safeInstalled.map(([name]) => [name, true]));
+                const formatted = safeAll.map(([name, desc]) => ({
+                    name,
+                    installedVersion: t('common.notAvailable'),
+                    desc,
+                    isInstalled: installedMap.has(name),
+                }));
+                setAllPackages(formatted);
+            }
+
+            if (safeLeaves.length === 1 && safeLeaves[0] === "Error") {
+                setLeavesPackages([]);
+            } else {
+                const installedMap = new Map(safeInstalled.map(([name, installedVersion]) => [name, installedVersion]));
+                const formatted = safeLeaves.map((name) => ({
+                    name,
+                    installedVersion: installedMap.get(name) || t('common.notAvailable'),
+                    isInstalled: true,
+                }));
+                setLeavesPackages(formatted);
+            }
+
+            if (safeRepos.length === 1 && safeRepos[0][0] === "Error") {
+                setRepositories([]);
+            } else {
+                const formatted = safeRepos.map(([name, status]) => ({
+                    name,
+                    status,
+                }));
+                setRepositories(formatted);
+            }
+        } catch (error) {
+            console.error('Error refreshing packages:', error);
+            setError('Failed to refresh packages');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Table columns config
     const columnsInstalled = [
         { key: "name", label: t('tableColumns.name') },
         { key: "installedVersion", label: t('tableColumns.version') },
+        { key: "actions", label: t('tableColumns.actions') },
     ];
     const columnsUpdatable = [
         { key: "name", label: t('tableColumns.name') },
         { key: "installedVersion", label: t('tableColumns.version') },
         { key: "latestVersion", label: t('tableColumns.latestVersion') },
+        { key: "actions", label: t('tableColumns.actions') },
     ];
     const columnsAll = [
         { key: "name", label: t('tableColumns.name') },
@@ -406,24 +546,16 @@ const WailBrewApp = () => {
                     <>
                         <HeaderRow
                             title={t('headers.installedFormulas', { count: packages.length })}
-                            actions={selectedPackage && (
-                                <>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => setShowConfirm(true)}
-                                        title={t('buttons.uninstall', { name: selectedPackage.name })}
-                                    >
-                                        ❌️
-                                    </button>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => handleShowInfoLogs(selectedPackage)}
-                                        title={t('buttons.showInfo', { name: selectedPackage.name })}
-                                    >
-                                        ℹ️
-                                    </button>
-                                </>
-                            )}
+                            actions={
+                                <button
+                                    className="refresh-button"
+                                    onClick={handleRefreshPackages}
+                                    disabled={loading}
+                                    title={t('buttons.refresh')}
+                                >
+                                    🔄
+                                </button>
+                            }
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
@@ -435,6 +567,8 @@ const WailBrewApp = () => {
                             loading={loading}
                             onSelect={handleSelect}
                             columns={columnsInstalled}
+                            onUninstall={handleUninstallPackage}
+                            onShowInfo={handleShowPackageInfo}
                         />
                         <div className="info-footer-container">
                             <div className="package-info">
@@ -454,24 +588,19 @@ const WailBrewApp = () => {
                     <>
                         <HeaderRow
                             title={t('headers.outdatedFormulas', { count: updatablePackages.length })}
-                            actions={selectedPackage && (
+                            actions={
                                 <>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => setShowUpdateConfirm(true)}
-                                        title={t('buttons.update', { name: selectedPackage.name })}
-                                    >
-                                        🔄
-                                    </button>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => handleShowInfoLogs(selectedPackage)}
-                                        title={t('buttons.showInfo', { name: selectedPackage.name })}
-                                    >
-                                        ℹ️
-                                    </button>
+                                    {updatablePackages.length > 0 && (
+                                        <button
+                                            className="update-all-button"
+                                            onClick={() => setShowUpdateAllConfirm(true)}
+                                            title={t('buttons.updateAll')}
+                                        >
+                                            ⬆️ {t('buttons.updateAll')}
+                                        </button>
+                                    )}
                                 </>
-                            )}
+                            }
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
@@ -483,6 +612,9 @@ const WailBrewApp = () => {
                             loading={loading}
                             onSelect={handleSelect}
                             columns={columnsUpdatable}
+                            onUninstall={handleUninstallPackage}
+                            onShowInfo={handleShowInfoLogs}
+                            onUpdate={handleUpdate}
                         />
                         <div className="info-footer-container">
                             <div className="package-info">
@@ -638,6 +770,7 @@ const WailBrewApp = () => {
                     onConfirm={handleRemoveConfirmed}
                     onCancel={() => setShowConfirm(false)}
                     confirmLabel={t('buttons.yesUninstall')}
+                    destructive={true}
                 />
                 <ConfirmDialog
                     open={showUpdateConfirm}
@@ -646,17 +779,27 @@ const WailBrewApp = () => {
                     onCancel={() => setShowUpdateConfirm(false)}
                     confirmLabel={t('buttons.yesUpdate')}
                 />
+                <ConfirmDialog
+                    open={showUpdateAllConfirm}
+                    message={t('dialogs.confirmUpdateAll')}
+                    onConfirm={handleUpdateAllConfirmed}
+                    onCancel={() => setShowUpdateAllConfirm(false)}
+                    confirmLabel={t('buttons.yesUpdateAll')}
+                />
                 <LogDialog
                     open={updateLogs !== null}
-                    title={t('dialogs.updateLogs', { name: selectedPackage?.name })}
+                    title={selectedPackage ? t('dialogs.updateLogs', { name: selectedPackage.name }) : t('dialogs.updateAllLogs')}
                     log={updateLogs}
                     onClose={() => setUpdateLogs(null)}
                 />
                 <LogDialog
                     open={!!infoLogs}
-                    title={t('dialogs.packageInfo', { name: selectedPackage?.name })}
+                    title={t('dialogs.packageInfo', { name: infoPackage?.name })}
                     log={infoLogs}
-                    onClose={() => setInfoLogs(null)}
+                    onClose={() => {
+                        setInfoLogs(null);
+                        setInfoPackage(null);
+                    }}
                 />
                 <AboutDialog
                     open={showAbout}

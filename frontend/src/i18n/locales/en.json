@@ -26,14 +26,17 @@
   "buttons": {
     "uninstall": "Uninstall \"{{name}}\"",
     "update": "Update \"{{name}}\"",
+    "updateAll": "Update All",
     "showInfo": "Show info for \"{{name}}\"",
     "clearLog": "Clear log",
     "runDoctor": "Run doctor",
     "runCleanup": "Run cleanup",
+    "refresh": "Refresh packages",
     "yes": "Yes",
     "cancel": "Cancel",
     "yesUninstall": "Yes, uninstall",
     "yesUpdate": "Yes, update",
+    "yesUpdateAll": "Yes, update all",
     "ok": "Ok",
     "close": "Close"
   },
@@ -53,7 +56,8 @@
     "name": "Name",
     "version": "Version",
     "latestVersion": "Latest Version",
-    "status": "Status"
+    "status": "Status",
+    "actions": "Actions"
   },
   "footers": {
     "installedFormulas": "These formulas are already installed on your system.",
@@ -67,9 +71,12 @@
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
     "confirmUpdate": "Do you really want to update \"{{name}}\"?",
+    "confirmUpdateAll": "Do you really want to update all outdated packages?",
     "updateLogs": "Update logs for {{name}}",
+    "updateAllLogs": "Update logs for all packages",
     "packageInfo": "Info for {{name}}",
     "updating": "Updating \"{{name}}\"...\nPlease wait...",
+    "updatingAll": "Updating all outdated packages...\nPlease wait...",
     "gettingInfo": "Getting information for \"{{name}}\"...\nPlease wait...",
     "runningDoctor": "Running brew doctor…\nPlease wait...",
     "runningCleanup": "Running brew cleanup…\nPlease wait...",

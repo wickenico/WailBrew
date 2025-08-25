@@ -66,6 +66,10 @@ export function SetLanguage(arg1) {
   return window['go']['main']['App']['SetLanguage'](arg1);
 }
 
+export function UpdateAllBrewPackages() {
+  return window['go']['main']['App']['UpdateAllBrewPackages']();
+}
+
 export function UpdateBrewPackage(arg1) {
   return window['go']['main']['App']['UpdateBrewPackage'](arg1);
 }

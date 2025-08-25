@@ -8,9 +8,10 @@ interface ConfirmDialogProps {
     onCancel: () => void;
     confirmLabel?: string;
     cancelLabel?: string;
+    destructive?: boolean;
 }
 
-const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel }) => {
+const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel, destructive }) => {
     const { t } = useTranslation();
     
     if (!open) return null;
@@ -23,7 +24,12 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
             <div className="confirm-box">
                 <p>{message}</p>
                 <div className="confirm-actions">
-                    <button onClick={onConfirm}>{defaultConfirmLabel}</button>
+                    <button 
+                        className={destructive ? "destructive" : ""}
+                        onClick={onConfirm}
+                    >
+                        {defaultConfirmLabel}
+                    </button>
                     <button onClick={onCancel}>{defaultCancelLabel}</button>
                 </div>
             </div>

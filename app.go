@@ -573,6 +573,76 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	return finalMessage
 }
 
+// UpdateAllBrewPackages upgrades all outdated packages with live progress updates
+func (a *App) UpdateAllBrewPackages() string {
+	// Emit initial progress
+	startMessage := a.getBackendMessage("updateAllStart", map[string]string{})
+	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
+
+	cmd := exec.Command(a.brewPath, "upgrade")
+	cmd.Env = append(os.Environ(), brewEnvPath)
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := a.getBackendMessage("errorStartingUpdateAll", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("📦 %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+
+	var finalMessage string
+	if err != nil {
+		finalMessage = a.getBackendMessage("updateAllFailed", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+	} else {
+		finalMessage = a.getBackendMessage("updateAllSuccess", map[string]string{})
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+	}
+
+	// Signal completion
+	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+
+	return finalMessage
+}
+
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
 	cmd := exec.Command(a.brewPath, "info", "--json=v2", packageName)
 	cmd.Env = append(os.Environ(), brewEnvPath)
