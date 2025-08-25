@@ -709,24 +709,6 @@ const WailBrewApp = () => {
                     <>
                         <HeaderRow
                             title={t('headers.leaves', { count: leavesPackages.length })}
-                            actions={selectedPackage && (
-                                <>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => setShowConfirm(true)}
-                                        title={t('buttons.uninstall', { name: selectedPackage.name })}
-                                    >
-                                        ❌️
-                                    </button>
-                                    <button
-                                        className="trash-button"
-                                        onClick={() => handleShowInfoLogs(selectedPackage)}
-                                        title={t('buttons.showInfo', { name: selectedPackage.name })}
-                                    >
-                                        ℹ️
-                                    </button>
-                                </>
-                            )}
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
@@ -738,6 +720,8 @@ const WailBrewApp = () => {
                             loading={loading}
                             onSelect={handleSelect}
                             columns={columnsLeaves}
+                            onUninstall={handleUninstallPackage}
+                            onShowInfo={handleShowInfoLogs}
                         />
                         <div className="info-footer-container">
                             <div className="package-info">
