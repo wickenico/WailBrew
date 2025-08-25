@@ -9,6 +9,7 @@ import {
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
     RemoveBrewPackage,
+    InstallBrewPackage,
     UpdateBrewPackage,
     UpdateAllBrewPackages,
     RunBrewDoctor,
@@ -68,9 +69,12 @@ const WailBrewApp = () => {
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+    const [showInstallConfirm, setShowInstallConfirm] = useState<boolean>(false);
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
     const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState<boolean>(false);
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
+    const [installLogs, setInstallLogs] = useState<string | null>(null);
+    const [uninstallLogs, setUninstallLogs] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
@@ -300,28 +304,31 @@ const WailBrewApp = () => {
     const handleRemoveConfirmed = async () => {
         if (!selectedPackage) return;
         setShowConfirm(false);
-        setLoading(true);
-        const result = await RemoveBrewPackage(selectedPackage.name);
-        alert(result);
+        setUninstallLogs(t('dialogs.uninstalling', { name: selectedPackage.name }));
 
-        // Refresh all package lists
-        const [updated, leaves] = await Promise.all([GetBrewPackages(), GetBrewLeaves()]);
-        const formatted = updated.map(([name, installedVersion]) => ({
-            name,
-            installedVersion,
-            isInstalled: true,
-        }));
-        const installedMap = new Map(formatted.map(pkg => [pkg.name, pkg.installedVersion]));
-        const leavesFormatted = leaves.map((name) => ({
-            name,
-            installedVersion: installedMap.get(name) || t('common.notAvailable'),
-            isInstalled: true,
-        }));
+        // Set up event listeners for live progress
+        const progressListener = EventsOn("packageUninstallProgress", (progress: string) => {
+            setUninstallLogs(prevLogs => {
+                if (!prevLogs) {
+                    return `${t('dialogs.uninstallLogs', { name: selectedPackage.name })}\n${progress}`;
+                }
+                return prevLogs + '\n' + progress;
+            });
+        });
 
-        setPackages(formatted);
-        setLeavesPackages(leavesFormatted);
-        setSelectedPackage(null);
-        setLoading(false);
+        const completeListener = EventsOn("packageUninstallComplete", async (finalMessage: string) => {
+            // Update the package list after successful uninstall
+            await handleRefreshPackages();
+
+            setUninstallLogs(prevLogs => prevLogs + '\n' + finalMessage);
+            
+            // Clean up event listeners
+            progressListener();
+            completeListener();
+        });
+
+        // Start the uninstall process
+        await RemoveBrewPackage(selectedPackage.name);
     };
 
     const handleUpdate = (pkg: PackageEntry) => {
@@ -418,6 +425,41 @@ const WailBrewApp = () => {
     const handleUninstallPackage = (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
         setShowConfirm(true);
+    };
+
+    const handleInstallPackage = (pkg: PackageEntry) => {
+        setSelectedPackage(pkg);
+        setShowInstallConfirm(true);
+    };
+
+    const handleInstallConfirmed = async () => {
+        if (!selectedPackage) return;
+        setShowInstallConfirm(false);
+        setInstallLogs(t('dialogs.installing', { name: selectedPackage.name }));
+
+        // Set up event listeners for live progress
+        const progressListener = EventsOn("packageInstallProgress", (progress: string) => {
+            setInstallLogs(prevLogs => {
+                if (!prevLogs) {
+                    return `${t('dialogs.installLogs', { name: selectedPackage.name })}\n${progress}`;
+                }
+                return prevLogs + '\n' + progress;
+            });
+        });
+
+        const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
+            // Update the package list after successful install
+            await handleRefreshPackages();
+
+            setInstallLogs(prevLogs => prevLogs + '\n' + finalMessage);
+            
+            // Clean up event listeners
+            progressListener();
+            completeListener();
+        });
+
+        // Start the install process
+        await InstallBrewPackage(selectedPackage.name);
     };
 
     const handleShowPackageInfo = (pkg: PackageEntry) => {
@@ -525,6 +567,7 @@ const WailBrewApp = () => {
     const columnsAll = [
         { key: "name", label: t('tableColumns.name') },
         { key: "isInstalled", label: t('tableColumns.status') },
+        { key: "actions", label: t('tableColumns.actions') },
     ];
     const columnsLeaves = columnsInstalled;
 
@@ -634,15 +677,6 @@ const WailBrewApp = () => {
                     <>
                         <HeaderRow
                             title={t('headers.allFormulas', { count: allPackages.length })}
-                            actions={selectedPackage && (
-                                <button
-                                    className="trash-button"
-                                    onClick={() => handleShowInfoLogs(selectedPackage)}
-                                    title={t('buttons.showInfo', { name: selectedPackage.name })}
-                                >
-                                    ℹ️
-                                </button>
-                            )}
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
@@ -654,6 +688,8 @@ const WailBrewApp = () => {
                             loading={loading}
                             onSelect={handleSelect}
                             columns={columnsAll}
+                            onShowInfo={handleShowInfoLogs}
+                            onInstall={handleInstallPackage}
                         />
                         <div className="info-footer-container">
                             <div className="package-info">
@@ -773,6 +809,13 @@ const WailBrewApp = () => {
                     destructive={true}
                 />
                 <ConfirmDialog
+                    open={showInstallConfirm}
+                    message={t('dialogs.confirmInstall', { name: selectedPackage?.name })}
+                    onConfirm={handleInstallConfirmed}
+                    onCancel={() => setShowInstallConfirm(false)}
+                    confirmLabel={t('buttons.yesInstall')}
+                />
+                <ConfirmDialog
                     open={showUpdateConfirm}
                     message={t('dialogs.confirmUpdate', { name: selectedPackage?.name })}
                     onConfirm={handleUpdateConfirmed}
@@ -791,6 +834,18 @@ const WailBrewApp = () => {
                     title={selectedPackage ? t('dialogs.updateLogs', { name: selectedPackage.name }) : t('dialogs.updateAllLogs')}
                     log={updateLogs}
                     onClose={() => setUpdateLogs(null)}
+                />
+                <LogDialog
+                    open={installLogs !== null}
+                    title={selectedPackage ? t('dialogs.installLogs', { name: selectedPackage.name }) : t('dialogs.installLogs')}
+                    log={installLogs}
+                    onClose={() => setInstallLogs(null)}
+                />
+                <LogDialog
+                    open={uninstallLogs !== null}
+                    title={selectedPackage ? t('dialogs.uninstallLogs', { name: selectedPackage.name }) : t('dialogs.uninstallLogs')}
+                    log={uninstallLogs}
+                    onClose={() => setUninstallLogs(null)}
                 />
                 <LogDialog
                     open={!!infoLogs}

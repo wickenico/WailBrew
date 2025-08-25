@@ -240,6 +240,13 @@ html, body {
   border-bottom: 1px solid var(--glass-border);
 }
 
+/* Make name column shorter when status column is present (all formulas view) */
+.package-table th:first-child,
+.package-table td:first-child {
+  width: 30%;
+  max-width: 200px;
+}
+
 .package-table th {
   position: sticky;
   top: 0;
@@ -475,6 +482,11 @@ html, body {
 .update-button:hover {
   color: #4CAF50;
   background: rgba(76, 175, 80, 0.15);
+}
+
+.install-button:hover {
+  color: #2196F3;
+  background: rgba(33, 150, 243, 0.15);
 }
 
 

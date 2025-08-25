@@ -489,18 +489,140 @@ func (a *App) GetBrewTaps() [][]string {
 	return taps
 }
 
-// RemoveBrewPackage uninstalls a package
+// RemoveBrewPackage uninstalls a package with live progress updates
 func (a *App) RemoveBrewPackage(packageName string) string {
+	// Emit initial progress
+	startMessage := a.getBackendMessage("uninstallStart", map[string]string{"name": packageName})
+	rt.EventsEmit(a.ctx, "packageUninstallProgress", startMessage)
+
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)
 	cmd.Env = append(os.Environ(), brewEnvPath)
-	output, err := cmd.CombinedOutput()
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		//log.Printf("❌ ERROR: Failed to uninstall %s: %v\n", packageName, err)
-		//log.Println("🔍 Output:", string(output))
-		return "Error: " + err.Error()
+		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUninstallProgress", errorMsg)
+		return errorMsg
 	}
-	//log.Printf("✅ Successfully uninstalled %s", packageName)
-	return string(output)
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUninstallProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := a.getBackendMessage("errorStartingUninstall", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUninstallProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUninstallProgress", fmt.Sprintf("🗑️ %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUninstallProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+	if err != nil {
+		errorMsg := a.getBackendMessage("uninstallFailed", map[string]string{"name": packageName, "error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageUninstallProgress", errorMsg)
+		rt.EventsEmit(a.ctx, "packageUninstallComplete", errorMsg)
+		return errorMsg
+	}
+
+	// Success
+	successMsg := a.getBackendMessage("uninstallSuccess", map[string]string{"name": packageName})
+	rt.EventsEmit(a.ctx, "packageUninstallProgress", successMsg)
+	rt.EventsEmit(a.ctx, "packageUninstallComplete", successMsg)
+	return successMsg
+}
+
+// InstallBrewPackage installs a package with live progress updates
+func (a *App) InstallBrewPackage(packageName string) string {
+	// Emit initial progress
+	startMessage := a.getBackendMessage("installStart", map[string]string{"name": packageName})
+	rt.EventsEmit(a.ctx, "packageInstallProgress", startMessage)
+
+	cmd := exec.Command(a.brewPath, "install", packageName)
+	cmd.Env = append(os.Environ(), brewEnvPath)
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageInstallProgress", errorMsg)
+		return errorMsg
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageInstallProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := a.getBackendMessage("errorStartingInstall", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageInstallProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageInstallProgress", fmt.Sprintf("📦 %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageInstallProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+	if err != nil {
+		errorMsg := a.getBackendMessage("installFailed", map[string]string{"name": packageName, "error": err.Error()})
+		rt.EventsEmit(a.ctx, "packageInstallProgress", errorMsg)
+		rt.EventsEmit(a.ctx, "packageInstallComplete", errorMsg)
+		return errorMsg
+	}
+
+	// Success
+	successMsg := a.getBackendMessage("installSuccess", map[string]string{"name": packageName})
+	rt.EventsEmit(a.ctx, "packageInstallProgress", successMsg)
+	rt.EventsEmit(a.ctx, "packageInstallComplete", successMsg)
+	return successMsg
 }
 
 // UpdateBrewPackage upgrades a package with live progress updates

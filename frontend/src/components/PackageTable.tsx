@@ -21,6 +21,7 @@ interface PackageTableProps {
     onUninstall?: (pkg: PackageEntry) => void;
     onShowInfo?: (pkg: PackageEntry) => void;
     onUpdate?: (pkg: PackageEntry) => void;
+    onInstall?: (pkg: PackageEntry) => void;
 }
 
 const PackageTable: React.FC<PackageTableProps> = ({
@@ -32,6 +33,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
     onUninstall,
     onShowInfo,
     onUpdate,
+    onInstall,
 }) => {
     const { t } = useTranslation();
     
@@ -61,6 +63,18 @@ const PackageTable: React.FC<PackageTableProps> = ({
                             title={t('buttons.uninstall', { name: pkg.name })}
                         >
                             ❌
+                        </button>
+                    )}
+                    {onInstall && !pkg.isInstalled && (
+                        <button
+                            className="action-button install-button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onInstall(pkg);
+                            }}
+                            title={t('buttons.install', { name: pkg.name })}
+                        >
+                            ⬇️
                         </button>
                     )}
                     {onShowInfo && (

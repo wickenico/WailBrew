@@ -46,6 +46,10 @@ export function GetCurrentLanguage() {
   return window['go']['main']['App']['GetCurrentLanguage']();
 }
 
+export function InstallBrewPackage(arg1) {
+  return window['go']['main']['App']['InstallBrewPackage'](arg1);
+}
+
 export function OpenURL(arg1) {
   return window['go']['main']['App']['OpenURL'](arg1);
 }
