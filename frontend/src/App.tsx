@@ -73,6 +73,7 @@ const WailBrewApp = () => {
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
     const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState<boolean>(false);
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
+    const [isUpdateAllOperation, setIsUpdateAllOperation] = useState<boolean>(false);
     const [installLogs, setInstallLogs] = useState<string | null>(null);
     const [uninstallLogs, setUninstallLogs] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
@@ -339,6 +340,7 @@ const WailBrewApp = () => {
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
         setShowUpdateConfirm(false);
+        setIsUpdateAllOperation(false);
         setUpdateLogs(t('dialogs.updating', { name: selectedPackage.name }));
 
         // Set up event listeners for live progress
@@ -373,6 +375,7 @@ const WailBrewApp = () => {
 
     const handleUpdateAllConfirmed = async () => {
         setShowUpdateAllConfirm(false);
+        setIsUpdateAllOperation(true);
         setUpdateLogs(t('dialogs.updatingAll'));
 
         // Set up event listeners for live progress
@@ -386,15 +389,8 @@ const WailBrewApp = () => {
         });
 
         const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
-            // Update the package list after successful update
-            const updated = await GetBrewUpdatablePackages();
-            const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
-                name,
-                installedVersion,
-                latestVersion,
-                isInstalled: true,
-            }));
-            setUpdatablePackages(formatted);
+            // Update all package lists after successful update
+            await handleRefreshPackages();
             
             // Clean up event listeners
             progressListener();
@@ -817,7 +813,14 @@ const WailBrewApp = () => {
                     open={updateLogs !== null}
                     title={selectedPackage ? t('dialogs.updateLogs', { name: selectedPackage.name }) : t('dialogs.updateAllLogs')}
                     log={updateLogs}
-                    onClose={() => setUpdateLogs(null)}
+                    onClose={async () => {
+                        setUpdateLogs(null);
+                        // Refresh packages if this was an update all operation
+                        if (isUpdateAllOperation) {
+                            setIsUpdateAllOperation(false);
+                            await handleRefreshPackages();
+                        }
+                    }}
                 />
                 <LogDialog
                     open={installLogs !== null}
