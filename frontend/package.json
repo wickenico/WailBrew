@@ -14,7 +14,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
-    "react-i18next": "^15.7.3",
+    "react-i18next": "^16.0.0",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
