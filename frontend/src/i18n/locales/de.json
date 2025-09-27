@@ -8,7 +8,8 @@
     "leaves": "Blätter",
     "repositories": "Repositories",
     "doctor": "Doctor",
-    "cleanup": "Cleanup"
+    "cleanup": "Cleanup",
+    "settings": "Einstellungen"
   },
   "headers": {
     "installedFormulas": "Installierte Formeln ({{count}})",
@@ -185,5 +186,39 @@
     "updateAvailable": "Update verfügbar!",
     "versionReady": "v{{version}} ist bereit",
     "upToDate": "Sie verwenden die neueste Version!"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "loading": "Einstellungen werden geladen...",
+    "footer": "Konfigurieren Sie WailBrew-Einstellungen, um Ihr Homebrew-Erlebnis anzupassen.",
+    "categories": {
+      "general": "Allgemein"
+    },
+    "brewPath": {
+      "title": "Homebrew-Pfad-Konfiguration",
+      "description": "Geben Sie den Pfad zu Ihrer Homebrew-Installation an. WailBrew verwendet diesen Pfad, um alle Homebrew-Befehle auszuführen.",
+      "currentPath": "Homebrew-Pfad",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "Brew-Pfad automatisch erkennen",
+      "currentlyUsing": "Aktuell verwendet:",
+      "note": "Hinweis: Das Ändern des Brew-Pfads aktualisiert alle Paketdaten, um die neue Homebrew-Installation zu reflektieren."
+    },
+    "buttons": {
+      "save": "Änderungen speichern",
+      "saving": "Speichern...",
+      "reset": "Zurücksetzen"
+    },
+    "messages": {
+      "pathUpdated": "Brew-Pfad erfolgreich aktualisiert!",
+      "pathReset": "Pfad auf aktuellen Wert zurückgesetzt.",
+      "noChanges": "Keine Änderungen zu speichern.",
+      "pathDetected": "Brew-Pfad automatisch erkannt: {{path}}"
+    },
+    "errors": {
+      "failedToGetPath": "Aktueller Brew-Pfad konnte nicht abgerufen werden.",
+      "emptyPath": "Bitte geben Sie einen gültigen Brew-Pfad ein.",
+      "invalidPath": "Ungültiger Brew-Pfad. Bitte überprüfen Sie, dass der Pfad existiert und eine gültige Brew-Ausführungsdatei ist.",
+      "autoDetectionFailed": "Brew-Pfad konnte nicht automatisch erkannt werden. Bitte geben Sie den Pfad manuell ein."
+    }
   }
 }

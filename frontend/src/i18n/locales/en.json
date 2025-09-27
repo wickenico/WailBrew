@@ -8,7 +8,8 @@
     "leaves": "Leaves",
     "repositories": "Repositories",
     "doctor": "Doctor",
-    "cleanup": "Cleanup"
+    "cleanup": "Cleanup",
+    "settings": "Settings"
   },
   "headers": {
     "installedFormulas": "Installed Formulas ({{count}})",
@@ -185,5 +186,39 @@
     "updateAvailable": "Update available!",
     "versionReady": "v{{version}} is ready",
     "upToDate": "You're running the latest version!"
+  },
+  "settings": {
+    "title": "Settings",
+    "loading": "Loading settings...",
+    "footer": "Configure WailBrew settings to customize your Homebrew experience.",
+    "categories": {
+      "general": "General"
+    },
+    "brewPath": {
+      "title": "Homebrew Path Configuration",
+      "description": "Specify the path to your Homebrew installation. WailBrew will use this path to execute all Homebrew commands.",
+      "currentPath": "Homebrew Path",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "Auto-detect brew path",
+      "currentlyUsing": "Currently using:",
+      "note": "Note: Changing the brew path will refresh all package data to reflect the new Homebrew installation."
+    },
+    "buttons": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "reset": "Reset"
+    },
+    "messages": {
+      "pathUpdated": "Brew path updated successfully!",
+      "pathReset": "Path reset to current value.",
+      "noChanges": "No changes to save.",
+      "pathDetected": "Auto-detected brew path: {{path}}"
+    },
+    "errors": {
+      "failedToGetPath": "Failed to get current brew path.",
+      "emptyPath": "Please enter a valid brew path.",
+      "invalidPath": "Invalid brew path. Please check that the path exists and is a valid brew executable.",
+      "autoDetectionFailed": "Could not auto-detect brew path. Please enter the path manually."
+    }
   }
 }

@@ -34,6 +34,10 @@ export function GetBrewPackages() {
   return window['go']['main']['App']['GetBrewPackages']();
 }
 
+export function GetBrewPath() {
+  return window['go']['main']['App']['GetBrewPath']();
+}
+
 export function GetBrewTaps() {
   return window['go']['main']['App']['GetBrewTaps']();
 }
@@ -64,6 +68,10 @@ export function RunBrewCleanup() {
 
 export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
+}
+
+export function SetBrewPath(arg1) {
+  return window['go']['main']['App']['SetBrewPath'](arg1);
 }
 
 export function SetLanguage(arg1) {

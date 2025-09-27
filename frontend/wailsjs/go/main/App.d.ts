@@ -18,6 +18,8 @@ export function GetBrewPackageInfoAsJson(arg1:string):Promise<Record<string, any
 
 export function GetBrewPackages():Promise<Array<any>>;
 
+export function GetBrewPath():Promise<string>;
+
 export function GetBrewTaps():Promise<Array<any>>;
 
 export function GetBrewUpdatablePackages():Promise<Array<any>>;
@@ -33,6 +35,8 @@ export function RemoveBrewPackage(arg1:string):Promise<string>;
 export function RunBrewCleanup():Promise<string>;
 
 export function RunBrewDoctor():Promise<string>;
+
+export function SetBrewPath(arg1:string):Promise<void>;
 
 export function SetLanguage(arg1:string):Promise<void>;
 

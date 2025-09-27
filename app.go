@@ -828,6 +828,28 @@ func (a *App) GetAppVersion() string {
 	return Version
 }
 
+// GetBrewPath returns the current brew path
+func (a *App) GetBrewPath() string {
+	return a.brewPath
+}
+
+// SetBrewPath sets a custom brew path
+func (a *App) SetBrewPath(path string) error {
+	// Validate that the path exists and is executable
+	if _, err := os.Stat(path); err != nil {
+		return fmt.Errorf("brew path does not exist: %s", path)
+	}
+
+	// Test if it's actually a brew executable by running --version
+	cmd := exec.Command(path, "--version")
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("invalid brew executable: %s", path)
+	}
+
+	a.brewPath = path
+	return nil
+}
+
 // CheckForUpdates checks if a new version is available on GitHub
 func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 	currentVersion := Version

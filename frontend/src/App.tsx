@@ -31,6 +31,7 @@ import PackageInfo from "./components/PackageInfo";
 import RepositoryInfo from "./components/RepositoryInfo";
 import DoctorView from "./components/DoctorView";
 import CleanupView from "./components/CleanupView";
+import SettingsView from "./components/SettingsView";
 import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
@@ -62,7 +63,7 @@ const WailBrewApp = () => {
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup">("installed");
+    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -222,7 +223,7 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         const unlisten = EventsOn("setView", (data: string) => {
-            setView(data as "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup");
+            setView(data as "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings");
             clearSelection();
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {
@@ -778,6 +779,11 @@ const WailBrewApp = () => {
                             const result = await RunBrewCleanup();
                             setCleanupLog(result);
                         }}
+                    />
+                )}
+                {view === "settings" && (
+                    <SettingsView
+                        onRefreshPackages={handleRefreshPackages}
                     />
                 )}
                 <ConfirmDialog
