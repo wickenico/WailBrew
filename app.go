@@ -20,8 +20,10 @@ import (
 
 var Version = "0.dev"
 
-// Standard PATH for brew commands
+// Standard PATH and locale for brew commands
 const brewEnvPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+const brewEnvLang = "LANG=en_US.UTF-8"
+const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
 
 // MenuTranslations holds all menu translations
 type MenuTranslations struct {
@@ -210,7 +212,7 @@ func detectBrewPath() string {
 // NewApp creates a new App application struct
 func NewApp() *App {
 	brewPath := detectBrewPath()
-	return &App{brewPath: brewPath, currentLanguage: "de"}
+	return &App{brewPath: brewPath, currentLanguage: "en"}
 }
 
 // startup saves the application context
@@ -237,16 +239,28 @@ func (a *App) GetCurrentLanguage() string {
 
 // getBackendMessage returns a translated backend message
 func (a *App) getBackendMessage(key string, params map[string]string) string {
-	messages := make(map[string]string)
+	var messages map[string]string
 
 	if a.currentLanguage == "en" {
 		messages = map[string]string{
 			"updateStart":            "🔄 Starting update for '{{name}}'...",
 			"updateSuccess":          "✅ Update for '{{name}}' completed successfully!",
 			"updateFailed":           "❌ Update for '{{name}}' failed: {{error}}",
+			"updateAllStart":         "🔄 Starting update for all packages...",
+			"updateAllSuccess":       "✅ Update for all packages completed successfully!",
+			"updateAllFailed":        "❌ Update for all packages failed: {{error}}",
+			"installStart":           "🔄 Starting installation for '{{name}}'...",
+			"installSuccess":         "✅ Installation for '{{name}}' completed successfully!",
+			"installFailed":          "❌ Installation for '{{name}}' failed: {{error}}",
+			"uninstallStart":         "🔄 Starting uninstallation for '{{name}}'...",
+			"uninstallSuccess":       "✅ Uninstallation for '{{name}}' completed successfully!",
+			"uninstallFailed":        "❌ Uninstallation for '{{name}}' failed: {{error}}",
 			"errorCreatingPipe":      "❌ Error creating output pipe: {{error}}",
 			"errorCreatingErrorPipe": "❌ Error creating error pipe: {{error}}",
 			"errorStartingUpdate":    "❌ Error starting update: {{error}}",
+			"errorStartingUpdateAll": "❌ Error starting update all: {{error}}",
+			"errorStartingInstall":   "❌ Error starting installation: {{error}}",
+			"errorStartingUninstall": "❌ Error starting uninstallation: {{error}}",
 		}
 	} else {
 		// Default to German
@@ -254,9 +268,21 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"updateStart":            "🔄 Starte Update für '{{name}}'...",
 			"updateSuccess":          "✅ Update für '{{name}}' erfolgreich abgeschlossen!",
 			"updateFailed":           "❌ Update für '{{name}}' fehlgeschlagen: {{error}}",
+			"updateAllStart":         "🔄 Starte Update für alle Pakete...",
+			"updateAllSuccess":       "✅ Update für alle Pakete erfolgreich abgeschlossen!",
+			"updateAllFailed":        "❌ Update für alle Pakete fehlgeschlagen: {{error}}",
+			"installStart":           "🔄 Starte Installation für '{{name}}'...",
+			"installSuccess":         "✅ Installation für '{{name}}' erfolgreich abgeschlossen!",
+			"installFailed":          "❌ Installation für '{{name}}' fehlgeschlagen: {{error}}",
+			"uninstallStart":         "🔄 Starte Deinstallation für '{{name}}'...",
+			"uninstallSuccess":       "✅ Deinstallation für '{{name}}' erfolgreich abgeschlossen!",
+			"uninstallFailed":        "❌ Deinstallation für '{{name}}' fehlgeschlagen: {{error}}",
 			"errorCreatingPipe":      "❌ Fehler beim Erstellen der Ausgabe-Pipe: {{error}}",
 			"errorCreatingErrorPipe": "❌ Fehler beim Erstellen der Fehler-Pipe: {{error}}",
 			"errorStartingUpdate":    "❌ Fehler beim Starten des Updates: {{error}}",
+			"errorStartingUpdateAll": "❌ Fehler beim Starten des Updates aller Pakete: {{error}}",
+			"errorStartingInstall":   "❌ Fehler beim Starten der Installation: {{error}}",
+			"errorStartingUninstall": "❌ Fehler beim Starten der Deinstallation: {{error}}",
 		}
 	}
 
@@ -342,7 +368,7 @@ func (a *App) menu() *menu.Menu {
 
 func (a *App) GetAllBrewPackages() [][]string {
 	cmd := exec.Command(a.brewPath, "formulae")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return [][]string{{"Error", err.Error()}}
@@ -361,7 +387,7 @@ func (a *App) GetAllBrewPackages() [][]string {
 // GetBrewPackages retrieves the list of installed Homebrew packages
 func (a *App) GetBrewPackages() [][]string {
 	cmd := exec.Command(a.brewPath, "list", "--formula", "--versions")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -402,7 +428,7 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	// Run brew info --json=v2 <packages>
 	cmd := exec.Command(a.brewPath, "info", "--json=v2")
 	cmd.Args = append(cmd.Args, names...)
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -455,7 +481,7 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 
 func (a *App) GetBrewLeaves() []string {
 	cmd := exec.Command(a.brewPath, "leaves")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return []string{"Error: " + err.Error()}
@@ -473,7 +499,7 @@ func (a *App) GetBrewLeaves() []string {
 
 func (a *App) GetBrewTaps() [][]string {
 	cmd := exec.Command(a.brewPath, "tap")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return [][]string{{"Error", err.Error()}}
@@ -496,7 +522,7 @@ func (a *App) RemoveBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUninstallProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -564,7 +590,7 @@ func (a *App) InstallBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageInstallProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "install", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -632,7 +658,7 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -702,7 +728,7 @@ func (a *App) UpdateAllBrewPackages() string {
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -767,7 +793,7 @@ func (a *App) UpdateAllBrewPackages() string {
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
 	cmd := exec.Command(a.brewPath, "info", "--json=v2", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -797,7 +823,7 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 
 func (a *App) GetBrewPackageInfo(packageName string) string {
 	cmd := exec.Command(a.brewPath, "info", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -811,14 +837,14 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 
 func (a *App) RunBrewDoctor() string {
 	cmd := exec.Command(a.brewPath, "doctor")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 	out, _ := cmd.CombinedOutput()
 	return string(out)
 }
 
 func (a *App) RunBrewCleanup() string {
 	cmd := exec.Command(a.brewPath, "cleanup")
-	cmd.Env = append(os.Environ(), brewEnvPath)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
 	out, _ := cmd.CombinedOutput()
 	return string(out)
 }
