@@ -174,7 +174,19 @@ const WailBrewApp = () => {
                 setAllPackages([]);
                 setLeavesPackages([]);
                 setRepositories([]);
-                setError(t('errors.loadingFormulas') + (err.message || err));
+                
+                let errorMessage = t('errors.loadingFormulas') + (err.message || err);
+                
+                // Provide helpful error message for common issues on fresh installations
+                if (errorMessage.includes("validation failed") || errorMessage.includes("not found")) {
+                    errorMessage += "\n\n💡 This commonly happens on fresh Homebrew installations. Please:\n" +
+                                  "• Make sure Homebrew is properly installed\n" + 
+                                  "• Try running 'brew doctor' in Terminal to check for issues\n" +
+                                  "• Wait a few minutes for Homebrew to finish setting up, then refresh\n" +
+                                  "• On first use, Homebrew may need to download formula data which can take time";
+                }
+                
+                setError(errorMessage);
                 setLoading(false);
             });
         

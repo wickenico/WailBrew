@@ -215,6 +215,29 @@ func NewApp() *App {
 	return &App{brewPath: brewPath, currentLanguage: "en"}
 }
 
+// runBrewCommand executes a brew command and returns output and error
+func (a *App) runBrewCommand(args ...string) ([]byte, error) {
+	cmd := exec.Command(a.brewPath, args...)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	return cmd.CombinedOutput()
+}
+
+// validateBrewInstallation checks if brew is working properly
+func (a *App) validateBrewInstallation() error {
+	// First check if brew executable exists
+	if _, err := os.Stat(a.brewPath); os.IsNotExist(err) {
+		return fmt.Errorf("brew not found at path: %s", a.brewPath)
+	}
+
+	// Try running a simple brew command to verify it works
+	_, err := a.runBrewCommand("--version")
+	if err != nil {
+		return fmt.Errorf("brew is not working properly: %v", err)
+	}
+
+	return nil
+}
+
 // startup saves the application context
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
@@ -367,48 +390,65 @@ func (a *App) menu() *menu.Menu {
 }
 
 func (a *App) GetAllBrewPackages() [][]string {
-	cmd := exec.Command(a.brewPath, "formulae")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-	output, err := cmd.CombinedOutput()
+	output, err := a.runBrewCommand("formulae")
 	if err != nil {
-		return [][]string{{"Error", err.Error()}}
+		// On error, return a helpful message instead of crashing
+		return [][]string{{"Error", fmt.Sprintf("Failed to fetch all packages: %v. This often happens on fresh Homebrew installations. Try refreshing after a few minutes.", err)}}
 	}
-	lines := strings.Split(string(output), "\n")
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return [][]string{}
+	}
+
+	lines := strings.Split(outputStr, "\n")
 	var results [][]string
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line != "" {
 			results = append(results, []string{line, ""})
 		}
 	}
+
 	return results
 }
 
 // GetBrewPackages retrieves the list of installed Homebrew packages
 func (a *App) GetBrewPackages() [][]string {
-	cmd := exec.Command(a.brewPath, "list", "--formula", "--versions")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		////log.Println("❌ ERROR: 'brew list --versions' failed:", err)
-		////log.Println("🔍 Output:", string(output))
-		return [][]string{{"Error", "fetching brew packages"}}
+	// Validate brew installation first
+	if err := a.validateBrewInstallation(); err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
-	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
+	output, err := a.runBrewCommand("list", "--formula", "--versions")
+	if err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed packages: %v", err)}}
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		// No packages installed, return empty list instead of error
+		return [][]string{}
+	}
+
+	lines := strings.Split(outputStr, "\n")
 	var packages [][]string
 
 	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+
 		parts := strings.Fields(line)
 		if len(parts) >= 2 {
 			packages = append(packages, []string{parts[0], parts[1]})
-		} else {
+		} else if len(parts) == 1 {
 			packages = append(packages, []string{parts[0], "Unknown"})
 		}
 	}
 
-	//log.Println("✅ Installed Homebrew packages:", packages)
 	return packages
 }
 
@@ -419,6 +459,11 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		return [][]string{{"Error", "fetching updatable packages"}}
 	}
 
+	// If no packages are installed, return empty array (not an error)
+	if len(installedPackages) == 0 {
+		return [][]string{}
+	}
+
 	// Build list of package names
 	var names []string
 	for _, pkg := range installedPackages {
@@ -426,15 +471,12 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	}
 
 	// Run brew info --json=v2 <packages>
-	cmd := exec.Command(a.brewPath, "info", "--json=v2")
-	cmd.Args = append(cmd.Args, names...)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	args := []string{"info", "--json=v2"}
+	args = append(args, names...)
 
-	output, err := cmd.CombinedOutput()
+	output, err := a.runBrewCommand(args...)
 	if err != nil {
-		////log.Println("❌ ERROR: 'brew info' failed:", err)
-		////log.Println("🔍 Output:", string(output))
-		return [][]string{{"Error", "fetching updatable packages"}}
+		return [][]string{{"Error", fmt.Sprintf("Failed to check for updates: %v", err)}}
 	}
 
 	// Parse JSON
@@ -480,13 +522,17 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 }
 
 func (a *App) GetBrewLeaves() []string {
-	cmd := exec.Command(a.brewPath, "leaves")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-	output, err := cmd.CombinedOutput()
+	output, err := a.runBrewCommand("leaves")
 	if err != nil {
-		return []string{"Error: " + err.Error()}
+		return []string{fmt.Sprintf("Error: %v", err)}
 	}
-	lines := strings.Split(string(output), "\n")
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return []string{}
+	}
+
+	lines := strings.Split(outputStr, "\n")
 	var results []string
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -494,17 +540,22 @@ func (a *App) GetBrewLeaves() []string {
 			results = append(results, line)
 		}
 	}
+
 	return results
 }
 
 func (a *App) GetBrewTaps() [][]string {
-	cmd := exec.Command(a.brewPath, "tap")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-	output, err := cmd.CombinedOutput()
+	output, err := a.runBrewCommand("tap")
 	if err != nil {
-		return [][]string{{"Error", err.Error()}}
+		return [][]string{{"Error", fmt.Sprintf("Failed to fetch repositories: %v", err)}}
 	}
-	lines := strings.Split(string(output), "\n")
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return [][]string{}
+	}
+
+	lines := strings.Split(outputStr, "\n")
 	var taps [][]string
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -512,6 +563,7 @@ func (a *App) GetBrewTaps() [][]string {
 			taps = append(taps, []string{line, "Active"})
 		}
 	}
+
 	return taps
 }
 
@@ -792,14 +844,10 @@ func (a *App) UpdateAllBrewPackages() string {
 }
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
-	cmd := exec.Command(a.brewPath, "info", "--json=v2", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-
-	output, err := cmd.CombinedOutput()
+	output, err := a.runBrewCommand("info", "--json=v2", packageName)
 	if err != nil {
-		//log.Println("❌ ERROR: 'brew info' failed:", err)
 		return map[string]interface{}{
-			"error": "Failed to get package info",
+			"error": fmt.Sprintf("Failed to get package info: %v", err),
 		}
 	}
 
@@ -807,7 +855,6 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 		Formulae []map[string]interface{} `json:"formulae"`
 	}
 	if err := json.Unmarshal(output, &result); err != nil {
-		//log.Println("❌ ERROR: parsing brew info:", err)
 		return map[string]interface{}{
 			"error": "Failed to parse package info",
 		}
@@ -822,31 +869,28 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 }
 
 func (a *App) GetBrewPackageInfo(packageName string) string {
-	cmd := exec.Command(a.brewPath, "info", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-
-	output, err := cmd.CombinedOutput()
+	output, err := a.runBrewCommand("info", packageName)
 	if err != nil {
-		//log.Printf("❌ ERROR: 'brew info' failed for %s: %v\n", packageName, err)
-		//log.Println("🔍 Output:", string(output))
-		return "Error: Failed to get package info: " + err.Error()
+		return fmt.Sprintf("Error: Failed to get package info: %v", err)
 	}
 
 	return string(output)
 }
 
 func (a *App) RunBrewDoctor() string {
-	cmd := exec.Command(a.brewPath, "doctor")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-	out, _ := cmd.CombinedOutput()
-	return string(out)
+	output, err := a.runBrewCommand("doctor")
+	if err != nil {
+		return fmt.Sprintf("Error running brew doctor: %v\n\nOutput:\n%s", err, string(output))
+	}
+	return string(output)
 }
 
 func (a *App) RunBrewCleanup() string {
-	cmd := exec.Command(a.brewPath, "cleanup")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-	out, _ := cmd.CombinedOutput()
-	return string(out)
+	output, err := a.runBrewCommand("cleanup")
+	if err != nil {
+		return fmt.Sprintf("Error running brew cleanup: %v\n\nOutput:\n%s", err, string(output))
+	}
+	return string(output)
 }
 
 // GetAppVersion returns the application version
