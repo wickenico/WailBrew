@@ -3,7 +3,11 @@
 [![Latest Release](https://img.shields.io/github/v/release/wickenico/WailBrew)](https://github.com/wickenico/WailBrew/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/wickenico/WailBrew/total)](https://github.com/wickenico/WailBrew/releases)
 
+## 🍺 About WailBrew
+
 A modern, user-friendly graphical interface for Homebrew package management on macOS. WailBrew simplifies managing your Homebrew formulas with an intuitive desktop application.
+
+Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/WailBrew)
 
 ## 📥 Installation
 
@@ -15,12 +19,6 @@ brew install --cask wailbrew
 ```
 
 **[Download Latest Version](https://github.com/wickenico/WailBrew/releases/latest)** 
-
-*GitHub will automatically redirect to the latest release page where you can download the zip file.*
-
-
-## 🍺 About WailBrew
-WailBrew is a desktop GUI manager for Homebrew built with Wails, Go, and React. The application streamlines Homebrew package management through an intuitive user interface, providing all essential features for daily package administration.
 
 ## 📰 Mentions
 
