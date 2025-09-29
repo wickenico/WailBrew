@@ -137,7 +137,8 @@
       "leaves": "Leaves",
       "repositories": "Repositories",
       "doctor": "Doctor",
-      "cleanup": "Cleanup"
+      "cleanup": "Cleanup",
+      "settings": "Settings"
     },
     "help": {
       "title": "Help",

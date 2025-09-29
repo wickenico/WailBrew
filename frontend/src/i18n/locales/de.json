@@ -137,7 +137,8 @@
       "leaves": "Blätter",
       "repositories": "Repositories",
       "doctor": "Doctor",
-      "cleanup": "Cleanup"
+      "cleanup": "Cleanup",
+      "settings": "Einstellungen"
     },
     "help": {
       "title": "Hilfe",

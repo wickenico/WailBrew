@@ -44,6 +44,7 @@ type MenuTranslations struct {
 		Repositories string `json:"repositories"`
 		Doctor       string `json:"doctor"`
 		Cleanup      string `json:"cleanup"`
+		Settings     string `json:"settings"`
 	} `json:"view"`
 	Help struct {
 		Title        string `json:"title"`
@@ -81,6 +82,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Repositories string `json:"repositories"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
 			}{
 				Title:        "View",
 				Installed:    "Installed Formulae",
@@ -90,6 +92,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Repositories: "Repositories",
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
+				Settings:     "Settings",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -128,6 +131,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Repositories string `json:"repositories"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
 			}{
 				Title:        "Ansicht",
 				Installed:    "Installierte Formeln",
@@ -137,6 +141,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Repositories: "Repositories",
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
+				Settings:     "Einstellungen",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -391,6 +396,10 @@ func (a *App) menu() *menu.Menu {
 	})
 	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "cleanup")
+	})
+	ViewMenu.AddSeparator()
+	ViewMenu.AddText(translations.View.Settings, keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "settings")
 	})
 
 	// Edit-Menü (optional)
