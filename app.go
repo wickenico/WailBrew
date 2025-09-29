@@ -24,6 +24,7 @@ var Version = "0.dev"
 const brewEnvPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
 const brewEnvLang = "LANG=en_US.UTF-8"
 const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
+const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 
 // MenuTranslations holds all menu translations
 type MenuTranslations struct {
@@ -217,9 +218,30 @@ func NewApp() *App {
 
 // runBrewCommand executes a brew command and returns output and error
 func (a *App) runBrewCommand(args ...string) ([]byte, error) {
-	cmd := exec.Command(a.brewPath, args...)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
-	return cmd.CombinedOutput()
+	return a.runBrewCommandWithTimeout(30*time.Second, args...)
+}
+
+// runBrewCommandWithTimeout executes a brew command with a timeout
+func (a *App) runBrewCommandWithTimeout(timeout time.Duration, args ...string) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, a.brewPath, args...)
+	cmd.Env = append(os.Environ(),
+		brewEnvPath,
+		brewEnvLang,
+		brewEnvLCAll,
+		brewEnvNoAutoUpdate, // Prevent auto-update on fresh installs
+	)
+
+	output, err := cmd.CombinedOutput()
+
+	// Check if the error was due to timeout
+	if ctx.Err() == context.DeadlineExceeded {
+		return nil, fmt.Errorf("command timed out after %v: brew %v", timeout, args)
+	}
+
+	return output, err
 }
 
 // validateBrewInstallation checks if brew is working properly
@@ -574,7 +596,7 @@ func (a *App) RemoveBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUninstallProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -642,7 +664,7 @@ func (a *App) InstallBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageInstallProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "install", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -710,7 +732,7 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -780,7 +802,7 @@ func (a *App) UpdateAllBrewPackages() string {
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
