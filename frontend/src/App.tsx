@@ -205,18 +205,61 @@ const WailBrewApp = () => {
                 const updateInfo = await CheckForUpdates();
                 
                 if (updateInfo.available) {
+                    const upgradeCommand = 'brew upgrade --cask wailbrew';
+                    
                     toast(
                         () => (
                             <div>
                                 <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
-                                <div style={{ fontSize: '0.85rem', opacity: 0.8 }}>
+                                <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
                                     {t('toast.versionReady', { version: updateInfo.latestVersion })}
+                                </div>
+                                <div 
+                                    role="button"
+                                    tabIndex={0}
+                                    style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '0.5rem',
+                                        marginTop: '0.5rem',
+                                        padding: '0.4rem 0.6rem',
+                                        background: 'rgba(0, 0, 0, 0.3)',
+                                        borderRadius: '6px',
+                                        fontSize: '0.8rem',
+                                        fontFamily: 'monospace',
+                                        cursor: 'pointer',
+                                        transition: 'background 0.2s',
+                                        outline: 'none',
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigator.clipboard.writeText(upgradeCommand);
+                                        toast.success('Copied to clipboard!', { duration: 2000 });
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            navigator.clipboard.writeText(upgradeCommand);
+                                            toast.success('Copied to clipboard!', { duration: 2000 });
+                                        }
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                    }}
+                                    title="Click to copy"
+                                >
+                                    <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
+                                    <span style={{ fontSize: '1rem', opacity: 0.7 }}>📋</span>
                                 </div>
                             </div>
                         ),
                         {
                             icon: '🎉',
-                            duration: 4000,
+                            duration: 6000,
                             position: 'bottom-center',
                         }
                     );
