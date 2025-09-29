@@ -83,9 +83,9 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup      string `json:"cleanup"`
 			}{
 				Title:        "View",
-				Installed:    "Installed Formulas",
-				Outdated:     "Outdated Formulas",
-				All:          "All Formulas",
+				Installed:    "Installed Formulae",
+				Outdated:     "Outdated Formulae",
+				All:          "All Formulae",
 				Leaves:       "Leaves",
 				Repositories: "Repositories",
 				Doctor:       "Doctor",

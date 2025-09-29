@@ -1,10 +1,10 @@
 {
   "sidebar": {
-    "formulas": "Formulas",
+    "formulas": "Formulae",
     "tools": "Tools",
     "installed": "Installed",
     "outdated": "Outdated",
-    "all": "Formulas",
+    "all": "Formulae",
     "leaves": "Leaves",
     "repositories": "Repositories",
     "doctor": "Doctor",
@@ -12,9 +12,9 @@
     "settings": "Settings"
   },
   "headers": {
-    "installedFormulas": "Installed Formulas ({{count}})",
-    "outdatedFormulas": "Outdated Formulas ({{count}})",
-    "allFormulas": "Formulas ({{count}})",
+    "installedFormulas": "Installed Formulae ({{count}})",
+    "outdatedFormulas": "Outdated Formulae ({{count}})",
+    "allFormulas": "Formulae ({{count}})",
     "leaves": "Leaves ({{count}})",
     "repositories": "Repositories ({{count}})",
     "homebrewDoctor": "Homebrew Doctor",
@@ -63,11 +63,11 @@
     "actions": "Actions"
   },
   "footers": {
-    "installedFormulas": "These formulas are already installed on your system.",
-    "outdatedFormulas": "Some formulas can be updated.",
-    "allFormulas": "All available Homebrew formulas. Green highlighting shows installed formulas.",
-    "leaves": "Leaves are formulas that are not required as dependencies by other installed formulas.",
-    "repositories": "Repositories (Taps) are sources for formulas. These contain additional packages besides the standard repository.",
+    "installedFormulas": "These formulae are already installed on your system.",
+    "outdatedFormulas": "Some formulae can be updated.",
+    "allFormulas": "All available Homebrew formulae. Green highlighting shows installed formulae.",
+    "leaves": "Leaves are formulae that are not required as dependencies by other installed formulae.",
+    "repositories": "Repositories (Taps) are sources for formulae. These contain additional packages besides the standard repository.",
     "doctor": "Doctor is a Homebrew feature that can detect the most common causes of errors.",
     "cleanup": "Cleanup removes outdated downloads and cached files to free up disk space."
   },
@@ -94,7 +94,7 @@
     "noCleanupOutput": "No output yet. Click \"Run cleanup\"."
   },
   "errors": {
-    "loadingFormulas": "❌ Error loading formulas!",
+    "loadingFormulas": "❌ Error loading formulae!",
     "failedInstalledPackages": "Failed to get installed packages",
     "failedUpdatablePackages": "Failed to get updatable packages",
     "failedAllPackages": "Failed to get all packages",
@@ -131,9 +131,9 @@
     },
     "view": {
       "title": "View",
-      "installed": "Installed Formulas",
-      "outdated": "Outdated Formulas",
-      "all": "All Formulas",
+      "installed": "Installed Formulae",
+      "outdated": "Outdated Formulae",
+      "all": "All Formulae",
       "leaves": "Leaves",
       "repositories": "Repositories",
       "doctor": "Doctor",
@@ -147,7 +147,7 @@
     }
   },
   "table": {
-    "loadingFormulas": "Loading formulas…",
+    "loadingFormulas": "Loading formulae…",
     "loadingRepositories": "Loading repositories…",
     "noResults": "No matching results.",
     "installedStatus": "✓ Installed",
