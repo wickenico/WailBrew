@@ -11,7 +11,6 @@ interface SidebarProps {
     allCount: number;
     leavesCount: number;
     repositoriesCount: number;
-    appVersion: string;
     onClearSelection: () => void;
 }
 
@@ -23,7 +22,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     allCount,
     leavesCount,
     repositoriesCount,
-    appVersion,
     onClearSelection,
 }) => {
     const { t, i18n } = useTranslation();
@@ -47,9 +45,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 style={{ width: "28px", height: "28px", marginRight: "8px", verticalAlign: "middle" }}
             />
             WailBrew
-        </div>
-        <div className="version-badge">
-            v{appVersion}
         </div>
         <div className="sidebar-section">
             <h4>{t('sidebar.formulas')}</h4>

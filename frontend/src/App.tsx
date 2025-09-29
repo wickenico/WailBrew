@@ -590,7 +590,6 @@ const WailBrewApp = () => {
                 allCount={allPackages.length}
                 leavesCount={leavesPackages.length}
                 repositoriesCount={repositories.length}
-                appVersion={appVersion}
                 onClearSelection={clearSelection}
             />
             <main className="content">
