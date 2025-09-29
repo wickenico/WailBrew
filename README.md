@@ -22,6 +22,10 @@ brew install --cask wailbrew
 ## 🍺 About WailBrew
 WailBrew is a desktop GUI manager for Homebrew built with Wails, Go, and React. The application streamlines Homebrew package management through an intuitive user interface, providing all essential features for daily package administration.
 
+## 📰 Mentions
+
+- <a href="https://vvmac.com/wordpress_b/wailbrew-pare-homebrew-dune-interface-graphique/" target="_blank" rel="noopener noreferrer">VVMac</a>
+
 ## 📸 Screenshots
 
 ![WailBrew Screenshot](images/Screenshot.png)
@@ -51,7 +55,7 @@ WailBrew is a desktop GUI manager for Homebrew built with Wails, Go, and React. 
 
 ## 🚀 Installation & Setup
 ### Prerequisites
-- macOS (Intel or Apple Silicon)
+- macOS with Apple Silicon (not tested on Intel)
 - Homebrew must be installed
 - Node.js and pnpm (for development)
 
