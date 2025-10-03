@@ -92,20 +92,31 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </li>
             </ul>
         </div>
-        <div className="sidebar-section language-switcher">
-            <h4>{t('language.switchLanguage')}</h4>
-            <ul>
+        <div className="sidebar-section language-switcher" style={{ marginTop: 'auto', paddingTop: '8px' }}>
+            <ul style={{ display: 'flex', gap: '8px', justifyContent: 'center', padding: '0' }}>
                 <li 
                     className={i18n.language === 'en' ? 'active' : ''} 
                     onClick={() => changeLanguage('en')}
+                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
+                    title={t('language.english')}
                 >
-                    <span>🇺🇸 {t('language.english')}</span>
+                    <span>🇺🇸</span>
                 </li>
                 <li 
                     className={i18n.language === 'de' ? 'active' : ''} 
                     onClick={() => changeLanguage('de')}
+                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
+                    title={t('language.german')}
                 >
-                    <span>🇩🇪 {t('language.german')}</span>
+                    <span>🇩🇪</span>
+                </li>
+                <li 
+                    className={i18n.language === 'fr' ? 'active' : ''} 
+                    onClick={() => changeLanguage('fr')}
+                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
+                    title={t('language.french')}
+                >
+                    <span>🇫🇷</span>
                 </li>
             </ul>
         </div>

@@ -59,7 +59,8 @@ type MenuTranslations struct {
 func (a *App) getMenuTranslations() MenuTranslations {
 	var translations MenuTranslations
 
-	if a.currentLanguage == "en" {
+	switch a.currentLanguage {
+	case "en":
 		translations = MenuTranslations{
 			App: struct {
 				About        string `json:"about"`
@@ -109,8 +110,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				HelpMessage:  "Currently there is no help page available.",
 			},
 		}
-	} else {
-		// Default to German
+	case "de":
 		translations = MenuTranslations{
 			App: struct {
 				About        string `json:"about"`
@@ -139,6 +139,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 			}{
 				Title:        "Ansicht",
 				Installed:    "Installierte Formeln",
+				Casks:        "Casks",
 				Outdated:     "Veraltete Formeln",
 				All:          "Alle Formeln",
 				Leaves:       "Blätter",
@@ -157,6 +158,107 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				WailbrewHelp: "WailBrew-Hilfe",
 				HelpTitle:    "Hilfe",
 				HelpMessage:  "Aktuell gibt es noch keine Hilfeseite.",
+			},
+		}
+	case "fr":
+		translations = MenuTranslations{
+			App: struct {
+				About        string `json:"about"`
+				CheckUpdates string `json:"checkUpdates"`
+				VisitWebsite string `json:"visitWebsite"`
+				VisitGitHub  string `json:"visitGitHub"`
+				Quit         string `json:"quit"`
+			}{
+				About:        "À propos de WailBrew",
+				CheckUpdates: "Vérifier les mises à jour...",
+				VisitWebsite: "Visiter le site Web",
+				VisitGitHub:  "Visiter le dépôt GitHub",
+				Quit:         "Quitter",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
+			}{
+				Title:        "Affichage",
+				Installed:    "Formules Installées",
+				Casks:        "Casks",
+				Outdated:     "Formules Obsolètes",
+				All:          "Toutes les Formules",
+				Leaves:       "Feuilles",
+				Repositories: "Dépôts",
+				Doctor:       "Diagnostic",
+				Cleanup:      "Nettoyage",
+				Settings:     "Paramètres",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Aide",
+				WailbrewHelp: "Aide WailBrew",
+				HelpTitle:    "Aide",
+				HelpMessage:  "Aucune page d'aide n'est actuellement disponible.",
+			},
+		}
+	default:
+		// Default to English
+		translations = MenuTranslations{
+			App: struct {
+				About        string `json:"about"`
+				CheckUpdates string `json:"checkUpdates"`
+				VisitWebsite string `json:"visitWebsite"`
+				VisitGitHub  string `json:"visitGitHub"`
+				Quit         string `json:"quit"`
+			}{
+				About:        "About WailBrew",
+				CheckUpdates: "Check for Updates...",
+				VisitWebsite: "Visit Website",
+				VisitGitHub:  "Visit GitHub Repo",
+				Quit:         "Quit",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
+			}{
+				Title:        "View",
+				Installed:    "Installed Formulae",
+				Casks:        "Casks",
+				Outdated:     "Outdated Formulae",
+				All:          "All Formulae",
+				Leaves:       "Leaves",
+				Repositories: "Repositories",
+				Doctor:       "Doctor",
+				Cleanup:      "Cleanup",
+				Settings:     "Settings",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Help",
+				WailbrewHelp: "WailBrew Help",
+				HelpTitle:    "Help",
+				HelpMessage:  "Currently there is no help page available.",
 			},
 		}
 	}
@@ -295,7 +397,8 @@ func (a *App) GetCurrentLanguage() string {
 func (a *App) getBackendMessage(key string, params map[string]string) string {
 	var messages map[string]string
 
-	if a.currentLanguage == "en" {
+	switch a.currentLanguage {
+	case "en":
 		messages = map[string]string{
 			"updateStart":            "🔄 Starting update for '{{name}}'...",
 			"updateSuccess":          "✅ Update for '{{name}}' completed successfully!",
@@ -316,8 +419,7 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingInstall":   "❌ Error starting installation: {{error}}",
 			"errorStartingUninstall": "❌ Error starting uninstallation: {{error}}",
 		}
-	} else {
-		// Default to German
+	case "de":
 		messages = map[string]string{
 			"updateStart":            "🔄 Starte Update für '{{name}}'...",
 			"updateSuccess":          "✅ Update für '{{name}}' erfolgreich abgeschlossen!",
@@ -337,6 +439,49 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll": "❌ Fehler beim Starten des Updates aller Pakete: {{error}}",
 			"errorStartingInstall":   "❌ Fehler beim Starten der Installation: {{error}}",
 			"errorStartingUninstall": "❌ Fehler beim Starten der Deinstallation: {{error}}",
+		}
+	case "fr":
+		messages = map[string]string{
+			"updateStart":            "🔄 Démarrage de la mise à jour pour '{{name}}'...",
+			"updateSuccess":          "✅ Mise à jour pour '{{name}}' terminée avec succès !",
+			"updateFailed":           "❌ Mise à jour pour '{{name}}' échouée : {{error}}",
+			"updateAllStart":         "🔄 Démarrage de la mise à jour pour tous les paquets...",
+			"updateAllSuccess":       "✅ Mise à jour pour tous les paquets terminée avec succès !",
+			"updateAllFailed":        "❌ Mise à jour pour tous les paquets échouée : {{error}}",
+			"installStart":           "🔄 Démarrage de l'installation pour '{{name}}'...",
+			"installSuccess":         "✅ Installation pour '{{name}}' terminée avec succès !",
+			"installFailed":          "❌ Installation pour '{{name}}' échouée : {{error}}",
+			"uninstallStart":         "🔄 Démarrage de la désinstallation pour '{{name}}'...",
+			"uninstallSuccess":       "✅ Désinstallation pour '{{name}}' terminée avec succès !",
+			"uninstallFailed":        "❌ Désinstallation pour '{{name}}' échouée : {{error}}",
+			"errorCreatingPipe":      "❌ Erreur lors de la création du pipe de sortie : {{error}}",
+			"errorCreatingErrorPipe": "❌ Erreur lors de la création du pipe d'erreur : {{error}}",
+			"errorStartingUpdate":    "❌ Erreur lors du démarrage de la mise à jour : {{error}}",
+			"errorStartingUpdateAll": "❌ Erreur lors du démarrage de la mise à jour de tous les paquets : {{error}}",
+			"errorStartingInstall":   "❌ Erreur lors du démarrage de l'installation : {{error}}",
+			"errorStartingUninstall": "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
+		}
+	default:
+		// Default to English
+		messages = map[string]string{
+			"updateStart":            "🔄 Starting update for '{{name}}'...",
+			"updateSuccess":          "✅ Update for '{{name}}' completed successfully!",
+			"updateFailed":           "❌ Update for '{{name}}' failed: {{error}}",
+			"updateAllStart":         "🔄 Starting update for all packages...",
+			"updateAllSuccess":       "✅ Update for all packages completed successfully!",
+			"updateAllFailed":        "❌ Update for all packages failed: {{error}}",
+			"installStart":           "🔄 Starting installation for '{{name}}'...",
+			"installSuccess":         "✅ Installation for '{{name}}' completed successfully!",
+			"installFailed":          "❌ Installation for '{{name}}' failed: {{error}}",
+			"uninstallStart":         "🔄 Starting uninstallation for '{{name}}'...",
+			"uninstallSuccess":       "✅ Uninstallation for '{{name}}' completed successfully!",
+			"uninstallFailed":        "❌ Uninstallation for '{{name}}' failed: {{error}}",
+			"errorCreatingPipe":      "❌ Error creating output pipe: {{error}}",
+			"errorCreatingErrorPipe": "❌ Error creating error pipe: {{error}}",
+			"errorStartingUpdate":    "❌ Error starting update: {{error}}",
+			"errorStartingUpdateAll": "❌ Error starting update all: {{error}}",
+			"errorStartingInstall":   "❌ Error starting installation: {{error}}",
+			"errorStartingUninstall": "❌ Error starting uninstallation: {{error}}",
 		}
 	}
 
