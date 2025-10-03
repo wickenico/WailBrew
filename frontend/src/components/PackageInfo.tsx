@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageEntry {
     name: string;
@@ -29,6 +30,16 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const dependencies = packageEntry?.dependencies?.length ? packageEntry.dependencies.join(", ") : t('common.notAvailable');
     const conflicts = packageEntry?.conflicts?.length ? packageEntry.conflicts.join(", ") : t('common.notAvailable');
     
+    const isValidUrl = (url: string) => {
+        return url && url !== t('common.notAvailable') && (url.startsWith('http://') || url.startsWith('https://'));
+    };
+
+    const handleHomepageClick = () => {
+        if (packageEntry?.homepage && isValidUrl(packageEntry.homepage)) {
+            BrowserOpenURL(packageEntry.homepage);
+        }
+    };
+
     return (
         <>
             <p>
@@ -38,7 +49,33 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                 )}
             </p>
             <p>{t('packageInfo.description')}: {desc}</p>
-            <p>{t('packageInfo.homepage')}: {homepage}</p>
+            <p>
+                {t('packageInfo.homepage')}:{" "}
+                {isValidUrl(homepage) ? (
+                    <span
+                        onClick={handleHomepageClick}
+                        style={{
+                            color: '#4a9eff',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#6bb3ff';
+                            e.currentTarget.style.textDecoration = 'none';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.color = '#4a9eff';
+                            e.currentTarget.style.textDecoration = 'underline';
+                        }}
+                        title={homepage}
+                    >
+                        {homepage}
+                    </span>
+                ) : (
+                    <span>{homepage}</span>
+                )}
+            </p>
             {view === "all" ? (
                 <p>{t('packageInfo.status')}: {status}</p>
             ) : (
