@@ -3,6 +3,7 @@
     "formulas": "Formeln",
     "tools": "Werkzeuge",
     "installed": "Installiert",
+    "casks": "Casks",
     "outdated": "Veraltet",
     "all": "Formeln",
     "leaves": "Blätter",
@@ -13,6 +14,7 @@
   },
   "headers": {
     "installedFormulas": "Installierte Formeln ({{count}})",
+    "installedCasks": "Installierte Casks ({{count}})",
     "outdatedFormulas": "Veraltete Formeln ({{count}})",
     "allFormulas": "Alle Formeln ({{count}})",
     "leaves": "Blätter ({{count}})",
@@ -64,6 +66,7 @@
   },
   "footers": {
     "installedFormulas": "Diese Formeln sind bereits auf Ihrem System installiert.",
+    "installedCasks": "Diese Casks (GUI-Anwendungen) sind bereits auf Ihrem System installiert.",
     "outdatedFormulas": "Einige Formeln können aktualisiert werden.",
     "allFormulas": "Alle verfügbaren Homebrew-Formeln. Grüne Markierung zeigt installierte Formeln an.",
     "leaves": "Blätter sind Formeln, die nicht als Abhängigkeit von anderen installierten Formeln benötigt werden.",
@@ -96,6 +99,7 @@
   "errors": {
     "loadingFormulas": "❌ Fehler beim Laden der Formeln!",
     "failedInstalledPackages": "Fehler beim Laden der installierten Pakete",
+    "failedInstalledCasks": "Fehler beim Laden der installierten Casks",
     "failedUpdatablePackages": "Fehler beim Laden der aktualisierbaren Pakete",
     "failedAllPackages": "Fehler beim Laden aller Pakete",
     "failedLeaves": "Fehler beim Laden der Blätter",

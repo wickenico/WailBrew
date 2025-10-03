@@ -1,12 +1,14 @@
+/// <reference types="react" />
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { SetLanguage } from "../../wailsjs/go/main/App";
 import appIcon from "../assets/images/appicon_256.png";
 
 interface SidebarProps {
-    view: "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings";
-    setView: (view: "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings") => void;
+    view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings";
+    setView: (view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings") => void;
     packagesCount: number;
+    casksCount: number;
     updatableCount: number;
     allCount: number;
     leavesCount: number;
@@ -18,6 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     view,
     setView,
     packagesCount,
+    casksCount,
     updatableCount,
     allCount,
     leavesCount,
@@ -52,6 +55,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <li className={view === "installed" ? "active" : ""} onClick={() => { setView("installed"); onClearSelection(); }}>
                     <span>📦 {t('sidebar.installed')}</span>
                     <span className="badge">{packagesCount}</span>
+                </li>
+                <li className={view === "casks" ? "active" : ""} onClick={() => { setView("casks"); onClearSelection(); }}>
+                    <span>🖥️ {t('sidebar.casks')}</span>
+                    <span className="badge">{casksCount}</span>
                 </li>
                 <li className={view === "updatable" ? "active" : ""} onClick={() => { setView("updatable"); onClearSelection(); }}>
                     <span>🔄 {t('sidebar.outdated')}</span>

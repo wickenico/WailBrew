@@ -3,6 +3,7 @@
     "formulas": "Formulae",
     "tools": "Tools",
     "installed": "Installed",
+    "casks": "Casks",
     "outdated": "Outdated",
     "all": "Formulae",
     "leaves": "Leaves",
@@ -13,6 +14,7 @@
   },
   "headers": {
     "installedFormulas": "Installed Formulae ({{count}})",
+    "installedCasks": "Installed Casks ({{count}})",
     "outdatedFormulas": "Outdated Formulae ({{count}})",
     "allFormulas": "Formulae ({{count}})",
     "leaves": "Leaves ({{count}})",
@@ -64,6 +66,7 @@
   },
   "footers": {
     "installedFormulas": "These formulae are already installed on your system.",
+    "installedCasks": "These casks (GUI applications) are already installed on your system.",
     "outdatedFormulas": "Some formulae can be updated.",
     "allFormulas": "All available Homebrew formulae. Green highlighting shows installed formulae.",
     "leaves": "Leaves are formulae that are not required as dependencies by other installed formulae.",
@@ -96,6 +99,7 @@
   "errors": {
     "loadingFormulas": "❌ Error loading formulae!",
     "failedInstalledPackages": "Failed to get installed packages",
+    "failedInstalledCasks": "Failed to get installed casks",
     "failedUpdatablePackages": "Failed to get updatable packages",
     "failedAllPackages": "Failed to get all packages",
     "failedLeaves": "Failed to get leaves",

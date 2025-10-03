@@ -18,6 +18,10 @@ export function GetAppVersion() {
   return window['go']['main']['App']['GetAppVersion']();
 }
 
+export function GetBrewCasks() {
+  return window['go']['main']['App']['GetBrewCasks']();
+}
+
 export function GetBrewLeaves() {
   return window['go']['main']['App']['GetBrewLeaves']();
 }

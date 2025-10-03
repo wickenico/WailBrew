@@ -5,6 +5,7 @@ import "./style.css";
 import "./App.css";
 import {
     GetBrewPackages,
+    GetBrewCasks,
     GetBrewUpdatablePackages,
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
@@ -57,13 +58,14 @@ interface RepositoryEntry {
 const WailBrewApp = () => {
     const { t, i18n } = useTranslation();
     const [packages, setPackages] = useState<PackageEntry[]>([]);
+    const [casks, setCasks] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
     const [allPackages, setAllPackages] = useState<PackageEntry[]>([]);
     const [leavesPackages, setLeavesPackages] = useState<PackageEntry[]>([]);
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings">("installed");
+    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -100,10 +102,11 @@ const WailBrewApp = () => {
         });
 
         setLoading(true);
-        Promise.all([GetBrewPackages(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
-            .then(([installed, updatable, all, leaves, repos]) => {
+        Promise.all([GetBrewPackages(), GetBrewCasks(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
+            .then(([installed, installedCasks, updatable, all, leaves, repos]) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = installed || [];
+                const safeInstalledCasks = installedCasks || [];
                 const safeUpdatable = updatable || [];
                 const safeAll = all || [];
                 const safeLeaves = leaves || [];
@@ -112,6 +115,9 @@ const WailBrewApp = () => {
                 // Check for errors in the responses
                 if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
                     throw new Error(`${t('errors.failedInstalledPackages')}: ${safeInstalled[0][1]}`);
+                }
+                if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
+                    throw new Error(`${t('errors.failedInstalledCasks')}: ${safeInstalledCasks[0][1]}`);
                 }
                 if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
                     throw new Error(`${t('errors.failedUpdatablePackages')}: ${safeUpdatable[0][1]}`);
@@ -127,6 +133,11 @@ const WailBrewApp = () => {
                 }
 
                 const installedFormatted = safeInstalled.map(([name, installedVersion]) => ({
+                    name,
+                    installedVersion,
+                    isInstalled: true,
+                }));
+                const casksFormatted = safeInstalledCasks.map(([name, installedVersion]) => ({
                     name,
                     installedVersion,
                     isInstalled: true,
@@ -160,6 +171,7 @@ const WailBrewApp = () => {
                 }));
 
                 setPackages(installedFormatted);
+                setCasks(casksFormatted);
                 setUpdatablePackages(updatableFormatted);
                 setAllPackages(allFormatted);
                 setLeavesPackages(leavesFormatted);
@@ -302,6 +314,8 @@ const WailBrewApp = () => {
         switch (view) {
             case "installed":
                 return packages;
+            case "casks":
+                return casks;
             case "updatable":
                 return updatablePackages;
             case "all":
@@ -629,6 +643,7 @@ const WailBrewApp = () => {
                 view={view}
                 setView={setView}
                 packagesCount={packages.length}
+                casksCount={casks.length}
                 updatableCount={updatablePackages.length}
                 allCount={allPackages.length}
                 leavesCount={leavesPackages.length}
@@ -674,6 +689,48 @@ const WailBrewApp = () => {
                             </div>
                             <div className="package-footer">
                                 {t('footers.installedFormulas')}
+                            </div>
+                        </div>
+                    </>
+                )}
+                {view === "casks" && (
+                    <>
+                        <HeaderRow
+                            title={t('headers.installedCasks', { count: casks.length })}
+                            actions={
+                                <button
+                                    className="refresh-button"
+                                    onClick={handleRefreshPackages}
+                                    disabled={loading}
+                                    title={t('buttons.refresh')}
+                                >
+                                    🔄
+                                </button>
+                            }
+                            searchQuery={searchQuery}
+                            onSearchChange={setSearchQuery}
+                            onClearSearch={() => setSearchQuery("")}
+                        />
+                        {error && <div className="result error">{error}</div>}
+                        <PackageTable
+                            packages={filteredPackages}
+                            selectedPackage={selectedPackage}
+                            loading={loading}
+                            onSelect={handleSelect}
+                            columns={columnsInstalled}
+                            onUninstall={handleUninstallPackage}
+                            onShowInfo={handleShowPackageInfo}
+                        />
+                        <div className="info-footer-container">
+                            <div className="package-info">
+                                <PackageInfo
+                                    packageEntry={selectedPackage}
+                                    loadingDetailsFor={loadingDetailsFor}
+                                    view={view}
+                                />
+                            </div>
+                            <div className="package-footer">
+                                {t('footers.installedCasks')}
                             </div>
                         </div>
                     </>

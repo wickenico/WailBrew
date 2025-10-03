@@ -38,6 +38,7 @@ type MenuTranslations struct {
 	View struct {
 		Title        string `json:"title"`
 		Installed    string `json:"installed"`
+		Casks        string `json:"casks"`
 		Outdated     string `json:"outdated"`
 		All          string `json:"all"`
 		Leaves       string `json:"leaves"`
@@ -76,6 +77,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 			View: struct {
 				Title        string `json:"title"`
 				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
 				Outdated     string `json:"outdated"`
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
@@ -86,6 +88,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 			}{
 				Title:        "View",
 				Installed:    "Installed Formulae",
+				Casks:        "Casks",
 				Outdated:     "Outdated Formulae",
 				All:          "All Formulae",
 				Leaves:       "Leaves",
@@ -125,6 +128,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 			View: struct {
 				Title        string `json:"title"`
 				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
 				Outdated     string `json:"outdated"`
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
@@ -378,27 +382,30 @@ func (a *App) menu() *menu.Menu {
 	ViewMenu.AddText(translations.View.Installed, keys.CmdOrCtrl("1"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "installed")
 	})
-	ViewMenu.AddText(translations.View.Outdated, keys.CmdOrCtrl("2"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Casks, keys.CmdOrCtrl("2"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "casks")
+	})
+	ViewMenu.AddText(translations.View.Outdated, keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "updatable")
 	})
-	ViewMenu.AddText(translations.View.All, keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.All, keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "all")
 	})
-	ViewMenu.AddText(translations.View.Leaves, keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Leaves, keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "leaves")
 	})
-	ViewMenu.AddText(translations.View.Repositories, keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Repositories, keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "repositories")
 	})
 	ViewMenu.AddSeparator()
-	ViewMenu.AddText(translations.View.Doctor, keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Doctor, keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "doctor")
 	})
-	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "cleanup")
 	})
 	ViewMenu.AddSeparator()
-	ViewMenu.AddText(translations.View.Settings, keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Settings, keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "settings")
 	})
 
@@ -481,6 +488,107 @@ func (a *App) GetBrewPackages() [][]string {
 	}
 
 	return packages
+}
+
+// GetBrewCasks retrieves the list of installed Homebrew casks
+func (a *App) GetBrewCasks() [][]string {
+	// Validate brew installation first
+	if err := a.validateBrewInstallation(); err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
+	}
+
+	// Get list of cask names only (more reliable than --versions)
+	output, err := a.runBrewCommand("list", "--cask")
+	if err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		// No casks installed, return empty list instead of error
+		return [][]string{}
+	}
+
+	lines := strings.Split(outputStr, "\n")
+	var caskNames []string
+	for _, line := range lines {
+		caskName := strings.TrimSpace(line)
+		if caskName != "" {
+			caskNames = append(caskNames, caskName)
+		}
+	}
+
+	if len(caskNames) == 0 {
+		return [][]string{}
+	}
+
+	var casks [][]string
+
+	// Try to get all cask info at once first
+	args := []string{"info", "--cask", "--json=v2"}
+	args = append(args, caskNames...)
+
+	infoOutput, err := a.runBrewCommand(args...)
+	if err == nil {
+		// Parse JSON to get versions
+		var caskInfo struct {
+			Casks []struct {
+				Token   string `json:"token"`
+				Version string `json:"version"`
+			} `json:"casks"`
+		}
+
+		if err := json.Unmarshal(infoOutput, &caskInfo); err == nil {
+			// Create a map for easy lookup
+			versionMap := make(map[string]string)
+			for _, cask := range caskInfo.Casks {
+				version := cask.Version
+				if version == "" {
+					version = "Unknown"
+				}
+				versionMap[cask.Token] = version
+			}
+
+			// Build result array maintaining order
+			for _, name := range caskNames {
+				version := versionMap[name]
+				if version == "" {
+					version = "Unknown"
+				}
+				casks = append(casks, []string{name, version})
+			}
+			return casks
+		}
+	}
+
+	// If batch fetch fails (e.g., due to casks in multiple taps),
+	// fetch versions individually with error handling
+	for _, caskName := range caskNames {
+		infoOutput, err := a.runBrewCommand("info", "--cask", "--json=v2", caskName)
+		if err != nil {
+			// If individual fetch fails, add with unknown version
+			casks = append(casks, []string{caskName, "Unknown"})
+			continue
+		}
+
+		var caskInfo struct {
+			Casks []struct {
+				Version string `json:"version"`
+			} `json:"casks"`
+		}
+
+		if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
+			version := caskInfo.Casks[0].Version
+			if version == "" {
+				version = "Unknown"
+			}
+			casks = append(casks, []string{caskName, version})
+		} else {
+			casks = append(casks, []string{caskName, "Unknown"})
+		}
+	}
+
+	return casks
 }
 
 // GetBrewUpdatablePackages checks which packages have updates available using brew outdated
@@ -883,6 +991,7 @@ func (a *App) UpdateAllBrewPackages() string {
 }
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
+	// Try as formula first
 	output, err := a.runBrewCommand("info", "--json=v2", packageName)
 	if err != nil {
 		return map[string]interface{}{
@@ -892,6 +1001,7 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 
 	var result struct {
 		Formulae []map[string]interface{} `json:"formulae"`
+		Casks    []map[string]interface{} `json:"casks"`
 	}
 	if err := json.Unmarshal(output, &result); err != nil {
 		return map[string]interface{}{
@@ -899,9 +1009,44 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 		}
 	}
 
+	// Check formulae first
 	if len(result.Formulae) > 0 {
 		return result.Formulae[0]
 	}
+
+	// Check casks if not found in formulae
+	if len(result.Casks) > 0 {
+		caskInfo := result.Casks[0]
+
+		// Normalize cask data to match formula structure for frontend compatibility
+		// Convert conflicts_with.cask to conflicts_with array
+		if conflictsObj, ok := caskInfo["conflicts_with"].(map[string]interface{}); ok {
+			if caskConflicts, ok := conflictsObj["cask"].([]interface{}); ok {
+				caskInfo["conflicts_with"] = caskConflicts
+			} else {
+				caskInfo["conflicts_with"] = []interface{}{}
+			}
+		}
+
+		// Convert depends_on to dependencies array (simplified)
+		// Casks don't really have formula dependencies like formulae do,
+		// so we'll just provide an empty array or extract relevant info
+		dependencies := []string{}
+		if dependsOn, ok := caskInfo["depends_on"].(map[string]interface{}); ok {
+			// Check for formula dependencies
+			if formulaDeps, ok := dependsOn["formula"].([]interface{}); ok {
+				for _, dep := range formulaDeps {
+					if depStr, ok := dep.(string); ok {
+						dependencies = append(dependencies, depStr)
+					}
+				}
+			}
+		}
+		caskInfo["dependencies"] = dependencies
+
+		return caskInfo
+	}
+
 	return map[string]interface{}{
 		"error": "No package info found",
 	}
