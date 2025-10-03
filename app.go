@@ -29,11 +29,12 @@ const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 // MenuTranslations holds all menu translations
 type MenuTranslations struct {
 	App struct {
-		About        string `json:"about"`
-		CheckUpdates string `json:"checkUpdates"`
-		VisitWebsite string `json:"visitWebsite"`
-		VisitGitHub  string `json:"visitGitHub"`
-		Quit         string `json:"quit"`
+		About          string `json:"about"`
+		CheckUpdates   string `json:"checkUpdates"`
+		VisitWebsite   string `json:"visitWebsite"`
+		VisitGitHub    string `json:"visitGitHub"`
+		VisitSubreddit string `json:"visitSubreddit"`
+		Quit           string `json:"quit"`
 	} `json:"app"`
 	View struct {
 		Title        string `json:"title"`
@@ -63,17 +64,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 	case "en":
 		translations = MenuTranslations{
 			App: struct {
-				About        string `json:"about"`
-				CheckUpdates string `json:"checkUpdates"`
-				VisitWebsite string `json:"visitWebsite"`
-				VisitGitHub  string `json:"visitGitHub"`
-				Quit         string `json:"quit"`
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
 			}{
-				About:        "About WailBrew",
-				CheckUpdates: "Check for Updates...",
-				VisitWebsite: "Visit Website",
-				VisitGitHub:  "Visit GitHub Repo",
-				Quit:         "Quit",
+				About:          "About WailBrew",
+				CheckUpdates:   "Check for Updates...",
+				VisitWebsite:   "Visit Website",
+				VisitGitHub:    "Visit GitHub Repo",
+				VisitSubreddit: "Visit Subreddit",
+				Quit:           "Quit",
 			},
 			View: struct {
 				Title        string `json:"title"`
@@ -113,17 +116,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 	case "de":
 		translations = MenuTranslations{
 			App: struct {
-				About        string `json:"about"`
-				CheckUpdates string `json:"checkUpdates"`
-				VisitWebsite string `json:"visitWebsite"`
-				VisitGitHub  string `json:"visitGitHub"`
-				Quit         string `json:"quit"`
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
 			}{
-				About:        "Über WailBrew",
-				CheckUpdates: "Auf Aktualisierungen prüfen...",
-				VisitWebsite: "Website besuchen",
-				VisitGitHub:  "GitHub Repo besuchen",
-				Quit:         "Beenden",
+				About:          "Über WailBrew",
+				CheckUpdates:   "Auf Aktualisierungen prüfen...",
+				VisitWebsite:   "Website besuchen",
+				VisitGitHub:    "GitHub Repo besuchen",
+				VisitSubreddit: "Subreddit besuchen",
+				Quit:           "Beenden",
 			},
 			View: struct {
 				Title        string `json:"title"`
@@ -163,17 +168,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 	case "fr":
 		translations = MenuTranslations{
 			App: struct {
-				About        string `json:"about"`
-				CheckUpdates string `json:"checkUpdates"`
-				VisitWebsite string `json:"visitWebsite"`
-				VisitGitHub  string `json:"visitGitHub"`
-				Quit         string `json:"quit"`
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
 			}{
-				About:        "À propos de WailBrew",
-				CheckUpdates: "Vérifier les mises à jour...",
-				VisitWebsite: "Visiter le site Web",
-				VisitGitHub:  "Visiter le dépôt GitHub",
-				Quit:         "Quitter",
+				About:          "À propos de WailBrew",
+				CheckUpdates:   "Vérifier les mises à jour...",
+				VisitWebsite:   "Visiter le site Web",
+				VisitGitHub:    "Visiter le dépôt GitHub",
+				VisitSubreddit: "Visiter le Subreddit",
+				Quit:           "Quitter",
 			},
 			View: struct {
 				Title        string `json:"title"`
@@ -214,17 +221,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 		// Default to English
 		translations = MenuTranslations{
 			App: struct {
-				About        string `json:"about"`
-				CheckUpdates string `json:"checkUpdates"`
-				VisitWebsite string `json:"visitWebsite"`
-				VisitGitHub  string `json:"visitGitHub"`
-				Quit         string `json:"quit"`
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
 			}{
-				About:        "About WailBrew",
-				CheckUpdates: "Check for Updates...",
-				VisitWebsite: "Visit Website",
-				VisitGitHub:  "Visit GitHub Repo",
-				Quit:         "Quit",
+				About:          "About WailBrew",
+				CheckUpdates:   "Check for Updates...",
+				VisitWebsite:   "Visit Website",
+				VisitGitHub:    "Visit GitHub Repo",
+				VisitSubreddit: "Visit Subreddit",
+				Quit:           "Quit",
 			},
 			View: struct {
 				Title        string `json:"title"`
@@ -517,6 +526,9 @@ func (a *App) menu() *menu.Menu {
 	})
 	AppSubmenu.AddText(translations.App.VisitGitHub, nil, func(cd *menu.CallbackData) {
 		a.OpenURL("https://github.com/wickenico/WailBrew")
+	})
+	AppSubmenu.AddText(translations.App.VisitSubreddit, nil, func(cd *menu.CallbackData) {
+		a.OpenURL("https://www.reddit.com/r/WailBrew/")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.App.Quit, keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
