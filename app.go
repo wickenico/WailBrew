@@ -483,72 +483,80 @@ func (a *App) GetBrewPackages() [][]string {
 	return packages
 }
 
-// GetBrewUpdatablePackages checks which packages have updates available
+// GetBrewUpdatablePackages checks which packages have updates available using brew outdated
 func (a *App) GetBrewUpdatablePackages() [][]string {
-	installedPackages := a.GetBrewPackages()
-	if len(installedPackages) == 1 && installedPackages[0][0] == "Error" {
-		return [][]string{{"Error", "fetching updatable packages"}}
+	// Validate brew installation first
+	if err := a.validateBrewInstallation(); err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
-	// If no packages are installed, return empty array (not an error)
-	if len(installedPackages) == 0 {
-		return [][]string{}
-	}
-
-	// Build list of package names
-	var names []string
-	for _, pkg := range installedPackages {
-		names = append(names, pkg[0])
-	}
-
-	// Run brew info --json=v2 <packages>
-	args := []string{"info", "--json=v2"}
-	args = append(args, names...)
-
-	output, err := a.runBrewCommand(args...)
+	// Use brew outdated with JSON output for accurate detection
+	output, err := a.runBrewCommand("outdated", "--json=v2")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to check for updates: %v", err)}}
 	}
 
-	// Parse JSON
-	var brewInfo struct {
-		Formulae []struct {
-			Name     string `json:"name"`
-			Versions struct {
-				Stable string `json:"stable"`
-			} `json:"versions"`
-			Deprecated bool `json:"deprecated"`
-			Disabled   bool `json:"disabled"`
-		} `json:"formulae"`
-	}
-	if err := json.Unmarshal(output, &brewInfo); err != nil {
-		////log.Println("❌ ERROR: Parsing 'brew info' JSON failed:", err)
-		return [][]string{{"Error", "parsing brew info"}}
+	outputStr := strings.TrimSpace(string(output))
+	// If output is empty or "[]", no packages are outdated
+	if outputStr == "" || outputStr == "[]" {
+		return [][]string{}
 	}
 
-	// Compare versions
-	installedMap := make(map[string]string)
-	for _, pkg := range installedPackages {
-		installedMap[pkg[0]] = pkg[1]
+	// Parse JSON response from brew outdated
+	var brewOutdated struct {
+		Formulae []struct {
+			Name              string   `json:"name"`
+			InstalledVersions []string `json:"installed_versions"`
+			CurrentVersion    string   `json:"current_version"`
+			Pinned            bool     `json:"pinned"`
+			PinnedVersion     string   `json:"pinned_version"`
+		} `json:"formulae"`
+		Casks []struct {
+			Name              string   `json:"name"`
+			InstalledVersions []string `json:"installed_versions"`
+			CurrentVersion    string   `json:"current_version"`
+		} `json:"casks"`
+	}
+
+	if err := json.Unmarshal(output, &brewOutdated); err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Failed to parse outdated packages: %v", err)}}
 	}
 
 	var updatablePackages [][]string
-	for _, formula := range brewInfo.Formulae {
-		installedVersion := strings.Split(installedMap[formula.Name], "_")[0]
-		latestVersion := formula.Versions.Stable
 
-		// Skip deprecated or disabled packages
-		if formula.Deprecated || formula.Disabled {
+	// Process formulae (packages)
+	for _, formula := range brewOutdated.Formulae {
+		// Skip pinned packages as they won't be updated
+		if formula.Pinned {
 			continue
 		}
 
-		if installedVersion != latestVersion {
-			////log.Printf("⬆️ UPDATE AVAILABLE: %s (Installed: %s, Latest: %s)", formula.Name, installedVersion, latestVersion)
-			updatablePackages = append(updatablePackages, []string{formula.Name, installedVersion, latestVersion})
+		installedVersion := "unknown"
+		if len(formula.InstalledVersions) > 0 {
+			installedVersion = formula.InstalledVersions[0]
 		}
+
+		updatablePackages = append(updatablePackages, []string{
+			formula.Name,
+			installedVersion,
+			formula.CurrentVersion,
+		})
 	}
 
-	////log.Printf("✅ Found %d updatable packages\n", len(updatablePackages))
+	// Process casks (applications) - optional, only if you want to include them
+	for _, cask := range brewOutdated.Casks {
+		installedVersion := "unknown"
+		if len(cask.InstalledVersions) > 0 {
+			installedVersion = cask.InstalledVersions[0]
+		}
+
+		updatablePackages = append(updatablePackages, []string{
+			cask.Name,
+			installedVersion,
+			cask.CurrentVersion,
+		})
+	}
+
 	return updatablePackages
 }
 
