@@ -576,9 +576,18 @@ const WailBrewApp = () => {
         setLoading(true);
         setError("");
         
+        // Clear existing data to show clean loading state
+        setPackages([]);
+        setCasks([]);
+        setUpdatablePackages([]);
+        setAllPackages([]);
+        setLeavesPackages([]);
+        setRepositories([]);
+        
         try {
-            const [installed, updatable, all, leaves, repos] = await Promise.all([
-                GetBrewPackages(), 
+            const [installed, caskList, updatable, all, leaves, repos] = await Promise.all([
+                GetBrewPackages(),
+                GetBrewCasks(),
                 GetBrewUpdatablePackages(), 
                 GetAllBrewPackages(), 
                 GetBrewLeaves(), 
@@ -587,6 +596,7 @@ const WailBrewApp = () => {
             
             // Process the data same as in useEffect
             const safeInstalled = installed || [];
+            const safeInstalledCasks = caskList || [];
             const safeUpdatable = updatable || [];
             const safeAll = all || [];
             const safeLeaves = leaves || [];
@@ -602,6 +612,17 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
                 setPackages(formatted);
+            }
+
+            if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
+                setCasks([]);
+            } else {
+                const casksFormatted = safeInstalledCasks.map(([name, installedVersion]) => ({
+                    name,
+                    installedVersion,
+                    isInstalled: true,
+                }));
+                setCasks(casksFormatted);
             }
 
             if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
