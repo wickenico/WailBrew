@@ -45,6 +45,10 @@
     "ok": "Ok",
     "close": "Fermer"
   },
+  "logDialog": {
+    "running": "En cours...",
+    "completed": "Terminé"
+  },
   "packageInfo": {
     "loading": "(Chargement…)",
     "description": "Description",

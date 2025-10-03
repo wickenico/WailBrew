@@ -82,6 +82,9 @@ const WailBrewApp = () => {
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
+    const [isUpdateRunning, setIsUpdateRunning] = useState<boolean>(false);
+    const [isInstallRunning, setIsInstallRunning] = useState<boolean>(false);
+    const [isUninstallRunning, setIsUninstallRunning] = useState<boolean>(false);
     const [cleanupLog, setCleanupLog] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
@@ -406,6 +409,7 @@ const WailBrewApp = () => {
         if (!selectedPackage) return;
         setShowConfirm(false);
         setUninstallLogs(t('dialogs.uninstalling', { name: selectedPackage.name }));
+        setIsUninstallRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageUninstallProgress", (progress: string) => {
@@ -421,7 +425,7 @@ const WailBrewApp = () => {
             // Update the package list after successful uninstall
             await handleRefreshPackages();
 
-            setUninstallLogs(prevLogs => prevLogs + '\n' + finalMessage);
+            setIsUninstallRunning(false);
             
             // Clean up event listeners
             progressListener();
@@ -442,6 +446,7 @@ const WailBrewApp = () => {
         setShowUpdateConfirm(false);
         setIsUpdateAllOperation(false);
         setUpdateLogs(t('dialogs.updating', { name: selectedPackage.name }));
+        setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
@@ -463,6 +468,7 @@ const WailBrewApp = () => {
                 isInstalled: true,
             }));
             setUpdatablePackages(formatted);
+            setIsUpdateRunning(false);
             
             // Clean up event listeners
             progressListener();
@@ -477,6 +483,7 @@ const WailBrewApp = () => {
         setShowUpdateAllConfirm(false);
         setIsUpdateAllOperation(true);
         setUpdateLogs(t('dialogs.updatingAll'));
+        setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
@@ -491,6 +498,7 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
             // Update all package lists after successful update
             await handleRefreshPackages();
+            setIsUpdateRunning(false);
             
             // Clean up event listeners
             progressListener();
@@ -532,6 +540,7 @@ const WailBrewApp = () => {
         if (!selectedPackage) return;
         setShowInstallConfirm(false);
         setInstallLogs(t('dialogs.installing', { name: selectedPackage.name }));
+        setIsInstallRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageInstallProgress", (progress: string) => {
@@ -547,7 +556,7 @@ const WailBrewApp = () => {
             // Update the package list after successful install
             await handleRefreshPackages();
 
-            setInstallLogs(prevLogs => prevLogs + '\n' + finalMessage);
+            setIsInstallRunning(false);
             
             // Clean up event listeners
             progressListener();
@@ -965,8 +974,10 @@ const WailBrewApp = () => {
                     open={updateLogs !== null}
                     title={selectedPackage ? t('dialogs.updateLogs', { name: selectedPackage.name }) : t('dialogs.updateAllLogs')}
                     log={updateLogs}
+                    isRunning={isUpdateRunning}
                     onClose={async () => {
                         setUpdateLogs(null);
+                        setIsUpdateRunning(false);
                         // Refresh packages if this was an update all operation
                         if (isUpdateAllOperation) {
                             setIsUpdateAllOperation(false);
@@ -978,13 +989,21 @@ const WailBrewApp = () => {
                     open={installLogs !== null}
                     title={selectedPackage ? t('dialogs.installLogs', { name: selectedPackage.name }) : t('dialogs.installLogs')}
                     log={installLogs}
-                    onClose={() => setInstallLogs(null)}
+                    isRunning={isInstallRunning}
+                    onClose={() => {
+                        setInstallLogs(null);
+                        setIsInstallRunning(false);
+                    }}
                 />
                 <LogDialog
                     open={uninstallLogs !== null}
                     title={selectedPackage ? t('dialogs.uninstallLogs', { name: selectedPackage.name }) : t('dialogs.uninstallLogs')}
                     log={uninstallLogs}
-                    onClose={() => setUninstallLogs(null)}
+                    isRunning={isUninstallRunning}
+                    onClose={() => {
+                        setUninstallLogs(null);
+                        setIsUninstallRunning(false);
+                    }}
                 />
                 <LogDialog
                     open={!!infoLogs}
