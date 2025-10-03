@@ -91,6 +91,20 @@ const WailBrewApp = () => {
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
     const updateCheckDone = useRef<boolean>(false);
+    const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+        const savedTheme = localStorage.getItem('theme');
+        return (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'dark';
+    });
+
+    // Theme effect
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+    };
 
     useEffect(() => {
         // Get app version from backend
@@ -239,7 +253,7 @@ const WailBrewApp = () => {
                                         gap: '0.5rem',
                                         marginTop: '0.5rem',
                                         padding: '0.4rem 0.6rem',
-                                        background: 'rgba(0, 0, 0, 0.3)',
+                                        background: theme === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.08)',
                                         borderRadius: '6px',
                                         fontSize: '0.8rem',
                                         fontFamily: 'monospace',
@@ -261,10 +275,10 @@ const WailBrewApp = () => {
                                         }
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                        e.currentTarget.style.background = theme === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.15)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                        e.currentTarget.style.background = theme === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.08)';
                                     }}
                                     title="Click to copy"
                                 >
@@ -689,6 +703,8 @@ const WailBrewApp = () => {
                 leavesCount={leavesPackages.length}
                 repositoriesCount={repositories.length}
                 onClearSelection={clearSelection}
+                theme={theme}
+                onToggleTheme={toggleTheme}
             />
             <main className="content">
                 {view === "installed" && (
@@ -1031,9 +1047,9 @@ const WailBrewApp = () => {
                     toastOptions={{
                         duration: 4000,
                         style: {
-                            background: 'rgba(40, 44, 52, 0.95)',
-                            color: '#fff',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: theme === 'dark' ? 'rgba(40, 44, 52, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            color: theme === 'dark' ? '#fff' : '#1a1a1a',
+                            border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
                             borderRadius: '12px',
                             backdropFilter: 'blur(12px)',
                             WebkitBackdropFilter: 'blur(12px)',
@@ -1041,7 +1057,7 @@ const WailBrewApp = () => {
                         success: {
                             iconTheme: {
                                 primary: '#4CAF50',
-                                secondary: '#fff',
+                                secondary: theme === 'dark' ? '#fff' : '#1a1a1a',
                             },
                         },
                     }}

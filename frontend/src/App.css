@@ -10,24 +10,71 @@
   --accent-hover: #29b6f6;
   --text-main: #f3f6fa;
   --text-secondary: #b0b8c1;
+  --bg-main: #181b20;
+  --bg-sidebar: #1e2228;
+  --table-bg: rgba(30,34,40,0.82);
+  --table-header-bg: rgba(40, 45, 52, 1);
+  --table-row-even: rgba(255,255,255,0.02);
+  --table-row-hover: rgba(80, 180, 255, 0.08);
+  --table-selected-text: #fff;
+  --log-bg: rgba(30,34,40,0.85);
+  --overlay-bg: rgba(30,34,40,0.85);
+  --loading-overlay-bg: rgba(30,34,40,0.92);
+  --command-section-bg: rgba(255, 255, 255, 0.06);
+  --command-section-border: rgba(255, 255, 255, 0.12);
+  --command-container-bg: rgba(0, 0, 0, 0.2);
+  --command-container-border: rgba(255, 255, 255, 0.1);
+  --button-bg: rgba(255,255,255,0.06);
+  --button-hover-bg: rgba(80, 180, 255, 0.08);
   --radius: 18px;
   --transition: 0.18s cubic-bezier(.4,0,.2,1);
+}
+
+/* Light Mode */
+[data-theme="light"] {
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg-strong: #ffffff;
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-border-strong: rgba(0,0,0,0.12);
+  --glass-shadow: 0 4px 32px 0 rgba(0,0,0,0.08);
+  --glass-shadow-strong: 0 6px 48px 0 rgba(0,0,0,0.12);
+  --accent: #2196F3;
+  --accent-hover: #1976D2;
+  --text-main: #1a1a1a;
+  --text-secondary: #666666;
+  --bg-main: #f5f5f5;
+  --bg-sidebar: #e8e8e8;
+  --table-bg: #ffffff;
+  --table-header-bg: #fafafa;
+  --table-row-even: #f9f9f9;
+  --table-row-hover: rgba(33, 150, 243, 0.12);
+  --table-selected-text: #fff;
+  --log-bg: rgba(255, 255, 255, 0.95);
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --loading-overlay-bg: rgba(255, 255, 255, 0.92);
+  --command-section-bg: rgba(0, 0, 0, 0.03);
+  --command-section-border: rgba(0, 0, 0, 0.08);
+  --command-container-bg: rgba(0, 0, 0, 0.05);
+  --command-container-border: rgba(0, 0, 0, 0.1);
+  --button-bg: rgba(0, 0, 0, 0.04);
+  --button-hover-bg: rgba(33, 150, 243, 0.08);
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  background: #181b20;
+  background: var(--bg-main);
   color: var(--text-main);
   font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 17px;
   line-height: 1.6;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .wailbrew-container {
   display: flex;
   height: 100vh;
-  background: #181b20;
+  background: var(--bg-main);
 }
 
 .sidebar {
@@ -179,9 +226,47 @@ html, body {
   transition: background var(--transition), border-color var(--transition);
 }
 
+.search-container:hover {
+  border-color: var(--glass-border-strong);
+}
+
 .search-container:focus-within {
   background: rgba(255,255,255,0.12);
   border-color: rgba(255,255,255,0.18);
+}
+
+[data-theme="light"] .search-container:focus-within {
+  border-color: rgba(0,0,0,0.25);
+}
+
+[data-theme="light"] .release-notes-content {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .release-info {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .content {
+  background: #ffffff;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .sidebar {
+  background: rgba(248, 248, 248, 0.95);
+  box-shadow: 2px 0 8px 0 rgba(0,0,0,0.04);
 }
 
 .search-input {
@@ -217,7 +302,7 @@ html, body {
   flex: 1 1 auto;
   overflow-y: auto;
   border-radius: var(--radius);
-  background: rgba(30,34,40,0.82);
+  background: var(--table-bg);
   box-shadow: var(--glass-shadow-strong);
   border: 2px solid var(--glass-border-strong);
   margin-bottom: 16px;
@@ -250,7 +335,7 @@ html, body {
 .package-table th {
   position: sticky;
   top: 0;
-  background: rgba(40, 45, 52, 1);
+  background: var(--table-header-bg);
   color: var(--text-main);
   font-weight: 700;
   font-size: 13px;
@@ -268,17 +353,17 @@ html, body {
 }
 
 .package-table tbody tr:hover {
-  background: rgba(80, 180, 255, 0.08);
+  background: var(--table-row-hover);
   cursor: pointer;
 }
 
 .package-table tbody tr.selected {
   background: var(--accent) !important;
-  color: #fff;
+  color: var(--table-selected-text);
 }
 
 .package-table tbody tr:nth-child(even) {
-  background: rgba(255,255,255,0.02);
+  background: var(--table-row-even);
 }
 
 .package-table tbody tr:last-child td {
@@ -341,7 +426,7 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(30,34,40,0.92);
+  background: var(--loading-overlay-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -538,7 +623,7 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(30,34,40,0.72);
+  background: var(--overlay-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -595,12 +680,12 @@ html, body {
 }
 
 .confirm-actions button:last-child {
-  background: rgba(255,255,255,0.08);
+  background: var(--button-bg);
   color: var(--text-secondary);
 }
 
 .confirm-actions button:last-child:hover {
-  background: rgba(255,255,255,0.16);
+  background: var(--button-hover-bg);
   color: var(--accent);
 }
 
@@ -643,7 +728,7 @@ html, body {
 }
 
 .doctor-button {
-  background: rgba(255,255,255,0.06);
+  background: var(--button-bg);
   border: 1px solid var(--glass-border);
   color: var(--text-main);
   padding: 7px 14px;
@@ -654,13 +739,13 @@ html, body {
 }
 
 .doctor-button:hover {
-  background: rgba(80, 180, 255, 0.08);
+  background: var(--button-hover-bg);
   color: var(--accent);
 }
 
 .doctor-log {
   flex: 1;
-  background: rgba(30,34,40,0.82);
+  background: var(--log-bg);
   border: 2px solid var(--glass-border-strong);
   padding: 16px 20px;
   color: var(--text-secondary);
@@ -679,7 +764,7 @@ html, body {
 }
 
 .log-output {
-  background: rgba(30,34,40,0.85);
+  background: var(--log-bg);
   border: 1px solid var(--glass-border-strong);
   padding: 20px 24px;
   color: var(--text-secondary);
@@ -722,7 +807,7 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(30,34,40,0.85);
+  background: var(--overlay-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -747,7 +832,7 @@ html, body {
 }
 
 .about-header {
-  background: rgba(255,255,255,0.06);
+  background: var(--button-bg);
   padding: 16px 24px;
   border-bottom: 1px solid var(--glass-border);
   text-align: center;
@@ -810,7 +895,7 @@ html, body {
 .about-info {
   margin: 24px 0;
   padding: 16px;
-  background: rgba(255,255,255,0.04);
+  background: var(--button-bg);
   border-radius: 12px;
   border: 1px solid var(--glass-border);
 }
@@ -913,7 +998,7 @@ html, body {
 
 .about-footer {
   padding: 16px 24px;
-  background: rgba(255,255,255,0.04);
+  background: var(--button-bg);
   border-top: 1px solid var(--glass-border);
   text-align: center;
 }
@@ -1286,9 +1371,9 @@ html, body {
 .brew-command-section {
   margin: 2rem 0;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--command-section-bg);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--command-section-border);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -1311,8 +1396,8 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--command-container-bg);
+  border: 1px solid var(--command-container-border);
   border-radius: 8px;
   padding: 0.75rem 1rem;
 }
