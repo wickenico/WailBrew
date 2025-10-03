@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 interface PackageEntry {
@@ -36,6 +36,17 @@ const PackageTable: React.FC<PackageTableProps> = ({
     onInstall,
 }) => {
     const { t } = useTranslation();
+    const selectedRowRef = useRef<HTMLTableRowElement>(null);
+
+    // Scroll to selected row when selectedPackage changes
+    useEffect(() => {
+        if (selectedRowRef.current && selectedPackage) {
+            selectedRowRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+        }
+    }, [selectedPackage]);
     
     const renderCellContent = (pkg: PackageEntry, col: { key: string; label: string }) => {
         if (col.key === "actions") {
@@ -121,6 +132,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
                     {packages.map(pkg => (
                         <tr
                             key={pkg.name}
+                            ref={selectedPackage?.name === pkg.name ? selectedRowRef : null}
                             className={selectedPackage?.name === pkg.name ? "selected" : ""}
                             onClick={() => onSelect(pkg)}
                         >

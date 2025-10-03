@@ -17,9 +17,10 @@ interface PackageInfoProps {
     packageEntry: PackageEntry | null;
     loadingDetailsFor: string | null;
     view: string;
+    onSelectDependency?: (dependencyName: string) => void;
 }
 
-const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view }) => {
+const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view, onSelectDependency }) => {
     const { t } = useTranslation();
     
     const name = packageEntry?.name || t('common.notAvailable');
@@ -27,7 +28,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const homepage = packageEntry?.homepage || t('common.notAvailable');
     const version = packageEntry?.installedVersion || t('common.notAvailable');
     const status = packageEntry ? (packageEntry.isInstalled ? t('packageInfo.installed') : t('packageInfo.notInstalled')) : t('common.notAvailable');
-    const dependencies = packageEntry?.dependencies?.length ? packageEntry.dependencies.join(", ") : t('common.notAvailable');
+    const dependencies = packageEntry?.dependencies || [];
     const conflicts = packageEntry?.conflicts?.length ? packageEntry.conflicts.join(", ") : t('common.notAvailable');
     
     const isValidUrl = (url: string) => {
@@ -81,7 +82,42 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             ) : (
                 <p>{t('packageInfo.version')}: {version}</p>
             )}
-            <p>{t('packageInfo.dependencies')}: {dependencies}</p>
+            <p>
+                {t('packageInfo.dependencies')}:{" "}
+                {dependencies.length > 0 ? (
+                    dependencies.map((dep, index) => (
+                        <React.Fragment key={dep}>
+                            {onSelectDependency ? (
+                                <span
+                                    onClick={() => onSelectDependency(dep)}
+                                    style={{
+                                        color: '#4a9eff',
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = '#6bb3ff';
+                                        e.currentTarget.style.textDecoration = 'none';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = '#4a9eff';
+                                        e.currentTarget.style.textDecoration = 'underline';
+                                    }}
+                                    title={`Click to view ${dep}`}
+                                >
+                                    {dep}
+                                </span>
+                            ) : (
+                                <span>{dep}</span>
+                            )}
+                            {index < dependencies.length - 1 && ", "}
+                        </React.Fragment>
+                    ))
+                ) : (
+                    <span>{t('common.notAvailable')}</span>
+                )}
+            </p>
             <p>{t('packageInfo.conflicts')}: {conflicts}</p>
         </>
     );
