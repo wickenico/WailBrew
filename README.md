@@ -23,6 +23,7 @@ brew install --cask wailbrew
 ## 📰 Mentions
 
 - <a href="https://vvmac.com/wordpress_b/wailbrew-pare-homebrew-dune-interface-graphique/" target="_blank" rel="noopener noreferrer">VVMac</a>
+- <a href="https://softwareontheweb.com/product/wailbrew" target="_blank" rel="noopener noreferrer">Software on the web</a>
 
 ## 📸 Screenshots
 
