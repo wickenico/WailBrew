@@ -18,14 +18,14 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0
       react-dom:
-        specifier: ^19.1.1
-        version: 19.1.1(react@19.2.0)
+        specifier: ^19.2.0
+        version: 19.2.0(react@19.2.0)
       react-hot-toast:
         specifier: ^2.6.0
-        version: 2.6.0(react-dom@19.1.1(react@19.2.0))(react@19.2.0)
+        version: 2.6.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-i18next:
         specifier: ^16.0.0
-        version: 16.0.0(i18next@25.5.3(typescript@5.9.3))(react-dom@19.1.1(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+        version: 16.0.0(i18next@25.5.3(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       react-icons:
         specifier: ^5.5.0
         version: 5.5.0(react@19.2.0)
@@ -34,8 +34,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0
       '@types/react-dom':
-        specifier: ^19.1.9
-        version: 19.1.9(@types/react@19.2.0)
+        specifier: ^19.2.0
+        version: 19.2.0(@types/react@19.2.0)
       '@vitejs/plugin-react':
         specifier: ^5.0.4
         version: 5.0.4(vite@7.1.8)
@@ -439,10 +439,10 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/react-dom@19.1.9':
-    resolution: {integrity: sha512-qXRuZaOsAdXKFyOhRBg6Lqqc0yay13vN7KrIg4L7N4aaHN68ma9OK3NE1BoDFgFOTfM7zg+3/8+2n8rLUH3OKQ==}
+  '@types/react-dom@19.2.0':
+    resolution: {integrity: sha512-brtBs0MnE9SMx7px208g39lRmC5uHZs96caOJfTjFcYSLHNamvaSMfJNagChVNkup2SdtOxKX1FDBkRSJe1ZAg==}
     peerDependencies:
-      '@types/react': ^19.0.0
+      '@types/react': ^19.2.0
 
   '@types/react@19.2.0':
     resolution: {integrity: sha512-1LOH8xovvsKsCBq1wnT4ntDUdCJKmnEakhsuoUSy6ExlHCkGP2hqnatagYTgFk6oeL0VU31u7SNjunPN+GchtA==}
@@ -567,10 +567,10 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  react-dom@19.1.1:
-    resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
+  react-dom@19.2.0:
+    resolution: {integrity: sha512-UlbRu4cAiGaIewkPyiRGJk0imDN2T3JjieT6spoL2UeSf5od4n5LB/mQ4ejmxhCFT1tYe8IvaFulzynWovsEFQ==}
     peerDependencies:
-      react: ^19.1.1
+      react: ^19.2.0
 
   react-hot-toast@2.6.0:
     resolution: {integrity: sha512-bH+2EBMZ4sdyou/DPrfgIouFpcRLCJ+HoCA32UoAYHn6T3Ur5yfcDCeSr5mwldl6pFOsiocmrXMuoCJ1vV8bWg==}
@@ -613,8 +613,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  scheduler@0.26.0:
-    resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
+  scheduler@0.27.0:
+    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -992,7 +992,7 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/react-dom@19.1.9(@types/react@19.2.0)':
+  '@types/react-dom@19.2.0(@types/react@19.2.0)':
     dependencies:
       '@types/react': 19.2.0
 
@@ -1118,26 +1118,26 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  react-dom@19.1.1(react@19.2.0):
+  react-dom@19.2.0(react@19.2.0):
     dependencies:
       react: 19.2.0
-      scheduler: 0.26.0
+      scheduler: 0.27.0
 
-  react-hot-toast@2.6.0(react-dom@19.1.1(react@19.2.0))(react@19.2.0):
+  react-hot-toast@2.6.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       csstype: 3.1.3
       goober: 2.1.16(csstype@3.1.3)
       react: 19.2.0
-      react-dom: 19.1.1(react@19.2.0)
+      react-dom: 19.2.0(react@19.2.0)
 
-  react-i18next@16.0.0(i18next@25.5.3(typescript@5.9.3))(react-dom@19.1.1(react@19.2.0))(react@19.2.0)(typescript@5.9.3):
+  react-i18next@16.0.0(i18next@25.5.3(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.4
       html-parse-stringify: 3.0.1
       i18next: 25.5.3(typescript@5.9.3)
       react: 19.2.0
     optionalDependencies:
-      react-dom: 19.1.1(react@19.2.0)
+      react-dom: 19.2.0(react@19.2.0)
       typescript: 5.9.3
 
   react-icons@5.5.0(react@19.2.0):
@@ -1176,7 +1176,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.52.3
       fsevents: 2.3.3
 
-  scheduler@0.26.0: {}
+  scheduler@0.27.0: {}
 
   semver@6.3.1: {}
 
