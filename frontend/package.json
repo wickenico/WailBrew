@@ -11,6 +11,7 @@
   "dependencies": {
     "i18next": "^25.5.3",
     "i18next-browser-languagedetector": "^8.2.0",
+    "lucide-react": "^0.544.0",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "react-hot-toast": "^2.6.0",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from 'react-hot-toast';
+import { RefreshCw } from 'lucide-react';
 import "./style.css";
 import "./App.css";
 import {
@@ -701,7 +702,7 @@ const WailBrewApp = () => {
                                     disabled={loading}
                                     title={t('buttons.refresh')}
                                 >
-                                    🔄
+                                    <RefreshCw size={18} />
                                 </button>
                             }
                             searchQuery={searchQuery}
@@ -744,7 +745,7 @@ const WailBrewApp = () => {
                                     disabled={loading}
                                     title={t('buttons.refresh')}
                                 >
-                                    🔄
+                                    <RefreshCw size={18} />
                                 </button>
                             }
                             searchQuery={searchQuery}
@@ -788,7 +789,7 @@ const WailBrewApp = () => {
                                             onClick={() => setShowUpdateAllConfirm(true)}
                                             title={t('buttons.updateAll')}
                                         >
-                                            ⬆️ {t('buttons.updateAll')}
+                                            {t('buttons.updateAll')}
                                         </button>
                                     )}
                                 </>

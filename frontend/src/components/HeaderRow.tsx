@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { X } from "lucide-react";
 
 interface HeaderRowProps {
     title: string;
@@ -37,7 +38,9 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                 onChange={e => onSearchChange(e.target.value)}
             />
             {searchQuery && (
-                <span className="clear-icon" onClick={onClearSearch} title={t('search.clearSearch')}>✕</span>
+                <span className="clear-icon" onClick={onClearSearch} title={t('search.clearSearch')}>
+                    <X size={16} />
+                </span>
             )}
         </div>
     </div>

@@ -377,13 +377,16 @@ html, body {
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-secondary);
+  color: #e57373;
   font-size: 16px;
   cursor: pointer;
   transition: color var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .clear-icon:hover {
-  color: var(--accent);
+  color: #ef5350;
 }
 
 /* Refresh button */
@@ -469,8 +472,12 @@ html, body {
   transform: scale(1.1);
 }
 
-.uninstall-button:hover {
+.uninstall-button {
   color: #e57373;
+}
+
+.uninstall-button:hover {
+  color: #ef5350;
   background: rgba(229, 115, 115, 0.15);
 }
 
@@ -479,9 +486,17 @@ html, body {
   background: rgba(80, 180, 255, 0.15);
 }
 
+.update-button {
+  color: #66BB6A;
+}
+
 .update-button:hover {
   color: #4CAF50;
   background: rgba(76, 175, 80, 0.15);
+}
+
+.install-button {
+  color: #64B5F6;
 }
 
 .install-button:hover {

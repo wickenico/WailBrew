@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { ArrowUpCircle, CirclePlus, Info, CircleX } from "lucide-react";
 
 interface PackageEntry {
     name: string;
@@ -61,7 +62,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
                             }}
                             title={t('buttons.update', { name: pkg.name })}
                         >
-                            ⬆️
+                            <ArrowUpCircle size={20} />
                         </button>
                     )}
                     {onUninstall && (
@@ -73,7 +74,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
                             }}
                             title={t('buttons.uninstall', { name: pkg.name })}
                         >
-                            ❌
+                            <CircleX size={20} />
                         </button>
                     )}
                     {onInstall && !pkg.isInstalled && (
@@ -85,7 +86,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
                             }}
                             title={t('buttons.install', { name: pkg.name })}
                         >
-                            ⬇️
+                            <CirclePlus size={20} />
                         </button>
                     )}
                     {onShowInfo && (
@@ -97,7 +98,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
                             }}
                             title={t('buttons.showInfo', { name: pkg.name })}
                         >
-                            ℹ️
+                            <Info size={20} />
                         </button>
                     )}
                 </div>
