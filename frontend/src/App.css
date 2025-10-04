@@ -320,19 +320,22 @@ html, body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3rem 2rem;
-  margin: 2rem 0;
+  padding: 4rem 2rem;
+  margin: 0;
   color: var(--text-secondary);
-  font-size: 16px;
-  font-weight: 500;
-  background: rgba(255,255,255,0.02);
-  border-radius: var(--radius);
-  border: 1px solid var(--glass-border);
-  min-height: 120px;
+  font-size: 15px;
+  font-weight: 400;
+  background: transparent;
+  border: none;
+  min-height: 200px;
+  opacity: 0.6;
+  letter-spacing: 0.3px;
 }
 
 .result.error {
   color: #e57373;
+  opacity: 0.8;
+  font-weight: 500;
 }
 
 .table-loading-overlay {
