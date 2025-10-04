@@ -119,6 +119,7 @@
     "links": "Links:",
     "wailbrewWebsite": "WailBrew Website",
     "githubRepo": "GitHub Repository",
+    "reportBug": "Report Bug",
     "homebrewWebsite": "Homebrew Website",
     "acknowledgments": "Acknowledgments:",
     "acknowledgmentText": "Inspired by {{cakebrew}} by Bruno Philipe.\\nThanks for the great work on the original Homebrew GUI!",

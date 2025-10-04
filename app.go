@@ -33,6 +33,7 @@ type MenuTranslations struct {
 		CheckUpdates   string `json:"checkUpdates"`
 		VisitWebsite   string `json:"visitWebsite"`
 		VisitGitHub    string `json:"visitGitHub"`
+		ReportBug      string `json:"reportBug"`
 		VisitSubreddit string `json:"visitSubreddit"`
 		Quit           string `json:"quit"`
 	} `json:"app"`
@@ -68,6 +69,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates   string `json:"checkUpdates"`
 				VisitWebsite   string `json:"visitWebsite"`
 				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
 				Quit           string `json:"quit"`
 			}{
@@ -75,6 +77,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates:   "Check for Updates...",
 				VisitWebsite:   "Visit Website",
 				VisitGitHub:    "Visit GitHub Repo",
+				ReportBug:      "Report Bug",
 				VisitSubreddit: "Visit Subreddit",
 				Quit:           "Quit",
 			},
@@ -120,6 +123,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates   string `json:"checkUpdates"`
 				VisitWebsite   string `json:"visitWebsite"`
 				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
 				Quit           string `json:"quit"`
 			}{
@@ -127,6 +131,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates:   "Auf Aktualisierungen prüfen...",
 				VisitWebsite:   "Website besuchen",
 				VisitGitHub:    "GitHub Repo besuchen",
+				ReportBug:      "Fehler melden",
 				VisitSubreddit: "Subreddit besuchen",
 				Quit:           "Beenden",
 			},
@@ -172,6 +177,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates   string `json:"checkUpdates"`
 				VisitWebsite   string `json:"visitWebsite"`
 				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
 				Quit           string `json:"quit"`
 			}{
@@ -179,6 +185,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates:   "Vérifier les mises à jour...",
 				VisitWebsite:   "Visiter le site Web",
 				VisitGitHub:    "Visiter le dépôt GitHub",
+				ReportBug:      "Signaler un bug",
 				VisitSubreddit: "Visiter le Subreddit",
 				Quit:           "Quitter",
 			},
@@ -225,6 +232,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates   string `json:"checkUpdates"`
 				VisitWebsite   string `json:"visitWebsite"`
 				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
 				Quit           string `json:"quit"`
 			}{
@@ -232,6 +240,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				CheckUpdates:   "Check for Updates...",
 				VisitWebsite:   "Visit Website",
 				VisitGitHub:    "Visit GitHub Repo",
+				ReportBug:      "Report Bug",
 				VisitSubreddit: "Visit Subreddit",
 				Quit:           "Quit",
 			},
@@ -526,6 +535,9 @@ func (a *App) menu() *menu.Menu {
 	})
 	AppSubmenu.AddText(translations.App.VisitGitHub, nil, func(cd *menu.CallbackData) {
 		a.OpenURL("https://github.com/wickenico/WailBrew")
+	})
+	AppSubmenu.AddText(translations.App.ReportBug, nil, func(cd *menu.CallbackData) {
+		a.OpenURL("https://github.com/wickenico/WailBrew/issues")
 	})
 	AppSubmenu.AddText(translations.App.VisitSubreddit, nil, func(cd *menu.CallbackData) {
 		a.OpenURL("https://www.reddit.com/r/WailBrew/")
