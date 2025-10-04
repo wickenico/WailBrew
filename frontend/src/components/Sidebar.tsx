@@ -2,6 +2,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { SetLanguage } from "../../wailsjs/go/main/App";
+import { Moon, Sun } from "lucide-react";
 import appIcon from "../assets/images/appicon_256.png";
 
 interface SidebarProps {
@@ -14,6 +15,8 @@ interface SidebarProps {
     leavesCount: number;
     repositoriesCount: number;
     onClearSelection: () => void;
+    theme: 'light' | 'dark';
+    onToggleTheme: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -26,6 +29,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     leavesCount,
     repositoriesCount,
     onClearSelection,
+    theme,
+    onToggleTheme,
 }) => {
     const { t, i18n } = useTranslation();
 
@@ -92,7 +97,37 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </li>
             </ul>
         </div>
-        <div className="sidebar-section language-switcher" style={{ marginTop: 'auto', paddingTop: '8px' }}>
+        <div className="sidebar-section" style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid var(--glass-border)' }}>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center', marginBottom: '8px' }}>
+                <button
+                    onClick={onToggleTheme}
+                    style={{
+                        background: 'transparent',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '12px',
+                        padding: '10px',
+                        cursor: 'pointer',
+                        color: 'var(--text-main)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all var(--transition)',
+                        width: '42px',
+                        height: '42px',
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(80, 180, 255, 0.08)';
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.borderColor = 'var(--glass-border)';
+                    }}
+                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+            </div>
             <ul style={{ display: 'flex', gap: '8px', justifyContent: 'center', padding: '0' }}>
                 <li 
                     className={i18n.language === 'en' ? 'active' : ''} 
