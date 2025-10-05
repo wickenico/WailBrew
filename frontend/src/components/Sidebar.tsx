@@ -124,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
                     title={t('language.turkish')}
                 >
-                    <span>🇫🇷</span>
+                    <span>🇹🇷</span>
                 </li>
             </ul>
         </div>
