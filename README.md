@@ -20,14 +20,17 @@ brew install --cask wailbrew
 
 **[Download Latest Version](https://github.com/wickenico/WailBrew/releases/latest)** 
 
-## 📰 Mentions
-
-- <a href="https://vvmac.com/wordpress_b/wailbrew-pare-homebrew-dune-interface-graphique/" target="_blank" rel="noopener noreferrer">VVMac</a>
-- <a href="https://softwareontheweb.com/product/wailbrew" target="_blank" rel="noopener noreferrer">Software on the web</a>
-
 ## 📸 Screenshots
 
 ![WailBrew Screenshot](images/Screenshot.png)
+
+## 📰 Mentioned
+
+- <a href="https://vvmac.com/wordpress_b/wailbrew-pare-homebrew-dune-interface-graphique/" target="_blank" rel="noopener noreferrer">VVMac</a>
+- <a href="https://softwareontheweb.com/product/wailbrew" target="_blank" rel="noopener noreferrer">Software on the web</a>
+- <a href="https://madewithreactjs.com/wailbrew" target="_blank" rel="noopener noreferrer">Made with ReactJS</a>
+- <a href="https://tom-doerr.github.io/repo_posts/" target="_blank" rel="noopener noreferrer">Tom Doerr Repository Showcase</a>
+
 ## ✨ Key Features
 ### 📦 Package Management
 - **View Installed Packages**: Clear table view of all installed Homebrew formulas
@@ -54,10 +57,41 @@ brew install --cask wailbrew
 
 ## 🚀 Installation & Setup
 ### Prerequisites
+#### For Users
 - macOS with Apple Silicon (not tested on Intel)
 - Homebrew must be installed
-- Node.js and pnpm (for development)
 
+#### For Developers
+If you want to build WailBrew from source, you'll need:
+
+- **macOS** with Apple Silicon (not tested on Intel)
+
+- **Homebrew** - Install with:
+  ```bash
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  ```
+
+- **Go** (version 1.25 or higher) - Install with Homebrew:
+  ```bash
+  brew install go
+  ```
+
+- **Node.js** (for frontend development) - Install with Homebrew:
+  ```bash
+  brew install node
+  ```
+
+- **pnpm** (package manager) - Install with npm:
+  ```bash
+  npm install -g pnpm
+  ```
+
+- **Wails CLI** - Install with:
+  ```bash
+  go install github.com/wailsapp/wails/v2/cmd/wails@latest
+  ```
+  Make sure `~/go/bin` is in your PATH.
+- 
 ### Development Setup
 ``` bash
 # Clone the repository
@@ -76,11 +110,7 @@ cd .. && make dev
 ```
 ### Production Build
 ``` bash
-# Recommended: Build with automatic version from package.json
-make
-
-# Alternative: Standard build (uses hardcoded default version)
-wails build
+  wails build
 
 # The built app will be in the build/bin/ directory
 ```
