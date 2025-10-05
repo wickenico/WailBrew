@@ -33,26 +33,26 @@ brew install --cask wailbrew
 
 ## ✨ Key Features
 ### 📦 Package Management
-- **View Installed Packages**: Clear table view of all installed Homebrew formulas
-- **Package Information**: Detailed information for each package (description, homepage, dependencies, conflicts)
-- **Package Removal**: Safe uninstallation with confirmation dialogs
-- **Search Function**: Quick search through installed packages
+- **View Installed Packages**: Table view of all installed formulas and casks
+- **Package Information**: Detailed info including description, homepage, dependencies, and conflicts
+- **Package Removal**: Safe uninstallation with confirmations
+- **Search Function**: Quick search through packages
 
 ### 🔄 Update Management
 - **Outdated Package Detection**: Automatic detection of available updates
-- **Individual Updates**: Targeted updates for specific packages
-- **Update Logs**: Complete logs of update operations
-- **Version Comparison**: Clear display of current vs. latest versions
+- **Individual Updates**: Update specific packages
+- **Update Logs**: Complete operation logs
+- **Version Comparison**: Current vs. latest version display
 
 ### 🩺 System Diagnostics
-- **Homebrew Doctor**: Integrated diagnostic functionality
-- **Problem Detection**: Identification of common Homebrew issues
-- **Detailed Logs**: Comprehensive output for troubleshooting
+- **Homebrew Doctor**: Integrated `brew doctor` diagnostics
+- **Problem Detection**: Identifies common Homebrew issues
+- **Detailed Logs**: Comprehensive troubleshooting output
 
 ### 🎯 User Experience
-- **Modern UI**: Clean, responsive user interface
-- **Real-time Updates**: Live refreshing of package lists
-- **Intuitive Navigation**: Simple sidebar navigation between functions
+- **Modern UI**: Clean, responsive interface
+- **Real-time Updates**: Live package list refreshing
+- **Intuitive Navigation**: Simple sidebar navigation
 - **Confirmation Dialogs**: Safe confirmation for critical actions
 
 ## 🚀 Installation & Setup
@@ -91,7 +91,7 @@ If you want to build WailBrew from source, you'll need:
   go install github.com/wailsapp/wails/v2/cmd/wails@latest
   ```
   Make sure `~/go/bin` is in your PATH.
-- 
+
 ### Development Setup
 ``` bash
 # Clone the repository
