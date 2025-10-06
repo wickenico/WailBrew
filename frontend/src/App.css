@@ -33,6 +33,7 @@ html, body {
 .sidebar {
   width: 220px;
   min-width: 180px;
+  max-width: 400px;
   background: var(--glass-bg);
   color: var(--text-main);
   display: flex;
@@ -44,6 +45,29 @@ html, body {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   transition: background var(--transition);
+  flex-shrink: 0;
+}
+
+.sidebar-resize-handle {
+  width: 4px;
+  background: transparent;
+  cursor: col-resize;
+  flex-shrink: 0;
+  position: relative;
+  transition: background var(--transition);
+}
+
+.sidebar-resize-handle:hover {
+  background: var(--glass-border-strong);
+}
+
+.sidebar-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  right: -4px;
 }
 
 .sidebar-title {

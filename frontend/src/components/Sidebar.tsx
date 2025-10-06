@@ -14,6 +14,8 @@ interface SidebarProps {
     leavesCount: number;
     repositoriesCount: number;
     onClearSelection: () => void;
+    sidebarWidth?: number;
+    sidebarRef?: React.RefObject<HTMLElement | null>;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -26,6 +28,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     leavesCount,
     repositoriesCount,
     onClearSelection,
+    sidebarWidth,
+    sidebarRef,
 }) => {
     const { t, i18n } = useTranslation();
 
@@ -40,7 +44,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
 
     return (
-    <nav className="sidebar">
+    <nav 
+        className="sidebar" 
+        ref={sidebarRef}
+        style={sidebarWidth ? { width: `${sidebarWidth}px` } : undefined}
+    >
         <div className="sidebar-title">
             <img
                 src={appIcon}

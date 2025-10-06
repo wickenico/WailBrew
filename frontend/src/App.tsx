@@ -91,6 +91,14 @@ const WailBrewApp = () => {
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
     const updateCheckDone = useRef<boolean>(false);
+    
+    // Sidebar resize state
+    const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
+        const saved = localStorage.getItem('sidebarWidth');
+        return saved ? parseInt(saved, 10) : 220;
+    });
+    const [isResizing, setIsResizing] = useState<boolean>(false);
+    const sidebarRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
         // Get app version from backend
@@ -313,6 +321,43 @@ const WailBrewApp = () => {
             unlistenUpdate();
         };
     }, []);
+
+    // Sidebar resize handlers
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isResizing) return;
+            
+            const newWidth = e.clientX;
+            if (newWidth >= 180 && newWidth <= 400) {
+                setSidebarWidth(newWidth);
+            }
+        };
+
+        const handleMouseUp = () => {
+            if (isResizing) {
+                setIsResizing(false);
+                localStorage.setItem('sidebarWidth', sidebarWidth.toString());
+            }
+        };
+
+        if (isResizing) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        }
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        };
+    }, [isResizing, sidebarWidth]);
+
+    const handleResizeStart = () => {
+        setIsResizing(true);
+    };
 
     const getActivePackages = () => {
         switch (view) {
@@ -710,6 +755,12 @@ const WailBrewApp = () => {
                 leavesCount={leavesPackages.length}
                 repositoriesCount={repositories.length}
                 onClearSelection={clearSelection}
+                sidebarWidth={sidebarWidth}
+                sidebarRef={sidebarRef}
+            />
+            <div 
+                className="sidebar-resize-handle"
+                onMouseDown={handleResizeStart}
             />
             <main className="content">
                 {view === "installed" && (
