@@ -224,6 +224,60 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				HelpMessage:  "Aucune page d'aide n'est actuellement disponible.",
 			},
 		}
+	case "tr":
+		translations = MenuTranslations{
+			App: struct {
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
+			}{
+				About:          "WailBrew Hakkında",
+				CheckUpdates:   "Güncellemeleri Kontrol Et...",
+				VisitWebsite:   "Siteyi Görüntüle",
+				VisitGitHub:    "GitHub Deposunu Ziyaret Et",
+				ReportBug:      "Hata Bildir",
+				VisitSubreddit: "Subreddit'i Ziyaret Et",
+				Quit:           "Çık",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
+			}{
+				Title:        "Görünüm",
+				Installed:    "Yüklenen Formüller",
+				Casks:        "Fıçılar",
+				Outdated:     "Eskimiş Formüller",
+				All:          "Tüm Formüller",
+				Leaves:       "Yapraklar",
+				Repositories: "Depolar",
+				Doctor:       "Doktor",
+				Cleanup:      "Temizlik",
+				Settings:     "Ayarlar",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Yardım",
+				WailbrewHelp: "WailBrew Yardım",
+				HelpTitle:    "Yardım",
+				HelpMessage:  "Şu an bir yardım sayfası bulunmuyor.",
+			},
+		}
 	default:
 		// Default to English
 		translations = MenuTranslations{
@@ -478,6 +532,27 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll": "❌ Erreur lors du démarrage de la mise à jour de tous les paquets : {{error}}",
 			"errorStartingInstall":   "❌ Erreur lors du démarrage de l'installation : {{error}}",
 			"errorStartingUninstall": "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
+		}
+	case "tr":
+		messages = map[string]string{
+			"updateStart":            "🔄 '{{name}}' için güncelleme başlıyor...",
+			"updateSuccess":          "✅ '{{name}}' için güncelleme başarıyla tamamlandı!",
+			"updateFailed":           "❌ '{{name}}' için güncelleme hata verdi: {{error}}",
+			"updateAllStart":         "🔄 Tüm paketler için güncelleme başlıyor...",
+			"updateAllSuccess":       "✅ Tüm paketler için güncelleme başarıyla tamamlandı!",
+			"updateAllFailed":        "❌ Tüm paketler için güncelleme hata verdi: {{error}}",
+			"installStart":           "🔄 '{{name}}' için kurulum başlıyor...",
+			"installSuccess":         "✅ '{{name}}' için kurulum başarıyla tamamlandı!",
+			"installFailed":          "❌ '{{name}}' için kurulum hata verdi: {{error}}",
+			"uninstallStart":         "🔄 '{{name}}' kaldırılıyor...",
+			"uninstallSuccess":       "✅ '{{name}}' başarıyla kaldırıldı!",
+			"uninstallFailed":        "❌ '{{name}}' için kaldırılma hata verdi: {{error}}",
+			"errorCreatingPipe":      "❌ Çıktı borusu yaratılırken bir hata oluştu: {{error}}",
+			"errorCreatingErrorPipe": "❌ Hata borusu yaratılırken bir hata oluştu: {{error}}",
+			"errorStartingUpdate":    "❌ Güncellenirken bir hata oluştu: {{error}}",
+			"errorStartingUpdateAll": "❌ Tümü güncellenirken bir hata oluştu: {{error}}",
+			"errorStartingInstall":   "❌ Kurulurken bir hata oluştu: {{error}}",
+			"errorStartingUninstall": "❌ Kaldırılma başlatılırken bir hata oluştu: {{error}}",
 		}
 	default:
 		// Default to English

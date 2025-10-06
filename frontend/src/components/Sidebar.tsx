@@ -118,6 +118,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                 >
                     <span>🇫🇷</span>
                 </li>
+                <li 
+                    className={i18n.language === 'tr' ? 'active' : ''} 
+                    onClick={() => changeLanguage('tr')}
+                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
+                    title={t('language.turkish')}
+                >
+                    <span>🇹🇷</span>
+                </li>
             </ul>
         </div>
     </nav>

@@ -1,0 +1,236 @@
+{
+  "sidebar": {
+    "formulas": "Formüller",
+    "tools": "Araçlar",
+    "installed": "Yüklendi",
+    "casks": "Fıçılar",
+    "outdated": "Eski",
+    "all": "Tüm Formüller",
+    "leaves": "Yapraklar",
+    "repositories": "Depolar",
+    "doctor": "Doktor",
+    "cleanup": "Temizlik",
+    "settings": "Ayarlar"
+  },
+  "headers": {
+    "installedFormulas": "Yüklü Formüller ({{count}})",
+    "installedCasks": "Kurulu Fıçılar ({{count}})",
+    "outdatedFormulas": "Eski Formüller ({{count}})",
+    "allFormulas": "Formül ({{count}})",
+    "leaves": "Yaprak ({{count}})",
+    "repositories": "Depo ({{count}})",
+    "homebrewDoctor": "Homebrew Doktoru",
+    "homebrewCleanup": "Homebrew Temizliği"
+  },
+  "search": {
+    "placeholder": "Ara",
+    "clearSearch": "Aramayı Temizle"
+  },
+  "buttons": {
+    "uninstall": "\"{{name}}\" kaldır",
+    "install": "\"{{name}}\" indir",
+    "update": "\"{{name}}\" güncelle",
+    "updateAll": "Tümünü Güncelle",
+    "showInfo": "\"{{name}}\" bilgilerini göster",
+    "clearLog": "Günlüğü temizle",
+    "runDoctor": "Doktoru çalıştır",
+    "runCleanup": "Temizliği çalıştır",
+    "refresh": "Paketleri yenile",
+    "yes": "Evet",
+    "cancel": "İptal",
+    "yesUninstall": "Evet, kaldır",
+    "yesInstall": "Evet, yükle",
+    "yesUpdate": "Evet, güncelle",
+    "yesUpdateAll": "Evet, tümünü güncelle",
+    "ok": "Ok",
+    "close": "Kapat"
+  },
+  "logDialog": {
+    "running": "Çalışıyor...",
+    "completed": "Tamamlandı"
+  },
+  "packageInfo": {
+    "loading": "(Yükleniyor...)",
+    "description": "Açıklama",
+    "homepage": "Anasayfa",
+    "version": "Sürüm",
+    "status": "Durum",
+    "dependencies": "Bağımlılıklar",
+    "conflicts": "Çakışmalar",
+    "installed": "Yüklendi",
+    "notInstalled": "Yüklenmedi",
+    "noSelection": "Hiçbir paket seçilmedi"
+  },
+  "tableColumns": {
+    "name": "İsim",
+    "version": "Sürüm",
+    "latestVersion": "Son sürüm",
+    "status": "Durum",
+    "actions": "Aksiyonlar"
+  },
+  "footers": {
+    "installedFormulas": "Bu formüller zaten sisteminde yüklü.",
+    "installedCasks": "Bu fıçılar(GUI uygulamalar) sisteminde zaten yüklü.",
+    "outdatedFormulas": "Bazı formüller güncellenebilir.",
+    "allFormulas": "Tüm Homebrew formülleri mevcut. Yeşil olanlar hazırda yüklü olanları gösteriyor.",
+    "leaves": "Yapraklar, yüklenmiş diğer formüllere bağlı olmayan formüllerdir.",
+    "repositories": "Depolar (Taps) formül kaynaklarıdır. Bunlar standart depoların yanısıra ek paketleri içerir.",
+    "doctor": "Doktor, en sık karşılaşılan hataları saptayan bir Homebrew özelliğidir.",
+    "cleanup": "Temizlik eskimiş indirmeleri ve önbelleklenmiş dosyaları disk alanı açmak için siler."
+  },
+  "dialogs": {
+    "confirmUninstall": "Gerçekten \"{{name}}\" paketini silmek istiyor musun?",
+    "confirmInstall": "Gerçekten \"{{name}}\" paketini yüklemek istiyor musun?",
+    "confirmUpdate": "Gerçekten \"{{name}}\" paketini güncellemek istiyor musun?",
+    "confirmUpdateAll": "Gerçekten tüm eskimiş paketleri güncellemek istiyor musun?",
+    "updateLogs": "{{name}} için günlükleri güncelle",
+    "updateAllLogs": "Tüm paketler için günlükleri güncelle",
+    "installLogs": "{{name} için günlükleri indir",
+    "uninstallLogs": "{{name}} için günlükleri kaldır",
+    "packageInfo": "{{name}} detayı",
+    "updating": "\"{{name}}\" güncelleniyor...\nLütfen bekle...",
+    "installing": "\"{{name}}\" indiriliyor...\nLütfen bekle...",
+    "uninstalling": "\"{{name}}\" kaldırılıyor...\nLütfen bekle...",
+    "updatingAll": "Tüm eskimiş paketler güncelleniyor...\nLütfen bekle...",
+    "gettingInfo": "\"{{name}}\" için bilgi alınıyor...\nLütfen bekle...",
+    "runningDoctor": "Brew doktoru çalışıyor…\nLütfen bekle...",
+    "runningCleanup": "Brew temizliği çalışıyor…\nLütfen bekle...",
+    "installSuccess": "Successfully installed \"{{name}}\"!",
+    "installFailed": "\"{{name}}\" indirilemedi: {{error}}",
+    "noDoctorOutput": "Henüz bir sonuç yok. \"Doktoru Çalıştır\" düğmesine tıkla.",
+    "noCleanupOutput": "Henüz bir sonuç yok. \"Temizliği Çalıştır\" düğmesine tıkla."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Formüller yüklenirken bir hata oluştu.!",
+    "failedInstalledPackages": "Yüklü paketleri alırken bir hata oluştu",
+    "failedInstalledCasks": "Yüklü fıçıları alırken bir hata oluştu",
+    "failedUpdatablePackages": "Güncellenebilir paketleri alırken bir hata oluştu",
+    "failedAllPackages": "Tüm paketler alınamadı",
+    "failedLeaves": "Yapraklar alınamadı",
+    "failedRepositories": "Depolar alınamadı"
+  },
+  "about": {
+    "title": "Hakkında",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – macOS için minimalist bir Homebrew GUI",
+    "createdBy": "Nico Wickersheim tarafından yaratıldı",
+    "developedWith": "{{wails}} ve React ile geliştirildi",
+    "description": "WailBrew Homebrew için paketleri kolayca yönetmesi, yüklemesi ve güncellemesi için yazılmış bir modern grafiksel kullanıcı arayüzüdür.",
+    "links": "Bağlantılar:",
+    "wailbrewWebsite": "WailBrew Sitesi",
+    "githubRepo": "GitHub Deposu",
+    "reportBug": "Hata Bildir",
+    "homebrewWebsite": "Homebrew Sitesi",
+    "acknowledgments": "Teşekkür Bölümü:",
+    "acknowledgmentText": "Bruno Philipe'in {{cakebrew}}'i tarafından ilham alındı .\\nOrijinal Homebrew GUI adına mükemmel çalışma için teşekkürler!",
+    "copyright": "Telif Hakları © 2025 Nico Wickersheim. Tüm hakları saklıdır."
+  },
+  "language": {
+    "switchLanguage": "Dil değiştir",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe"
+  },
+  "menu": {
+    "app": {
+      "about": "WailBrew Hakkında",
+      "checkUpdates": "Güncellemeleri denetle...",
+      "visitWebsite": "Siteyi Ziyaret Et",
+      "visitGitHub": "GitHub Deposunu Ziyaret et",
+      "quit": "Çıkış"
+    },
+    "view": {
+      "title": "Görünüm",
+      "installed": "Yüklü Formüller",
+      "outdated": "Eskimiş Formüller",
+      "all": "Tüm Formüller",
+      "leaves": "Yapraklar",
+      "repositories": "Depolar",
+      "doctor": "Doktor",
+      "cleanup": "Temizlik",
+      "settings": "Ayarlar"
+    },
+    "help": {
+      "title": "Yardım",
+      "wailbrewHelp": "WailBrew Yardım",
+      "helpTitle": "Yardım",
+      "helpMessage": "Şu an bir yardım sayfası mevcut değil."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Formüller yükleniyor…",
+    "loadingRepositories": "Depolar yükleniyor…",
+    "noResults": "Eşleşen sonuç yok.",
+    "installedStatus": "✓ Yüklendi",
+    "notInstalledStatus": "Yüklenmedi"
+  },
+  "repository": {
+    "noSelection": "Hiçbir depo seçilmedi",
+    "status": "Durum",
+    "description": "Açıklama",
+    "defaultDescription": "Homebrew Tap Deposu"
+  },
+  "common": {
+    "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "Güncellemeleri denetle",
+    "checking": "Güncellemeler denetleniyor...",
+    "error": "Güncellemeler denetlenirken bir hata oluştu",
+    "available": "Güncelleme var!",
+    "currentVersion": "Şimdiki Sürüm",
+    "newVersion": "Yeni Sürüm",
+    "published": "Yayınlanma Tarihi",
+    "size": "Boyut",
+    "changes": "Değişiklikler",
+    "viewReleaseNotes": "Güncelleme Notlarını Görüntüle",
+    "manualUpdate": "Manual Güncelleme",
+    "instruction": "WailBrew'i güncellemek için, lütfen aşağıdaki komutu komut satırında uygulayın;",
+    "copyCommand": "Komutu panoya kopyala",
+    "copied": "Komut panoya kopyalandı!",
+    "upToDate": "Güncelsin!",
+    "currentVersionIs": "Sürüm {{version}} güncel sürümdür.",
+    "tryAgain": "Tekrar dene",
+    "gotIt": "Anlaşıldı"
+  },
+  "toast": {
+    "updateAvailable": "Güncelleme var!",
+    "versionReady": "v{{version}} hazır",
+    "upToDate": "Son sürümü kullanıyorsun!"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "loading": "Ayarlar yükleniyor...",
+    "footer": "WailBrew ayarlarını Homebrew tecrübeni özelleştirmek için ayarla.",
+    "categories": {
+      "general": "Genel"
+    },
+    "brewPath": {
+      "title": "Homebrew Yol Konfigürasyonu",
+      "description": "Homebrew kurulumun için bir yol tanımla. WailBrew bu yolu kullanarak tüm Homebrew komutlarını çalıştıracak.",
+      "currentPath": "Homebrew Yolu",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "Brew yolunu otomatik sapta",
+      "currentlyUsing": "Şu an kullanılan:",
+      "note": "Not: Brew yolunu değiştirmek yeni Homebrew kurulumunu yansıtmak için tüm paket datasını yenileyecek."
+    },
+    "buttons": {
+      "save": "Değişiklikleri Kaydet",
+      "saving": "Kaydediyor...",
+      "reset": "Sıfırla"
+    },
+    "messages": {
+      "pathUpdated": "Brew yolu başarıyla güncellendi!",
+      "pathReset": "Yolu güncel değerine sıfırla.",
+      "noChanges": "Kaydedilecek bir değişiklik yok.",
+      "pathDetected": "Brew yolunu otomatik sapta: {{path}}"
+    },
+    "errors": {
+      "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
+      "emptyPath": "Lütfen geçerli bir brew yolu gir.",
+      "invalidPath": "Geçersiz brew yolu. Lütfen yolun olduğunu ve yürütülebilir geçerli bir brew olduğunu denetle.",
+      "autoDetectionFailed": "Brew yolu otomatik saptanamadı. Lütfen yolu manuel gir."
+    }
+  }
+}
