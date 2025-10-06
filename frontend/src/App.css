@@ -301,6 +301,15 @@ html, body {
   color: #fff;
 }
 
+.package-table tbody tr.selected .info-button {
+  color: #ffd700;
+}
+
+.package-table tbody tr.selected .info-button:hover {
+  color: #ffed4e;
+  background: rgba(255, 215, 0, 0.2);
+}
+
 .package-table tbody tr:nth-child(even) {
   background: rgba(255,255,255,0.02);
 }
