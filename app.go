@@ -49,6 +49,13 @@ type MenuTranslations struct {
 		Cleanup      string `json:"cleanup"`
 		Settings     string `json:"settings"`
 	} `json:"view"`
+	Tools struct {
+		Title          string `json:"title"`
+		ExportBrewfile string `json:"exportBrewfile"`
+		ExportSuccess  string `json:"exportSuccess"`
+		ExportFailed   string `json:"exportFailed"`
+		ExportMessage  string `json:"exportMessage"`
+	} `json:"tools"`
 	Help struct {
 		Title        string `json:"title"`
 		WailbrewHelp string `json:"wailbrewHelp"`
@@ -104,6 +111,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:      "Cleanup",
 				Settings:     "Settings",
 			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Tools",
+				ExportBrewfile: "Export Brewfile...",
+				ExportSuccess:  "Export Successful",
+				ExportFailed:   "Export Failed",
+				ExportMessage:  "Brewfile exported successfully to:\n%s",
+			},
 			Help: struct {
 				Title        string `json:"title"`
 				WailbrewHelp string `json:"wailbrewHelp"`
@@ -157,6 +177,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
 				Settings:     "Einstellungen",
+			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Werkzeuge",
+				ExportBrewfile: "Brewfile exportieren...",
+				ExportSuccess:  "Export Erfolgreich",
+				ExportFailed:   "Export Fehlgeschlagen",
+				ExportMessage:  "Brewfile erfolgreich exportiert nach:\n%s",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -212,6 +245,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:      "Nettoyage",
 				Settings:     "Paramètres",
 			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Outils",
+				ExportBrewfile: "Exporter Brewfile...",
+				ExportSuccess:  "Export Réussi",
+				ExportFailed:   "Échec de l'Export",
+				ExportMessage:  "Brewfile exporté avec succès vers :\n%s",
+			},
 			Help: struct {
 				Title        string `json:"title"`
 				WailbrewHelp string `json:"wailbrewHelp"`
@@ -265,6 +311,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Doctor:       "Doktor",
 				Cleanup:      "Temizlik",
 				Settings:     "Ayarlar",
+			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Araçlar",
+				ExportBrewfile: "Brewfile Dışa Aktar...",
+				ExportSuccess:  "Dışa Aktarma Başarılı",
+				ExportFailed:   "Dışa Aktarma Başarısız",
+				ExportMessage:  "Brewfile başarıyla şuraya aktarıldı:\n%s",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -320,6 +379,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
 				Settings:     "Settings",
+			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Tools",
+				ExportBrewfile: "Export Brewfile...",
+				ExportSuccess:  "Export Successful",
+				ExportFailed:   "Export Failed",
+				ExportMessage:  "Brewfile exported successfully to:\n%s",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -651,6 +723,34 @@ func (a *App) menu() *menu.Menu {
 	ViewMenu.AddSeparator()
 	ViewMenu.AddText(translations.View.Settings, keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "settings")
+	})
+
+	// Tools Menu
+	ToolsMenu := AppMenu.AddSubmenu(translations.Tools.Title)
+	ToolsMenu.AddText(translations.Tools.ExportBrewfile, keys.CmdOrCtrl("e"), func(cd *menu.CallbackData) {
+		// Open file picker dialog to save Brewfile
+		saveDialog, err := rt.SaveFileDialog(a.ctx, rt.SaveDialogOptions{
+			DefaultFilename:      "Brewfile",
+			Title:                translations.Tools.ExportBrewfile,
+			CanCreateDirectories: true,
+		})
+
+		if err == nil && saveDialog != "" {
+			err := a.ExportBrewfile(saveDialog)
+			if err != nil {
+				rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
+					Type:    rt.ErrorDialog,
+					Title:   translations.Tools.ExportFailed,
+					Message: fmt.Sprintf("Failed to export Brewfile: %v", err),
+				})
+			} else {
+				rt.MessageDialog(a.ctx, rt.MessageDialogOptions{
+					Type:    rt.InfoDialog,
+					Title:   translations.Tools.ExportSuccess,
+					Message: fmt.Sprintf(translations.Tools.ExportMessage, saveDialog),
+				})
+			}
+		}
 	})
 
 	// Edit-Menü (optional)
@@ -1475,6 +1575,20 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 		exec.Command("open", currentAppPath).Start()
 		rt.Quit(a.ctx)
 	}()
+
+	return nil
+}
+
+// ExportBrewfile exports the current Homebrew installation to a Brewfile
+func (a *App) ExportBrewfile(filePath string) error {
+	// Run brew bundle dump to the specified file path
+	cmd := exec.Command(a.brewPath, "bundle", "dump", "--file="+filePath, "--force")
+	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("brew bundle dump failed: %v\nOutput: %s", err, string(output))
+	}
 
 	return nil
 }

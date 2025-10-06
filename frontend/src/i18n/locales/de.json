@@ -151,6 +151,12 @@
       "cleanup": "Cleanup",
       "settings": "Einstellungen"
     },
+    "tools": {
+      "title": "Werkzeuge",
+      "exportBrewfile": "Brewfile exportieren...",
+      "exportSuccess": "Brewfile erfolgreich exportiert!",
+      "exportFailed": "Brewfile konnte nicht exportiert werden"
+    },
     "help": {
       "title": "Hilfe",
       "wailbrewHelp": "WailBrew-Hilfe",

@@ -6,6 +6,8 @@ export function CheckForUpdates():Promise<main.UpdateInfo>;
 
 export function DownloadAndInstallUpdate(arg1:string):Promise<void>;
 
+export function ExportBrewfile(arg1:string):Promise<void>;
+
 export function GetAllBrewPackages():Promise<Array<any>>;
 
 export function GetAppVersion():Promise<string>;

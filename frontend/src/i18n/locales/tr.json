@@ -151,6 +151,12 @@
       "cleanup": "Temizlik",
       "settings": "Ayarlar"
     },
+    "tools": {
+      "title": "Araçlar",
+      "exportBrewfile": "Brewfile Dışa Aktar...",
+      "exportSuccess": "Brewfile başarıyla dışa aktarıldı!",
+      "exportFailed": "Brewfile dışa aktarılamadı"
+    },
     "help": {
       "title": "Yardım",
       "wailbrewHelp": "WailBrew Yardım",
