@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/menu"
@@ -439,6 +440,8 @@ type App struct {
 	ctx             context.Context
 	brewPath        string
 	currentLanguage string
+	updateMutex     sync.Mutex
+	lastUpdateTime  time.Time
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -772,6 +775,10 @@ func (a *App) menu() *menu.Menu {
 }
 
 func (a *App) GetAllBrewPackages() [][]string {
+	// Update the formula database first to ensure we have the latest information
+	// Ignore errors from update - we'll still try to get all packages
+	_ = a.UpdateBrewDatabase()
+
 	output, err := a.runBrewCommand("formulae")
 	if err != nil {
 		// On error, return a helpful message instead of crashing
@@ -802,6 +809,10 @@ func (a *App) GetBrewPackages() [][]string {
 	if err := a.validateBrewInstallation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
+
+	// Update the formula database first to ensure we have the latest information
+	// Ignore errors from update - we'll still try to get installed packages
+	_ = a.UpdateBrewDatabase()
 
 	output, err := a.runBrewCommand("list", "--formula", "--versions")
 	if err != nil {
@@ -840,6 +851,10 @@ func (a *App) GetBrewCasks() [][]string {
 	if err := a.validateBrewInstallation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
+
+	// Update the formula database first to ensure we have the latest information
+	// Ignore errors from update - we'll still try to get installed casks
+	_ = a.UpdateBrewDatabase()
 
 	// Get list of cask names only (more reliable than --versions)
 	output, err := a.runBrewCommand("list", "--cask")
@@ -935,12 +950,38 @@ func (a *App) GetBrewCasks() [][]string {
 	return casks
 }
 
+// UpdateBrewDatabase updates the Homebrew formula database
+// It uses a mutex to ensure only one update runs at a time and caches the result
+// for 5 minutes to avoid redundant updates
+func (a *App) UpdateBrewDatabase() error {
+	a.updateMutex.Lock()
+	defer a.updateMutex.Unlock()
+
+	// If we updated less than 5 minutes ago, skip the update
+	if time.Since(a.lastUpdateTime) < 5*time.Minute {
+		return nil
+	}
+
+	// Run brew update to refresh the local formula database
+	_, err := a.runBrewCommandWithTimeout(60*time.Second, "update")
+
+	// Update the timestamp even if there was an error, to avoid hammering
+	// the update command if there's a persistent issue
+	a.lastUpdateTime = time.Now()
+
+	return err
+}
+
 // GetBrewUpdatablePackages checks which packages have updates available using brew outdated
 func (a *App) GetBrewUpdatablePackages() [][]string {
 	// Validate brew installation first
 	if err := a.validateBrewInstallation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
+
+	// Update the formula database first to get latest information
+	// Ignore errors from update - we'll still try to get outdated packages
+	_ = a.UpdateBrewDatabase()
 
 	// Use brew outdated with JSON output for accurate detection
 	output, err := a.runBrewCommand("outdated", "--json=v2")

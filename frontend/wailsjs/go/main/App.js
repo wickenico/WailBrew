@@ -90,6 +90,10 @@ export function UpdateAllBrewPackages() {
   return window['go']['main']['App']['UpdateAllBrewPackages']();
 }
 
+export function UpdateBrewDatabase() {
+  return window['go']['main']['App']['UpdateBrewDatabase']();
+}
+
 export function UpdateBrewPackage(arg1) {
   return window['go']['main']['App']['UpdateBrewPackage'](arg1);
 }

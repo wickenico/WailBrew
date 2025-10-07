@@ -46,4 +46,6 @@ export function SetLanguage(arg1:string):Promise<void>;
 
 export function UpdateAllBrewPackages():Promise<string>;
 
+export function UpdateBrewDatabase():Promise<void>;
+
 export function UpdateBrewPackage(arg1:string):Promise<string>;
