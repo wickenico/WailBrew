@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { X, Search } from "lucide-react";
 
 interface HeaderRowProps {
     title: string;
@@ -29,7 +29,9 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
         </div>
         <div className="header-actions">{actions}</div>
         <div className="search-container">
-            <span className="search-icon">🔍</span>
+            <span className="search-icon">
+                <Search size={16} />
+            </span>
             <input
                 type="text"
                 className="search-input"

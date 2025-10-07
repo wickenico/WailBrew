@@ -232,8 +232,10 @@ html, body {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
-  font-size: 15px;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-container {
