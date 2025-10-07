@@ -212,7 +212,7 @@ html, body {
   width: 100%;
   background: transparent;
   border: none;
-  padding: 7px 12px 7px 32px;
+  padding: 7px 70px 7px 32px;
   border-radius: var(--radius);
   color: var(--text-main);
   font-size: 15px;
@@ -236,6 +236,25 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.search-shortcut-hint {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.15);
+  padding: 3px 7px;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0.6;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
 }
 
 .table-container {

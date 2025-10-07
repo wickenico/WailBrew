@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { X, Search } from "lucide-react";
 
@@ -20,7 +20,29 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     placeholder,
 }) => {
     const { t } = useTranslation();
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    
+    // Detect if user is on Mac
+    const isMac = typeof navigator !== 'undefined' && 
+        (navigator.userAgent.includes('Mac') || navigator.userAgent.includes('macOS'));
+    const shortcutKey = isMac ? '⌘S' : 'Ctrl+S';
+    
     const searchPlaceholder = placeholder || t('search.placeholder');
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            // Check for Cmd+S (Mac) or Ctrl+S (Windows/Linux)
+            if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+                event.preventDefault(); // Prevent browser's save dialog
+                searchInputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
     
     return (
     <div className="header-row">
@@ -33,12 +55,18 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                 <Search size={16} />
             </span>
             <input
+                ref={searchInputRef}
                 type="text"
                 className="search-input"
                 placeholder={searchPlaceholder}
                 value={searchQuery}
                 onChange={e => onSearchChange(e.target.value)}
             />
+            {!searchQuery && (
+                <span className="search-shortcut-hint">
+                    {shortcutKey}
+                </span>
+            )}
             {searchQuery && (
                 <span className="clear-icon" onClick={onClearSearch} title={t('search.clearSearch')}>
                     <X size={16} />
