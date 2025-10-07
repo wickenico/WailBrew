@@ -175,7 +175,8 @@
     "noSelection": "Hiçbir depo seçilmedi",
     "status": "Durum",
     "description": "Açıklama",
-    "defaultDescription": "Homebrew Tap Deposu"
+    "defaultDescription": "Homebrew Tap Deposu",
+    "active": "Aktif"
   },
   "common": {
     "notAvailable": "--"

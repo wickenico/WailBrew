@@ -175,7 +175,8 @@
     "noSelection": "Kein Repository ausgewählt",
     "status": "Status",
     "description": "Beschreibung",
-    "defaultDescription": "Homebrew Tap Repository"
+    "defaultDescription": "Homebrew Tap Repository",
+    "active": "Aktiv"
   },
   "common": {
     "notAvailable": "--"

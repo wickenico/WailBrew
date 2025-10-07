@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { CircleCheckBig } from "lucide-react";
 
 interface RepositoryEntry {
     name: string;
@@ -46,7 +47,12 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                             onClick={() => onSelect(repo)}
                         >
                             <td>{repo.name}</td>
-                            <td><span style={{ color: "green" }}>✓ {repo.status}</span></td>
+                            <td>
+                                <span style={{ color: "green", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                    <CircleCheckBig size={16} />
+                                    {t('repository.active')}
+                                </span>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

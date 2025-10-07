@@ -175,7 +175,8 @@
     "noSelection": "Aucun dépôt sélectionné",
     "status": "Statut",
     "description": "Description",
-    "defaultDescription": "Dépôt Tap Homebrew"
+    "defaultDescription": "Dépôt Tap Homebrew",
+    "active": "Actif"
   },
   "common": {
     "notAvailable": "--"
