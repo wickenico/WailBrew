@@ -63,7 +63,7 @@
   },
   "tableColumns": {
     "name": "Name",
-    "version": "Version",
+    "version": "Installed Version",
     "latestVersion": "Latest Version",
     "status": "Status",
     "actions": "Actions"

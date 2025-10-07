@@ -63,7 +63,7 @@
   },
   "tableColumns": {
     "name": "İsim",
-    "version": "Sürüm",
+    "version": "Yüklü Sürüm",
     "latestVersion": "Son sürüm",
     "status": "Durum",
     "actions": "Aksiyonlar"
