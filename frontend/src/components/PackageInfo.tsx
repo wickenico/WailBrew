@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ExternalLink } from "lucide-react";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageEntry {
@@ -22,6 +23,7 @@ interface PackageInfoProps {
 
 const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view, onSelectDependency }) => {
     const { t } = useTranslation();
+    const [isHomepageHovered, setIsHomepageHovered] = useState(false);
     
     const name = packageEntry?.name || t('common.notAvailable');
     const desc = packageEntry?.desc || t('common.notAvailable');
@@ -60,18 +62,26 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                             textDecoration: 'underline',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.color = '#6bb3ff';
                             e.currentTarget.style.textDecoration = 'none';
+                            setIsHomepageHovered(true);
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.color = '#4a9eff';
                             e.currentTarget.style.textDecoration = 'underline';
+                            setIsHomepageHovered(false);
                         }}
                         title={homepage}
                     >
                         {homepage}
+                        {isHomepageHovered && (
+                            <ExternalLink size={14} style={{ color: '#4fc3f7' }} />
+                        )}
                     </span>
                 ) : (
                     <span>{homepage}</span>
