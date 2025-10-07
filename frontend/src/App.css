@@ -363,6 +363,15 @@ html, body {
   background: rgba(45, 122, 48, 0.2);
 }
 
+.package-table tbody tr.selected .install-button {
+  color: #1565c0;
+}
+
+.package-table tbody tr.selected .install-button:hover {
+  color: #0d47a1;
+  background: rgba(21, 101, 192, 0.2);
+}
+
 .package-table tbody tr:nth-child(even) {
   background: rgba(255,255,255,0.02);
 }

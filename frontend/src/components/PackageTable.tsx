@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpCircle, CirclePlus, Info, CircleX } from "lucide-react";
+import { ArrowUpCircle, CirclePlus, Info, CircleX, CircleCheckBig } from "lucide-react";
 
 interface PackageEntry {
     name: string;
@@ -106,7 +106,10 @@ const PackageTable: React.FC<PackageTableProps> = ({
         }
         if (col.key === "isInstalled") {
             return pkg.isInstalled
-                ? <span style={{ color: "green" }}>{t('table.installedStatus')}</span>
+                ? <span style={{ color: "green", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <CircleCheckBig size={16} />
+                    {t('table.installedStatus')}
+                  </span>
                 : <span style={{ color: "#888" }}>{t('table.notInstalledStatus')}</span>;
         }
         return (pkg as any)[col.key];

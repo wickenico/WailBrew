@@ -168,7 +168,7 @@
     "loadingFormulas": "Formeln werden geladen…",
     "loadingRepositories": "Repositories werden geladen…",
     "noResults": "Keine passenden Ergebnisse.",
-    "installedStatus": "✓ Installiert",
+    "installedStatus": "Installiert",
     "notInstalledStatus": "Nicht installiert"
   },
   "repository": {

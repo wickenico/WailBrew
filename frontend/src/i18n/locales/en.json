@@ -168,7 +168,7 @@
     "loadingFormulas": "Loading formulae…",
     "loadingRepositories": "Loading repositories…",
     "noResults": "No matching results.",
-    "installedStatus": "✓ Installed",
+    "installedStatus": "Installed",
     "notInstalledStatus": "Not installed"
   },
   "repository": {
