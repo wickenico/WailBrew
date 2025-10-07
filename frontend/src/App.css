@@ -354,6 +354,15 @@ html, body {
   background: rgba(255, 215, 0, 0.2);
 }
 
+.package-table tbody tr.selected .update-button {
+  color: #2d7a30;
+}
+
+.package-table tbody tr.selected .update-button:hover {
+  color: #1e5921;
+  background: rgba(45, 122, 48, 0.2);
+}
+
 .package-table tbody tr:nth-child(even) {
   background: rgba(255,255,255,0.02);
 }
