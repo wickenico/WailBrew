@@ -249,6 +249,29 @@ html, body {
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* Custom scrollbar styling for tables */
+.table-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: rgba(30,34,40,0.5);
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+  border: 2px solid rgba(30,34,40,0.82);
+  transition: all var(--transition);
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  transform: scaleX(1.15);
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+}
+
 .package-table {
   width: 100%;
   border-collapse: collapse;
@@ -708,6 +731,28 @@ html, body {
   box-shadow: var(--glass-shadow);
 }
 
+.doctor-log::-webkit-scrollbar {
+  width: 12px;
+}
+
+.doctor-log::-webkit-scrollbar-track {
+  background: rgba(30,34,40,0.5);
+  border-radius: 10px;
+}
+
+.doctor-log::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+  border: 2px solid rgba(30,34,40,0.82);
+  transition: all var(--transition);
+}
+
+.doctor-log::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  transform: scaleX(1.15);
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+}
+
 .doctor-footer {
   margin-top: 8px;
   font-size: 12px;
@@ -732,6 +777,28 @@ html, body {
   -webkit-backdrop-filter: blur(8px);
   margin: 16px 0;
   scroll-behavior: smooth;
+}
+
+.log-output::-webkit-scrollbar {
+  width: 12px;
+}
+
+.log-output::-webkit-scrollbar-track {
+  background: rgba(30,34,40,0.5);
+  border-radius: 10px;
+}
+
+.log-output::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+  border: 2px solid rgba(30,34,40,0.85);
+  transition: all var(--transition);
+}
+
+.log-output::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  transform: scaleX(1.15);
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
 }
 
 .log-dialog-box {
@@ -801,6 +868,28 @@ html, body {
   text-align: center;
   overflow-y: auto;
   max-height: 60vh;
+}
+
+.about-content::-webkit-scrollbar {
+  width: 12px;
+}
+
+.about-content::-webkit-scrollbar-track {
+  background: rgba(30,34,40,0.5);
+  border-radius: 10px;
+}
+
+.about-content::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+  border: 2px solid var(--glass-bg-strong);
+  transition: all var(--transition);
+}
+
+.about-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  transform: scaleX(1.15);
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
 }
 
 .about-app-section h1 {
@@ -1190,6 +1279,28 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+}
+
+.release-notes-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.release-notes-content::-webkit-scrollbar-track {
+  background: rgba(30,34,40,0.5);
+  border-radius: 10px;
+}
+
+.release-notes-content::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  transition: all var(--transition);
+}
+
+.release-notes-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  transform: scaleX(1.15);
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
 }
 
 .release-notes-content p {
