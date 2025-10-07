@@ -223,9 +223,21 @@ html, body {
   transition: background var(--transition), border-color var(--transition);
 }
 
+.search-container:hover {
+  border-color: var(--accent);
+}
+
+.search-container:hover .search-icon {
+  color: var(--accent);
+}
+
 .search-container:focus-within {
   background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.18);
+  border-color: var(--accent);
+}
+
+.search-container:focus-within .search-icon {
+  color: var(--accent);
 }
 
 .search-input {
@@ -256,6 +268,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color var(--transition);
 }
 
 .search-shortcut-hint {
