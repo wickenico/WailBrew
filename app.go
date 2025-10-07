@@ -775,10 +775,6 @@ func (a *App) menu() *menu.Menu {
 }
 
 func (a *App) GetAllBrewPackages() [][]string {
-	// Update the formula database first to ensure we have the latest information
-	// Ignore errors from update - we'll still try to get all packages
-	_ = a.UpdateBrewDatabase()
-
 	output, err := a.runBrewCommand("formulae")
 	if err != nil {
 		// On error, return a helpful message instead of crashing
@@ -809,10 +805,6 @@ func (a *App) GetBrewPackages() [][]string {
 	if err := a.validateBrewInstallation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
-
-	// Update the formula database first to ensure we have the latest information
-	// Ignore errors from update - we'll still try to get installed packages
-	_ = a.UpdateBrewDatabase()
 
 	output, err := a.runBrewCommand("list", "--formula", "--versions")
 	if err != nil {
@@ -851,10 +843,6 @@ func (a *App) GetBrewCasks() [][]string {
 	if err := a.validateBrewInstallation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
-
-	// Update the formula database first to ensure we have the latest information
-	// Ignore errors from update - we'll still try to get installed casks
-	_ = a.UpdateBrewDatabase()
 
 	// Get list of cask names only (more reliable than --versions)
 	output, err := a.runBrewCommand("list", "--cask")
