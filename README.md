@@ -3,9 +3,18 @@
 [![Latest Release](https://img.shields.io/github/v/release/wickenico/WailBrew)](https://github.com/wickenico/WailBrew/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/wickenico/WailBrew/total)](https://github.com/wickenico/WailBrew/releases)
 
-## 🍺 About WailBrew
+## 🍺 About
 
-A modern, user-friendly graphical interface for Homebrew package management on macOS. WailBrew simplifies managing your Homebrew formulas with an intuitive desktop application.
+WailBrew is a modern and intuitive way to manage Homebrew on macOS! It provides a clean graphical interface that makes package management accessible to everyone. From the WailBrew UI, you can:
+
+- View and manage installed formulas and casks
+- Search through packages with instant filtering
+- Install, uninstall, and upgrade packages
+- Check for outdated packages and update them individually or all at once
+- View detailed package information including dependencies and conflicts
+- Manage Homebrew repositories (tap/untap)
+
+WailBrew was inspired by [Cakebrew](https://www.cakebrew.com/), bringing modern UI design and enhanced functionality to Homebrew package management. Built with [Wails](https://wails.io), Go, and React, it combines native performance with a beautiful, responsive interface.
 
 Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/WailBrew)
 
@@ -43,30 +52,6 @@ If you wish to contribute by translating WailBrew to your language, feel free to
 - <a href="https://madewithreactjs.com/wailbrew" target="_blank" rel="noopener noreferrer">Made with ReactJS</a>
 - <a href="https://tom-doerr.github.io/repo_posts/" target="_blank" rel="noopener noreferrer">Tom Doerr Repository Showcase</a>
 - <a href="https://alternativeto.net/software/wailbrew/about/" target="_blank" rel="noopener noreferrer">AlternativeTo</a>
-
-## ✨ Key Features
-### 📦 Package Management
-- **View Installed Packages**: Table view of all installed formulas and casks
-- **Package Information**: Detailed info including description, homepage, dependencies, and conflicts
-- **Package Removal**: Safe uninstallation with confirmations
-- **Search Function**: Quick search through packages
-
-### 🔄 Update Management
-- **Outdated Package Detection**: Automatic detection of available updates
-- **Individual Updates**: Update specific packages
-- **Update Logs**: Complete operation logs
-- **Version Comparison**: Current vs. latest version display
-
-### 🩺 System Diagnostics
-- **Homebrew Doctor**: Integrated `brew doctor` diagnostics
-- **Problem Detection**: Identifies common Homebrew issues
-- **Detailed Logs**: Comprehensive troubleshooting output
-
-### 🎯 User Experience
-- **Modern UI**: Clean, responsive interface
-- **Real-time Updates**: Live package list refreshing
-- **Intuitive Navigation**: Simple sidebar navigation
-- **Confirmation Dialogs**: Safe confirmation for critical actions
 
 ## 🚀 Installation & Setup
 ### Prerequisites
