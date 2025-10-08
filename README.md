@@ -24,6 +24,18 @@ brew install --cask wailbrew
 
 ![WailBrew Screenshot](images/Screenshot.png)
 
+## 🌍 Localizations
+
+WailBrew supports multiple languages! As of now, the following languages are supported:
+
+- 🇺🇸 English  
+- 🇩🇪 German  
+- 🇫🇷 French  
+- 🇹🇷 Turkish  
+- 🇨🇳 Chinese (Simplified)  
+
+If you wish to contribute by translating WailBrew to your language, feel free to [open a Pull Request](https://github.com/wickenico/WailBrew/pulls) or [create an Issue](https://github.com/wickenico/WailBrew/issues).
+
 ## 📰 Mentioned
 
 - <a href="https://vvmac.com/wordpress_b/wailbrew-pare-homebrew-dune-interface-graphique/" target="_blank" rel="noopener noreferrer">VVMac</a>
