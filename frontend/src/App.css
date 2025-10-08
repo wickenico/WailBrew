@@ -108,6 +108,16 @@ html, body {
   border-top: 1px solid var(--glass-border);
 }
 
+.sidebar-section.language-switcher ul {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.sidebar-section.language-switcher ul li {
+  flex: 0 0 calc(33.333% - 6px);
+  max-width: calc(33.333% - 6px);
+}
+
 .sidebar-section h4 {
   font-size: 11px;
   text-transform: uppercase;
