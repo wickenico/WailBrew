@@ -338,6 +338,73 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				HelpMessage:  "Şu an bir yardım sayfası bulunmuyor.",
 			},
 		}
+	case "zhCN":
+		translations = MenuTranslations{
+			App: struct {
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
+			}{
+				About:          "关于 WailBrew",
+				CheckUpdates:   "检查更新...",
+				VisitWebsite:   "访问主页",
+				VisitGitHub:    "访问 GitHub 仓库",
+				ReportBug:      "报告 Bug",
+				VisitSubreddit: "访问 Subreddit",
+				Quit:           "退出",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
+			}{
+				Title:        "显示",
+				Installed:    "已安装的 Formulae",
+				Casks:        "Casks",
+				Outdated:     "可更新的 Formulae",
+				All:          "所有 Formulae",
+				Leaves:       "独立包",
+				Repositories: "软件源",
+				Doctor:       "Doctor",
+				Cleanup:      "Cleanup",
+				Settings:     "软件设置",
+			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "工具",
+				ExportBrewfile: "导出 Brewfile...",
+				ExportSuccess:  "导出成功",
+				ExportFailed:   "导出失败",
+				ExportMessage:  "Brewfile 已成功导出到:\n%s",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "帮助",
+				WailbrewHelp: "WailBrew 帮助",
+				HelpTitle:    "帮助",
+				HelpMessage:  "当前没有可用的帮助页面。",
+			},
+		}
 	default:
 		// Default to English
 		translations = MenuTranslations{
@@ -628,6 +695,27 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll": "❌ Tümü güncellenirken bir hata oluştu: {{error}}",
 			"errorStartingInstall":   "❌ Kurulurken bir hata oluştu: {{error}}",
 			"errorStartingUninstall": "❌ Kaldırılma başlatılırken bir hata oluştu: {{error}}",
+		}
+	case "zhCN":
+		messages = map[string]string{
+			"updateStart":            "🔄 开始更新 '{{name}}'...",
+			"updateSuccess":          "✅ '{{name}}' 更新成功！",
+			"updateFailed":           "❌ 更新 '{{name}}' 失败：{{error}}",
+			"updateAllStart":         "🔄 开始更新所有软件包...",
+			"updateAllSuccess":       "✅ 所有软件包的更新已成功完成！",
+			"updateAllFailed":        "❌ 所有软件包更新失败：{{error}}",
+			"installStart":           "🔄 开始安装 '{{name}}'...",
+			"installSuccess":         "✅ '{{name}}' 安装成功！",
+			"installFailed":          "❌ '{{name}}' 安装失败：{{error}}",
+			"uninstallStart":         "🔄 开始卸载 '{{name}}'...",
+			"uninstallSuccess":       "✅ '{{name}}' 卸载成功！",
+			"uninstallFailed":        "❌ 卸载 '{{name}}' 失败：{{error}}",
+			"errorCreatingPipe":      "❌ 无法建立输出通道：{{error}}",
+			"errorCreatingErrorPipe": "❌ 无法建立错误通道：{{error}}",
+			"errorStartingUpdate":    "❌ 准备更新时出错：{{error}}",
+			"errorStartingUpdateAll": "❌ 准备更新所有软件包时出错：{{error}}",
+			"errorStartingInstall":   "❌ 准备安装时出错：{{error}}",
+			"errorStartingUninstall": "❌ 准备卸载时出错：{{error}}",
 		}
 	default:
 		// Default to English

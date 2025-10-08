@@ -148,6 +148,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                 >
                     <span>🇹🇷</span>
                 </li>
+                <li 
+                    className={i18n.language === 'zhCN' ? 'active' : ''} 
+                    onClick={() => changeLanguage('zhCN')}
+                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
+                    title={t('language.simplified_chinese')}
+                >
+                    <span>🇨🇳</span>
+                </li>
             </ul>
         </div>
     </nav>
