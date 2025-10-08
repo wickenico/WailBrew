@@ -53,93 +53,21 @@ If you wish to contribute by translating WailBrew to your language, feel free to
 - <a href="https://tom-doerr.github.io/repo_posts/" target="_blank" rel="noopener noreferrer">Tom Doerr Repository Showcase</a>
 - <a href="https://alternativeto.net/software/wailbrew/about/" target="_blank" rel="noopener noreferrer">AlternativeTo</a>
 
-## 🚀 Installation & Setup
-### Prerequisites
-#### For Users
-- macOS with Apple Silicon (not tested on Intel)
-- Homebrew must be installed
+## 🛠️ Contributing
 
-#### For Developers
-If you want to build WailBrew from source, you'll need:
+Interested in contributing to WailBrew? We welcome contributions of all kinds!
 
-- **macOS** with Apple Silicon (not tested on Intel)
+- **Code contributions**: Bug fixes, features, improvements
+- **Translations**: Help localize WailBrew to more languages
+- **Bug reports**: Found an issue? Let us know
+- **Feature requests**: Have an idea? We'd love to hear it
 
-- **Homebrew** - Install with:
-  ```bash
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  ```
-
-- **Go** (version 1.25 or higher) - Install with Homebrew:
-  ```bash
-  brew install go
-  ```
-
-- **Node.js** (for frontend development) - Install with Homebrew:
-  ```bash
-  brew install node
-  ```
-
-- **pnpm** (package manager) - Install with npm:
-  ```bash
-  npm install -g pnpm
-  ```
-
-- **Wails CLI** - Install with:
-  ```bash
-  go install github.com/wailsapp/wails/v2/cmd/wails@latest
-  ```
-  Make sure `~/go/bin` is in your PATH.
-
-### Development Setup
-``` bash
-# Clone the repository
-git clone https://github.com/wickenico/WailBrew.git
-cd WailBrew
-
-# Install Go dependencies
-go mod download
-
-# Install frontend dependencies
-cd frontend && pnpm install
-
-# Start the app in development mode
-cd .. && make dev
-# or alternatively: wails dev
-```
-### Production Build
-``` bash
-  wails build
-
-# The built app will be in the build/bin/ directory
-```
-
-**Note**: Use `make` for production builds as it automatically reads the version from `frontend/package.json` and embeds it in the binary. This ensures the About dialog displays the correct version in production.
-
-### Additional Make Commands
-``` bash
-make dev     # Start development server
-make clean   # Clean build directory
-make install # Build and install to /Applications
-```
-
-## 🛠️ Development
-
-### Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-### Live Development
-
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development setup and contribution guidelines.
 
 ## 📝 License
+
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
 ## 🐛 Troubleshooting
 ### Common Issues
 - **Homebrew not found**: Ensure Homebrew is correctly installed
@@ -147,8 +75,12 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 - **Slow performance**: Close other resource-intensive applications
 
 ### Support
-- Create an issue on GitHub for bugs or feature requests
-- Check existing issues before creating new ones
+
+For issues, feature requests, or questions:
+- Visit [r/WailBrew](https://www.reddit.com/r/WailBrew) for community support
+- Check [existing issues](https://github.com/wickenico/WailBrew/issues) on GitHub
+- Create a [new issue](https://github.com/wickenico/WailBrew/issues/new) if needed
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on reporting bugs
 
 ## 🏆 Acknowledgments
 - Wails community for the framework: https://wails.io
