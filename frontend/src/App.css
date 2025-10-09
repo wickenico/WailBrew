@@ -46,6 +46,27 @@ html, body {
   -webkit-backdrop-filter: blur(18px);
   transition: background var(--transition);
   flex-shrink: 0;
+  container-type: inline-size;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--glass-border-strong);
 }
 
 .sidebar-resize-handle {
@@ -104,18 +125,137 @@ html, body {
 
 .sidebar-section.language-switcher {
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid var(--glass-border);
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
-.sidebar-section.language-switcher ul {
-  flex-wrap: wrap;
-  max-width: 100%;
+.language-dropdown-wrapper {
+  position: relative;
+  width: 100%;
 }
 
-.sidebar-section.language-switcher ul li {
-  flex: 0 0 calc(33.333% - 6px);
-  max-width: calc(33.333% - 6px);
+.language-dropdown {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.language-dropdown:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.language-dropdown:focus {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.language-dropdown option {
+  background: #282c34;
+  color: var(--text-main);
+  padding: 8px;
+  font-size: 14px;
+}
+
+.language-dropdown-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-secondary);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.language-dropdown-wrapper:hover .language-dropdown-arrow {
+  color: var(--accent);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.language-dropdown:focus ~ .language-dropdown-arrow {
+  color: var(--accent);
+}
+
+/* Responsive sizing for language dropdown - always show flag + text */
+@container (max-width: 220px) {
+  .language-dropdown {
+    font-size: 13px;
+    padding: 9px 28px 9px 10px;
+  }
+  
+  .language-dropdown option {
+    font-size: 13px;
+  }
+}
+
+@container (max-width: 205px) {
+  .language-dropdown {
+    font-size: 12px;
+    padding: 8px 26px 8px 9px;
+  }
+  
+  .language-dropdown option {
+    font-size: 12px;
+  }
+  
+  .language-dropdown-arrow {
+    font-size: 9px;
+    right: 10px;
+  }
+}
+
+@container (max-width: 190px) {
+  .language-dropdown {
+    font-size: 11px;
+    padding: 7px 24px 7px 8px;
+  }
+  
+  .language-dropdown option {
+    font-size: 11px;
+  }
+  
+  .language-dropdown-arrow {
+    font-size: 8px;
+    right: 8px;
+  }
+}
+
+@container (max-width: 180px) {
+  .language-dropdown {
+    font-size: 10px;
+    padding: 7px 22px 7px 7px;
+  }
+  
+  .language-dropdown option {
+    font-size: 10px;
+  }
+  
+  .language-dropdown-arrow {
+    font-size: 7px;
+    right: 7px;
+  }
 }
 
 .sidebar-section h4 {
@@ -124,6 +264,30 @@ html, body {
   color: var(--text-secondary);
   margin: 0 0 10px 0;
   letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Scale section headers for smaller sidebars */
+@container (max-width: 210px) {
+  .sidebar-section h4 {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+}
+
+@container (max-width: 185px) {
+  .sidebar-section h4 {
+    font-size: 9px;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+  }
+  
+  .sidebar-section {
+    margin-bottom: 16px;
+  }
 }
 
 .sidebar ul {
@@ -140,12 +304,46 @@ html, body {
   border-radius: var(--radius);
   font-size: 15px;
   margin-bottom: 2px;
-  transition: background var(--transition), color var(--transition);
+  transition: background var(--transition), color var(--transition), font-size var(--transition);
   gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidebar ul li > span:nth-child(2) {
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive font sizing for menu items based on sidebar width */
+@container (max-width: 210px) {
+  .sidebar ul li {
+    font-size: 14px;
+    padding: 9px 12px;
+    gap: 6px;
+  }
+}
+
+@container (max-width: 195px) {
+  .sidebar ul li {
+    font-size: 13px;
+    padding: 8px 10px;
+    gap: 5px;
+  }
+}
+
+@container (max-width: 185px) {
+  .sidebar ul li {
+    font-size: 12px;
+    padding: 7px 8px;
+    gap: 4px;
+  }
+  
+  .sidebar-title {
+    font-size: 18px;
+  }
 }
 
 .sidebar ul li:hover {
@@ -167,6 +365,8 @@ html, body {
   color: var(--text-secondary);
   font-weight: 500;
   margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .sidebar-shortcut {
@@ -182,6 +382,32 @@ html, body {
   letter-spacing: 0.3px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Scale badges and shortcuts for smaller sidebars */
+@container (max-width: 210px) {
+  .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+  
+  .sidebar-shortcut {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+}
+
+@container (max-width: 185px) {
+  .badge {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  
+  .sidebar-shortcut {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
 }
 
 .content {

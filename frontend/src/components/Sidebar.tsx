@@ -1,6 +1,7 @@
 /// <reference types="react" />
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { ChevronDown } from "lucide-react";
 import { SetLanguage } from "../../wailsjs/go/main/App";
 import appIcon from "../assets/images/appicon_256.png";
 
@@ -46,6 +47,15 @@ const Sidebar: React.FC<SidebarProps> = ({
         } catch (error) {
             console.error('Failed to update backend language:', error);
         }
+    };
+
+    // Language options with flags
+    const languageOptions = {
+        en: { flag: '🇺🇸', name: t('language.english') },
+        de: { flag: '🇩🇪', name: t('language.german') },
+        fr: { flag: '🇫🇷', name: t('language.french') },
+        tr: { flag: '🇹🇷', name: t('language.turkish') },
+        zhCN: { flag: '🇨🇳', name: t('language.simplified_chinese') },
     };
 
     return (
@@ -114,49 +124,22 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </li>
             </ul>
         </div>
-        <div className="sidebar-section language-switcher" style={{ marginTop: 'auto', paddingTop: '8px' }}>
-            <ul style={{ display: 'flex', gap: '8px', justifyContent: 'center', padding: '0' }}>
-                <li 
-                    className={i18n.language === 'en' ? 'active' : ''} 
-                    onClick={() => changeLanguage('en')}
-                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
-                    title={t('language.english')}
+        <div className="sidebar-section language-switcher">
+            <div className="language-dropdown-wrapper">
+                <select 
+                    className="language-dropdown"
+                    value={i18n.language}
+                    onChange={(e) => changeLanguage(e.target.value)}
+                    aria-label={t('language.switchLanguage')}
                 >
-                    <span>🇺🇸</span>
-                </li>
-                <li 
-                    className={i18n.language === 'de' ? 'active' : ''} 
-                    onClick={() => changeLanguage('de')}
-                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
-                    title={t('language.german')}
-                >
-                    <span>🇩🇪</span>
-                </li>
-                <li 
-                    className={i18n.language === 'fr' ? 'active' : ''} 
-                    onClick={() => changeLanguage('fr')}
-                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
-                    title={t('language.french')}
-                >
-                    <span>🇫🇷</span>
-                </li>
-                <li 
-                    className={i18n.language === 'tr' ? 'active' : ''} 
-                    onClick={() => changeLanguage('tr')}
-                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
-                    title={t('language.turkish')}
-                >
-                    <span>🇹🇷</span>
-                </li>
-                <li 
-                    className={i18n.language === 'zhCN' ? 'active' : ''} 
-                    onClick={() => changeLanguage('zhCN')}
-                    style={{ flex: '0 0 auto', minWidth: 'auto', padding: '6px 10px', cursor: 'pointer' }}
-                    title={t('language.simplified_chinese')}
-                >
-                    <span>🇨🇳</span>
-                </li>
-            </ul>
+                    {Object.entries(languageOptions).map(([code, { flag, name }]) => (
+                        <option key={code} value={code}>
+                            {flag} {name}
+                        </option>
+                    ))}
+                </select>
+                <ChevronDown className="language-dropdown-arrow" size={16} strokeWidth={2} />
+            </div>
         </div>
     </nav>
     );
