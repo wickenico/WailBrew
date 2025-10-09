@@ -1060,7 +1060,8 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	_ = a.UpdateBrewDatabase()
 
 	// Use brew outdated with JSON output for accurate detection
-	output, err := a.runBrewCommand("outdated", "--json=v2")
+	// --greedy flag also includes auto-updating casks
+	output, err := a.runBrewCommand("outdated", "--json=v2", "--greedy")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to check for updates: %v", err)}}
 	}
