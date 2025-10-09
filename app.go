@@ -1606,7 +1606,7 @@ func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 	currentVersionClean := strings.TrimPrefix(currentVersion, "v")
 
 	updateInfo := &UpdateInfo{
-		Available:      latestVersion != currentVersionClean && currentVersionClean != "dev",
+		Available:      latestVersion != currentVersionClean,
 		CurrentVersion: currentVersion,
 		LatestVersion:  latestVersion,
 		ReleaseNotes:   release.Body,
