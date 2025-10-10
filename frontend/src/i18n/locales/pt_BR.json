@@ -1,0 +1,245 @@
+{
+  "sidebar": {
+    "formulas": "Fórmulas",
+    "tools": "Ferramentas",
+    "installed": "Instalados",
+    "casks": "Casks",
+    "outdated": "Desatualizados",
+    "all": "Fórmulas",
+    "leaves": "Leaves",
+    "repositories": "Repositórios",
+    "doctor": "Diagnóstico",
+    "cleanup": "Limpeza",
+    "settings": "Configurações"
+  },
+  "headers": {
+    "installedFormulas": "Fórmulas Instaladas ({{count}})",
+    "installedCasks": "Casks Instalados ({{count}})",
+    "outdatedFormulas": "Fórmulas Desatualizadas ({{count}})",
+    "allFormulas": "Fórmulas ({{count}})",
+    "leaves": "Leaves ({{count}})",
+    "repositories": "Repositórios ({{count}})",
+    "homebrewDoctor": "Diagnóstico do Homebrew",
+    "homebrewCleanup": "Limpeza do Homebrew"
+  },
+  "search": {
+    "placeholder": "Buscar...",
+    "clearSearch": "Limpar busca"
+  },
+  "buttons": {
+    "uninstall": "Desinstalar \"{{name}}\"",
+    "install": "Instalar \"{{name}}\"",
+    "update": "Atualizar \"{{name}}\"",
+    "updateAll": "Atualizar Tudo",
+    "showInfo": "Mostrar informações de \"{{name}}\"",
+    "clearLog": "Limpar log",
+    "runDoctor": "Executar diagnóstico",
+    "runCleanup": "Executar limpeza",
+    "refresh": "Atualizar pacotes",
+    "yes": "Sim",
+    "cancel": "Cancelar",
+    "yesUninstall": "Sim, desinstalar",
+    "yesInstall": "Sim, instalar",
+    "yesUpdate": "Sim, atualizar",
+    "yesUpdateAll": "Sim, atualizar tudo",
+    "ok": "Ok",
+    "close": "Fechar"
+  },
+  "logDialog": {
+    "running": "Executando...",
+    "completed": "Concluído"
+  },
+  "packageInfo": {
+    "loading": "(Carregando…)",
+    "description": "Descrição",
+    "homepage": "Página inicial",
+    "version": "Versão",
+    "status": "Status",
+    "dependencies": "Dependências",
+    "conflicts": "Conflitos",
+    "installed": "Instalado",
+    "notInstalled": "Não instalado",
+    "noSelection": "Nenhum pacote selecionado"
+  },
+  "tableColumns": {
+    "name": "Nome",
+    "version": "Versão Instalada",
+    "latestVersion": "Última Versão",
+    "status": "Status",
+    "actions": "Ações"
+  },
+  "footers": {
+    "installedFormulas": "Estas fórmulas já estão instaladas no seu sistema.",
+    "installedCasks": "Estes casks (aplicativos com Interface Gráfica) já estão instalados no seu sistema.",
+    "outdatedFormulas": "Algumas fórmulas podem ser atualizadas.",
+    "allFormulas": "Todas as fórmulas do Homebrew disponíveis. O destaque em verde mostra as fórmulas instaladas.",
+    "leaves": "Leaves são fórmulas que não são necessárias como dependências por outras fórmulas instaladas.",
+    "repositories": "Repositórios (Taps) são fontes para fórmulas. Eles contêm pacotes adicionais além do repositório padrão.",
+    "doctor": "O Diagnóstico é um recurso do Homebrew que pode detectar as causas mais comuns de erros.",
+    "cleanup": "A Limpeza remove downloads desatualizados e arquivos em cache para liberar espaço em disco."
+  },
+  "dialogs": {
+    "confirmUninstall": "Você realmente deseja desinstalar \"{{name}}\"?",
+    "confirmInstall": "Você realmente deseja instalar \"{{name}}\"?",
+    "confirmUpdate": "Você realmente deseja atualizar \"{{name}}\"?",
+    "confirmUpdateAll": "Você realmente deseja atualizar todos os pacotes desatualizados?",
+    "updateLogs": "Logs de atualização para {{name}}",
+    "updateAllLogs": "Logs de atualização para todos os pacotes",
+    "installLogs": "Logs de instalação para {{name}}",
+    "uninstallLogs": "Logs de desinstalação para {{name}}",
+    "packageInfo": "Informações de {{name}}",
+    "updating": "Atualizando \"{{name}}\"...\nPor favor, aguarde...",
+    "installing": "Instalando \"{{name}}\"...\nPor favor, aguarde...",
+    "uninstalling": "Desinstalando \"{{name}}\"...\nPor favor, aguarde...",
+    "updatingAll": "Atualizando todos os pacotes desatualizados...\nPor favor, aguarde...",
+    "gettingInfo": "Obtendo informações de \"{{name}}\"...\nPor favor, aguarde...",
+    "runningDoctor": "Executando diagnóstico do brew…\nPor favor, aguarde...",
+    "runningCleanup": "Executando limpeza do brew…\nPor favor, aguarde...",
+    "installSuccess": "\"{{name}}\" instalado com sucesso!",
+    "installFailed": "Falha ao instalar \"{{name}}\": {{error}}",
+    "noDoctorOutput": "Nenhuma saída ainda. Clique em \"Executar diagnóstico\".",
+    "noCleanupOutput": "Nenhuma saída ainda. Clique em \"Executar limpeza\"."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Erro ao carregar fórmulas!",
+    "failedInstalledPackages": "Falha ao obter pacotes instalados",
+    "failedInstalledCasks": "Falha ao obter casks instalados",
+    "failedUpdatablePackages": "Falha ao obter pacotes atualizáveis",
+    "failedAllPackages": "Falha ao obter todos os pacotes",
+    "failedLeaves": "Falha ao obter leaves",
+    "failedRepositories": "Falha ao obter repositórios"
+  },
+  "about": {
+    "title": "Sobre",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – GUI minimalista do Homebrew para macOS",
+    "createdBy": "Criado por Nico Wickersheim",
+    "developedWith": "Desenvolvido com {{wails}} e React",
+    "description": "WailBrew é uma interface gráfica moderna para o Homebrew que facilita o gerenciamento, a instalação e a atualização de pacotes.",
+    "links": "Links:",
+    "wailbrewWebsite": "Site do WailBrew",
+    "githubRepo": "Repositório no GitHub",
+    "reportBug": "Reportar um Bug",
+    "homebrewWebsite": "Site do Homebrew",
+    "acknowledgments": "Agradecimentos:",
+    "acknowledgmentText": "Inspirado no {{cakebrew}} de Bruno Philipe.\\nObrigado pelo ótimo trabalho na GUI original do Homebrew!",
+    "copyright": "Copyright © 2025 Nico Wickersheim. Todos os direitos reservados."
+  },
+  "language": {
+    "switchLanguage": "Mudar Idioma",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe",
+    "simplified_chinese": "简体中文",
+    "brazilian_portuguese": "Português do Brasil"
+  },
+  "menu": {
+    "app": {
+      "about": "Sobre o WailBrew",
+      "checkUpdates": "Verificar Atualizações...",
+      "visitWebsite": "Visitar Site",
+      "visitGitHub": "Visitar Repositório no GitHub",
+      "quit": "Sair"
+    },
+    "view": {
+      "title": "Visualizar",
+      "installed": "Fórmulas Instaladas",
+      "outdated": "Fórmulas Desatualizadas",
+      "all": "Todas as Fórmulas",
+      "leaves": "Leaves",
+      "repositories": "Repositórios",
+      "doctor": "Diagnóstico",
+      "cleanup": "Limpeza",
+      "settings": "Configurações"
+    },
+    "tools": {
+      "title": "Ferramentas",
+      "exportBrewfile": "Exportar Brewfile...",
+      "exportSuccess": "Brewfile exportado com sucesso!",
+      "exportFailed": "Falha ao exportar o Brewfile"
+    },
+    "help": {
+      "title": "Ajuda",
+      "wailbrewHelp": "Ajuda do WailBrew",
+      "helpTitle": "Ajuda",
+      "helpMessage": "Atualmente não há nenhuma página de ajuda disponível."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Carregando fórmulas…",
+    "loadingRepositories": "Carregando repositórios…",
+    "noResults": "Nenhum resultado correspondente.",
+    "installedStatus": "Instalado",
+    "notInstalledStatus": "Não instalado"
+  },
+  "repository": {
+    "noSelection": "Nenhum repositório selecionado",
+    "status": "Status",
+    "description": "Descrição",
+    "defaultDescription": "Repositório Tap do Homebrew",
+    "active": "Ativo"
+  },
+  "common": {
+    "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "Verificar Atualizações",
+    "checking": "Verificando atualizações...",
+    "error": "Erro ao verificar atualizações",
+    "available": "Atualização disponível!",
+    "currentVersion": "Versão Atual",
+    "newVersion": "Nova Versão",
+    "published": "Publicado em",
+    "size": "Tamanho",
+    "changes": "Mudanças",
+    "viewReleaseNotes": "Ver Notas da Versão",
+    "manualUpdate": "Atualização Manual",
+    "instruction": "Para atualizar o WailBrew, por favor execute o seguinte comando no seu terminal:",
+    "copyCommand": "Copiar comando para a área de transferência",
+    "copied": "Comando copiado para a área de transferência!",
+    "upToDate": "Você está atualizado!",
+    "currentVersionIs": "A versão {{version}} é a versão atual.",
+    "tryAgain": "Tentar novamente",
+    "gotIt": "Entendi"
+  },
+  "toast": {
+    "updateAvailable": "Atualização disponível!",
+    "versionReady": "v{{version}} está pronta",
+    "upToDate": "Você está usando a versão mais recente!"
+  },
+  "settings": {
+    "title": "Configurações",
+    "loading": "Carregando configurações...",
+    "footer": "Configure as definições do WailBrew para personalizar sua experiência com o Homebrew.",
+    "categories": {
+      "general": "Geral"
+    },
+    "brewPath": {
+      "title": "Configuração do Caminho do Homebrew",
+      "description": "Especifique o caminho para a sua instalação do Homebrew. O WailBrew usará este caminho para executar todos os comandos do Homebrew.",
+      "currentPath": "Caminho do Homebrew",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "Detectar caminho do brew automaticamente",
+      "currentlyUsing": "Atualmente usando:",
+      "note": "Nota: Alterar o caminho do brew irá recarregar todos os dados de pacotes para refletir a nova instalação do Homebrew."
+    },
+    "buttons": {
+      "save": "Salvar Alterações",
+      "saving": "Salvando...",
+      "reset": "Redefinir"
+    },
+    "messages": {
+      "pathUpdated": "Caminho do brew atualizado com sucesso!",
+      "pathReset": "Caminho redefinido para o valor atual.",
+      "noChanges": "Nenhuma alteração para salvar.",
+      "pathDetected": "Caminho do brew detectado automaticamente: {{path}}"
+    },
+    "errors": {
+      "failedToGetPath": "Falha ao obter o caminho atual do brew.",
+      "emptyPath": "Por favor, insira um caminho válido para o brew.",
+      "invalidPath": "Caminho do brew inválido. Verifique se o caminho existe e é um executável válido do brew.",
+      "autoDetectionFailed": "Não foi possível detectar o caminho do brew automaticamente. Por favor, insira o caminho manualmente."
+    }
+  }
+}

@@ -405,6 +405,73 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				HelpMessage:  "当前没有可用的帮助页面。",
 			},
 		}
+	case "pt_BR":
+		translations = MenuTranslations{
+			App: struct {
+        About          string `json:"about"`
+        CheckUpdates   string `json:"checkUpdates"`
+        VisitWebsite   string `json:"visitWebsite"`
+        VisitGitHub    string `json:"visitGitHub"`
+        ReportBug      string `json:"reportBug"`
+        VisitSubreddit string `json:"visitSubreddit"`
+        Quit           string `json:"quit"`
+      }{
+        About:          "Sobre o WailBrew",
+        CheckUpdates:   "Verificar Atualizações...",
+        VisitWebsite:   "Visitar Site",
+        VisitGitHub:    "Visitar Repositório no GitHub",
+        ReportBug:      "Reportar um Bug",
+        VisitSubreddit: "Visitar Subreddit",
+        Quit:           "Sair",
+      },
+      View: struct {
+        Title        string `json:"title"`
+        Installed    string `json:"installed"`
+        Casks        string `json:"casks"`
+        Outdated     string `json:"outdated"`
+        All          string `json:"all"`
+        Leaves       string `json:"leaves"`
+        Repositories string `json:"repositories"`
+        Doctor       string `json:"doctor"`
+        Cleanup      string `json:"cleanup"`
+        Settings     string `json:"settings"`
+      }{
+        Title:        "Visualizar",
+        Installed:    "Fórmulas Instaladas",
+        Casks:        "Casks",
+        Outdated:     "Fórmulas Desatualizadas",
+        All:          "Todas as Fórmulas",
+        Leaves:       "Leaves",
+        Repositories: "Repositórios",
+        Doctor:       "Diagnóstico",
+        Cleanup:      "Limpeza",
+        Settings:     "Configurações",
+      },
+      Tools: struct {
+        Title          string `json:"title"`
+        ExportBrewfile string `json:"exportBrewfile"`
+        ExportSuccess  string `json:"exportSuccess"`
+        ExportFailed   string `json:"exportFailed"`
+        ExportMessage  string `json:"exportMessage"`
+      }{
+        Title:          "Ferramentas",
+        ExportBrewfile: "Exportar Brewfile...",
+        ExportSuccess:  "Exportado com Sucesso",
+        ExportFailed:   "Falha na Exportação",
+        ExportMessage:  "Brewfile exportado com sucesso para:\n%s",
+      },
+      Help: struct {
+        Title        string `json:"title"`
+        WailbrewHelp string `json:"wailbrewHelp"`
+        HelpTitle    string `json:"helpTitle"`
+        HelpMessage  string `json:"helpMessage"`
+      }{
+        Title:        "Ajuda",
+        WailbrewHelp: "Ajuda do WailBrew",
+        HelpTitle:    "Ajuda",
+        HelpMessage:  "Atualmente não há nenhuma página de ajuda disponível.",
+      },
+		}
 	default:
 		// Default to English
 		translations = MenuTranslations{
@@ -717,6 +784,27 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingInstall":   "❌ 准备安装时出错：{{error}}",
 			"errorStartingUninstall": "❌ 准备卸载时出错：{{error}}",
 		}
+		case "pt_BR":
+		messages = map[string]string{
+      "updateStart":            "🔄 Iniciando atualização de '{{name}}'...",
+      "updateSuccess":          "✅ Atualização de '{{name}}' concluída com sucesso!",
+      "updateFailed":           "❌ Falha na atualização de '{{name}}': {{error}}",
+      "updateAllStart":         "🔄 Iniciando atualização de todos os pacotes...",
+      "updateAllSuccess":       "✅ Atualização de todos os pacotes concluída com sucesso!",
+      "updateAllFailed":        "❌ Falha na atualização de todos os pacotes: {{error}}",
+      "installStart":           "🔄 Iniciando instalação de '{{name}}'...",
+      "installSuccess":         "✅ Instalação de '{{name}}' concluída com sucesso!",
+      "installFailed":          "❌ Falha na instalação de '{{name}}': {{error}}",
+      "uninstallStart":         "🔄 Iniciando desinstalação de '{{name}}'...",
+      "uninstallSuccess":       "✅ Desinstalação de '{{name}}' concluída com sucesso!",
+      "uninstallFailed":        "❌ Falha na desinstalação de '{{name}}': {{error}}",
+      "errorCreatingPipe":      "❌ Erro ao criar pipe de saída: {{error}}",
+      "errorCreatingErrorPipe": "❌ Erro ao criar pipe de erro: {{error}}",
+      "errorStartingUpdate":    "❌ Erro ao iniciar atualização: {{error}}",
+      "errorStartingUpdateAll": "❌ Erro ao iniciar a atualização de tudo: {{error}}",
+      "errorStartingInstall":   "❌ Erro ao iniciar instalação: {{error}}",
+      "errorStartingUninstall": "❌ Erro ao iniciar desinstalação: {{error}}",
+    }
 	default:
 		// Default to English
 		messages = map[string]string{

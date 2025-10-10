@@ -42,6 +42,7 @@ WailBrew supports multiple languages! As of now, the following languages are sup
 - 🇫🇷 French  
 - 🇹🇷 Turkish  
 - 🇨🇳 Chinese (Simplified)  
+- 🇧🇷 Português do Brasil  
 
 If you wish to contribute by translating WailBrew to your language, feel free to [open a Pull Request](https://github.com/wickenico/WailBrew/pulls) or [create an Issue](https://github.com/wickenico/WailBrew/issues).
 
