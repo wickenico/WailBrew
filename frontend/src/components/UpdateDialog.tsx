@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CheckCircle2 } from 'lucide-react';
 import { CheckForUpdates } from '../../wailsjs/go/main/App';
 import { BrowserOpenURL } from '../../wailsjs/runtime/runtime';
 import { main } from '../../wailsjs/go/models';
@@ -175,10 +176,25 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                 </div>
               ) : (
                 <div className="update-current">
-                  <div className="update-icon">✅</div>
-                  <div>
+                  <div className="update-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+                    <CheckCircle2 size={64} color="#4CAF50" strokeWidth={2} />
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
                     <h3>{t('updateDialog.upToDate')}</h3>
-                    <p>{t('updateDialog.currentVersionIs', { version: updateInfo.currentVersion })}</p>
+                    <p style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+                      {t('updateDialog.currentVersionIs', { version: updateInfo.currentVersion })}
+                    </p>
+                    <div className="release-info-item" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                      <span 
+                        className="clickable-link"
+                        onClick={() => handleLinkClick('https://github.com/wickenico/WailBrew/releases/latest')}
+                        onKeyDown={(e) => handleKeyDown(e, 'https://github.com/wickenico/WailBrew/releases/latest')}
+                        role="button"
+                        tabIndex={0}
+                      >
+                        {t('updateDialog.viewReleaseNotes')}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from 'react-hot-toast';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Sparkles, Copy } from 'lucide-react';
 import "./style.css";
 import "./App.css";
 import {
@@ -277,12 +277,12 @@ const WailBrewApp = () => {
                                     title="Click to copy"
                                 >
                                     <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
-                                    <span style={{ fontSize: '1rem', opacity: 0.7 }}>📋</span>
+                                    <Copy size={16} style={{ opacity: 0.7 }} />
                                 </div>
                             </div>
                         ),
                         {
-                            icon: '🎉',
+                            icon: <Sparkles size={20} color="#FFD700" />,
                             duration: 6000,
                             position: 'bottom-center',
                         }
