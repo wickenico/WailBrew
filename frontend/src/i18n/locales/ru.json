@@ -1,0 +1,247 @@
+{
+  "sidebar": {
+    "formulas": "Пакеты",
+    "tools": "Инструменты",
+    "installed": "Установленные",
+    "casks": "Приложения",
+    "outdated": "Устаревшие",
+    "all": "Все пакеты",
+    "leaves": "Листья",
+    "repositories": "Репозитории",
+    "doctor": "Диагностика",
+    "cleanup": "Очистка",
+    "settings": "Настройки"
+  },
+  "headers": {
+    "installedFormulas": "Установленные пакеты ({{count}})",
+    "installedCasks": "Установленные приложения ({{count}})",
+    "outdatedFormulas": "Устаревшие пакеты ({{count}})",
+    "allFormulas": "Все пакеты ({{count}})",
+    "leaves": "Листья ({{count}})",
+    "repositories": "Репозитории ({{count}})",
+    "homebrewDoctor": "Диагностика Homebrew",
+    "homebrewCleanup": "Очистка Homebrew"
+  },
+  "search": {
+    "placeholder": "Поиск...",
+    "clearSearch": "Очистить поиск"
+  },
+  "buttons": {
+    "uninstall": "Удалить \"{{name}}\"",
+    "install": "Установить \"{{name}}\"",
+    "update": "Обновить \"{{name}}\"",
+    "updateAll": "Обновить всё",
+    "showInfo": "Показать информацию о \"{{name}}\"",
+    "clearLog": "Очистить лог",
+    "runDoctor": "Запустить диагностику",
+    "runCleanup": "Запустить очистку",
+    "refresh": "Обновить список",
+    "yes": "Да",
+    "cancel": "Отмена",
+    "yesUninstall": "Да, удалить",
+    "yesInstall": "Да, установить",
+    "yesUpdate": "Да, обновить",
+    "yesUpdateAll": "Да, обновить всё",
+    "ok": "ОК",
+    "close": "Закрыть"
+  },
+  "logDialog": {
+    "running": "Выполняется...",
+    "completed": "Завершено"
+  },
+  "packageInfo": {
+    "loading": "(Загрузка…)",
+    "description": "Описание",
+    "homepage": "Сайт",
+    "version": "Версия",
+    "status": "Статус",
+    "dependencies": "Зависимости",
+    "conflicts": "Конфликты",
+    "installed": "Установлено",
+    "notInstalled": "Не установлено",
+    "noSelection": "Пакет не выбран"
+  },
+  "tableColumns": {
+    "name": "Название",
+    "version": "Установленная версия",
+    "latestVersion": "Последняя версия",
+    "status": "Статус",
+    "actions": "Действия"
+  },
+  "footers": {
+    "installedFormulas": "Эти пакеты уже установлены в вашей системе.",
+    "installedCasks": "Эти приложения (GUI) уже установлены в вашей системе.",
+    "outdatedFormulas": "Некоторые пакеты могут быть обновлены.",
+    "allFormulas": "Все доступные пакеты Homebrew. Зелёным цветом выделены установленные пакеты.",
+    "leaves": "Листья — это пакеты, которые не требуются в качестве зависимостей другими установленными пакетами.",
+    "repositories": "Репозитории (Taps) — это источники пакетов. Они содержат дополнительные пакеты помимо стандартного репозитория.",
+    "doctor": "Диагностика — это функция Homebrew, которая может обнаружить наиболее распространённые причины ошибок.",
+    "cleanup": "Очистка удаляет устаревшие загрузки и кэшированные файлы для освобождения дискового пространства."
+  },
+  "dialogs": {
+    "confirmUninstall": "Вы действительно хотите удалить \"{{name}}\"?",
+    "confirmInstall": "Вы действительно хотите установить \"{{name}}\"?",
+    "confirmUpdate": "Вы действительно хотите обновить \"{{name}}\"?",
+    "confirmUpdateAll": "Вы действительно хотите обновить все устаревшие пакеты?",
+    "updateLogs": "Журнал обновления {{name}}",
+    "updateAllLogs": "Журнал обновления всех пакетов",
+    "installLogs": "Журнал установки {{name}}",
+    "uninstallLogs": "Журнал удаления {{name}}",
+    "packageInfo": "Информация о {{name}}",
+    "updating": "Обновление \"{{name}}\"...\nПожалуйста, подождите...",
+    "installing": "Установка \"{{name}}\"...\nПожалуйста, подождите...",
+    "uninstalling": "Удаление \"{{name}}\"...\nПожалуйста, подождите...",
+    "updatingAll": "Обновление всех устаревших пакетов...\nПожалуйста, подождите...",
+    "gettingInfo": "Получение информации о \"{{name}}\"...\nПожалуйста, подождите...",
+    "runningDoctor": "Выполняется brew doctor…\nПожалуйста, подождите...",
+    "runningCleanup": "Выполняется brew cleanup…\nПожалуйста, подождите...",
+    "installSuccess": "\"{{name}}\" успешно установлен!",
+    "installFailed": "Не удалось установить \"{{name}}\": {{error}}",
+    "noDoctorOutput": "Нет вывода. Нажмите \"Запустить диагностику\".",
+    "noCleanupOutput": "Нет вывода. Нажмите \"Запустить очистку\"."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Ошибка загрузки пакетов!",
+    "failedInstalledPackages": "Не удалось получить установленные пакеты",
+    "failedInstalledCasks": "Не удалось получить установленные приложения",
+    "failedUpdatablePackages": "Не удалось получить обновляемые пакеты",
+    "failedAllPackages": "Не удалось получить все пакеты",
+    "failedLeaves": "Не удалось получить листья",
+    "failedRepositories": "Не удалось получить репозитории"
+  },
+  "about": {
+    "title": "О программе",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – Минималистичный GUI для Homebrew на macOS",
+    "createdBy": "Создано Нико Викершаймом",
+    "developedWith": "Разработано с помощью {{wails}} и React",
+    "description": "WailBrew — это современный графический интерфейс для Homebrew, который упрощает управление, установку и обновление пакетов.",
+    "links": "Ссылки:",
+    "wailbrewWebsite": "Сайт WailBrew",
+    "githubRepo": "Репозиторий на GitHub",
+    "reportBug": "Сообщить об ошибке",
+    "homebrewWebsite": "Сайт Homebrew",
+    "acknowledgments": "Благодарности:",
+    "acknowledgmentText": "Вдохновлено {{cakebrew}} от Бруно Филипе.\\nСпасибо за отличную работу над оригинальным GUI для Homebrew!",
+    "copyright": "Copyright © 2025 Нико Викершайм. Все права защищены."
+  },
+  "language": {
+    "switchLanguage": "Переключить язык",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe",
+    "simplified_chinese": "简体中文",
+    "brazilian_portuguese": "Português do Brasil",
+    "russian": "Русский"
+  },
+  "menu": {
+    "app": {
+      "about": "О WailBrew",
+      "checkUpdates": "Проверить обновления...",
+      "visitWebsite": "Посетить сайт",
+      "visitGitHub": "Посетить репозиторий на GitHub",
+      "quit": "Выход"
+    },
+    "view": {
+      "title": "Вид",
+      "installed": "Установленные пакеты",
+      "outdated": "Устаревшие пакеты",
+      "all": "Все пакеты",
+      "leaves": "Листья",
+      "repositories": "Репозитории",
+      "doctor": "Диагностика",
+      "cleanup": "Очистка",
+      "settings": "Настройки"
+    },
+    "tools": {
+      "title": "Инструменты",
+      "exportBrewfile": "Экспортировать Brewfile...",
+      "exportSuccess": "Brewfile успешно экспортирован!",
+      "exportFailed": "Не удалось экспортировать Brewfile"
+    },
+    "help": {
+      "title": "Справка",
+      "wailbrewHelp": "Справка WailBrew",
+      "helpTitle": "Справка",
+      "helpMessage": "В настоящее время страница справки недоступна."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Загрузка пакетов…",
+    "loadingRepositories": "Загрузка репозиториев…",
+    "noResults": "Нет совпадений.",
+    "installedStatus": "Установлено",
+    "notInstalledStatus": "Не установлено"
+  },
+  "repository": {
+    "noSelection": "Репозиторий не выбран",
+    "status": "Статус",
+    "description": "Описание",
+    "defaultDescription": "Репозиторий Homebrew Tap",
+    "active": "Активен"
+  },
+  "common": {
+    "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "Проверить обновления",
+    "checking": "Проверка обновлений...",
+    "error": "Ошибка проверки обновлений",
+    "available": "Доступно обновление!",
+    "currentVersion": "Текущая версия",
+    "newVersion": "Новая версия",
+    "published": "Опубликовано",
+    "size": "Размер",
+    "changes": "Изменения",
+    "viewReleaseNotes": "Просмотреть примечания к выпуску",
+    "manualUpdate": "Ручное обновление",
+    "instruction": "Чтобы обновить WailBrew, выполните следующую команду в терминале:",
+    "copyCommand": "Скопировать команду в буфер обмена",
+    "copied": "Команда скопирована в буфер обмена!",
+    "upToDate": "У вас последняя версия!",
+    "currentVersionIs": "Версия {{version}} является текущей версией.",
+    "tryAgain": "Повторить попытку",
+    "gotIt": "Понятно"
+  },
+  "toast": {
+    "updateAvailable": "Доступно обновление!",
+    "versionReady": "v{{version}} готова",
+    "upToDate": "У вас установлена последняя версия!"
+  },
+  "settings": {
+    "title": "Настройки",
+    "loading": "Загрузка настроек...",
+    "footer": "Настройте параметры WailBrew для персонализации работы с Homebrew.",
+    "categories": {
+      "general": "Общие"
+    },
+    "brewPath": {
+      "title": "Настройка пути Homebrew",
+      "description": "Укажите путь к вашей установке Homebrew. WailBrew будет использовать этот путь для выполнения всех команд Homebrew.",
+      "currentPath": "Путь Homebrew",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "Автоматически определить путь brew",
+      "currentlyUsing": "Текущий путь:",
+      "note": "Примечание: Изменение пути brew обновит все данные о пакетах для новой установки Homebrew."
+    },
+    "buttons": {
+      "save": "Сохранить изменения",
+      "saving": "Сохранение...",
+      "reset": "Сбросить"
+    },
+    "messages": {
+      "pathUpdated": "Путь brew успешно обновлён!",
+      "pathReset": "Путь сброшен к текущему значению.",
+      "noChanges": "Нет изменений для сохранения.",
+      "pathDetected": "Автоматически определён путь brew: {{path}}"
+    },
+    "errors": {
+      "failedToGetPath": "Не удалось получить текущий путь brew.",
+      "emptyPath": "Пожалуйста, введите корректный путь brew.",
+      "invalidPath": "Неверный путь brew. Пожалуйста, проверьте, что путь существует и является корректным исполняемым файлом brew.",
+      "autoDetectionFailed": "Не удалось автоматически определить путь brew. Пожалуйста, введите путь вручную."
+    }
+  }
+}
+

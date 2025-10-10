@@ -408,69 +408,136 @@ func (a *App) getMenuTranslations() MenuTranslations {
 	case "pt_BR":
 		translations = MenuTranslations{
 			App: struct {
-        About          string `json:"about"`
-        CheckUpdates   string `json:"checkUpdates"`
-        VisitWebsite   string `json:"visitWebsite"`
-        VisitGitHub    string `json:"visitGitHub"`
-        ReportBug      string `json:"reportBug"`
-        VisitSubreddit string `json:"visitSubreddit"`
-        Quit           string `json:"quit"`
-      }{
-        About:          "Sobre o WailBrew",
-        CheckUpdates:   "Verificar Atualizações...",
-        VisitWebsite:   "Visitar Site",
-        VisitGitHub:    "Visitar Repositório no GitHub",
-        ReportBug:      "Reportar um Bug",
-        VisitSubreddit: "Visitar Subreddit",
-        Quit:           "Sair",
-      },
-      View: struct {
-        Title        string `json:"title"`
-        Installed    string `json:"installed"`
-        Casks        string `json:"casks"`
-        Outdated     string `json:"outdated"`
-        All          string `json:"all"`
-        Leaves       string `json:"leaves"`
-        Repositories string `json:"repositories"`
-        Doctor       string `json:"doctor"`
-        Cleanup      string `json:"cleanup"`
-        Settings     string `json:"settings"`
-      }{
-        Title:        "Visualizar",
-        Installed:    "Fórmulas Instaladas",
-        Casks:        "Casks",
-        Outdated:     "Fórmulas Desatualizadas",
-        All:          "Todas as Fórmulas",
-        Leaves:       "Leaves",
-        Repositories: "Repositórios",
-        Doctor:       "Diagnóstico",
-        Cleanup:      "Limpeza",
-        Settings:     "Configurações",
-      },
-      Tools: struct {
-        Title          string `json:"title"`
-        ExportBrewfile string `json:"exportBrewfile"`
-        ExportSuccess  string `json:"exportSuccess"`
-        ExportFailed   string `json:"exportFailed"`
-        ExportMessage  string `json:"exportMessage"`
-      }{
-        Title:          "Ferramentas",
-        ExportBrewfile: "Exportar Brewfile...",
-        ExportSuccess:  "Exportado com Sucesso",
-        ExportFailed:   "Falha na Exportação",
-        ExportMessage:  "Brewfile exportado com sucesso para:\n%s",
-      },
-      Help: struct {
-        Title        string `json:"title"`
-        WailbrewHelp string `json:"wailbrewHelp"`
-        HelpTitle    string `json:"helpTitle"`
-        HelpMessage  string `json:"helpMessage"`
-      }{
-        Title:        "Ajuda",
-        WailbrewHelp: "Ajuda do WailBrew",
-        HelpTitle:    "Ajuda",
-        HelpMessage:  "Atualmente não há nenhuma página de ajuda disponível.",
-      },
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
+			}{
+				About:          "Sobre o WailBrew",
+				CheckUpdates:   "Verificar Atualizações...",
+				VisitWebsite:   "Visitar Site",
+				VisitGitHub:    "Visitar Repositório no GitHub",
+				ReportBug:      "Reportar um Bug",
+				VisitSubreddit: "Visitar Subreddit",
+				Quit:           "Sair",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
+			}{
+				Title:        "Visualizar",
+				Installed:    "Fórmulas Instaladas",
+				Casks:        "Casks",
+				Outdated:     "Fórmulas Desatualizadas",
+				All:          "Todas as Fórmulas",
+				Leaves:       "Leaves",
+				Repositories: "Repositórios",
+				Doctor:       "Diagnóstico",
+				Cleanup:      "Limpeza",
+				Settings:     "Configurações",
+			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Ferramentas",
+				ExportBrewfile: "Exportar Brewfile...",
+				ExportSuccess:  "Exportado com Sucesso",
+				ExportFailed:   "Falha na Exportação",
+				ExportMessage:  "Brewfile exportado com sucesso para:\n%s",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Ajuda",
+				WailbrewHelp: "Ajuda do WailBrew",
+				HelpTitle:    "Ajuda",
+				HelpMessage:  "Atualmente não há nenhuma página de ajuda disponível.",
+			},
+		}
+	case "ru":
+		translations = MenuTranslations{
+			App: struct {
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				Quit           string `json:"quit"`
+			}{
+				About:          "О WailBrew",
+				CheckUpdates:   "Проверить обновления...",
+				VisitWebsite:   "Посетить сайт",
+				VisitGitHub:    "Посетить репозиторий на GitHub",
+				ReportBug:      "Сообщить об ошибке",
+				VisitSubreddit: "Посетить Subreddit",
+				Quit:           "Выход",
+			},
+			View: struct {
+				Title        string `json:"title"`
+				Installed    string `json:"installed"`
+				Casks        string `json:"casks"`
+				Outdated     string `json:"outdated"`
+				All          string `json:"all"`
+				Leaves       string `json:"leaves"`
+				Repositories string `json:"repositories"`
+				Doctor       string `json:"doctor"`
+				Cleanup      string `json:"cleanup"`
+				Settings     string `json:"settings"`
+			}{
+				Title:        "Вид",
+				Installed:    "Установленные пакеты",
+				Casks:        "Приложения",
+				Outdated:     "Устаревшие пакеты",
+				All:          "Все пакеты",
+				Leaves:       "Листья",
+				Repositories: "Репозитории",
+				Doctor:       "Диагностика",
+				Cleanup:      "Очистка",
+				Settings:     "Настройки",
+			},
+			Tools: struct {
+				Title          string `json:"title"`
+				ExportBrewfile string `json:"exportBrewfile"`
+				ExportSuccess  string `json:"exportSuccess"`
+				ExportFailed   string `json:"exportFailed"`
+				ExportMessage  string `json:"exportMessage"`
+			}{
+				Title:          "Инструменты",
+				ExportBrewfile: "Экспортировать Brewfile...",
+				ExportSuccess:  "Успешно экспортировано",
+				ExportFailed:   "Не удалось экспортировать",
+				ExportMessage:  "Brewfile успешно экспортирован в:\n%s",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "Справка",
+				WailbrewHelp: "Справка WailBrew",
+				HelpTitle:    "Справка",
+				HelpMessage:  "В настоящее время страница справки недоступна.",
+			},
 		}
 	default:
 		// Default to English
@@ -784,27 +851,48 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingInstall":   "❌ 准备安装时出错：{{error}}",
 			"errorStartingUninstall": "❌ 准备卸载时出错：{{error}}",
 		}
-		case "pt_BR":
+	case "pt_BR":
 		messages = map[string]string{
-      "updateStart":            "🔄 Iniciando atualização de '{{name}}'...",
-      "updateSuccess":          "✅ Atualização de '{{name}}' concluída com sucesso!",
-      "updateFailed":           "❌ Falha na atualização de '{{name}}': {{error}}",
-      "updateAllStart":         "🔄 Iniciando atualização de todos os pacotes...",
-      "updateAllSuccess":       "✅ Atualização de todos os pacotes concluída com sucesso!",
-      "updateAllFailed":        "❌ Falha na atualização de todos os pacotes: {{error}}",
-      "installStart":           "🔄 Iniciando instalação de '{{name}}'...",
-      "installSuccess":         "✅ Instalação de '{{name}}' concluída com sucesso!",
-      "installFailed":          "❌ Falha na instalação de '{{name}}': {{error}}",
-      "uninstallStart":         "🔄 Iniciando desinstalação de '{{name}}'...",
-      "uninstallSuccess":       "✅ Desinstalação de '{{name}}' concluída com sucesso!",
-      "uninstallFailed":        "❌ Falha na desinstalação de '{{name}}': {{error}}",
-      "errorCreatingPipe":      "❌ Erro ao criar pipe de saída: {{error}}",
-      "errorCreatingErrorPipe": "❌ Erro ao criar pipe de erro: {{error}}",
-      "errorStartingUpdate":    "❌ Erro ao iniciar atualização: {{error}}",
-      "errorStartingUpdateAll": "❌ Erro ao iniciar a atualização de tudo: {{error}}",
-      "errorStartingInstall":   "❌ Erro ao iniciar instalação: {{error}}",
-      "errorStartingUninstall": "❌ Erro ao iniciar desinstalação: {{error}}",
-    }
+			"updateStart":            "🔄 Iniciando atualização de '{{name}}'...",
+			"updateSuccess":          "✅ Atualização de '{{name}}' concluída com sucesso!",
+			"updateFailed":           "❌ Falha na atualização de '{{name}}': {{error}}",
+			"updateAllStart":         "🔄 Iniciando atualização de todos os pacotes...",
+			"updateAllSuccess":       "✅ Atualização de todos os pacotes concluída com sucesso!",
+			"updateAllFailed":        "❌ Falha na atualização de todos os pacotes: {{error}}",
+			"installStart":           "🔄 Iniciando instalação de '{{name}}'...",
+			"installSuccess":         "✅ Instalação de '{{name}}' concluída com sucesso!",
+			"installFailed":          "❌ Falha na instalação de '{{name}}': {{error}}",
+			"uninstallStart":         "🔄 Iniciando desinstalação de '{{name}}'...",
+			"uninstallSuccess":       "✅ Desinstalação de '{{name}}' concluída com sucesso!",
+			"uninstallFailed":        "❌ Falha na desinstalação de '{{name}}': {{error}}",
+			"errorCreatingPipe":      "❌ Erro ao criar pipe de saída: {{error}}",
+			"errorCreatingErrorPipe": "❌ Erro ao criar pipe de erro: {{error}}",
+			"errorStartingUpdate":    "❌ Erro ao iniciar atualização: {{error}}",
+			"errorStartingUpdateAll": "❌ Erro ao iniciar a atualização de tudo: {{error}}",
+			"errorStartingInstall":   "❌ Erro ao iniciar instalação: {{error}}",
+			"errorStartingUninstall": "❌ Erro ao iniciar desinstalação: {{error}}",
+		}
+	case "ru":
+		messages = map[string]string{
+			"updateStart":            "🔄 Начинается обновление '{{name}}'...",
+			"updateSuccess":          "✅ Обновление '{{name}}' успешно завершено!",
+			"updateFailed":           "❌ Не удалось обновить '{{name}}': {{error}}",
+			"updateAllStart":         "🔄 Начинается обновление всех пакетов...",
+			"updateAllSuccess":       "✅ Обновление всех пакетов успешно завершено!",
+			"updateAllFailed":        "❌ Не удалось обновить все пакеты: {{error}}",
+			"installStart":           "🔄 Начинается установка '{{name}}'...",
+			"installSuccess":         "✅ Установка '{{name}}' успешно завершена!",
+			"installFailed":          "❌ Не удалось установить '{{name}}': {{error}}",
+			"uninstallStart":         "🔄 Начинается удаление '{{name}}'...",
+			"uninstallSuccess":       "✅ Удаление '{{name}}' успешно завершено!",
+			"uninstallFailed":        "❌ Не удалось удалить '{{name}}': {{error}}",
+			"errorCreatingPipe":      "❌ Ошибка создания выходного канала: {{error}}",
+			"errorCreatingErrorPipe": "❌ Ошибка создания канала ошибок: {{error}}",
+			"errorStartingUpdate":    "❌ Ошибка запуска обновления: {{error}}",
+			"errorStartingUpdateAll": "❌ Ошибка запуска обновления всех пакетов: {{error}}",
+			"errorStartingInstall":   "❌ Ошибка запуска установки: {{error}}",
+			"errorStartingUninstall": "❌ Ошибка запуска удаления: {{error}}",
+		}
 	default:
 		// Default to English
 		messages = map[string]string{

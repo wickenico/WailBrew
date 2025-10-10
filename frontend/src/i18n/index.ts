@@ -8,6 +8,7 @@ import fr from './locales/fr.json';
 import tr from './locales/tr.json';
 import zhCN from "./locales/zhCN.json";
 import pt_BR from './locales/pt_BR.json';
+import ru from './locales/ru.json';
 
 const resources = {
   en: {
@@ -27,7 +28,10 @@ const resources = {
   },
   pt_BR: {
     translation: pt_BR,
-  },  
+  },
+  ru: {
+    translation: ru,
+  },
 };
 
 i18n
