@@ -42,7 +42,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
   };
 
   const copyBrewCommand = async () => {
-    const command = 'brew upgrade --cask wailbrew';
+    const command = 'brew update\nbrew upgrade --cask wailbrew';
     try {
       await navigator.clipboard.writeText(command);
       setCopySuccess(true);
@@ -147,7 +147,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                       <h4>{t('updateDialog.manualUpdate')}:</h4>
                       <p className="update-instruction">{t('updateDialog.instruction')}</p>
                       <div className="command-container">
-                        <code className="brew-command">brew upgrade --cask wailbrew</code>
+                        <code className="brew-command">brew update<br/>brew upgrade --cask wailbrew</code>
                         <button 
                           className="copy-button"
                           onClick={copyBrewCommand}

@@ -229,7 +229,7 @@ const WailBrewApp = () => {
                 const updateInfo = await CheckForUpdates();
                 
                 if (updateInfo.available) {
-                    const upgradeCommand = 'brew upgrade --cask wailbrew';
+                    const upgradeCommand = 'brew update\nbrew upgrade --cask wailbrew';
                     
                     toast(
                         () => (
