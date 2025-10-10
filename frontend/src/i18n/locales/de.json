@@ -202,7 +202,9 @@
     "upToDate": "Sie sind auf dem neuesten Stand!",
     "currentVersionIs": "Version {{version}} ist die aktuelle Version.",
     "tryAgain": "Erneut versuchen",
-    "gotIt": "Verstanden"
+    "gotIt": "Verstanden",
+    "rateLimitError": "GitHub API-Rate-Limit überschritten. Die Update-Prüfung verwendet GitHubs API, die ein Limit für nicht authentifizierte Anfragen hat.",
+    "rateLimitAdvice": "Bitte warten Sie einige Minuten und versuchen Sie es erneut. Das Rate-Limit wird stündlich zurückgesetzt."
   },
   "toast": {
     "updateAvailable": "Update verfügbar!",

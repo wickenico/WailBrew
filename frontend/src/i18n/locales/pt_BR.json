@@ -202,7 +202,9 @@
     "upToDate": "Você está atualizado!",
     "currentVersionIs": "A versão {{version}} é a versão atual.",
     "tryAgain": "Tentar novamente",
-    "gotIt": "Entendi"
+    "gotIt": "Entendi",
+    "rateLimitError": "Limite de taxa da API do GitHub excedido. A verificação de atualizações usa a API do GitHub que tem um limite para solicitações não autenticadas.",
+    "rateLimitAdvice": "Por favor, aguarde alguns minutos e tente novamente. O limite de taxa é redefinido a cada hora."
   },
   "toast": {
     "updateAvailable": "Atualização disponível!",

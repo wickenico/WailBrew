@@ -25,7 +25,27 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
       const info = await CheckForUpdates();
       setUpdateInfo(info);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check for updates');
+      let errorMessage = 'Failed to check for updates';
+      
+      if (err instanceof Error) {
+        try {
+          // Try to parse the error message as JSON (GitHub API errors)
+          const errorData = JSON.parse(err.message);
+          if (errorData.message && errorData.message.includes('rate limit')) {
+            // It's a rate limit error
+            errorMessage = 'RATE_LIMIT_ERROR';
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else {
+            errorMessage = err.message;
+          }
+        } catch {
+          // Not a JSON error, use the regular error message
+          errorMessage = err.message;
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsChecking(false);
     }
@@ -97,7 +117,16 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
               <div className="error-icon">⚠️</div>
               <div>
                 <h3>{t('updateDialog.error')}</h3>
-                <p>{error}</p>
+                {error === 'RATE_LIMIT_ERROR' ? (
+                  <div>
+                    <p>{t('updateDialog.rateLimitError')}</p>
+                    <p style={{ marginTop: '0.5rem', fontSize: '0.9em', opacity: 0.8 }}>
+                      {t('updateDialog.rateLimitAdvice')}
+                    </p>
+                  </div>
+                ) : (
+                  <p>{error}</p>
+                )}
               </div>
             </div>
           )}

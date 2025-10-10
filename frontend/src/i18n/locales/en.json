@@ -202,7 +202,9 @@
     "upToDate": "You're up to date!",
     "currentVersionIs": "Version {{version}} is the current version.",
     "tryAgain": "Try again",
-    "gotIt": "Got it"
+    "gotIt": "Got it",
+    "rateLimitError": "GitHub API rate limit exceeded. The update check uses GitHub's API which has a limit for unauthenticated requests.",
+    "rateLimitAdvice": "Please wait a few minutes and try again. The rate limit resets every hour."
   },
   "toast": {
     "updateAvailable": "Update available!",

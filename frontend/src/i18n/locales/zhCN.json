@@ -202,7 +202,9 @@
     "upToDate": "您已更新到最新版本！",
     "currentVersionIs": "当前版本 {{version}}",
     "tryAgain": "重试",
-    "gotIt": "知道了"
+    "gotIt": "知道了",
+    "rateLimitError": "GitHub API 速率限制已超出。更新检查使用 GitHub API，该 API 对未经身份验证的请求有限制。",
+    "rateLimitAdvice": "请等待几分钟后重试。速率限制每小时重置一次。"
   },
   "toast": {
     "updateAvailable": "有可用的更新！",

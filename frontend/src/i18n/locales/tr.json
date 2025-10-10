@@ -202,7 +202,9 @@
     "upToDate": "Güncelsin!",
     "currentVersionIs": "Sürüm {{version}} güncel sürümdür.",
     "tryAgain": "Tekrar dene",
-    "gotIt": "Anlaşıldı"
+    "gotIt": "Anlaşıldı",
+    "rateLimitError": "GitHub API hız limiti aşıldı. Güncelleme kontrolü, kimlik doğrulaması yapılmamış istekler için sınırlı olan GitHub API'sini kullanır.",
+    "rateLimitAdvice": "Lütfen birkaç dakika bekleyin ve tekrar deneyin. Hız limiti her saat başı sıfırlanır."
   },
   "toast": {
     "updateAvailable": "Güncelleme var!",

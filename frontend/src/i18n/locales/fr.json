@@ -202,7 +202,9 @@
     "upToDate": "Vous êtes à jour !",
     "currentVersionIs": "La version {{version}} est la version actuelle.",
     "tryAgain": "Réessayer",
-    "gotIt": "Compris"
+    "gotIt": "Compris",
+    "rateLimitError": "Limite de taux de l'API GitHub dépassée. La vérification des mises à jour utilise l'API de GitHub qui a une limite pour les requêtes non authentifiées.",
+    "rateLimitAdvice": "Veuillez patienter quelques minutes et réessayer. La limite de taux est réinitialisée toutes les heures."
   },
   "toast": {
     "updateAvailable": "Mise à jour disponible !",
