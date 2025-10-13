@@ -42,6 +42,7 @@ WailBrew supports multiple languages! As of now, the following languages are sup
 - 🇫🇷 French
 - 🇹🇷 Turkish
 - 🇨🇳 Chinese (Simplified)
+- 🇹🇼 Chinese (Traditional)
 - 🇧🇷 Português do Brasil
 - 🇷🇺 Russian  
 

@@ -7,6 +7,7 @@ import de from './locales/de.json';
 import fr from './locales/fr.json';
 import tr from './locales/tr.json';
 import zhCN from "./locales/zhCN.json";
+import zhTW from "./locales/zhTW.json";
 import pt_BR from './locales/pt_BR.json';
 import ru from './locales/ru.json';
 
@@ -25,6 +26,9 @@ const resources = {
   },
   zhCN: {
     translation: zhCN,
+  },
+  zhTW: {
+    translation: zhTW,
   },
   pt_BR: {
     translation: pt_BR,

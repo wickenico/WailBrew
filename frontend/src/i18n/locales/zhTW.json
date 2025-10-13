@@ -1,0 +1,249 @@
+{
+  "sidebar": {
+    "formulas": "套件",
+    "tools": "工具",
+    "installed": "已安裝",
+    "casks": "應用程式",
+    "outdated": "可更新",
+    "all": "全部套件",
+    "leaves": "獨立套件",
+    "repositories": "軟體庫",
+    "doctor": "診斷",
+    "cleanup": "清理",
+    "settings": "設定"
+  },
+  "headers": {
+    "installedFormulas": "已安裝套件 ({{count}})",
+    "installedCasks": "已安裝應用程式 ({{count}})",
+    "outdatedFormulas": "可更新套件 ({{count}})",
+    "allFormulas": "全部套件 ({{count}})",
+    "leaves": "獨立套件 ({{count}})",
+    "repositories": "軟體庫 ({{count}})",
+    "homebrewDoctor": "Homebrew 診斷",
+    "homebrewCleanup": "Homebrew 清理"
+  },
+  "search": {
+    "placeholder": "搜尋...",
+    "clearSearch": "清除搜尋"
+  },
+  "buttons": {
+    "uninstall": "解除安裝 \"{{name}}\"",
+    "install": "安裝 \"{{name}}\"",
+    "update": "更新 \"{{name}}\"",
+    "updateAll": "全部更新",
+    "showInfo": "顯示 \"{{name}}\" 的資訊",
+    "clearLog": "清除記錄",
+    "runDoctor": "執行診斷",
+    "runCleanup": "執行清理",
+    "refresh": "重新整理套件",
+    "yes": "是",
+    "cancel": "取消",
+    "yesUninstall": "是，解除安裝",
+    "yesInstall": "是，安裝",
+    "yesUpdate": "是，更新",
+    "yesUpdateAll": "是，全部更新",
+    "ok": "確定",
+    "close": "關閉"
+  },
+  "logDialog": {
+    "running": "執行中...",
+    "completed": "已完成"
+  },
+  "packageInfo": {
+    "loading": "(載入中…)",
+    "description": "描述",
+    "homepage": "首頁",
+    "version": "版本",
+    "status": "狀態",
+    "dependencies": "相依性",
+    "conflicts": "衝突",
+    "installed": "已安裝",
+    "notInstalled": "未安裝",
+    "noSelection": "未選擇套件"
+  },
+  "tableColumns": {
+    "name": "名稱",
+    "version": "已安裝版本",
+    "latestVersion": "最新版本",
+    "status": "狀態",
+    "actions": "操作"
+  },
+  "footers": {
+    "installedFormulas": "這些套件已安裝在您的系統中。",
+    "installedCasks": "這些應用程式已安裝在您的系統中。",
+    "outdatedFormulas": "有些套件可以更新。",
+    "allFormulas": "所有可用的 Homebrew 套件。綠色標示為已安裝的套件。",
+    "leaves": "獨立套件是指未被其他已安裝套件作為相依性要求的套件。",
+    "repositories": "軟體庫是套件的來源。除了標準軟體庫外，還包含額外的套件。",
+    "doctor": "診斷是 Homebrew 的功能，可以檢測最常見的錯誤原因。",
+    "cleanup": "清理會移除過期的下載檔案和快取檔案以釋放磁碟空間。"
+  },
+  "dialogs": {
+    "confirmUninstall": "您確定要解除安裝 \"{{name}}\" 嗎？",
+    "confirmInstall": "您確定要安裝 \"{{name}}\" 嗎？",
+    "confirmUpdate": "您確定要更新 \"{{name}}\" 嗎？",
+    "confirmUpdateAll": "您確定要更新所有可更新的套件嗎？",
+    "updateLogs": "{{name}} 的更新記錄",
+    "updateAllLogs": "所有套件的更新記錄",
+    "installLogs": "{{name}} 的安裝記錄",
+    "uninstallLogs": "{{name}} 的解除安裝記錄",
+    "packageInfo": "{{name}} 的資訊",
+    "updating": "正在更新 \"{{name}}\"...\n請稍候...",
+    "installing": "正在安裝 \"{{name}}\"...\n請稍候...",
+    "uninstalling": "正在解除安裝 \"{{name}}\"...\n請稍候...",
+    "updatingAll": "正在更新所有可更新的套件...\n請稍候...",
+    "gettingInfo": "正在取得 \"{{name}}\" 的資訊...\n請稍候...",
+    "runningDoctor": "正在執行 brew doctor…\n請稍候...",
+    "runningCleanup": "正在執行 brew cleanup…\n請稍候...",
+    "installSuccess": "成功安裝 \"{{name}}\"！",
+    "installFailed": "安裝 \"{{name}}\" 失敗：{{error}}",
+    "noDoctorOutput": "尚無輸出。請點擊「執行診斷」。",
+    "noCleanupOutput": "尚無輸出。請點擊「執行清理」。"
+  },
+  "errors": {
+    "loadingFormulas": "❌ 載入套件時發生錯誤！",
+    "failedInstalledPackages": "取得已安裝套件失敗",
+    "failedInstalledCasks": "取得已安裝應用程式失敗",
+    "failedUpdatablePackages": "取得可更新套件失敗",
+    "failedAllPackages": "取得所有套件失敗",
+    "failedLeaves": "取得獨立套件失敗",
+    "failedRepositories": "取得軟體庫失敗"
+  },
+  "about": {
+    "title": "關於",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – macOS 的極簡 Homebrew 圖形化介面",
+    "createdBy": "由 Nico Wickersheim 製作",
+    "developedWith": "使用 {{wails}} 和 React 開發",
+    "description": "WailBrew 是 Homebrew 的現代圖形化使用者介面，讓管理、安裝和更新套件變得簡單。",
+    "links": "相關連結：",
+    "wailbrewWebsite": "WailBrew 網站",
+    "githubRepo": "GitHub 程式庫",
+    "reportBug": "回報問題",
+    "homebrewWebsite": "Homebrew 網站",
+    "acknowledgments": "致謝：",
+    "acknowledgmentText": "靈感來自 Bruno Philipe 的 {{cakebrew}}。\\n感謝他在原創 Homebrew 圖形化介面上的傑出工作！",
+    "copyright": "Copyright © 2025 Nico Wickersheim. All rights reserved."
+  },
+  "language": {
+    "switchLanguage": "切換語言",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe",
+    "simplified_chinese": "简体中文",
+    "traditional_chinese": "繁體中文",
+    "brazilian_portuguese": "Português do Brasil",
+    "russian": "Русский"
+  },
+  "menu": {
+    "app": {
+      "about": "關於 WailBrew",
+      "checkUpdates": "檢查更新...",
+      "visitWebsite": "造訪網站",
+      "visitGitHub": "造訪 GitHub 程式庫",
+      "quit": "結束"
+    },
+    "view": {
+      "title": "檢視",
+      "installed": "已安裝套件",
+      "outdated": "可更新套件",
+      "all": "全部套件",
+      "leaves": "獨立套件",
+      "repositories": "軟體庫",
+      "doctor": "診斷",
+      "cleanup": "清理",
+      "settings": "設定"
+    },
+    "tools": {
+      "title": "工具",
+      "exportBrewfile": "匯出 Brewfile...",
+      "exportSuccess": "Brewfile 匯出成功！",
+      "exportFailed": "匯出 Brewfile 失敗"
+    },
+    "help": {
+      "title": "說明",
+      "wailbrewHelp": "WailBrew 說明",
+      "helpTitle": "說明",
+      "helpMessage": "目前沒有可用的說明頁面。"
+    }
+  },
+  "table": {
+    "loadingFormulas": "載入套件中…",
+    "loadingRepositories": "載入軟體庫中…",
+    "noResults": "沒有符合的結果。",
+    "installedStatus": "已安裝",
+    "notInstalledStatus": "未安裝"
+  },
+  "repository": {
+    "noSelection": "未選擇軟體庫",
+    "status": "狀態",
+    "description": "描述",
+    "defaultDescription": "Homebrew Tap 軟體庫",
+    "active": "作用中"
+  },
+  "common": {
+    "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "檢查更新",
+    "checking": "檢查更新中...",
+    "error": "檢查更新時發生錯誤",
+    "available": "有可用的更新！",
+    "currentVersion": "目前版本",
+    "newVersion": "新版本",
+    "published": "發布日期",
+    "size": "大小",
+    "changes": "變更",
+    "viewReleaseNotes": "檢視發布說明",
+    "manualUpdate": "手動更新",
+    "instruction": "要更新 WailBrew，請在終端機中執行以下指令：",
+    "copyCommand": "複製指令到剪貼簿",
+    "copied": "指令已複製到剪貼簿！",
+    "upToDate": "您已使用最新版本！",
+    "currentVersionIs": "版本 {{version}} 是目前版本。",
+    "tryAgain": "重試",
+    "gotIt": "了解",
+    "rateLimitError": "GitHub API 速率限制已超出。更新檢查使用 GitHub API，該 API 對未驗證的請求有限制。",
+    "rateLimitAdvice": "請等候幾分鐘後重試。速率限制每小時重置。"
+  },
+  "toast": {
+    "updateAvailable": "有可用的更新！",
+    "versionReady": "v{{version}} 已準備就緒",
+    "upToDate": "您正在使用最新版本！"
+  },
+  "settings": {
+    "title": "設定",
+    "loading": "載入設定中...",
+    "footer": "設定 WailBrew 來自訂您的 Homebrew 體驗。",
+    "categories": {
+      "general": "一般"
+    },
+    "brewPath": {
+      "title": "Homebrew 路徑設定",
+      "description": "指定您的 Homebrew 安裝路徑。WailBrew 將使用此路徑來執行所有 Homebrew 指令。",
+      "currentPath": "Homebrew 路徑",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "自動偵測 brew 路徑",
+      "currentlyUsing": "目前使用：",
+      "note": "注意：變更 brew 路徑將重新整理所有套件資料以反映新的 Homebrew 安裝。"
+    },
+    "buttons": {
+      "save": "儲存變更",
+      "saving": "儲存中...",
+      "reset": "重設"
+    },
+    "messages": {
+      "pathUpdated": "Brew 路徑更新成功！",
+      "pathReset": "路徑已重設為目前值。",
+      "noChanges": "沒有要儲存的變更。",
+      "pathDetected": "自動偵測的 brew 路徑：{{path}}"
+    },
+    "errors": {
+      "failedToGetPath": "取得目前 brew 路徑失敗。",
+      "emptyPath": "請輸入有效的 brew 路徑。",
+      "invalidPath": "無效的 brew 路徑。請檢查路徑是否存在且為有效的 brew 執行檔。",
+      "autoDetectionFailed": "無法自動偵測 brew 路徑。請手動輸入路徑。"
+    }
+  }
+}
