@@ -2,8 +2,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
-import { SetLanguage } from "../../wailsjs/go/main/App";
 import appIcon from "../assets/images/appicon_256.png";
+import { mapToSupportedLanguage } from "../i18n/languageUtils";
 
 interface SidebarProps {
     view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings";
@@ -33,6 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     sidebarRef,
 }) => {
     const { t, i18n } = useTranslation();
+    const currentLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
     
     // Detect if user is on Mac
     const isMac = typeof navigator !== 'undefined' && 
@@ -40,12 +41,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     const cmdKey = isMac ? '⌘' : 'Ctrl+';
 
     const changeLanguage = async (lng: string) => {
-        i18n.changeLanguage(lng);
-        // Also update the backend menu language
+        const normalized = mapToSupportedLanguage(lng);
         try {
-            await SetLanguage(lng);
+            await i18n.changeLanguage(normalized);
         } catch (error) {
-            console.error('Failed to update backend language:', error);
+            console.error('Failed to change frontend language:', error);
         }
     };
 
@@ -131,7 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div className="language-dropdown-wrapper">
                 <select 
                     className="language-dropdown"
-                    value={i18n.language}
+                    value={currentLanguage}
                     onChange={(e) => changeLanguage(e.target.value)}
                     aria-label={t('language.switchLanguage')}
                 >
