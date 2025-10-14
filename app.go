@@ -940,6 +940,10 @@ func (a *App) menu() *menu.Menu {
 		rt.EventsEmit(a.ctx, "showAbout")
 	})
 	AppSubmenu.AddSeparator()
+	AppSubmenu.AddText(translations.View.Settings, keys.CmdOrCtrl(","), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "settings")
+	})
+	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.App.CheckUpdates, nil, func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "checkForUpdates")
 	})
@@ -986,10 +990,6 @@ func (a *App) menu() *menu.Menu {
 	})
 	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "cleanup")
-	})
-	ViewMenu.AddSeparator()
-	ViewMenu.AddText(translations.View.Settings, keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(a.ctx, "setView", "settings")
 	})
 
 	// Tools Menu

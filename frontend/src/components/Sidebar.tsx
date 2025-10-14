@@ -121,10 +121,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <span className="sidebar-shortcut">{cmdKey}8</span>
                     <span>🧹 {t('sidebar.cleanup')}</span>
                 </li>
-                <li className={view === "settings" ? "active" : ""} onClick={() => { setView("settings"); onClearSelection(); }}>
-                    <span className="sidebar-shortcut">{cmdKey}9</span>
-                    <span>⚙️ {t('sidebar.settings')}</span>
-                </li>
             </ul>
         </div>
         <div className="sidebar-section language-switcher">
