@@ -322,6 +322,11 @@ const WailBrewApp = () => {
         };
     }, []);
 
+    // Clear search query when view changes
+    useEffect(() => {
+        setSearchQuery("");
+    }, [view]);
+
     // Sidebar resize handlers
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
