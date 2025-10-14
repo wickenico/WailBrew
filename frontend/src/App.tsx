@@ -92,7 +92,7 @@ const WailBrewApp = () => {
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
     const updateCheckDone = useRef<boolean>(false);
-    const lastSyncedLanguage = useRef<string>();
+    const lastSyncedLanguage = useRef<string>('en');
     
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
