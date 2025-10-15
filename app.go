@@ -1564,7 +1564,8 @@ func (a *App) UpdateAllBrewPackages() string {
 	startMessage := a.getBackendMessage("updateAllStart", map[string]string{})
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
-	cmd := exec.Command(a.brewPath, "upgrade")
+	// Use --greedy flag to also update casks (including auto-updating ones)
+	cmd := exec.Command(a.brewPath, "upgrade", "--greedy")
 	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
 
 	// Create pipes for real-time output
