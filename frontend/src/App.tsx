@@ -38,6 +38,7 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
 import UpdateDialog from "./components/UpdateDialog";
+import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
     name: string;
@@ -91,6 +92,7 @@ const WailBrewApp = () => {
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
     const updateCheckDone = useRef<boolean>(false);
+    const lastSyncedLanguage = useRef<string>("en");
     
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
@@ -106,11 +108,6 @@ const WailBrewApp = () => {
             setAppVersion(version);
         }).catch(err => {
             console.error("Failed to get app version:", err);
-        });
-
-        // Initialize backend language with current frontend language
-        SetLanguage(i18n.language).catch(err => {
-            console.error("Failed to set initial backend language:", err);
         });
 
         setLoading(true);
@@ -217,6 +214,30 @@ const WailBrewApp = () => {
         // Check for app updates on startup
         checkAppUpdatesOnStartup();
     }, []);
+
+    useEffect(() => {
+        const normalizedLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
+        if (lastSyncedLanguage.current === normalizedLanguage) {
+            return;
+        }
+
+        let cancelled = false;
+        const syncLanguage = async () => {
+            try {
+                await SetLanguage(normalizedLanguage);
+                if (!cancelled) {
+                    lastSyncedLanguage.current = normalizedLanguage;
+                }
+            } catch (err) {
+                console.error("Failed to sync backend language:", err);
+            }
+        };
+
+        void syncLanguage();
+        return () => {
+            cancelled = true;
+        };
+    }, [i18n.language, i18n.resolvedLanguage]);
 
     const checkAppUpdatesOnStartup = async () => {
         // Prevent duplicate calls
