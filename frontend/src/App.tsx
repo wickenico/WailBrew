@@ -571,10 +571,24 @@ const WailBrewApp = () => {
         setInfoLogs(info);
     };
 
-    // Helper for clearing selection
+    // Helper for clearing selection and closing contextual dialogs
     const clearSelection = () => {
         setSelectedPackage(null);
         setSelectedRepository(null);
+        
+        // Close contextual dialogs when navigating to a different view
+        // Info logs are specific to a package in a view, so close them
+        setInfoLogs(null);
+        setInfoPackage(null);
+        
+        // Close confirmation dialogs as they're contextual to the current view
+        setShowConfirm(false);
+        setShowInstallConfirm(false);
+        setShowUpdateConfirm(false);
+        setShowUpdateAllConfirm(false);
+        
+        // Note: We keep update/install/uninstall logs open if operations are running
+        // as these are long-running operations that users may want to monitor
     };
 
     const handleUninstallPackage = (pkg: PackageEntry) => {
