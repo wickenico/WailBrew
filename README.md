@@ -29,6 +29,15 @@ brew install --cask wailbrew
 
 **[Download Latest Version](https://github.com/wickenico/WailBrew/releases/latest)** 
 
+## 🧪 Version Support in Beta Phase
+
+WailBrew aims to support following macos versions:
+
+- Apple Silicon ARM: macOS 11.0 (Big Sur) and later.
+- Intel: macOS 10.14 (Mojave) and later.
+
+While the app is primarily tested on the latest macOS versions, we strive to maintain compatibility with older supported versions. If you encounter any issues on your macOS version, please let us know by [opening an issue](https://github.com/yourusername/WailBrew/issues) or providing feedback.
+
 ## 📸 Screenshots
 
 ![WailBrew Screenshot](images/Screenshot.png)
