@@ -65,6 +65,7 @@
     "name": "İsim",
     "version": "Yüklü Sürüm",
     "latestVersion": "Son sürüm",
+    "size": "Boyut",
     "status": "Durum",
     "actions": "Aksiyonlar"
   },

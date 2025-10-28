@@ -1111,14 +1111,15 @@ func (a *App) GetAllBrewPackages() [][]string {
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line != "" {
-			results = append(results, []string{line, ""})
+			// For all packages (not installed), we don't have version or size yet
+			results = append(results, []string{line, "", ""})
 		}
 	}
 
 	return results
 }
 
-// GetBrewPackages retrieves the list of installed Homebrew packages
+// GetBrewPackages retrieves the list of installed Homebrew packages with size information
 func (a *App) GetBrewPackages() [][]string {
 	// Validate brew installation first
 	if err := a.validateBrewInstallation(); err != nil {
@@ -1137,7 +1138,8 @@ func (a *App) GetBrewPackages() [][]string {
 	}
 
 	lines := strings.Split(outputStr, "\n")
-	var packages [][]string
+	var packageNames []string
+	packageVersions := make(map[string]string)
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -1147,13 +1149,158 @@ func (a *App) GetBrewPackages() [][]string {
 
 		parts := strings.Fields(line)
 		if len(parts) >= 2 {
-			packages = append(packages, []string{parts[0], parts[1]})
+			packageNames = append(packageNames, parts[0])
+			packageVersions[parts[0]] = parts[1]
 		} else if len(parts) == 1 {
-			packages = append(packages, []string{parts[0], "Unknown"})
+			packageNames = append(packageNames, parts[0])
+			packageVersions[parts[0]] = "Unknown"
 		}
 	}
 
+	// Get size information using brew info --json
+	packageSizes := a.getPackageSizes(packageNames, false)
+
+	// Build result with name, version, and size
+	var packages [][]string
+	for _, name := range packageNames {
+		version := packageVersions[name]
+		size := packageSizes[name]
+		packages = append(packages, []string{name, version, size})
+	}
+
 	return packages
+}
+
+// getPackageSizes fetches size information for packages
+func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]string {
+	sizes := make(map[string]string)
+
+	if len(packageNames) == 0 {
+		return sizes
+	}
+
+	// Build brew info command
+	args := []string{"info", "--json=v2"}
+	if isCask {
+		args = append(args, "--cask")
+	}
+	args = append(args, packageNames...)
+
+	output, err := a.runBrewCommand(args...)
+	if err != nil {
+		// If batch fails, return empty sizes
+		for _, name := range packageNames {
+			sizes[name] = "Unknown"
+		}
+		return sizes
+	}
+
+	// Parse JSON response
+	var brewInfo struct {
+		Formulae []struct {
+			Name      string `json:"name"`
+			Installed []struct {
+				InstalledOnDemand bool  `json:"installed_on_demand"`
+				UsedOptions       []any `json:"used_options"`
+				BuiltAsBottle     bool  `json:"built_as_bottle"`
+				Poured            bool  `json:"poured_from_bottle"`
+				Time              int64 `json:"time"`
+				RuntimeDeps       []any `json:"runtime_dependencies"`
+				InstalledAsDep    bool  `json:"installed_as_dependency"`
+				InstalledWithOpts []any `json:"installed_with_options"`
+			} `json:"installed"`
+		} `json:"formulae"`
+		Casks []struct {
+			Token     string `json:"token"`
+			Installed string `json:"installed"`
+		} `json:"casks"`
+	}
+
+	if err := json.Unmarshal(output, &brewInfo); err != nil {
+		for _, name := range packageNames {
+			sizes[name] = "Unknown"
+		}
+		return sizes
+	}
+
+	// For formulae, calculate size from cellar
+	if !isCask {
+		for _, formula := range brewInfo.Formulae {
+			size := a.calculateFormulaSize(formula.Name)
+			sizes[formula.Name] = size
+		}
+	} else {
+		// For casks, calculate size from caskroom
+		for _, cask := range brewInfo.Casks {
+			size := a.calculateCaskSize(cask.Token)
+			sizes[cask.Token] = size
+		}
+	}
+
+	// Fill in any missing sizes
+	for _, name := range packageNames {
+		if _, exists := sizes[name]; !exists {
+			sizes[name] = "Unknown"
+		}
+	}
+
+	return sizes
+}
+
+// calculateFormulaSize calculates the disk size of an installed formula
+func (a *App) calculateFormulaSize(formulaName string) string {
+	// Get formula path in cellar
+	cellarPath := ""
+	if runtime.GOOS == "darwin" {
+		if runtime.GOARCH == "arm64" {
+			cellarPath = fmt.Sprintf("/opt/homebrew/Cellar/%s", formulaName)
+		} else {
+			cellarPath = fmt.Sprintf("/usr/local/Cellar/%s", formulaName)
+		}
+	}
+
+	// Use du command to get directory size
+	cmd := exec.Command("du", "-sh", cellarPath)
+	output, err := cmd.Output()
+	if err != nil {
+		return "Unknown"
+	}
+
+	// Parse du output (format: "SIZE	PATH")
+	parts := strings.Fields(string(output))
+	if len(parts) >= 1 {
+		return parts[0]
+	}
+
+	return "Unknown"
+}
+
+// calculateCaskSize calculates the disk size of an installed cask
+func (a *App) calculateCaskSize(caskName string) string {
+	// Get cask path in caskroom
+	caskroomPath := ""
+	if runtime.GOOS == "darwin" {
+		if runtime.GOARCH == "arm64" {
+			caskroomPath = fmt.Sprintf("/opt/homebrew/Caskroom/%s", caskName)
+		} else {
+			caskroomPath = fmt.Sprintf("/usr/local/Caskroom/%s", caskName)
+		}
+	}
+
+	// Use du command to get directory size
+	cmd := exec.Command("du", "-sh", caskroomPath)
+	output, err := cmd.Output()
+	if err != nil {
+		return "Unknown"
+	}
+
+	// Parse du output (format: "SIZE	PATH")
+	parts := strings.Fields(string(output))
+	if len(parts) >= 1 {
+		return parts[0]
+	}
+
+	return "Unknown"
 }
 
 // GetBrewCasks retrieves the list of installed Homebrew casks
@@ -1189,6 +1336,7 @@ func (a *App) GetBrewCasks() [][]string {
 	}
 
 	var casks [][]string
+	versionMap := make(map[string]string)
 
 	// Try to get all cask info at once first
 	args := []string{"info", "--cask", "--json=v2"}
@@ -1206,7 +1354,6 @@ func (a *App) GetBrewCasks() [][]string {
 
 		if err := json.Unmarshal(infoOutput, &caskInfo); err == nil {
 			// Create a map for easy lookup
-			versionMap := make(map[string]string)
 			for _, cask := range caskInfo.Casks {
 				version := cask.Version
 				if version == "" {
@@ -1214,44 +1361,47 @@ func (a *App) GetBrewCasks() [][]string {
 				}
 				versionMap[cask.Token] = version
 			}
-
-			// Build result array maintaining order
-			for _, name := range caskNames {
-				version := versionMap[name]
-				if version == "" {
-					version = "Unknown"
-				}
-				casks = append(casks, []string{name, version})
-			}
-			return casks
 		}
 	}
 
-	// If batch fetch fails (e.g., due to casks in multiple taps),
-	// fetch versions individually with error handling
-	for _, caskName := range caskNames {
-		infoOutput, err := a.runBrewCommand("info", "--cask", "--json=v2", caskName)
-		if err != nil {
-			// If individual fetch fails, add with unknown version
-			casks = append(casks, []string{caskName, "Unknown"})
-			continue
-		}
-
-		var caskInfo struct {
-			Casks []struct {
-				Version string `json:"version"`
-			} `json:"casks"`
-		}
-
-		if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
-			version := caskInfo.Casks[0].Version
-			if version == "" {
-				version = "Unknown"
+	// If batch fetch fails, try individually
+	if len(versionMap) == 0 {
+		for _, caskName := range caskNames {
+			infoOutput, err := a.runBrewCommand("info", "--cask", "--json=v2", caskName)
+			if err != nil {
+				versionMap[caskName] = "Unknown"
+				continue
 			}
-			casks = append(casks, []string{caskName, version})
-		} else {
-			casks = append(casks, []string{caskName, "Unknown"})
+
+			var caskInfo struct {
+				Casks []struct {
+					Version string `json:"version"`
+				} `json:"casks"`
+			}
+
+			if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
+				version := caskInfo.Casks[0].Version
+				if version == "" {
+					version = "Unknown"
+				}
+				versionMap[caskName] = version
+			} else {
+				versionMap[caskName] = "Unknown"
+			}
 		}
+	}
+
+	// Get size information
+	caskSizes := a.getPackageSizes(caskNames, true)
+
+	// Build result array with name, version, and size
+	for _, name := range caskNames {
+		version := versionMap[name]
+		if version == "" {
+			version = "Unknown"
+		}
+		size := caskSizes[name]
+		casks = append(casks, []string{name, version, size})
 	}
 
 	return casks
@@ -1324,6 +1474,8 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	}
 
 	var updatablePackages [][]string
+	var formulaeNames []string
+	var caskNames []string
 
 	// Process formulae (packages)
 	for _, formula := range brewOutdated.Formulae {
@@ -1337,25 +1489,45 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 			installedVersion = formula.InstalledVersions[0]
 		}
 
+		formulaeNames = append(formulaeNames, formula.Name)
 		updatablePackages = append(updatablePackages, []string{
 			formula.Name,
 			installedVersion,
 			formula.CurrentVersion,
+			"", // size placeholder, will be filled below
 		})
 	}
 
-	// Process casks (applications) - optional, only if you want to include them
+	// Process casks (applications)
 	for _, cask := range brewOutdated.Casks {
 		installedVersion := "unknown"
 		if len(cask.InstalledVersions) > 0 {
 			installedVersion = cask.InstalledVersions[0]
 		}
 
+		caskNames = append(caskNames, cask.Name)
 		updatablePackages = append(updatablePackages, []string{
 			cask.Name,
 			installedVersion,
 			cask.CurrentVersion,
+			"", // size placeholder, will be filled below
 		})
+	}
+
+	// Get size information for all packages
+	formulaeSizes := a.getPackageSizes(formulaeNames, false)
+	caskSizes := a.getPackageSizes(caskNames, true)
+
+	// Fill in size information
+	for i := range updatablePackages {
+		name := updatablePackages[i][0]
+		if size, found := formulaeSizes[name]; found {
+			updatablePackages[i][3] = size
+		} else if size, found := caskSizes[name]; found {
+			updatablePackages[i][3] = size
+		} else {
+			updatablePackages[i][3] = "Unknown"
+		}
 	}
 
 	return updatablePackages

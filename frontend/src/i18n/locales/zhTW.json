@@ -65,6 +65,7 @@
     "name": "名稱",
     "version": "已安裝版本",
     "latestVersion": "最新版本",
+    "size": "大小",
     "status": "狀態",
     "actions": "操作"
   },

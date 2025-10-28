@@ -7,6 +7,7 @@ interface PackageEntry {
     name: string;
     installedVersion: string;
     latestVersion?: string;
+    size?: string;
     desc?: string;
     homepage?: string;
     dependencies?: string[];

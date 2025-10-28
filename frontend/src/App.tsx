@@ -44,6 +44,7 @@ interface PackageEntry {
     name: string;
     installedVersion: string;
     latestVersion?: string;
+    size?: string;
     desc?: string;
     homepage?: string;
     dependencies?: string[];
@@ -142,36 +143,44 @@ const WailBrewApp = () => {
                     throw new Error(`${t('errors.failedRepositories')}: ${safeRepos[0][1]}`);
                 }
 
-                const installedFormatted = safeInstalled.map(([name, installedVersion]) => ({
+                const installedFormatted = safeInstalled.map(([name, installedVersion, size]) => ({
                     name,
                     installedVersion,
+                    size,
                     isInstalled: true,
                 }));
-                const casksFormatted = safeInstalledCasks.map(([name, installedVersion]) => ({
+                const casksFormatted = safeInstalledCasks.map(([name, installedVersion, size]) => ({
                     name,
                     installedVersion,
+                    size,
                     isInstalled: true,
                 }));
-                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion]) => ({
+                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion, size]) => ({
                     name,
                     installedVersion,
                     latestVersion,
+                    size,
                     isInstalled: true,
                 }));
                 const installedNames = new Set(installedFormatted.map(pkg => pkg.name));
-                const allFormatted = safeAll.map(([name]) => ({
+                const allFormatted = safeAll.map(([name, desc, size]) => ({
                     name,
                     installedVersion: "",
+                    size,
                     isInstalled: installedNames.has(name),
                 }));
 
-                // Format leaves packages with their versions from installed packages
-                const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, pkg.installedVersion]));
-                const leavesFormatted = safeLeaves.map((name) => ({
-                    name,
-                    installedVersion: installedMap.get(name) || t('common.notAvailable'),
-                    isInstalled: true,
-                }));
+                // Format leaves packages with their versions and sizes from installed packages
+                const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, { installedVersion: pkg.installedVersion, size: pkg.size }]));
+                const leavesFormatted = safeLeaves.map((name) => {
+                    const data = installedMap.get(name);
+                    return {
+                        name,
+                        installedVersion: data?.installedVersion || t('common.notAvailable'),
+                        size: data?.size,
+                        isInstalled: true,
+                    };
+                });
 
                 // Format repositories
                 const reposFormatted = safeRepos.map(([name, status]) => ({
@@ -715,9 +724,10 @@ const WailBrewApp = () => {
                 setError(safeInstalled[0][1]);
                 setPackages([]);
             } else {
-                const formatted = safeInstalled.map(([name, installedVersion]) => ({
+                const formatted = safeInstalled.map(([name, installedVersion, size]) => ({
                     name,
                     installedVersion,
+                    size,
                     isInstalled: true,
                 }));
                 setPackages(formatted);
@@ -726,9 +736,10 @@ const WailBrewApp = () => {
             if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
                 setCasks([]);
             } else {
-                const casksFormatted = safeInstalledCasks.map(([name, installedVersion]) => ({
+                const casksFormatted = safeInstalledCasks.map(([name, installedVersion, size]) => ({
                     name,
                     installedVersion,
+                    size,
                     isInstalled: true,
                 }));
                 setCasks(casksFormatted);
@@ -737,10 +748,11 @@ const WailBrewApp = () => {
             if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
                 setUpdatablePackages([]);
             } else {
-                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion]) => ({
+                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size]) => ({
                     name,
                     installedVersion,
                     latestVersion,
+                    size,
                     isInstalled: true,
                 }));
                 setUpdatablePackages(formatted);
@@ -750,10 +762,11 @@ const WailBrewApp = () => {
                 setAllPackages([]);
             } else {
                 const installedMap = new Map(safeInstalled.map(([name]) => [name, true]));
-                const formatted = safeAll.map(([name, desc]) => ({
+                const formatted = safeAll.map(([name, desc, size]) => ({
                     name,
                     installedVersion: t('common.notAvailable'),
                     desc,
+                    size,
                     isInstalled: installedMap.has(name),
                 }));
                 setAllPackages(formatted);
@@ -762,12 +775,16 @@ const WailBrewApp = () => {
             if (safeLeaves.length === 1 && safeLeaves[0] === "Error") {
                 setLeavesPackages([]);
             } else {
-                const installedMap = new Map(safeInstalled.map(([name, installedVersion]) => [name, installedVersion]));
-                const formatted = safeLeaves.map((name) => ({
-                    name,
-                    installedVersion: installedMap.get(name) || t('common.notAvailable'),
-                    isInstalled: true,
-                }));
+                const installedMap = new Map(safeInstalled.map(([name, installedVersion, size]) => [name, { installedVersion, size }]));
+                const formatted = safeLeaves.map((name) => {
+                    const data = installedMap.get(name);
+                    return {
+                        name,
+                        installedVersion: data?.installedVersion || t('common.notAvailable'),
+                        size: data?.size,
+                        isInstalled: true,
+                    };
+                });
                 setLeavesPackages(formatted);
             }
 
@@ -790,20 +807,22 @@ const WailBrewApp = () => {
 
     // Table columns config
     const columnsInstalled = [
-        { key: "name", label: t('tableColumns.name') },
-        { key: "installedVersion", label: t('tableColumns.version') },
-        { key: "actions", label: t('tableColumns.actions') },
+        { key: "name", label: t('tableColumns.name'), sortable: true },
+        { key: "installedVersion", label: t('tableColumns.version'), sortable: false },
+        { key: "size", label: t('tableColumns.size'), sortable: true },
+        { key: "actions", label: t('tableColumns.actions'), sortable: false },
     ];
     const columnsUpdatable = [
-        { key: "name", label: t('tableColumns.name') },
-        { key: "installedVersion", label: t('tableColumns.version') },
-        { key: "latestVersion", label: t('tableColumns.latestVersion') },
-        { key: "actions", label: t('tableColumns.actions') },
+        { key: "name", label: t('tableColumns.name'), sortable: true },
+        { key: "installedVersion", label: t('tableColumns.version'), sortable: false },
+        { key: "latestVersion", label: t('tableColumns.latestVersion'), sortable: false },
+        { key: "size", label: t('tableColumns.size'), sortable: true },
+        { key: "actions", label: t('tableColumns.actions'), sortable: false },
     ];
     const columnsAll = [
-        { key: "name", label: t('tableColumns.name') },
-        { key: "isInstalled", label: t('tableColumns.status') },
-        { key: "actions", label: t('tableColumns.actions') },
+        { key: "name", label: t('tableColumns.name'), sortable: true },
+        { key: "isInstalled", label: t('tableColumns.status'), sortable: true },
+        { key: "actions", label: t('tableColumns.actions'), sortable: false },
     ];
     const columnsLeaves = columnsInstalled;
 

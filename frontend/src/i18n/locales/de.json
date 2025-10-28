@@ -65,6 +65,7 @@
     "name": "Name",
     "version": "Installierte Version",
     "latestVersion": "Aktuellste Version",
+    "size": "Größe",
     "status": "Status",
     "actions": "Aktionen"
   },
