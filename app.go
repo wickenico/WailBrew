@@ -27,6 +27,15 @@ const brewEnvLang = "LANG=en_US.UTF-8"
 const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
 const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 
+// Askpass helper script content for GUI sudo password prompts
+const askpassScript = `#!/bin/bash
+# Askpass helper for GUI sudo password prompts
+osascript <<EOF
+display dialog "WailBrew requires administrator privileges to upgrade certain packages. Please enter your password:" default answer "" with icon caution with title "Administrator Password Required" with hidden answer
+text returned of result
+EOF
+`
+
 // MenuTranslations holds all menu translations
 type MenuTranslations struct {
 	App struct {
@@ -640,6 +649,7 @@ type UpdateInfo struct {
 type App struct {
 	ctx             context.Context
 	brewPath        string
+	askpassPath     string
 	currentLanguage string
 	updateMutex     sync.Mutex
 	lastUpdateTime  time.Time
@@ -675,6 +685,45 @@ func NewApp() *App {
 	return &App{brewPath: brewPath, currentLanguage: "en"}
 }
 
+// setupAskpassHelper creates the askpass helper script for GUI sudo prompts
+func (a *App) setupAskpassHelper() error {
+	// Create a temporary directory for the askpass helper
+	tempDir := os.TempDir()
+	askpassPath := fmt.Sprintf("%s/wailbrew-askpass-%d.sh", tempDir, os.Getpid())
+
+	// Write the askpass script to the temp file
+	if err := os.WriteFile(askpassPath, []byte(askpassScript), 0700); err != nil {
+		return fmt.Errorf("failed to create askpass helper: %w", err)
+	}
+
+	a.askpassPath = askpassPath
+	return nil
+}
+
+// cleanupAskpassHelper removes the askpass helper script
+func (a *App) cleanupAskpassHelper() {
+	if a.askpassPath != "" {
+		os.Remove(a.askpassPath)
+	}
+}
+
+// getBrewEnv returns the standard brew environment variables including SUDO_ASKPASS
+func (a *App) getBrewEnv() []string {
+	env := []string{
+		brewEnvPath,
+		brewEnvLang,
+		brewEnvLCAll,
+		brewEnvNoAutoUpdate,
+	}
+
+	// Add SUDO_ASKPASS if askpass helper is available
+	if a.askpassPath != "" {
+		env = append(env, fmt.Sprintf("SUDO_ASKPASS=%s", a.askpassPath))
+	}
+
+	return env
+}
+
 // runBrewCommand executes a brew command and returns output and error
 func (a *App) runBrewCommand(args ...string) ([]byte, error) {
 	return a.runBrewCommandWithTimeout(30*time.Second, args...)
@@ -686,12 +735,7 @@ func (a *App) runBrewCommandWithTimeout(timeout time.Duration, args ...string) (
 	defer cancel()
 
 	cmd := exec.CommandContext(ctx, a.brewPath, args...)
-	cmd.Env = append(os.Environ(),
-		brewEnvPath,
-		brewEnvLang,
-		brewEnvLCAll,
-		brewEnvNoAutoUpdate, // Prevent auto-update on fresh installs
-	)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	output, err := cmd.CombinedOutput()
 
@@ -719,9 +763,20 @@ func (a *App) validateBrewInstallation() error {
 	return nil
 }
 
-// startup saves the application context
+// startup saves the application context and sets up the askpass helper
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+
+	// Set up the askpass helper for GUI sudo prompts
+	if err := a.setupAskpassHelper(); err != nil {
+		// Log error but don't fail startup - the app can still work without askpass
+		fmt.Fprintf(os.Stderr, "Warning: failed to setup askpass helper: %v\n", err)
+	}
+}
+
+// shutdown cleans up resources when the application exits
+func (a *App) shutdown(ctx context.Context) {
+	a.cleanupAskpassHelper()
 }
 
 func (a *App) OpenURL(url string) {
@@ -1359,7 +1414,7 @@ func (a *App) RemoveBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUninstallProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "uninstall", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -1427,7 +1482,7 @@ func (a *App) InstallBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageInstallProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "install", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -1495,7 +1550,7 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
 	cmd := exec.Command(a.brewPath, "upgrade", packageName)
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -1566,7 +1621,7 @@ func (a *App) UpdateAllBrewPackages() string {
 
 	// Use --greedy flag to also update casks (including auto-updating ones)
 	cmd := exec.Command(a.brewPath, "upgrade", "--greedy")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll, brewEnvNoAutoUpdate)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -1878,7 +1933,7 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 func (a *App) ExportBrewfile(filePath string) error {
 	// Run brew bundle dump to the specified file path
 	cmd := exec.Command(a.brewPath, "bundle", "dump", "--file="+filePath, "--force")
-	cmd.Env = append(os.Environ(), brewEnvPath, brewEnvLang, brewEnvLCAll)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
