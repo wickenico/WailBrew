@@ -36,6 +36,8 @@ export function GetCurrentLanguage():Promise<string>;
 
 export function GetHomebrewVersion():Promise<string>;
 
+export function GetSessionLogs():Promise<string>;
+
 export function InstallBrewPackage(arg1:string):Promise<string>;
 
 export function OpenURL(arg1:string):Promise<void>;

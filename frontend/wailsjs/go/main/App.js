@@ -70,6 +70,10 @@ export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }
 
+export function GetSessionLogs() {
+  return window['go']['main']['App']['GetSessionLogs']();
+}
+
 export function InstallBrewPackage(arg1) {
   return window['go']['main']['App']['InstallBrewPackage'](arg1);
 }

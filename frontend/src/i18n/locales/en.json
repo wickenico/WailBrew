@@ -98,6 +98,7 @@
     "installLogs": "Install logs for {{name}}",
     "uninstallLogs": "Uninstall logs for {{name}}",
     "packageInfo": "Info for {{name}}",
+    "sessionLogs": "Session Logs",
     "updating": "Updating \"{{name}}\"...\nPlease wait...",
     "installing": "Installing \"{{name}}\"...\nPlease wait...",
     "uninstalling": "Uninstalling \"{{name}}\"...\nPlease wait...",

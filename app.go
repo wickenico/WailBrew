@@ -73,11 +73,12 @@ type MenuTranslations struct {
 		Settings     string `json:"settings"`
 	} `json:"view"`
 	Tools struct {
-		Title          string `json:"title"`
-		ExportBrewfile string `json:"exportBrewfile"`
-		ExportSuccess  string `json:"exportSuccess"`
-		ExportFailed   string `json:"exportFailed"`
-		ExportMessage  string `json:"exportMessage"`
+		Title           string `json:"title"`
+		ExportBrewfile  string `json:"exportBrewfile"`
+		ExportSuccess   string `json:"exportSuccess"`
+		ExportFailed    string `json:"exportFailed"`
+		ExportMessage   string `json:"exportMessage"`
+		ViewSessionLogs string `json:"viewSessionLogs"`
 	} `json:"tools"`
 	Help struct {
 		Title        string `json:"title"`
@@ -137,17 +138,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Settings",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Tools",
-				ExportBrewfile: "Export Brewfile...",
-				ExportSuccess:  "Export Successful",
-				ExportFailed:   "Export Failed",
-				ExportMessage:  "Brewfile exported successfully to:\n%s",
+				Title:           "Tools",
+				ExportBrewfile:  "Export Brewfile...",
+				ExportSuccess:   "Export Successful",
+				ExportFailed:    "Export Failed",
+				ExportMessage:   "Brewfile exported successfully to:\n%s",
+				ViewSessionLogs: "View Session Logs...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -206,17 +209,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Einstellungen",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Werkzeuge",
-				ExportBrewfile: "Brewfile exportieren...",
-				ExportSuccess:  "Export Erfolgreich",
-				ExportFailed:   "Export Fehlgeschlagen",
-				ExportMessage:  "Brewfile erfolgreich exportiert nach:\n%s",
+				Title:           "Werkzeuge",
+				ExportBrewfile:  "Brewfile exportieren...",
+				ExportSuccess:   "Export Erfolgreich",
+				ExportFailed:    "Export Fehlgeschlagen",
+				ExportMessage:   "Brewfile erfolgreich exportiert nach:\n%s",
+				ViewSessionLogs: "Sitzungsprotokolle anzeigen...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -275,17 +280,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Paramètres",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Outils",
-				ExportBrewfile: "Exporter Brewfile...",
-				ExportSuccess:  "Export Réussi",
-				ExportFailed:   "Échec de l'Export",
-				ExportMessage:  "Brewfile exporté avec succès vers :\n%s",
+				Title:           "Outils",
+				ExportBrewfile:  "Exporter Brewfile...",
+				ExportSuccess:   "Export Réussi",
+				ExportFailed:    "Échec de l'Export",
+				ExportMessage:   "Brewfile exporté avec succès vers :\n%s",
+				ViewSessionLogs: "Afficher les journaux de session...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -344,17 +351,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Ayarlar",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Araçlar",
-				ExportBrewfile: "Brewfile Dışa Aktar...",
-				ExportSuccess:  "Dışa Aktarma Başarılı",
-				ExportFailed:   "Dışa Aktarma Başarısız",
-				ExportMessage:  "Brewfile başarıyla şuraya aktarıldı:\n%s",
+				Title:           "Araçlar",
+				ExportBrewfile:  "Brewfile Dışa Aktar...",
+				ExportSuccess:   "Dışa Aktarma Başarılı",
+				ExportFailed:    "Dışa Aktarma Başarısız",
+				ExportMessage:   "Brewfile başarıyla şuraya aktarıldı:\n%s",
+				ViewSessionLogs: "Oturum Günlüklerini Görüntüle...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -413,17 +422,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "软件设置",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "工具",
-				ExportBrewfile: "导出 Brewfile...",
-				ExportSuccess:  "导出成功",
-				ExportFailed:   "导出失败",
-				ExportMessage:  "Brewfile 已成功导出到:\n%s",
+				Title:           "工具",
+				ExportBrewfile:  "导出 Brewfile...",
+				ExportSuccess:   "导出成功",
+				ExportFailed:    "导出失败",
+				ExportMessage:   "Brewfile 已成功导出到:\n%s",
+				ViewSessionLogs: "查看会话日志...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -482,17 +493,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Configurações",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Ferramentas",
-				ExportBrewfile: "Exportar Brewfile...",
-				ExportSuccess:  "Exportado com Sucesso",
-				ExportFailed:   "Falha na Exportação",
-				ExportMessage:  "Brewfile exportado com sucesso para:\n%s",
+				Title:           "Ferramentas",
+				ExportBrewfile:  "Exportar Brewfile...",
+				ExportSuccess:   "Exportado com Sucesso",
+				ExportFailed:    "Falha na Exportação",
+				ExportMessage:   "Brewfile exportado com sucesso para:\n%s",
+				ViewSessionLogs: "Ver Registros de Sessão...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -551,17 +564,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Настройки",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Инструменты",
-				ExportBrewfile: "Экспортировать Brewfile...",
-				ExportSuccess:  "Успешно экспортировано",
-				ExportFailed:   "Не удалось экспортировать",
-				ExportMessage:  "Brewfile успешно экспортирован в:\n%s",
+				Title:           "Инструменты",
+				ExportBrewfile:  "Экспортировать Brewfile...",
+				ExportSuccess:   "Успешно экспортировано",
+				ExportFailed:    "Не удалось экспортировать",
+				ExportMessage:   "Brewfile успешно экспортирован в:\n%s",
+				ViewSessionLogs: "Просмотр журналов сеанса...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -621,17 +636,19 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Settings:     "Settings",
 			},
 			Tools: struct {
-				Title          string `json:"title"`
-				ExportBrewfile string `json:"exportBrewfile"`
-				ExportSuccess  string `json:"exportSuccess"`
-				ExportFailed   string `json:"exportFailed"`
-				ExportMessage  string `json:"exportMessage"`
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
 			}{
-				Title:          "Tools",
-				ExportBrewfile: "Export Brewfile...",
-				ExportSuccess:  "Export Successful",
-				ExportFailed:   "Export Failed",
-				ExportMessage:  "Brewfile exported successfully to:\n%s",
+				Title:           "Tools",
+				ExportBrewfile:  "Export Brewfile...",
+				ExportSuccess:   "Export Successful",
+				ExportFailed:    "Export Failed",
+				ExportMessage:   "Brewfile exported successfully to:\n%s",
+				ViewSessionLogs: "View Session Logs...",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -690,6 +707,8 @@ type App struct {
 	lastUpdateTime     time.Time
 	knownPackages      map[string]bool // Track all known packages to detect new ones
 	knownPackagesMutex sync.Mutex
+	sessionLogs        []string   // Session logs for debugging
+	sessionLogsMutex   sync.Mutex // Mutex for thread-safe log access
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -723,6 +742,7 @@ func NewApp() *App {
 		brewPath:        brewPath,
 		currentLanguage: "en",
 		knownPackages:   make(map[string]bool),
+		sessionLogs:     make([]string, 0),
 	}
 }
 
@@ -778,6 +798,10 @@ func (a *App) runBrewCommandWithTimeout(timeout time.Duration, args ...string) (
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	cmdStr := fmt.Sprintf("brew %s", strings.Join(args, " "))
+	// Log command start asynchronously to avoid blocking
+	go a.appendSessionLog(fmt.Sprintf("Executing: %s", cmdStr))
+
 	cmd := exec.CommandContext(ctx, a.brewPath, args...)
 	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
@@ -785,7 +809,20 @@ func (a *App) runBrewCommandWithTimeout(timeout time.Duration, args ...string) (
 
 	// Check if the error was due to timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		return nil, fmt.Errorf("command timed out after %v: brew %v", timeout, args)
+		errorMsg := fmt.Sprintf("Command timed out after %v: brew %v", timeout, args)
+		go a.appendSessionLog(fmt.Sprintf("ERROR: %s", errorMsg))
+		return nil, fmt.Errorf(errorMsg)
+	}
+
+	// Log result asynchronously (non-blocking, won't affect command execution)
+	if err != nil {
+		outputStr := string(output)
+		if len(outputStr) > 500 {
+			outputStr = outputStr[:500] + "... (truncated)"
+		}
+		go a.appendSessionLog(fmt.Sprintf("ERROR: %s failed: %v\nOutput: %s", cmdStr, err, outputStr))
+	} else {
+		go a.appendSessionLog(fmt.Sprintf("SUCCESS: %s completed", cmdStr))
 	}
 
 	return output, err
@@ -821,6 +858,7 @@ func (a *App) startup(ctx context.Context) {
 // shutdown cleans up resources when the application exits
 func (a *App) shutdown(ctx context.Context) {
 	a.cleanupAskpassHelper()
+	a.clearSessionLogs()
 }
 
 func (a *App) OpenURL(url string) {
@@ -838,6 +876,46 @@ func (a *App) SetLanguage(language string) {
 // GetCurrentLanguage returns the current language
 func (a *App) GetCurrentLanguage() string {
 	return a.currentLanguage
+}
+
+// appendSessionLog adds a log entry to the session log buffer
+// This function is safe to call from any goroutine and will not panic
+func (a *App) appendSessionLog(entry string) {
+	defer func() {
+		// Recover from any panic to ensure logging never crashes the app
+		if r := recover(); r != nil {
+			// Silently ignore logging errors - logging should never break functionality
+			fmt.Fprintf(os.Stderr, "Warning: session log append failed: %v\n", r)
+		}
+	}()
+
+	a.sessionLogsMutex.Lock()
+	defer a.sessionLogsMutex.Unlock()
+
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
+	logEntry := fmt.Sprintf("[%s] %s", timestamp, entry)
+	a.sessionLogs = append(a.sessionLogs, logEntry)
+
+	// Limit log size to prevent memory issues (keep last 10000 entries)
+	const maxLogEntries = 10000
+	if len(a.sessionLogs) > maxLogEntries {
+		a.sessionLogs = a.sessionLogs[len(a.sessionLogs)-maxLogEntries:]
+	}
+}
+
+// GetSessionLogs returns all session logs as a string
+func (a *App) GetSessionLogs() string {
+	a.sessionLogsMutex.Lock()
+	defer a.sessionLogsMutex.Unlock()
+
+	return strings.Join(a.sessionLogs, "\n")
+}
+
+// clearSessionLogs clears all session logs
+func (a *App) clearSessionLogs() {
+	a.sessionLogsMutex.Lock()
+	defer a.sessionLogsMutex.Unlock()
+	a.sessionLogs = make([]string, 0)
 }
 
 // getBackendMessage returns a translated backend message
@@ -1120,6 +1198,10 @@ func (a *App) menu() *menu.Menu {
 				})
 			}
 		}
+	})
+	ToolsMenu.AddSeparator()
+	ToolsMenu.AddText(translations.Tools.ViewSessionLogs, nil, func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "showSessionLogs")
 	})
 
 	// Edit-Menü (optional)
@@ -1650,24 +1732,29 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		// Try to detect new packages from update output
 		newPackages := a.ParseNewPackagesFromUpdateOutput(updateOutput)
 		if len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0 {
-			// Emit event about new packages
-			eventData := map[string]interface{}{
-				"newFormulae": newPackages.NewFormulae,
-				"newCasks":    newPackages.NewCasks,
+			// Emit event about new packages (only if context is available)
+			if a.ctx != nil {
+				eventData := map[string]interface{}{
+					"newFormulae": newPackages.NewFormulae,
+					"newCasks":    newPackages.NewCasks,
+				}
+				jsonData, _ := json.Marshal(eventData)
+				rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
 			}
-			jsonData, _ := json.Marshal(eventData)
-			rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
 		}
 	} else {
 		// Fallback: try to detect new packages by comparing current list
 		newPackages, err := a.CheckForNewPackages()
 		if err == nil && (len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0) {
-			eventData := map[string]interface{}{
-				"newFormulae": newPackages.NewFormulae,
-				"newCasks":    newPackages.NewCasks,
+			// Emit event about new packages (only if context is available)
+			if a.ctx != nil {
+				eventData := map[string]interface{}{
+					"newFormulae": newPackages.NewFormulae,
+					"newCasks":    newPackages.NewCasks,
+				}
+				jsonData, _ := json.Marshal(eventData)
+				rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
 			}
-			jsonData, _ := json.Marshal(eventData)
-			rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
 		}
 	}
 

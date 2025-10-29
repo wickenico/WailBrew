@@ -25,6 +25,7 @@ import {
     GetHomebrewVersion,
     CheckHomebrewUpdate,
     UpdateHomebrew,
+    GetSessionLogs,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -99,6 +100,8 @@ const WailBrewApp = () => {
     const [cleanupLog, setCleanupLog] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
+    const [showSessionLogs, setShowSessionLogs] = useState<boolean>(false);
+    const [sessionLogs, setSessionLogs] = useState<string>("");
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
     const updateCheckDone = useRef<boolean>(false);
     const lastSyncedLanguage = useRef<string>("en");
@@ -496,6 +499,17 @@ const WailBrewApp = () => {
         const unlistenUpdate = EventsOn("checkForUpdates", () => {
             setShowUpdate(true);
         });
+        const unlistenSessionLogs = EventsOn("showSessionLogs", async () => {
+            try {
+                const logs = await GetSessionLogs();
+                setSessionLogs(logs || "No logs available.");
+                setShowSessionLogs(true);
+            } catch (error) {
+                console.error("Failed to get session logs:", error);
+                setSessionLogs("Failed to load session logs.");
+                setShowSessionLogs(true);
+            }
+        });
         const unlistenNewPackages = EventsOn("newPackagesDiscovered", (data: string) => {
             try {
                 const packageInfo = JSON.parse(data);
@@ -576,6 +590,7 @@ const WailBrewApp = () => {
             unlistenRefresh();
             unlistenAbout();
             unlistenUpdate();
+            unlistenSessionLogs();
             unlistenNewPackages();
         };
     }, []);
@@ -1477,6 +1492,15 @@ const WailBrewApp = () => {
                     onClose={() => {
                         setInfoLogs(null);
                         setInfoPackage(null);
+                    }}
+                />
+                <LogDialog
+                    open={showSessionLogs}
+                    title={t('dialogs.sessionLogs')}
+                    log={sessionLogs}
+                    onClose={() => {
+                        setShowSessionLogs(false);
+                        setSessionLogs("");
                     }}
                 />
                 <AboutDialog
