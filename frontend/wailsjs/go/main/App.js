@@ -94,6 +94,10 @@ export function RemoveBrewPackage(arg1) {
   return window['go']['main']['App']['RemoveBrewPackage'](arg1);
 }
 
+export function RestartApp() {
+  return window['go']['main']['App']['RestartApp']();
+}
+
 export function RunBrewCleanup() {
   return window['go']['main']['App']['RunBrewCleanup']();
 }

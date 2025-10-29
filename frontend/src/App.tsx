@@ -44,6 +44,7 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
 import UpdateDialog from "./components/UpdateDialog";
+import RestartDialog from "./components/RestartDialog";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
@@ -102,6 +103,7 @@ const WailBrewApp = () => {
     const [cleanupEstimate, setCleanupEstimate] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
+    const [showRestart, setShowRestart] = useState<boolean>(false);
     const [showSessionLogs, setShowSessionLogs] = useState<boolean>(false);
     const [sessionLogs, setSessionLogs] = useState<string>("");
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
@@ -501,6 +503,9 @@ const WailBrewApp = () => {
         const unlistenUpdate = EventsOn("checkForUpdates", () => {
             setShowUpdate(true);
         });
+        const unlistenWailbrewUpdated = EventsOn("wailbrewUpdated", () => {
+            setShowRestart(true);
+        });
         const unlistenSessionLogs = EventsOn("showSessionLogs", async () => {
             try {
                 const logs = await GetSessionLogs();
@@ -592,6 +597,7 @@ const WailBrewApp = () => {
             unlistenRefresh();
             unlistenAbout();
             unlistenUpdate();
+            unlistenWailbrewUpdated();
             unlistenSessionLogs();
             unlistenNewPackages();
         };
@@ -1530,6 +1536,10 @@ const WailBrewApp = () => {
                 <UpdateDialog
                     isOpen={showUpdate}
                     onClose={() => setShowUpdate(false)}
+                />
+                <RestartDialog
+                    isOpen={showRestart}
+                    onClose={() => setShowRestart(false)}
                 />
                 <Toaster
                     position="bottom-center"

@@ -2090,16 +2090,27 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	err = cmd.Wait()
 
 	var finalMessage string
+	var wailbrewUpdated bool
 	if err != nil {
 		finalMessage = a.getBackendMessage("updateFailed", map[string]string{"name": packageName, "error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
 	} else {
 		finalMessage = a.getBackendMessage("updateSuccess", map[string]string{"name": packageName})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+
+		// Check if WailBrew itself was updated
+		if strings.ToLower(packageName) == "wailbrew" {
+			wailbrewUpdated = true
+		}
 	}
 
 	// Signal completion
 	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+
+	// If WailBrew was updated, emit event to show restart dialog
+	if wailbrewUpdated && a.ctx != nil {
+		rt.EventsEmit(a.ctx, "wailbrewUpdated")
+	}
 
 	return finalMessage
 }
@@ -2136,6 +2147,9 @@ func (a *App) UpdateAllBrewPackages() string {
 		return errorMsg
 	}
 
+	// Track which packages are being updated
+	updatedPackages := make(map[string]bool)
+
 	// Read and emit output in real-time
 	go func() {
 		scanner := bufio.NewScanner(stdout)
@@ -2143,6 +2157,29 @@ func (a *App) UpdateAllBrewPackages() string {
 			line := strings.TrimSpace(scanner.Text())
 			if line != "" {
 				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("📦 %s", line))
+
+				// Detect if wailbrew is being updated
+				// Look for patterns like "==> Upgrading wailbrew" or "wailbrew was successfully upgraded"
+				if strings.Contains(strings.ToLower(line), "wailbrew") {
+					// Try to extract package name from lines like "==> Upgrading wailbrew"
+					if strings.Contains(line, "Upgrading") || strings.Contains(line, "Installing") {
+						parts := strings.Fields(line)
+						for i, part := range parts {
+							if (part == "Upgrading" || part == "Installing") && i+1 < len(parts) {
+								pkgName := strings.ToLower(parts[i+1])
+								// Remove any trailing punctuation
+								pkgName = strings.Trim(pkgName, ":.,!?")
+								if pkgName == "wailbrew" {
+									updatedPackages["wailbrew"] = true
+								}
+							}
+						}
+					}
+					// Also check for success messages
+					if strings.Contains(line, "successfully") && strings.Contains(strings.ToLower(line), "wailbrew") {
+						updatedPackages["wailbrew"] = true
+					}
+				}
 			}
 		}
 	}()
@@ -2171,6 +2208,11 @@ func (a *App) UpdateAllBrewPackages() string {
 
 	// Signal completion
 	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+
+	// If WailBrew was updated, emit event to show restart dialog
+	if updatedPackages["wailbrew"] && a.ctx != nil {
+		rt.EventsEmit(a.ctx, "wailbrewUpdated")
+	}
 
 	return finalMessage
 }
@@ -2586,10 +2628,31 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 	// Clean up
 	os.RemoveAll(tempDir)
 
-	// Schedule restart
+	// Don't auto-restart - let the user restart manually via UI
+	// The update has been successfully installed
+
+	return nil
+}
+
+// RestartApp restarts the WailBrew application
+func (a *App) RestartApp() error {
+	// Get current app location
+	currentAppPath, err := os.Executable()
+	if err != nil {
+		return fmt.Errorf("failed to get current app path: %w", err)
+	}
+
+	// Navigate to the .app bundle root
+	for strings.Contains(currentAppPath, ".app/") {
+		currentAppPath = strings.Split(currentAppPath, ".app/")[0] + ".app"
+		break
+	}
+
+	// Launch the new version and quit
 	go func() {
-		time.Sleep(1 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 		exec.Command("open", currentAppPath).Start()
+		time.Sleep(500 * time.Millisecond)
 		rt.Quit(a.ctx)
 	}()
 

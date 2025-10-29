@@ -48,6 +48,8 @@ export function ParseNewPackagesFromUpdateOutput(arg1:string):Promise<main.NewPa
 
 export function RemoveBrewPackage(arg1:string):Promise<string>;
 
+export function RestartApp():Promise<void>;
+
 export function RunBrewCleanup():Promise<string>;
 
 export function RunBrewDoctor():Promise<string>;
