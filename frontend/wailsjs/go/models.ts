@@ -1,5 +1,19 @@
 export namespace main {
 	
+	export class NewPackagesInfo {
+	    newFormulae: string[];
+	    newCasks: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new NewPackagesInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.newFormulae = source["newFormulae"];
+	        this.newCasks = source["newCasks"];
+	    }
+	}
 	export class UpdateInfo {
 	    available: boolean;
 	    currentVersion: string;

@@ -55,6 +55,7 @@ type MenuTranslations struct {
 		All          string `json:"all"`
 		Leaves       string `json:"leaves"`
 		Repositories string `json:"repositories"`
+		Homebrew     string `json:"homebrew"`
 		Doctor       string `json:"doctor"`
 		Cleanup      string `json:"cleanup"`
 		Settings     string `json:"settings"`
@@ -106,6 +107,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -117,6 +119,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "All Formulae",
 				Leaves:       "Leaves",
 				Repositories: "Repositories",
+				Homebrew:     "Homebrew",
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
 				Settings:     "Settings",
@@ -173,6 +176,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -184,6 +188,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "Alle Formeln",
 				Leaves:       "Blätter",
 				Repositories: "Repositories",
+				Homebrew:     "Homebrew",
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
 				Settings:     "Einstellungen",
@@ -240,6 +245,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -251,6 +257,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "Toutes les Formules",
 				Leaves:       "Feuilles",
 				Repositories: "Dépôts",
+				Homebrew:     "Homebrew",
 				Doctor:       "Diagnostic",
 				Cleanup:      "Nettoyage",
 				Settings:     "Paramètres",
@@ -307,6 +314,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -318,6 +326,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "Tüm Formüller",
 				Leaves:       "Yapraklar",
 				Repositories: "Depolar",
+				Homebrew:     "Homebrew",
 				Doctor:       "Doktor",
 				Cleanup:      "Temizlik",
 				Settings:     "Ayarlar",
@@ -374,6 +383,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -385,6 +395,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "所有 Formulae",
 				Leaves:       "独立包",
 				Repositories: "软件源",
+				Homebrew:     "Homebrew",
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
 				Settings:     "软件设置",
@@ -441,6 +452,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -452,6 +464,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "Todas as Fórmulas",
 				Leaves:       "Leaves",
 				Repositories: "Repositórios",
+				Homebrew:     "Homebrew",
 				Doctor:       "Diagnóstico",
 				Cleanup:      "Limpeza",
 				Settings:     "Configurações",
@@ -508,6 +521,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -519,6 +533,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "Все пакеты",
 				Leaves:       "Листья",
 				Repositories: "Репозитории",
+				Homebrew:     "Homebrew",
 				Doctor:       "Диагностика",
 				Cleanup:      "Очистка",
 				Settings:     "Настройки",
@@ -576,6 +591,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All          string `json:"all"`
 				Leaves       string `json:"leaves"`
 				Repositories string `json:"repositories"`
+				Homebrew     string `json:"homebrew"`
 				Doctor       string `json:"doctor"`
 				Cleanup      string `json:"cleanup"`
 				Settings     string `json:"settings"`
@@ -587,6 +603,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				All:          "All Formulae",
 				Leaves:       "Leaves",
 				Repositories: "Repositories",
+				Homebrew:     "Homebrew",
 				Doctor:       "Doctor",
 				Cleanup:      "Cleanup",
 				Settings:     "Settings",
@@ -645,14 +662,22 @@ type UpdateInfo struct {
 	PublishedAt    string `json:"publishedAt"`
 }
 
+// NewPackagesInfo contains information about newly discovered packages
+type NewPackagesInfo struct {
+	NewFormulae []string `json:"newFormulae"`
+	NewCasks    []string `json:"newCasks"`
+}
+
 // App struct
 type App struct {
-	ctx             context.Context
-	brewPath        string
-	askpassPath     string
-	currentLanguage string
-	updateMutex     sync.Mutex
-	lastUpdateTime  time.Time
+	ctx                context.Context
+	brewPath           string
+	askpassPath        string
+	currentLanguage    string
+	updateMutex        sync.Mutex
+	lastUpdateTime     time.Time
+	knownPackages      map[string]bool // Track all known packages to detect new ones
+	knownPackagesMutex sync.Mutex
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -682,7 +707,11 @@ func detectBrewPath() string {
 // NewApp creates a new App application struct
 func NewApp() *App {
 	brewPath := detectBrewPath()
-	return &App{brewPath: brewPath, currentLanguage: "en"}
+	return &App{
+		brewPath:        brewPath,
+		currentLanguage: "en",
+		knownPackages:   make(map[string]bool),
+	}
 }
 
 // setupAskpassHelper creates the askpass helper script for GUI sudo prompts
@@ -1040,10 +1069,13 @@ func (a *App) menu() *menu.Menu {
 		rt.EventsEmit(a.ctx, "setView", "repositories")
 	})
 	ViewMenu.AddSeparator()
-	ViewMenu.AddText(translations.View.Doctor, keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Homebrew, keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "setView", "homebrew")
+	})
+	ViewMenu.AddText(translations.View.Doctor, keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "doctor")
 	})
-	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(translations.View.Cleanup, keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "cleanup")
 	})
 
@@ -1107,6 +1139,30 @@ func (a *App) GetAllBrewPackages() [][]string {
 
 	lines := strings.Split(outputStr, "\n")
 	var results [][]string
+
+	// Initialize known packages on first call
+	a.knownPackagesMutex.Lock()
+	if len(a.knownPackages) == 0 {
+		// First time - initialize with current packages
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			if line != "" {
+				a.knownPackages["formula:"+line] = true
+			}
+		}
+		// Also add casks
+		caskOutput, err := a.runBrewCommand("casks")
+		if err == nil {
+			caskLines := strings.Split(strings.TrimSpace(string(caskOutput)), "\n")
+			for _, line := range caskLines {
+				line = strings.TrimSpace(line)
+				if line != "" {
+					a.knownPackages["cask:"+line] = true
+				}
+			}
+		}
+	}
+	a.knownPackagesMutex.Unlock()
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -1429,6 +1485,142 @@ func (a *App) UpdateBrewDatabase() error {
 	return err
 }
 
+// UpdateBrewDatabaseWithOutput updates the Homebrew formula database and returns the output
+// This version captures the output to detect new packages
+func (a *App) UpdateBrewDatabaseWithOutput() (string, error) {
+	a.updateMutex.Lock()
+	defer a.updateMutex.Unlock()
+
+	// If we updated less than 5 minutes ago, skip the update
+	if time.Since(a.lastUpdateTime) < 5*time.Minute {
+		return "", nil
+	}
+
+	// Run brew update to refresh the local formula database
+	output, err := a.runBrewCommandWithTimeout(60*time.Second, "update")
+
+	// Update the timestamp even if there was an error, to avoid hammering
+	// the update command if there's a persistent issue
+	a.lastUpdateTime = time.Now()
+
+	return string(output), err
+}
+
+// ParseNewPackagesFromUpdateOutput parses brew update output to extract new formulae and casks
+func (a *App) ParseNewPackagesFromUpdateOutput(output string) *NewPackagesInfo {
+	info := &NewPackagesInfo{
+		NewFormulae: []string{},
+		NewCasks:    []string{},
+	}
+
+	if output == "" {
+		return info
+	}
+
+	lines := strings.Split(output, "\n")
+	inNewFormulae := false
+	inNewCasks := false
+
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+
+		// Detect section headers
+		if strings.Contains(line, "==> New Formulae") {
+			inNewFormulae = true
+			inNewCasks = false
+			continue
+		}
+		if strings.Contains(line, "==> New Casks") {
+			inNewFormulae = false
+			inNewCasks = true
+			continue
+		}
+		// Stop when we hit another section
+		if strings.HasPrefix(line, "==>") {
+			inNewFormulae = false
+			inNewCasks = false
+			continue
+		}
+
+		// Parse package names (format: "package-name: Description")
+		if inNewFormulae || inNewCasks {
+			// Extract package name (everything before the colon)
+			parts := strings.SplitN(line, ":", 2)
+			if len(parts) > 0 {
+				packageName := strings.TrimSpace(parts[0])
+				if packageName != "" {
+					if inNewFormulae {
+						info.NewFormulae = append(info.NewFormulae, packageName)
+					} else if inNewCasks {
+						info.NewCasks = append(info.NewCasks, packageName)
+					}
+				}
+			}
+		}
+	}
+
+	return info
+}
+
+// CheckForNewPackages checks for new packages and returns information about newly discovered ones
+func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
+	// Get current list of all packages
+	allFormulae, err := a.runBrewCommand("formulae")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get formulae list: %w", err)
+	}
+
+	allCasks, err := a.runBrewCommand("casks")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get casks list: %w", err)
+	}
+
+	// Parse current packages
+	currentPackages := make(map[string]bool)
+
+	formulaeLines := strings.Split(strings.TrimSpace(string(allFormulae)), "\n")
+	for _, line := range formulaeLines {
+		name := strings.TrimSpace(line)
+		if name != "" {
+			currentPackages["formula:"+name] = true
+		}
+	}
+
+	caskLines := strings.Split(strings.TrimSpace(string(allCasks)), "\n")
+	for _, line := range caskLines {
+		name := strings.TrimSpace(line)
+		if name != "" {
+			currentPackages["cask:"+name] = true
+		}
+	}
+
+	// Compare with known packages
+	a.knownPackagesMutex.Lock()
+	defer a.knownPackagesMutex.Unlock()
+
+	newInfo := &NewPackagesInfo{
+		NewFormulae: []string{},
+		NewCasks:    []string{},
+	}
+
+	// Find new packages
+	for pkg := range currentPackages {
+		if !a.knownPackages[pkg] {
+			// This is a new package
+			if strings.HasPrefix(pkg, "formula:") {
+				newInfo.NewFormulae = append(newInfo.NewFormulae, strings.TrimPrefix(pkg, "formula:"))
+			} else if strings.HasPrefix(pkg, "cask:") {
+				newInfo.NewCasks = append(newInfo.NewCasks, strings.TrimPrefix(pkg, "cask:"))
+			}
+		}
+	}
+
+	// Update known packages
+	a.knownPackages = currentPackages
+
+	return newInfo, nil
+}
+
 // GetBrewUpdatablePackages checks which packages have updates available using brew outdated
 func (a *App) GetBrewUpdatablePackages() [][]string {
 	// Validate brew installation first
@@ -1438,7 +1630,31 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 
 	// Update the formula database first to get latest information
 	// Ignore errors from update - we'll still try to get outdated packages
-	_ = a.UpdateBrewDatabase()
+	updateOutput, err := a.UpdateBrewDatabaseWithOutput()
+	if err == nil && updateOutput != "" {
+		// Try to detect new packages from update output
+		newPackages := a.ParseNewPackagesFromUpdateOutput(updateOutput)
+		if len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0 {
+			// Emit event about new packages
+			eventData := map[string]interface{}{
+				"newFormulae": newPackages.NewFormulae,
+				"newCasks":    newPackages.NewCasks,
+			}
+			jsonData, _ := json.Marshal(eventData)
+			rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
+		}
+	} else {
+		// Fallback: try to detect new packages by comparing current list
+		newPackages, err := a.CheckForNewPackages()
+		if err == nil && (len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0) {
+			eventData := map[string]interface{}{
+				"newFormulae": newPackages.NewFormulae,
+				"newCasks":    newPackages.NewCasks,
+			}
+			jsonData, _ := json.Marshal(eventData)
+			rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
+		}
+	}
 
 	// Use brew outdated with JSON output for accurate detection
 	// --greedy flag also includes auto-updating casks
@@ -1941,6 +2157,154 @@ func (a *App) RunBrewCleanup() string {
 		return fmt.Sprintf("Error running brew cleanup: %v\n\nOutput:\n%s", err, string(output))
 	}
 	return string(output)
+}
+
+// GetHomebrewVersion returns the installed Homebrew version
+func (a *App) GetHomebrewVersion() (string, error) {
+	output, err := a.runBrewCommand("--version")
+	if err != nil {
+		return "", fmt.Errorf("failed to get Homebrew version: %w", err)
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	// Homebrew version output is typically: "Homebrew 4.x.x" or "Homebrew 4.x.x\nHomebrew/homebrew-core..."
+	lines := strings.Split(outputStr, "\n")
+	if len(lines) > 0 {
+		// Extract version from first line (e.g., "Homebrew 4.2.1")
+		parts := strings.Fields(lines[0])
+		if len(parts) >= 2 {
+			return parts[1], nil
+		}
+		return lines[0], nil
+	}
+	return outputStr, nil
+}
+
+// CheckHomebrewUpdate checks if Homebrew itself is up to date and returns status
+// This function checks without actually updating - it reads the git repository status
+func (a *App) CheckHomebrewUpdate() (map[string]interface{}, error) {
+	// Get current version
+	currentVersion, err := a.GetHomebrewVersion()
+	if err != nil {
+		return nil, err
+	}
+
+	result := map[string]interface{}{
+		"currentVersion": currentVersion,
+		"isUpToDate":     true,
+		"latestVersion":  currentVersion,
+	}
+
+	// Check Homebrew's git repository to see if there are updates
+	// First, find the Homebrew installation directory
+	brewDir := ""
+	if runtime.GOOS == "darwin" {
+		if runtime.GOARCH == "arm64" {
+			brewDir = "/opt/homebrew"
+		} else {
+			brewDir = "/usr/local"
+		}
+	}
+
+	if brewDir != "" {
+		// Check if Homebrew directory exists and is a git repo
+		gitDir := fmt.Sprintf("%s/.git", brewDir)
+		if _, err := os.Stat(gitDir); err == nil {
+			// Check git status to see if we're behind
+			cmd := exec.Command("git", "-C", brewDir, "rev-list", "--count", "HEAD..origin/HEAD")
+			cmd.Env = append(os.Environ(), a.getBrewEnv()...)
+			behindOutput, _ := cmd.CombinedOutput()
+
+			// If there are commits behind, an update is available
+			behindCount := strings.TrimSpace(string(behindOutput))
+			if behindCount != "" && behindCount != "0" {
+				// Try to get the latest version tag or commit message
+				cmd = exec.Command("git", "-C", brewDir, "describe", "--tags", "origin/HEAD")
+				cmd.Env = append(os.Environ(), a.getBrewEnv()...)
+				latestTag, _ := cmd.CombinedOutput()
+				latestVersion := strings.TrimSpace(string(latestTag))
+
+				if latestVersion != "" {
+					result["isUpToDate"] = false
+					result["latestVersion"] = latestVersion
+				} else {
+					// Fallback: just indicate update is available
+					result["isUpToDate"] = false
+					result["latestVersion"] = "latest"
+				}
+			}
+		}
+	}
+
+	return result, nil
+}
+
+// UpdateHomebrew updates Homebrew itself (not packages, but Homebrew core)
+func (a *App) UpdateHomebrew() string {
+	// Emit initial progress
+	rt.EventsEmit(a.ctx, "homebrewUpdateProgress", "🔄 Starting Homebrew update...")
+
+	// Update Homebrew core repository
+	cmd := exec.Command(a.brewPath, "update")
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		errorMsg := fmt.Sprintf("❌ Error creating output pipe: %v", err)
+		rt.EventsEmit(a.ctx, "homebrewUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := fmt.Sprintf("❌ Error creating error pipe: %v", err)
+		rt.EventsEmit(a.ctx, "homebrewUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := fmt.Sprintf("❌ Error starting Homebrew update: %v", err)
+		rt.EventsEmit(a.ctx, "homebrewUpdateProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "homebrewUpdateProgress", fmt.Sprintf("📦 %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "homebrewUpdateProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+
+	var finalMessage string
+	if err != nil {
+		finalMessage = fmt.Sprintf("❌ Homebrew update failed: %v", err)
+	} else {
+		finalMessage = "✅ Homebrew update completed successfully!"
+	}
+
+	// Signal completion (only emit once via complete event, not progress)
+	rt.EventsEmit(a.ctx, "homebrewUpdateComplete", finalMessage)
+
+	return finalMessage
 }
 
 // GetAppVersion returns the application version

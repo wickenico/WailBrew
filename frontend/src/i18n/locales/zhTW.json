@@ -214,7 +214,9 @@
     "upToDate": "您正在使用最新版本！",
     "newOutdatedPackages_one": "發現 {{count}} 個新的過期軟體包",
     "newOutdatedPackages_other": "發現 {{count}} 個新的過期軟體包",
-    "viewOutdated": "查看過期"
+    "viewOutdated": "查看過期",
+    "newPackagesDiscovered": "🎉 發現新軟體包！{{message}}",
+    "viewAllPackages": "查看所有軟體包"
   },
   "backgroundCheck": {
     "checkingNow": "正在檢查更新...",

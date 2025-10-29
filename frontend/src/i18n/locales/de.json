@@ -8,6 +8,7 @@
     "all": "Formeln",
     "leaves": "Blätter",
     "repositories": "Repositories",
+    "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "settings": "Einstellungen"
@@ -19,6 +20,7 @@
     "allFormulas": "Alle Formeln ({{count}})",
     "leaves": "Blätter ({{count}})",
     "repositories": "Repositories ({{count}})",
+    "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup"
   },
@@ -43,7 +45,8 @@
     "yesUpdate": "Ja, aktualisieren",
     "yesUpdateAll": "Ja, alle aktualisieren",
     "ok": "Ok",
-    "close": "Schließen"
+    "close": "Schließen",
+    "updateHomebrew": "Homebrew aktualisieren"
   },
   "logDialog": {
     "running": "Läuft...",
@@ -76,8 +79,14 @@
     "allFormulas": "Alle verfügbaren Homebrew-Formeln. Grüne Markierung zeigt installierte Formeln an.",
     "leaves": "Blätter sind Formeln, die nicht als Abhängigkeit von anderen installierten Formeln benötigt werden.",
     "repositories": "Repositories (Taps) sind Quellen für Formeln. Diese enthalten zusätzliche Pakete neben dem Standard-Repository.",
+    "homebrew": "Homebrew selbst verwalten und aktualisieren. Überprüfen Sie die installierte Version und aktualisieren Sie Homebrew-Core, wenn eine neuere Version verfügbar ist.",
     "doctor": "Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.",
     "cleanup": "Cleanup entfernt veraltete Downloads und Cache-Dateien, um Speicherplatz freizugeben."
+  },
+  "homebrew": {
+    "currentVersion": "Aktuelle Version",
+    "upToDate": "Aktuell",
+    "updateAvailable": "Update verfügbar: v{{version}}"
   },
   "dialogs": {
     "confirmUninstall": "Möchten Sie \"{{name}}\" wirklich deinstallieren?",
@@ -94,8 +103,11 @@
     "uninstalling": "Deinstalliere \"{{name}}\"...\nBitte warten...",
     "updatingAll": "Aktualisiere alle veralteten Pakete...\nBitte warten...",
     "gettingInfo": "Hole Informationen für \"{{name}}\"...\nBitte warten...",
+    "runningHomebrewUpdate": "Homebrew wird aktualisiert...\nBitte warten...",
+    "homebrewUpdateLogs": "Homebrew-Update-Protokolle",
     "runningDoctor": "Führe brew doctor aus…\nBitte warten...",
     "runningCleanup": "Führe brew cleanup aus…\nBitte warten...",
+    "noHomebrewOutput": "Noch keine Ausgabe. Klicken Sie auf \"Homebrew aktualisieren\".",
     "installSuccess": "\"{{name}}\" wurde erfolgreich installiert!",
     "installFailed": "Installation von \"{{name}}\" fehlgeschlagen: {{error}}",
     "noDoctorOutput": "Noch keine Ausgabe. Klicken Sie auf \"Doctor ausführen\".",
@@ -214,7 +226,9 @@
     "upToDate": "Sie verwenden die neueste Version!",
     "newOutdatedPackages_one": "{{count}} neues veraltetes Paket gefunden",
     "newOutdatedPackages_other": "{{count}} neue veraltete Pakete gefunden",
-    "viewOutdated": "Veraltete anzeigen"
+    "viewOutdated": "Veraltete anzeigen",
+    "newPackagesDiscovered": "🎉 Neue Pakete entdeckt! {{message}}",
+    "viewAllPackages": "Alle Pakete anzeigen"
   },
   "backgroundCheck": {
     "checkingNow": "Suche jetzt nach Updates...",

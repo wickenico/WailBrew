@@ -6,8 +6,8 @@ import appIcon from "../assets/images/appicon_256.png";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
 
 interface SidebarProps {
-    view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings";
-    setView: (view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings") => void;
+    view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings";
+    setView: (view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
     packagesCount: number;
     casksCount: number;
     updatableCount: number;
@@ -175,12 +175,16 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="sidebar-section">
             <h4>{t('sidebar.tools')}</h4>
             <ul>
-                <li className={view === "doctor" ? "active" : ""} onClick={() => { setView("doctor"); onClearSelection(); }}>
+                <li className={view === "homebrew" ? "active" : ""} onClick={() => { setView("homebrew"); onClearSelection(); }}>
                     <span className="sidebar-shortcut">{cmdKey}7</span>
+                    <span>🍺 {t('sidebar.homebrew')}</span>
+                </li>
+                <li className={view === "doctor" ? "active" : ""} onClick={() => { setView("doctor"); onClearSelection(); }}>
+                    <span className="sidebar-shortcut">{cmdKey}8</span>
                     <span>🩺 {t('sidebar.doctor')}</span>
                 </li>
                 <li className={view === "cleanup" ? "active" : ""} onClick={() => { setView("cleanup"); onClearSelection(); }}>
-                    <span className="sidebar-shortcut">{cmdKey}8</span>
+                    <span className="sidebar-shortcut">{cmdKey}9</span>
                     <span>🧹 {t('sidebar.cleanup')}</span>
                 </li>
             </ul>

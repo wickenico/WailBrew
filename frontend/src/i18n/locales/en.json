@@ -8,6 +8,7 @@
     "all": "Formulae",
     "leaves": "Leaves",
     "repositories": "Repositories",
+    "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "settings": "Settings"
@@ -19,6 +20,7 @@
     "allFormulas": "Formulae ({{count}})",
     "leaves": "Leaves ({{count}})",
     "repositories": "Repositories ({{count}})",
+    "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup"
   },
@@ -43,7 +45,8 @@
     "yesUpdate": "Yes, update",
     "yesUpdateAll": "Yes, update all",
     "ok": "Ok",
-    "close": "Close"
+    "close": "Close",
+    "updateHomebrew": "Update Homebrew"
   },
   "logDialog": {
     "running": "Running...",
@@ -76,8 +79,14 @@
     "allFormulas": "All available Homebrew formulae. Green highlighting shows installed formulae.",
     "leaves": "Leaves are formulae that are not required as dependencies by other installed formulae.",
     "repositories": "Repositories (Taps) are sources for formulae. These contain additional packages besides the standard repository.",
+    "homebrew": "Manage and update Homebrew itself. Check the installed version and update Homebrew core when a newer version is available.",
     "doctor": "Doctor is a Homebrew feature that can detect the most common causes of errors.",
     "cleanup": "Cleanup removes outdated downloads and cached files to free up disk space."
+  },
+  "homebrew": {
+    "currentVersion": "Current Version",
+    "upToDate": "Up to date",
+    "updateAvailable": "Update available: v{{version}}"
   },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
@@ -94,8 +103,11 @@
     "uninstalling": "Uninstalling \"{{name}}\"...\nPlease wait...",
     "updatingAll": "Updating all outdated packages...\nPlease wait...",
     "gettingInfo": "Getting information for \"{{name}}\"...\nPlease wait...",
+    "runningHomebrewUpdate": "Updating Homebrew...\nPlease wait...",
+    "homebrewUpdateLogs": "Homebrew Update Logs",
     "runningDoctor": "Running brew doctor…\nPlease wait...",
     "runningCleanup": "Running brew cleanup…\nPlease wait...",
+    "noHomebrewOutput": "No output yet. Click \"Update Homebrew\".",
     "installSuccess": "Successfully installed \"{{name}}\"!",
     "installFailed": "Failed to install \"{{name}}\": {{error}}",
     "noDoctorOutput": "No output yet. Click \"Run doctor\".",
@@ -214,7 +226,9 @@
     "upToDate": "You're running the latest version!",
     "newOutdatedPackages_one": "{{count}} new outdated package found",
     "newOutdatedPackages_other": "{{count}} new outdated packages found",
-    "viewOutdated": "View Outdated"
+    "viewOutdated": "View Outdated",
+    "newPackagesDiscovered": "🎉 New packages discovered! {{message}}",
+    "viewAllPackages": "View All Packages"
   },
   "backgroundCheck": {
     "checkingNow": "Checking for updates now...",

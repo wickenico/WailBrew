@@ -214,7 +214,9 @@
     "upToDate": "Son sürümü kullanıyorsun!",
     "newOutdatedPackages_one": "{{count}} yeni eski paket bulundu",
     "newOutdatedPackages_other": "{{count}} yeni eski paket bulundu",
-    "viewOutdated": "Eskileri Görüntüle"
+    "viewOutdated": "Eskileri Görüntüle",
+    "newPackagesDiscovered": "🎉 Yeni paketler keşfedildi! {{message}}",
+    "viewAllPackages": "Tüm Paketleri Görüntüle"
   },
   "backgroundCheck": {
     "checkingNow": "Şimdi güncellemeler kontrol ediliyor...",

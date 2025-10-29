@@ -214,7 +214,9 @@
     "upToDate": "Você está usando a versão mais recente!",
     "newOutdatedPackages_one": "{{count}} novo pacote desatualizado encontrado",
     "newOutdatedPackages_other": "{{count}} novos pacotes desatualizados encontrados",
-    "viewOutdated": "Ver Desatualizados"
+    "viewOutdated": "Ver Desatualizados",
+    "newPackagesDiscovered": "🎉 Novos pacotes descobertos! {{message}}",
+    "viewAllPackages": "Ver Todos os Pacotes"
   },
   "backgroundCheck": {
     "checkingNow": "Verificando atualizações agora...",

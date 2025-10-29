@@ -22,6 +22,9 @@ import {
     GetAppVersion,
     SetLanguage,
     CheckForUpdates,
+    GetHomebrewVersion,
+    CheckHomebrewUpdate,
+    UpdateHomebrew,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -33,6 +36,7 @@ import PackageInfo from "./components/PackageInfo";
 import RepositoryInfo from "./components/RepositoryInfo";
 import DoctorView from "./components/DoctorView";
 import CleanupView from "./components/CleanupView";
+import HomebrewView from "./components/HomebrewView";
 import SettingsView from "./components/SettingsView";
 import ConfirmDialog from "./components/ConfirmDialog";
 import LogDialog from "./components/LogDialog";
@@ -68,7 +72,7 @@ const WailBrewApp = () => {
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings">("installed");
+    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -86,6 +90,9 @@ const WailBrewApp = () => {
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
+    const [homebrewLog, setHomebrewLog] = useState<string>("");
+    const [homebrewVersion, setHomebrewVersion] = useState<string>("");
+    const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{isUpToDate: boolean | null, latestVersion: string | null}>({isUpToDate: null, latestVersion: null});
     const [isUpdateRunning, setIsUpdateRunning] = useState<boolean>(false);
     const [isInstallRunning, setIsInstallRunning] = useState<boolean>(false);
     const [isUninstallRunning, setIsUninstallRunning] = useState<boolean>(false);
@@ -477,7 +484,7 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         const unlisten = EventsOn("setView", (data: string) => {
-            setView(data as "installed" | "updatable" | "all" | "leaves" | "repositories" | "doctor" | "cleanup" | "settings");
+            setView(data as "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
             clearSelection();
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {
@@ -489,11 +496,87 @@ const WailBrewApp = () => {
         const unlistenUpdate = EventsOn("checkForUpdates", () => {
             setShowUpdate(true);
         });
+        const unlistenNewPackages = EventsOn("newPackagesDiscovered", (data: string) => {
+            try {
+                const packageInfo = JSON.parse(data);
+                const { newFormulae = [], newCasks = [] } = packageInfo;
+                const totalNew = newFormulae.length + newCasks.length;
+                
+                if (totalNew > 0) {
+                    const formulaeText = newFormulae.length > 0 
+                        ? `${newFormulae.length} new ${newFormulae.length === 1 ? 'formula' : 'formulae'}`
+                        : '';
+                    const casksText = newCasks.length > 0
+                        ? `${newCasks.length} new ${newCasks.length === 1 ? 'cask' : 'casks'}`
+                        : '';
+                    const message = [formulaeText, casksText].filter(Boolean).join(' and ');
+                    
+                    toast(
+                        () => (
+                            <div>
+                                <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                    {t('toast.newPackagesDiscovered', { count: totalNew, message })}
+                                </div>
+                                {(newFormulae.length > 0 || newCasks.length > 0) && (
+                                    <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
+                                        {newFormulae.length > 0 && (
+                                            <div style={{ marginBottom: '0.25rem' }}>
+                                                <strong>New Formulae:</strong> {newFormulae.slice(0, 5).join(', ')}
+                                                {newFormulae.length > 5 && ` +${newFormulae.length - 5} more`}
+                                            </div>
+                                        )}
+                                        {newCasks.length > 0 && (
+                                            <div>
+                                                <strong>New Casks:</strong> {newCasks.slice(0, 5).join(', ')}
+                                                {newCasks.length > 5 && ` +${newCasks.length - 5} more`}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                <button
+                                    onClick={() => {
+                                        setView("all");
+                                        toast.dismiss();
+                                    }}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        background: 'rgba(34, 197, 94, 0.8)',
+                                        border: 'none',
+                                        borderRadius: '6px',
+                                        color: '#fff',
+                                        cursor: 'pointer',
+                                        fontSize: '0.875rem',
+                                        fontWeight: 500,
+                                        transition: 'background 0.2s',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                    }}
+                                >
+                                    {t('toast.viewAllPackages')}
+                                </button>
+                            </div>
+                        ),
+                        {
+                            icon: <Sparkles size={20} color="#22C55E" />,
+                            duration: 10000,
+                            position: 'bottom-center',
+                        }
+                    );
+                }
+            } catch (error) {
+                console.error("Failed to parse new packages data:", error);
+            }
+        });
         return () => {
             unlisten();
             unlistenRefresh();
             unlistenAbout();
             unlistenUpdate();
+            unlistenNewPackages();
         };
     }, []);
 
@@ -501,6 +584,36 @@ const WailBrewApp = () => {
     useEffect(() => {
         setSearchQuery("");
     }, [view]);
+
+    // Check Homebrew version when homebrew view is opened
+    useEffect(() => {
+        if (view === "homebrew") {
+            const checkVersion = async () => {
+                try {
+                    const version = await GetHomebrewVersion();
+                    setHomebrewVersion(version);
+                    
+                    // Check if update is available
+                    const updateInfo = await CheckHomebrewUpdate();
+                    if (updateInfo) {
+                        setHomebrewUpdateStatus({
+                            isUpToDate: updateInfo.isUpToDate as boolean,
+                            latestVersion: updateInfo.latestVersion as string,
+                        });
+                        // Refresh version if it was updated
+                        if (!updateInfo.isUpToDate) {
+                            const newVersion = await GetHomebrewVersion();
+                            setHomebrewVersion(newVersion);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Failed to check Homebrew version:", error);
+                    setHomebrewVersion("N/A");
+                }
+            };
+            checkVersion();
+        }
+    }, [view, t]);
 
     // Sidebar resize handlers
     useEffect(() => {
@@ -1216,6 +1329,54 @@ const WailBrewApp = () => {
                             </div>
                         </div>
                     </>
+                )}
+                {view === "homebrew" && (
+                    <HomebrewView
+                        homebrewLog={homebrewLog}
+                        homebrewVersion={homebrewVersion}
+                        isUpToDate={homebrewUpdateStatus.isUpToDate}
+                        latestVersion={homebrewUpdateStatus.latestVersion}
+                        onClearLog={() => setHomebrewLog("")}
+                        onUpdateHomebrew={async () => {
+                            setHomebrewLog(t('dialogs.runningHomebrewUpdate'));
+                            
+                            // Set up event listeners for live progress
+                            const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
+                                setHomebrewLog(prevLogs => {
+                                    if (!prevLogs) {
+                                        return `${t('dialogs.homebrewUpdateLogs')}\n${progress}`;
+                                    }
+                                    return prevLogs + '\n' + progress;
+                                });
+                            });
+                            
+                            const completeListener = EventsOn("homebrewUpdateComplete", async (finalMessage: string) => {
+                                setHomebrewLog(prevLogs => prevLogs + '\n' + finalMessage);
+                                
+                                // Refresh version after update
+                                try {
+                                    const newVersion = await GetHomebrewVersion();
+                                    setHomebrewVersion(newVersion);
+                                    const updateInfo = await CheckHomebrewUpdate();
+                                    if (updateInfo) {
+                                        setHomebrewUpdateStatus({
+                                            isUpToDate: updateInfo.isUpToDate as boolean,
+                                            latestVersion: updateInfo.latestVersion as string,
+                                        });
+                                    }
+                                } catch (error) {
+                                    console.error("Failed to refresh Homebrew version:", error);
+                                }
+                                
+                                // Clean up event listeners
+                                progressListener();
+                                completeListener();
+                            });
+                            
+                            // Start the update process
+                            await UpdateHomebrew();
+                        }}
+                    />
                 )}
                 {view === "doctor" && (
                     <DoctorView
