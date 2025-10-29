@@ -79,6 +79,10 @@
     "doctor": "Doctor 是 Homebrew 的一项内置功能，可以检测最常见的错误原因。",
     "cleanup": "Cleanup 会删除已下载和缓存的文件以释放磁盘空间。"
   },
+  "cleanup": {
+    "estimatedSpace": "预计可释放空间：{{size}}",
+    "spaceToFree": "可释放 {{size}}"
+  },
   "dialogs": {
     "confirmUninstall": "您确定要卸载 \"{{name}}\" 吗？",
     "confirmInstall": "您确定要安装 \"{{name}}\" 吗？",

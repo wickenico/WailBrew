@@ -88,6 +88,10 @@
     "upToDate": "Aktuell",
     "updateAvailable": "Update verfügbar: v{{version}}"
   },
+  "cleanup": {
+    "estimatedSpace": "Geschätzter freizugebender Speicherplatz: {{size}}",
+    "spaceToFree": "{{size}} können freigegeben werden"
+  },
   "dialogs": {
     "confirmUninstall": "Möchten Sie \"{{name}}\" wirklich deinstallieren?",
     "confirmInstall": "Möchten Sie \"{{name}}\" wirklich installieren?",

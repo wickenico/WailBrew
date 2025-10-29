@@ -79,6 +79,10 @@
     "doctor": "Le diagnostic est une fonctionnalité Homebrew qui peut détecter les causes les plus courantes d'erreurs.",
     "cleanup": "Le nettoyage supprime les téléchargements obsolètes et les fichiers en cache pour libérer de l'espace disque."
   },
+  "cleanup": {
+    "estimatedSpace": "Espace estimé à libérer : {{size}}",
+    "spaceToFree": "{{size}} peuvent être libérés"
+  },
   "dialogs": {
     "confirmUninstall": "Voulez-vous vraiment désinstaller \"{{name}}\" ?",
     "confirmInstall": "Voulez-vous vraiment installer \"{{name}}\" ?",

@@ -79,6 +79,10 @@
     "doctor": "Doktor, en sık karşılaşılan hataları saptayan bir Homebrew özelliğidir.",
     "cleanup": "Temizlik eskimiş indirmeleri ve önbelleklenmiş dosyaları disk alanı açmak için siler."
   },
+  "cleanup": {
+    "estimatedSpace": "Tahmini boşaltılacak alan: {{size}}",
+    "spaceToFree": "{{size}} boşaltılabilir"
+  },
   "dialogs": {
     "confirmUninstall": "Gerçekten \"{{name}}\" paketini silmek istiyor musun?",
     "confirmInstall": "Gerçekten \"{{name}}\" paketini yüklemek istiyor musun?",

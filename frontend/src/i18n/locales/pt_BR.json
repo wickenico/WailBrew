@@ -79,6 +79,10 @@
     "doctor": "O Diagnóstico é um recurso do Homebrew que pode detectar as causas mais comuns de erros.",
     "cleanup": "A Limpeza remove downloads desatualizados e arquivos em cache para liberar espaço em disco."
   },
+  "cleanup": {
+    "estimatedSpace": "Espaço estimado para liberar: {{size}}",
+    "spaceToFree": "{{size}} podem ser liberados"
+  },
   "dialogs": {
     "confirmUninstall": "Você realmente deseja desinstalar \"{{name}}\"?",
     "confirmInstall": "Você realmente deseja instalar \"{{name}}\"?",

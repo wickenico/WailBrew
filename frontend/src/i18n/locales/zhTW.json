@@ -79,6 +79,10 @@
     "doctor": "診斷是 Homebrew 的功能，可以檢測最常見的錯誤原因。",
     "cleanup": "清理會移除過期的下載檔案和快取檔案以釋放磁碟空間。"
   },
+  "cleanup": {
+    "estimatedSpace": "預計可釋放空間：{{size}}",
+    "spaceToFree": "可釋放 {{size}}"
+  },
   "dialogs": {
     "confirmUninstall": "您確定要解除安裝 \"{{name}}\" 嗎？",
     "confirmInstall": "您確定要安裝 \"{{name}}\" 嗎？",

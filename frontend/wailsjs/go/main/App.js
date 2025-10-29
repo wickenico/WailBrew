@@ -34,6 +34,10 @@ export function GetBrewCasks() {
   return window['go']['main']['App']['GetBrewCasks']();
 }
 
+export function GetBrewCleanupDryRun() {
+  return window['go']['main']['App']['GetBrewCleanupDryRun']();
+}
+
 export function GetBrewLeaves() {
   return window['go']['main']['App']['GetBrewLeaves']();
 }

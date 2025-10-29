@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strings"
 	"sync"
@@ -2251,6 +2252,34 @@ func (a *App) RunBrewDoctor() string {
 		return fmt.Sprintf("Error running brew doctor: %v\n\nOutput:\n%s", err, string(output))
 	}
 	return string(output)
+}
+
+// GetBrewCleanupDryRun runs brew cleanup --dry-run and returns the estimated space that can be freed
+func (a *App) GetBrewCleanupDryRun() (string, error) {
+	output, err := a.runBrewCommand("cleanup", "--dry-run")
+	if err != nil {
+		return "", fmt.Errorf("failed to run brew cleanup --dry-run: %w", err)
+	}
+
+	outputStr := string(output)
+
+	// Parse the output to find the size estimate
+	// Look for pattern like "This operation would free approximately 47.6MB of disk space."
+	lines := strings.Split(outputStr, "\n")
+	for _, line := range lines {
+		if strings.Contains(line, "would free approximately") {
+			// Extract the size from the line
+			// Pattern: "This operation would free approximately 47.6MB of disk space."
+			re := regexp.MustCompile(`approximately ([\d.]+(MB|GB|KB|B))`)
+			matches := re.FindStringSubmatch(line)
+			if len(matches) > 1 {
+				return matches[1], nil
+			}
+		}
+	}
+
+	// If no size found, return empty string (no cleanup needed)
+	return "0B", nil
 }
 
 func (a *App) RunBrewCleanup() string {

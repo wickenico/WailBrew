@@ -18,6 +18,8 @@ export function GetAppVersion():Promise<string>;
 
 export function GetBrewCasks():Promise<Array<any>>;
 
+export function GetBrewCleanupDryRun():Promise<string>;
+
 export function GetBrewLeaves():Promise<Array<string>>;
 
 export function GetBrewPackageInfo(arg1:string):Promise<string>;

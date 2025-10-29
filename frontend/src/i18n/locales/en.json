@@ -37,6 +37,7 @@
     "clearLog": "Clear log",
     "runDoctor": "Run doctor",
     "runCleanup": "Run cleanup",
+    "checkEstimate": "Check Estimate",
     "refresh": "Refresh packages",
     "yes": "Yes",
     "cancel": "Cancel",
@@ -87,6 +88,10 @@
     "currentVersion": "Current Version",
     "upToDate": "Up to date",
     "updateAvailable": "Update available: v{{version}}"
+  },
+  "cleanup": {
+    "estimatedSpace": "Estimated space to free: {{size}}",
+    "spaceToFree": "{{size}} can be freed"
   },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",

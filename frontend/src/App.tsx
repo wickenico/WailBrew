@@ -26,6 +26,7 @@ import {
     CheckHomebrewUpdate,
     UpdateHomebrew,
     GetSessionLogs,
+    GetBrewCleanupDryRun,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -98,6 +99,7 @@ const WailBrewApp = () => {
     const [isInstallRunning, setIsInstallRunning] = useState<boolean>(false);
     const [isUninstallRunning, setIsUninstallRunning] = useState<boolean>(false);
     const [cleanupLog, setCleanupLog] = useState<string>("");
+    const [cleanupEstimate, setCleanupEstimate] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [showSessionLogs, setShowSessionLogs] = useState<boolean>(false);
@@ -1407,11 +1409,28 @@ const WailBrewApp = () => {
                 {view === "cleanup" && (
                     <CleanupView
                         cleanupLog={cleanupLog}
+                        cleanupEstimate={cleanupEstimate}
                         onClearLog={() => setCleanupLog("")}
                         onRunCleanup={async () => {
                             setCleanupLog(t('dialogs.runningCleanup'));
                             const result = await RunBrewCleanup();
                             setCleanupLog(result);
+                            // Refresh estimate after cleanup
+                            try {
+                                const estimate = await GetBrewCleanupDryRun();
+                                setCleanupEstimate(estimate);
+                            } catch (error) {
+                                console.error("Failed to get cleanup estimate:", error);
+                            }
+                        }}
+                        onCheckEstimate={async () => {
+                            try {
+                                const estimate = await GetBrewCleanupDryRun();
+                                setCleanupEstimate(estimate);
+                            } catch (error) {
+                                console.error("Failed to get cleanup estimate:", error);
+                                setCleanupEstimate("");
+                            }
                         }}
                     />
                 )}
