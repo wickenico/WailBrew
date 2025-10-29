@@ -1,7 +1,7 @@
 /// <reference types="react" />
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2, Clock } from "lucide-react";
 import appIcon from "../assets/images/appicon_256.png";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
 
@@ -17,6 +17,9 @@ interface SidebarProps {
     onClearSelection: () => void;
     sidebarWidth?: number;
     sidebarRef?: React.RefObject<HTMLElement | null>;
+    isBackgroundCheckRunning?: boolean;
+    timeUntilNextCheck?: number;
+    formatTimeUntilNextCheck?: (seconds: number) => string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -31,9 +34,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     onClearSelection,
     sidebarWidth,
     sidebarRef,
+    isBackgroundCheckRunning = false,
+    timeUntilNextCheck = 0,
+    formatTimeUntilNextCheck,
 }) => {
     const { t, i18n } = useTranslation();
     const currentLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
+    const [showTooltip, setShowTooltip] = useState(false);
     
     // Detect if user is on Mac
     const isMac = typeof navigator !== 'undefined' && 
@@ -74,6 +81,61 @@ const Sidebar: React.FC<SidebarProps> = ({
                 style={{ width: "28px", height: "28px", marginRight: "8px", verticalAlign: "middle" }}
             />
             WailBrew
+            {isBackgroundCheckRunning !== undefined && (
+                <div
+                    className="background-check-icon"
+                    style={{
+                        position: "relative",
+                        display: "inline-block",
+                        marginLeft: "8px",
+                        verticalAlign: "middle",
+                    }}
+                    onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
+                >
+                    {isBackgroundCheckRunning ? (
+                        <Loader2 
+                            size={16} 
+                            style={{ 
+                                color: "#3B82F6",
+                                animation: "spin 1s linear infinite"
+                            }} 
+                        />
+                    ) : (
+                        <Clock 
+                            size={16} 
+                            style={{ 
+                                color: "#3B82F6",
+                                opacity: 0.7,
+                            }} 
+                        />
+                    )}
+                    {showTooltip && formatTimeUntilNextCheck && (
+                        <div
+                            className="background-check-tooltip"
+                            style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                marginTop: "8px",
+                                padding: "4px 8px",
+                                background: "rgba(30, 34, 40, 0.95)",
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: "normal",
+                                whiteSpace: "nowrap",
+                                zIndex: 1000,
+                                pointerEvents: "none",
+                                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                            }}
+                        >
+                            {formatTimeUntilNextCheck(timeUntilNextCheck)}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
         <div className="sidebar-section">
             <h4>{t('sidebar.formulas')}</h4>

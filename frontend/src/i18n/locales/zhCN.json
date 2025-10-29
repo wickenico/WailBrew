@@ -211,7 +211,15 @@
   "toast": {
     "updateAvailable": "有可用的更新！",
     "versionReady": "v{{version}} 已准备好",
-    "upToDate": "您已更新到最新版本！"
+    "upToDate": "您已更新到最新版本！",
+    "newOutdatedPackages_one": "发现 {{count}} 个新的过期软件包",
+    "newOutdatedPackages_other": "发现 {{count}} 个新的过期软件包",
+    "viewOutdated": "查看过期"
+  },
+  "backgroundCheck": {
+    "checkingNow": "正在检查更新...",
+    "nextCheckIn": "下次检查将在 {{minutes}} 分 {{seconds}} 秒后",
+    "nextCheckInSeconds": "下次检查将在 {{seconds}} 秒后"
   },
   "settings": {
     "title": "软件设置",

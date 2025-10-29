@@ -211,7 +211,15 @@
   "toast": {
     "updateAvailable": "Update verfügbar!",
     "versionReady": "v{{version}} ist bereit",
-    "upToDate": "Sie verwenden die neueste Version!"
+    "upToDate": "Sie verwenden die neueste Version!",
+    "newOutdatedPackages_one": "{{count}} neues veraltetes Paket gefunden",
+    "newOutdatedPackages_other": "{{count}} neue veraltete Pakete gefunden",
+    "viewOutdated": "Veraltete anzeigen"
+  },
+  "backgroundCheck": {
+    "checkingNow": "Suche jetzt nach Updates...",
+    "nextCheckIn": "Nächste Prüfung in {{minutes}}m {{seconds}}s",
+    "nextCheckInSeconds": "Nächste Prüfung in {{seconds}}s"
   },
   "settings": {
     "title": "Einstellungen",

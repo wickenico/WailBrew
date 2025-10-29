@@ -96,6 +96,14 @@ const WailBrewApp = () => {
     const updateCheckDone = useRef<boolean>(false);
     const lastSyncedLanguage = useRef<string>("en");
     
+    // Background update checking state
+    const [isBackgroundCheckRunning, setIsBackgroundCheckRunning] = useState<boolean>(false);
+    const [timeUntilNextCheck, setTimeUntilNextCheck] = useState<number>(0);
+    const lastKnownOutdatedCount = useRef<number>(0);
+    const backgroundCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+    const timeUpdateInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+    const nextCheckTime = useRef<number>(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+    
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
         const saved = localStorage.getItem('sidebarWidth');
@@ -196,6 +204,9 @@ const WailBrewApp = () => {
                 setLeavesPackages(leavesFormatted);
                 setRepositories(reposFormatted);
                 setLoading(false);
+                
+                // Initialize last known outdated count
+                lastKnownOutdatedCount.current = updatableFormatted.length;
             })
             .catch((err) => {
                 console.error("Error loading packages:", err);
@@ -223,6 +234,19 @@ const WailBrewApp = () => {
         
         // Check for app updates on startup
         checkAppUpdatesOnStartup();
+        
+        // Start background update checking
+        startBackgroundUpdateCheck();
+        
+        // Cleanup on unmount
+        return () => {
+            if (backgroundCheckInterval.current) {
+                clearInterval(backgroundCheckInterval.current);
+            }
+            if (timeUpdateInterval.current) {
+                clearInterval(timeUpdateInterval.current);
+            }
+        };
     }, []);
 
     useEffect(() => {
@@ -249,6 +273,126 @@ const WailBrewApp = () => {
         };
     }, [i18n.language, i18n.resolvedLanguage]);
 
+    // Background update checking function
+    const performBackgroundUpdateCheck = async () => {
+        if (isBackgroundCheckRunning) return;
+        
+        setIsBackgroundCheckRunning(true);
+        try {
+            const updatable = await GetBrewUpdatablePackages();
+            
+            // Check for errors
+            if (updatable.length === 1 && updatable[0][0] === "Error") {
+                console.error("Background check failed:", updatable[0][1]);
+                return;
+            }
+            
+            const currentCount = updatable.length;
+            const previousCount = lastKnownOutdatedCount.current;
+            
+            // If there are new outdated packages (increase in count)
+            if (currentCount > previousCount) {
+                const newPackagesCount = currentCount - previousCount;
+                
+                // Update the state
+                const formatted = updatable.map(([name, installedVersion, latestVersion, size]) => ({
+                    name,
+                    installedVersion,
+                    latestVersion,
+                    size,
+                    isInstalled: true,
+                }));
+                setUpdatablePackages(formatted);
+                
+                // Show toast notification
+                toast(
+                    () => (
+                        <div>
+                            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                {newPackagesCount === 1 
+                                    ? t('toast.newOutdatedPackages_one', { count: newPackagesCount })
+                                    : t('toast.newOutdatedPackages_other', { count: newPackagesCount })
+                                }
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setView("updatable");
+                                    toast.dismiss();
+                                }}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    background: 'rgba(59, 130, 246, 0.8)',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    color: '#fff',
+                                    cursor: 'pointer',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 500,
+                                    transition: 'background 0.2s',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(59, 130, 246, 1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)';
+                                }}
+                            >
+                                {t('toast.viewOutdated')}
+                            </button>
+                        </div>
+                    ),
+                    {
+                        icon: <RefreshCw size={20} color="#3B82F6" />,
+                        duration: 8000,
+                        position: 'bottom-center',
+                    }
+                );
+            }
+            
+            // Update last known count
+            lastKnownOutdatedCount.current = currentCount;
+        } catch (error) {
+            console.error("Background update check error:", error);
+        } finally {
+            setIsBackgroundCheckRunning(false);
+            // Update next check time
+            nextCheckTime.current = Date.now() + 15 * 60 * 1000;
+        }
+    };
+    
+    // Start background update checking
+    const startBackgroundUpdateCheck = () => {
+        // Update time until next check every second
+        timeUpdateInterval.current = setInterval(() => {
+            const now = Date.now();
+            const timeRemaining = Math.max(0, nextCheckTime.current - now);
+            setTimeUntilNextCheck(Math.floor(timeRemaining / 1000)); // Convert to seconds
+        }, 1000);
+        
+        // Perform initial check after a short delay
+        setTimeout(() => {
+            performBackgroundUpdateCheck();
+        }, 2000);
+        
+        // Set up interval for checking every 15 minutes
+        backgroundCheckInterval.current = setInterval(() => {
+            performBackgroundUpdateCheck();
+        }, 15 * 60 * 1000); // 15 minutes
+    };
+    
+    // Format time until next check
+    const formatTimeUntilNextCheck = (seconds: number): string => {
+        if (seconds <= 0) return t('backgroundCheck.checkingNow');
+        
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        
+        if (minutes > 0) {
+            return t('backgroundCheck.nextCheckIn', { minutes, seconds: remainingSeconds });
+        }
+        return t('backgroundCheck.nextCheckInSeconds', { seconds: remainingSeconds });
+    };
+    
     const checkAppUpdatesOnStartup = async () => {
         // Prevent duplicate calls
         if (updateCheckDone.current) return;
@@ -840,6 +984,9 @@ const WailBrewApp = () => {
                 onClearSelection={clearSelection}
                 sidebarWidth={sidebarWidth}
                 sidebarRef={sidebarRef}
+                isBackgroundCheckRunning={isBackgroundCheckRunning}
+                timeUntilNextCheck={timeUntilNextCheck}
+                formatTimeUntilNextCheck={formatTimeUntilNextCheck}
             />
             <div 
                 className="sidebar-resize-handle"

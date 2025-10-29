@@ -211,7 +211,15 @@
   "toast": {
     "updateAvailable": "Güncelleme var!",
     "versionReady": "v{{version}} hazır",
-    "upToDate": "Son sürümü kullanıyorsun!"
+    "upToDate": "Son sürümü kullanıyorsun!",
+    "newOutdatedPackages_one": "{{count}} yeni eski paket bulundu",
+    "newOutdatedPackages_other": "{{count}} yeni eski paket bulundu",
+    "viewOutdated": "Eskileri Görüntüle"
+  },
+  "backgroundCheck": {
+    "checkingNow": "Şimdi güncellemeler kontrol ediliyor...",
+    "nextCheckIn": "Sonraki kontrol {{minutes}}d {{seconds}}s içinde",
+    "nextCheckInSeconds": "Sonraki kontrol {{seconds}}s içinde"
   },
   "settings": {
     "title": "Ayarlar",

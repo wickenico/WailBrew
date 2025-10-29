@@ -211,7 +211,15 @@
   "toast": {
     "updateAvailable": "Доступно обновление!",
     "versionReady": "v{{version}} готова",
-    "upToDate": "У вас установлена последняя версия!"
+    "upToDate": "У вас установлена последняя версия!",
+    "newOutdatedPackages_one": "Найден {{count}} новый устаревший пакет",
+    "newOutdatedPackages_other": "Найдено {{count}} новых устаревших пакетов",
+    "viewOutdated": "Просмотр устаревших"
+  },
+  "backgroundCheck": {
+    "checkingNow": "Проверка обновлений...",
+    "nextCheckIn": "Следующая проверка через {{minutes}}м {{seconds}}с",
+    "nextCheckInSeconds": "Следующая проверка через {{seconds}}с"
   },
   "settings": {
     "title": "Настройки",

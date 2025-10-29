@@ -211,7 +211,15 @@
   "toast": {
     "updateAvailable": "Mise à jour disponible !",
     "versionReady": "v{{version}} est prête",
-    "upToDate": "Vous utilisez la dernière version !"
+    "upToDate": "Vous utilisez la dernière version !",
+    "newOutdatedPackages_one": "{{count}} nouveau paquet obsolète trouvé",
+    "newOutdatedPackages_other": "{{count}} nouveaux paquets obsolètes trouvés",
+    "viewOutdated": "Voir les obsolètes"
+  },
+  "backgroundCheck": {
+    "checkingNow": "Vérification des mises à jour en cours...",
+    "nextCheckIn": "Prochaine vérification dans {{minutes}}m {{seconds}}s",
+    "nextCheckInSeconds": "Prochaine vérification dans {{seconds}}s"
   },
   "settings": {
     "title": "Paramètres",

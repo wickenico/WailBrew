@@ -211,7 +211,15 @@
   "toast": {
     "updateAvailable": "有可用的更新！",
     "versionReady": "v{{version}} 已準備就緒",
-    "upToDate": "您正在使用最新版本！"
+    "upToDate": "您正在使用最新版本！",
+    "newOutdatedPackages_one": "發現 {{count}} 個新的過期軟體包",
+    "newOutdatedPackages_other": "發現 {{count}} 個新的過期軟體包",
+    "viewOutdated": "查看過期"
+  },
+  "backgroundCheck": {
+    "checkingNow": "正在檢查更新...",
+    "nextCheckIn": "下次檢查將在 {{minutes}} 分 {{seconds}} 秒後",
+    "nextCheckInSeconds": "下次檢查將在 {{seconds}} 秒後"
   },
   "settings": {
     "title": "設定",
