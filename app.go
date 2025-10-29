@@ -30,10 +30,22 @@ const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 // Askpass helper script content for GUI sudo password prompts
 const askpassScript = `#!/bin/bash
 # Askpass helper for GUI sudo password prompts
-osascript <<EOF
-display dialog "WailBrew requires administrator privileges to upgrade certain packages. Please enter your password:" default answer "" with icon caution with title "Administrator Password Required" with hidden answer
-text returned of result
+# This script must output the password to stdout and exit with 0 on success, or exit with 1 on failure
+password=$(osascript <<'EOF'
+try
+    display dialog "WailBrew requires administrator privileges to upgrade certain packages. Please enter your password:" default answer "" with icon caution with title "Administrator Password Required" with hidden answer
+    set result to text returned of result
+    return result
+on error
+    -- User cancelled or error occurred
+    return ""
+end try
 EOF
+)
+if [ -z "$password" ]; then
+    exit 1
+fi
+echo -n "$password"
 `
 
 // MenuTranslations holds all menu translations
@@ -737,6 +749,8 @@ func (a *App) cleanupAskpassHelper() {
 }
 
 // getBrewEnv returns the standard brew environment variables including SUDO_ASKPASS
+// SUDO_ASKPASS allows sudo to use our GUI password prompt instead of requiring terminal input
+// When set, sudo will automatically call the askpass script when it needs a password
 func (a *App) getBrewEnv() []string {
 	env := []string{
 		brewEnvPath,
@@ -746,6 +760,7 @@ func (a *App) getBrewEnv() []string {
 	}
 
 	// Add SUDO_ASKPASS if askpass helper is available
+	// This enables GUI password prompts for sudo operations during brew upgrades
 	if a.askpassPath != "" {
 		env = append(env, fmt.Sprintf("SUDO_ASKPASS=%s", a.askpassPath))
 	}
