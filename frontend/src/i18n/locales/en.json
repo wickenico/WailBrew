@@ -246,7 +246,15 @@
     "newOutdatedPackages_other": "{{count}} new outdated packages found",
     "viewOutdated": "View Outdated",
     "newPackagesDiscovered": "🎉 New packages discovered! {{message}}",
-    "viewAllPackages": "View All Packages"
+    "viewAllPackages": "View All Packages",
+    "newFormulaeLabel": "New Formulae:",
+    "newCasksLabel": "New Casks:",
+    "andMore": "+{{count}} more",
+    "newFormula_one": "new formula",
+    "newFormula_other": "new formulae",
+    "newCask_one": "new cask",
+    "newCask_other": "new casks",
+    "and": " and "
   },
   "backgroundCheck": {
     "checkingNow": "Checking for updates now...",

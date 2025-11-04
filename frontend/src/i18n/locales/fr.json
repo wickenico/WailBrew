@@ -220,7 +220,15 @@
     "newOutdatedPackages_other": "{{count}} nouveaux paquets obsolètes trouvés",
     "viewOutdated": "Voir les obsolètes",
     "newPackagesDiscovered": "🎉 Nouveaux paquets découverts ! {{message}}",
-    "viewAllPackages": "Voir tous les paquets"
+    "viewAllPackages": "Voir tous les paquets",
+    "newFormulaeLabel": "Nouvelles formules :",
+    "newCasksLabel": "Nouveaux casks :",
+    "andMore": "+{{count}} de plus",
+    "newFormula_one": "nouvelle formule",
+    "newFormula_other": "nouvelles formules",
+    "newCask_one": "nouveau cask",
+    "newCask_other": "nouveaux casks",
+    "and": " et "
   },
   "backgroundCheck": {
     "checkingNow": "Vérification des mises à jour en cours...",

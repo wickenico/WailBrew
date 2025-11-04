@@ -232,7 +232,15 @@
     "newOutdatedPackages_other": "{{count}} neue veraltete Pakete gefunden",
     "viewOutdated": "Veraltete anzeigen",
     "newPackagesDiscovered": "🎉 Neue Pakete entdeckt! {{message}}",
-    "viewAllPackages": "Alle Pakete anzeigen"
+    "viewAllPackages": "Alle Pakete anzeigen",
+    "newFormulaeLabel": "Neue Formeln:",
+    "newCasksLabel": "Neue Casks:",
+    "andMore": "+{{count}} weitere",
+    "newFormula_one": "neue Formel",
+    "newFormula_other": "neue Formeln",
+    "newCask_one": "neuer Cask",
+    "newCask_other": "neue Casks",
+    "and": " und "
   },
   "backgroundCheck": {
     "checkingNow": "Suche jetzt nach Updates...",

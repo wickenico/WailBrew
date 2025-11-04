@@ -220,7 +220,15 @@
     "newOutdatedPackages_other": "Найдено {{count}} новых устаревших пакетов",
     "viewOutdated": "Просмотр устаревших",
     "newPackagesDiscovered": "🎉 Обнаружены новые пакеты! {{message}}",
-    "viewAllPackages": "Просмотр всех пакетов"
+    "viewAllPackages": "Просмотр всех пакетов",
+    "newFormulaeLabel": "Новые формулы:",
+    "newCasksLabel": "Новые casks:",
+    "andMore": "+{{count}} ещё",
+    "newFormula_one": "новая формула",
+    "newFormula_other": "новые формулы",
+    "newCask_one": "новый cask",
+    "newCask_other": "новые casks",
+    "and": " и "
   },
   "backgroundCheck": {
     "checkingNow": "Проверка обновлений...",

@@ -220,7 +220,15 @@
     "newOutdatedPackages_other": "發現 {{count}} 個新的過期軟體包",
     "viewOutdated": "查看過期",
     "newPackagesDiscovered": "🎉 發現新軟體包！{{message}}",
-    "viewAllPackages": "查看所有軟體包"
+    "viewAllPackages": "查看所有軟體包",
+    "newFormulaeLabel": "新公式：",
+    "newCasksLabel": "新 Casks：",
+    "andMore": "+{{count}} 更多",
+    "newFormula_one": "個新公式",
+    "newFormula_other": "個新公式",
+    "newCask_one": "個新 cask",
+    "newCask_other": "個新 casks",
+    "and": "和"
   },
   "backgroundCheck": {
     "checkingNow": "正在檢查更新...",

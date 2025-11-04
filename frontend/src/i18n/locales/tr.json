@@ -220,7 +220,15 @@
     "newOutdatedPackages_other": "{{count}} yeni eski paket bulundu",
     "viewOutdated": "Eskileri Görüntüle",
     "newPackagesDiscovered": "🎉 Yeni paketler keşfedildi! {{message}}",
-    "viewAllPackages": "Tüm Paketleri Görüntüle"
+    "viewAllPackages": "Tüm Paketleri Görüntüle",
+    "newFormulaeLabel": "Yeni Formüller:",
+    "newCasksLabel": "Yeni Casks:",
+    "andMore": "+{{count}} daha fazla",
+    "newFormula_one": "yeni formül",
+    "newFormula_other": "yeni formüller",
+    "newCask_one": "yeni cask",
+    "newCask_other": "yeni casks",
+    "and": " ve "
   },
   "backgroundCheck": {
     "checkingNow": "Şimdi güncellemeler kontrol ediliyor...",

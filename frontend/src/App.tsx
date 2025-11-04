@@ -528,12 +528,12 @@ const WailBrewApp = () => {
                     toast.dismiss('newPackagesDiscovered');
                     
                     const formulaeText = newFormulae.length > 0 
-                        ? `${newFormulae.length} new ${newFormulae.length === 1 ? 'formula' : 'formulae'}`
+                        ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
                         : '';
                     const casksText = newCasks.length > 0
-                        ? `${newCasks.length} new ${newCasks.length === 1 ? 'cask' : 'casks'}`
+                        ? `${newCasks.length} ${t('toast.newCask', { count: newCasks.length })}`
                         : '';
-                    const message = [formulaeText, casksText].filter(Boolean).join(' and ');
+                    const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
                     
                     toast(
                         () => (
@@ -545,14 +545,14 @@ const WailBrewApp = () => {
                                     <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
                                         {newFormulae.length > 0 && (
                                             <div style={{ marginBottom: '0.25rem' }}>
-                                                <strong>New Formulae:</strong> {newFormulae.slice(0, 5).join(', ')}
-                                                {newFormulae.length > 5 && ` +${newFormulae.length - 5} more`}
+                                                <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
+                                                {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
                                             </div>
                                         )}
                                         {newCasks.length > 0 && (
                                             <div>
-                                                <strong>New Casks:</strong> {newCasks.slice(0, 5).join(', ')}
-                                                {newCasks.length > 5 && ` +${newCasks.length - 5} more`}
+                                                <strong>{t('toast.newCasksLabel')}</strong> {newCasks.slice(0, 5).join(', ')}
+                                                {newCasks.length > 5 && ` ${t('toast.andMore', { count: newCasks.length - 5 })}`}
                                             </div>
                                         )}
                                     </div>
