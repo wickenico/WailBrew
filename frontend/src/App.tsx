@@ -524,6 +524,9 @@ const WailBrewApp = () => {
                 const totalNew = newFormulae.length + newCasks.length;
                 
                 if (totalNew > 0) {
+                    // Dismiss any existing new packages toast to prevent duplicates
+                    toast.dismiss('newPackagesDiscovered');
+                    
                     const formulaeText = newFormulae.length > 0 
                         ? `${newFormulae.length} new ${newFormulae.length === 1 ? 'formula' : 'formulae'}`
                         : '';
@@ -557,7 +560,7 @@ const WailBrewApp = () => {
                                 <button
                                     onClick={() => {
                                         setView("all");
-                                        toast.dismiss();
+                                        toast.dismiss('newPackagesDiscovered');
                                     }}
                                     style={{
                                         padding: '0.5rem 1rem',
@@ -582,6 +585,7 @@ const WailBrewApp = () => {
                             </div>
                         ),
                         {
+                            id: 'newPackagesDiscovered',
                             icon: <Sparkles size={20} color="#22C55E" />,
                             duration: 10000,
                             position: 'bottom-center',

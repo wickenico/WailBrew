@@ -1729,34 +1729,41 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	// Update the formula database first to get latest information
 	// Ignore errors from update - we'll still try to get outdated packages
 	updateOutput, err := a.UpdateBrewDatabaseWithOutput()
+	var newPackages *NewPackagesInfo
+	var shouldEmitEvent bool
+
 	if err == nil && updateOutput != "" {
 		// Try to detect new packages from update output
-		newPackages := a.ParseNewPackagesFromUpdateOutput(updateOutput)
+		newPackages = a.ParseNewPackagesFromUpdateOutput(updateOutput)
 		if len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0 {
-			// Emit event about new packages (only if context is available)
-			if a.ctx != nil {
-				eventData := map[string]interface{}{
-					"newFormulae": newPackages.NewFormulae,
-					"newCasks":    newPackages.NewCasks,
-				}
-				jsonData, _ := json.Marshal(eventData)
-				rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
+			// Update knownPackages to prevent duplicate notifications
+			a.knownPackagesMutex.Lock()
+			for _, formula := range newPackages.NewFormulae {
+				a.knownPackages["formula:"+formula] = true
 			}
+			for _, cask := range newPackages.NewCasks {
+				a.knownPackages["cask:"+cask] = true
+			}
+			a.knownPackagesMutex.Unlock()
+			shouldEmitEvent = true
 		}
 	} else {
 		// Fallback: try to detect new packages by comparing current list
-		newPackages, err := a.CheckForNewPackages()
-		if err == nil && (len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0) {
-			// Emit event about new packages (only if context is available)
-			if a.ctx != nil {
-				eventData := map[string]interface{}{
-					"newFormulae": newPackages.NewFormulae,
-					"newCasks":    newPackages.NewCasks,
-				}
-				jsonData, _ := json.Marshal(eventData)
-				rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
-			}
+		detectedPackages, err := a.CheckForNewPackages()
+		if err == nil && (len(detectedPackages.NewFormulae) > 0 || len(detectedPackages.NewCasks) > 0) {
+			newPackages = detectedPackages
+			shouldEmitEvent = true
 		}
+	}
+
+	// Emit event only once if new packages were discovered
+	if shouldEmitEvent && newPackages != nil && a.ctx != nil {
+		eventData := map[string]interface{}{
+			"newFormulae": newPackages.NewFormulae,
+			"newCasks":    newPackages.NewCasks,
+		}
+		jsonData, _ := json.Marshal(eventData)
+		rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
 	}
 
 	// Use brew outdated with JSON output for accurate detection
