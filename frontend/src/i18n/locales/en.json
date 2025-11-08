@@ -14,12 +14,12 @@
     "settings": "Settings"
   },
   "headers": {
-    "installedFormulas": "Installed Formulae ({{count}})",
-    "installedCasks": "Installed Casks ({{count}})",
-    "outdatedFormulas": "Outdated Formulae ({{count}})",
-    "allFormulas": "Formulae ({{count}})",
-    "leaves": "Leaves ({{count}})",
-    "repositories": "Repositories ({{count}})",
+    "installedFormulas": "Installed Formulae",
+    "installedCasks": "Installed Casks",
+    "outdatedFormulas": "Outdated Formulae",
+    "allFormulas": "Formulae",
+    "leaves": "Leaves",
+    "repositories": "Repositories",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup"

@@ -14,12 +14,12 @@
     "settings": "Einstellungen"
   },
   "headers": {
-    "installedFormulas": "Installierte Formeln ({{count}})",
-    "installedCasks": "Installierte Casks ({{count}})",
-    "outdatedFormulas": "Veraltete Formeln ({{count}})",
-    "allFormulas": "Alle Formeln ({{count}})",
-    "leaves": "Blätter ({{count}})",
-    "repositories": "Repositories ({{count}})",
+    "installedFormulas": "Installierte Formeln",
+    "installedCasks": "Installierte Casks",
+    "outdatedFormulas": "Veraltete Formeln",
+    "allFormulas": "Alle Formeln",
+    "leaves": "Blätter",
+    "repositories": "Repositories",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup"

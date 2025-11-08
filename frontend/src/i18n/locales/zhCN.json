@@ -13,12 +13,12 @@
     "settings": "软件设置"
   },
   "headers": {
-    "installedFormulas": "已安装的 Formulae ({{count}})",
-    "installedCasks": "已安装的 Casks ({{count}})",
-    "outdatedFormulas": "可更新的 Formulae ({{count}})",
-    "allFormulas": "Formulae ({{count}})",
-    "leaves": "独立包 ({{count}})",
-    "repositories": "软件源 ({{count}})",
+    "installedFormulas": "已安装的 Formulae",
+    "installedCasks": "已安装的 Casks",
+    "outdatedFormulas": "可更新的 Formulae",
+    "allFormulas": "Formulae",
+    "leaves": "独立包",
+    "repositories": "软件源",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup"
   },

@@ -13,12 +13,12 @@
     "settings": "Paramètres"
   },
   "headers": {
-    "installedFormulas": "Formules Installées ({{count}})",
-    "installedCasks": "Casks Installés ({{count}})",
-    "outdatedFormulas": "Formules Obsolètes ({{count}})",
-    "allFormulas": "Formules ({{count}})",
-    "leaves": "Feuilles ({{count}})",
-    "repositories": "Dépôts ({{count}})",
+    "installedFormulas": "Formules Installées",
+    "installedCasks": "Casks Installés",
+    "outdatedFormulas": "Formules Obsolètes",
+    "allFormulas": "Formules",
+    "leaves": "Feuilles",
+    "repositories": "Dépôts",
     "homebrewDoctor": "Diagnostic Homebrew",
     "homebrewCleanup": "Nettoyage Homebrew"
   },

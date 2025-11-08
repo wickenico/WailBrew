@@ -13,12 +13,12 @@
     "settings": "Ayarlar"
   },
   "headers": {
-    "installedFormulas": "Yüklü Formüller ({{count}})",
-    "installedCasks": "Kurulu Fıçılar ({{count}})",
-    "outdatedFormulas": "Eski Formüller ({{count}})",
-    "allFormulas": "Formül ({{count}})",
-    "leaves": "Yaprak ({{count}})",
-    "repositories": "Depo ({{count}})",
+    "installedFormulas": "Yüklü Formüller",
+    "installedCasks": "Kurulu Fıçılar",
+    "outdatedFormulas": "Eski Formüller",
+    "allFormulas": "Formül",
+    "leaves": "Yaprak",
+    "repositories": "Depo",
     "homebrewDoctor": "Homebrew Doktoru",
     "homebrewCleanup": "Homebrew Temizliği"
   },

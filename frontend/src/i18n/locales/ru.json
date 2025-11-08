@@ -13,12 +13,12 @@
     "settings": "Настройки"
   },
   "headers": {
-    "installedFormulas": "Установленные пакеты ({{count}})",
-    "installedCasks": "Установленные приложения ({{count}})",
-    "outdatedFormulas": "Устаревшие пакеты ({{count}})",
-    "allFormulas": "Все пакеты ({{count}})",
-    "leaves": "Листья ({{count}})",
-    "repositories": "Репозитории ({{count}})",
+    "installedFormulas": "Установленные пакеты",
+    "installedCasks": "Установленные приложения",
+    "outdatedFormulas": "Устаревшие пакеты",
+    "allFormulas": "Все пакеты",
+    "leaves": "Листья",
+    "repositories": "Репозитории",
     "homebrewDoctor": "Диагностика Homebrew",
     "homebrewCleanup": "Очистка Homebrew"
   },

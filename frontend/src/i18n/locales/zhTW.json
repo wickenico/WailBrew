@@ -13,12 +13,12 @@
     "settings": "設定"
   },
   "headers": {
-    "installedFormulas": "已安裝套件 ({{count}})",
-    "installedCasks": "已安裝應用程式 ({{count}})",
-    "outdatedFormulas": "可更新套件 ({{count}})",
-    "allFormulas": "全部套件 ({{count}})",
-    "leaves": "獨立套件 ({{count}})",
-    "repositories": "軟體庫 ({{count}})",
+    "installedFormulas": "已安裝套件",
+    "installedCasks": "已安裝應用程式",
+    "outdatedFormulas": "可更新套件",
+    "allFormulas": "全部套件",
+    "leaves": "獨立套件",
+    "repositories": "軟體庫",
     "homebrewDoctor": "Homebrew 診斷",
     "homebrewCleanup": "Homebrew 清理"
   },
