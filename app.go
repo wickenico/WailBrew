@@ -2797,9 +2797,23 @@ func (a *App) RestartApp() error {
 
 	// Launch the new version and quit
 	go func() {
+		// Wait a bit before restarting to ensure clean shutdown
 		time.Sleep(500 * time.Millisecond)
-		exec.Command("open", currentAppPath).Start()
-		time.Sleep(500 * time.Millisecond)
+
+		// Use 'open -n' to force a new instance and ensure it launches even if the app is already running
+		cmd := exec.Command("open", "-n", currentAppPath)
+		err := cmd.Start()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to restart app: %v\n", err)
+			// Try alternative method using direct execution
+			cmd = exec.Command("open", currentAppPath)
+			if err := cmd.Start(); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to restart app (alternative method): %v\n", err)
+			}
+		}
+
+		// Give macOS time to process the launch before quitting
+		time.Sleep(1 * time.Second)
 		rt.Quit(a.ctx)
 	}()
 
