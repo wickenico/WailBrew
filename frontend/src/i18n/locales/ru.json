@@ -196,7 +196,9 @@
     "loadingRepositories": "Загрузка репозиториев…",
     "noResults": "Нет совпадений.",
     "installedStatus": "Установлено",
-    "notInstalledStatus": "Не установлено"
+    "notInstalledStatus": "Не установлено",
+    "package": "пакет",
+    "packages": "пакетов"
   },
   "repository": {
     "noSelection": "Репозиторий не выбран",

@@ -196,7 +196,9 @@
     "loadingRepositories": "Depolar yükleniyor…",
     "noResults": "Eşleşen sonuç yok.",
     "installedStatus": "Yüklendi",
-    "notInstalledStatus": "Yüklenmedi"
+    "notInstalledStatus": "Yüklenmedi",
+    "package": "paket",
+    "packages": "paket"
   },
   "repository": {
     "noSelection": "Hiçbir depo seçilmedi",

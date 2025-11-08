@@ -68,6 +68,14 @@ const PackageTable: React.FC<PackageTableProps> = ({
     const [sortKey, setSortKey] = useState<string | null>('name'); // Default sort by name
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
+    // Helper function to get column width based on key
+    const getColumnWidth = (key: string): string => {
+        if (key === 'name') return '30%';
+        if (key === 'actions') return '120px';
+        if (key === 'size') return '100px';
+        return 'auto';
+    };
+
     // Scroll to selected row when selectedPackage changes
     useEffect(() => {
         if (selectedRowRef.current && selectedPackage) {
@@ -219,79 +227,102 @@ const PackageTable: React.FC<PackageTableProps> = ({
             </div>
         )}
         {packages.length > 0 && (
-            <table className="package-table">
-                <thead>
-                    <tr>
-                        {multiSelectMode && (
-                            <th style={{ width: '50px', textAlign: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <CheckSquare size={16} style={{ opacity: 0.6 }} />
-                                </div>
-                            </th>
-                        )}
-                        {columns.map(col => {
-                            const isSortable = col.sortable !== false && col.key !== 'actions';
-                            const isCurrentSort = sortKey === col.key;
-                            
-                            return (
-                                <th 
-                                    key={col.key}
-                                    onClick={() => handleSort(col.key, isSortable)}
-                                    style={{ 
-                                        cursor: isSortable ? 'pointer' : 'default',
-                                        userSelect: 'none'
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        {col.label}
-                                        {isSortable && !isCurrentSort && (
-                                            <div style={{ opacity: 0.3 }}>
-                                                <ArrowUp size={14} />
-                                            </div>
-                                        )}
-                                        {isSortable && isCurrentSort && sortDirection === 'asc' && (
-                                            <ArrowUp size={14} />
-                                        )}
-                                        {isSortable && isCurrentSort && sortDirection === 'desc' && (
-                                            <ArrowDown size={14} />
-                                        )}
+            <div className="table-split-wrapper">
+                <table className="package-table package-table-header">
+                    <colgroup>
+                        {multiSelectMode && <col style={{ width: '50px' }} />}
+                        {columns.map((col) => (
+                            <col key={`header-col-${col.key}`} style={{ width: getColumnWidth(col.key) }} />
+                        ))}
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            {multiSelectMode && (
+                                <th style={{ textAlign: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <CheckSquare size={16} style={{ opacity: 0.6 }} />
                                     </div>
                                 </th>
-                            );
-                        })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {sortedPackages.map(pkg => {
-                        const isSelected = multiSelectMode ? selectedPackages.has(pkg.name) : selectedPackage?.name === pkg.name;
-                        return (
-                            <tr
-                                key={pkg.name}
-                                ref={!multiSelectMode && selectedPackage?.name === pkg.name ? selectedRowRef : null}
-                                className={isSelected ? "selected" : ""}
-                                onClick={() => onSelect(pkg)}
-                            >
-                                {multiSelectMode && (
-                                    <td style={{ width: '50px', textAlign: 'center' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            {selectedPackages.has(pkg.name) ? (
-                                                <CheckSquare size={20} color={isSelected ? "#ffffff" : "#4fc3f7"} />
-                                            ) : (
-                                                <Square size={20} color={isSelected ? "#ffffff" : undefined} style={{ opacity: isSelected ? 0.8 : 0.6 }} />
+                            )}
+                            {columns.map(col => {
+                                const isSortable = col.sortable !== false && col.key !== 'actions';
+                                const isCurrentSort = sortKey === col.key;
+                                
+                                return (
+                                    <th 
+                                        key={col.key}
+                                        onClick={() => handleSort(col.key, isSortable)}
+                                        style={{ 
+                                            cursor: isSortable ? 'pointer' : 'default',
+                                            userSelect: 'none'
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            {col.label}
+                                            {isSortable && !isCurrentSort && (
+                                                <div style={{ opacity: 0.3 }}>
+                                                    <ArrowUp size={14} />
+                                                </div>
+                                            )}
+                                            {isSortable && isCurrentSort && sortDirection === 'asc' && (
+                                                <ArrowUp size={14} />
+                                            )}
+                                            {isSortable && isCurrentSort && sortDirection === 'desc' && (
+                                                <ArrowDown size={14} />
                                             )}
                                         </div>
-                                    </td>
-                                )}
-                                {columns.map(col => (
-                                    <td key={col.key}>
-                                        {renderCellContent(pkg, col)}
-                                    </td>
-                                ))}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                                    </th>
+                                );
+                            })}
+                        </tr>
+                    </thead>
+                </table>
+                <div className="table-body-scroll">
+                    <table className="package-table package-table-body">
+                        <colgroup>
+                            {multiSelectMode && <col style={{ width: '50px' }} />}
+                            {columns.map((col) => (
+                                <col key={`body-col-${col.key}`} style={{ width: getColumnWidth(col.key) }} />
+                            ))}
+                        </colgroup>
+                        <tbody>
+                            {sortedPackages.map(pkg => {
+                                const isSelected = multiSelectMode ? selectedPackages.has(pkg.name) : selectedPackage?.name === pkg.name;
+                                return (
+                                    <tr
+                                        key={pkg.name}
+                                        ref={!multiSelectMode && selectedPackage?.name === pkg.name ? selectedRowRef : null}
+                                        className={isSelected ? "selected" : ""}
+                                        onClick={() => onSelect(pkg)}
+                                    >
+                                        {multiSelectMode && (
+                                            <td style={{ textAlign: 'center' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    {selectedPackages.has(pkg.name) ? (
+                                                        <CheckSquare size={20} color={isSelected ? "#ffffff" : "#4fc3f7"} />
+                                                    ) : (
+                                                        <Square size={20} color={isSelected ? "#ffffff" : undefined} style={{ opacity: isSelected ? 0.8 : 0.6 }} />
+                                                    )}
+                                                </div>
+                                            </td>
+                                        )}
+                                        {columns.map(col => (
+                                            <td key={col.key}>
+                                                {renderCellContent(pkg, col)}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="table-footer">
+                    <div className="table-footer-content">
+                        {packages.length} {packages.length === 1 ? t('table.package') : t('table.packages')}
+                    </div>
+                </div>
+            </div>
         )}
         {!loading && packages.length === 0 && (
             <div className="result">{t('table.noResults')}</div>

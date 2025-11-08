@@ -204,7 +204,9 @@
     "loadingRepositories": "Repositories werden geladen…",
     "noResults": "Keine passenden Ergebnisse.",
     "installedStatus": "Installiert",
-    "notInstalledStatus": "Nicht installiert"
+    "notInstalledStatus": "Nicht installiert",
+    "package": "Paket",
+    "packages": "Pakete"
   },
   "repository": {
     "noSelection": "Kein Repository ausgewählt",

@@ -196,7 +196,9 @@
     "loadingRepositories": "Chargement des dépôts…",
     "noResults": "Aucun résultat correspondant.",
     "installedStatus": "Installé",
-    "notInstalledStatus": "Non installé"
+    "notInstalledStatus": "Non installé",
+    "package": "paquet",
+    "packages": "paquets"
   },
   "repository": {
     "noSelection": "Aucun dépôt sélectionné",

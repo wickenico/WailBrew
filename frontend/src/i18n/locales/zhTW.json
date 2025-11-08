@@ -196,7 +196,9 @@
     "loadingRepositories": "載入軟體庫中…",
     "noResults": "沒有符合的結果。",
     "installedStatus": "已安裝",
-    "notInstalledStatus": "未安裝"
+    "notInstalledStatus": "未安裝",
+    "package": "個套件",
+    "packages": "個套件"
   },
   "repository": {
     "noSelection": "未選擇軟體庫",

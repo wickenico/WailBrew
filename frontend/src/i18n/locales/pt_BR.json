@@ -196,7 +196,9 @@
     "loadingRepositories": "Carregando repositórios…",
     "noResults": "Nenhum resultado correspondente.",
     "installedStatus": "Instalado",
-    "notInstalledStatus": "Não instalado"
+    "notInstalledStatus": "Não instalado",
+    "package": "pacote",
+    "packages": "pacotes"
   },
   "repository": {
     "noSelection": "Nenhum repositório selecionado",

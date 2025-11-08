@@ -545,7 +545,7 @@ html, body {
 .table-container {
   position: relative;
   flex: 1 1 auto;
-  overflow-y: auto;
+  overflow: hidden;
   border-radius: var(--radius);
   background: rgba(30,34,40,0.82);
   box-shadow: var(--glass-shadow-strong);
@@ -553,22 +553,42 @@ html, body {
   margin-bottom: 16px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
 }
 
-/* Custom scrollbar styling for tables */
-.table-container::-webkit-scrollbar {
+.table-split-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.package-table-header {
+  flex-shrink: 0;
+}
+
+.table-body-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Custom scrollbar styling for table body */
+.table-body-scroll::-webkit-scrollbar {
   width: 14px;
   background: transparent;
 }
 
-.table-container::-webkit-scrollbar-track {
+.table-body-scroll::-webkit-scrollbar-track {
   background: rgba(30, 34, 40, 0.6);
   border-radius: 8px;
-  margin: 8px 4px 8px 0;
+  margin: 4px 4px 4px 0;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.table-container::-webkit-scrollbar-thumb {
+.table-body-scroll::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
   border-radius: 8px;
   border: 3px solid rgba(30, 34, 40, 0.6);
@@ -576,10 +596,31 @@ html, body {
   min-height: 40px;
 }
 
-.table-container::-webkit-scrollbar-thumb:hover {
+.table-body-scroll::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
   border-width: 2px;
   box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
+}
+
+/* Table footer */
+.table-footer {
+  flex-shrink: 0;
+  background: rgba(40, 45, 52, 1);
+  border-top: 2px solid var(--glass-border-strong);
+  border-bottom-left-radius: calc(var(--radius) - 2px);
+  border-bottom-right-radius: calc(var(--radius) - 2px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.table-footer-content {
+  padding: 6px 14px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0.3px;
+  opacity: 0.7;
 }
 
 .package-table {
@@ -588,6 +629,7 @@ html, body {
   border-spacing: 0;
   font-size: 15px;
   background: transparent;
+  table-layout: fixed;
 }
 
 .package-table th,
@@ -605,8 +647,6 @@ html, body {
 }
 
 .package-table th {
-  position: sticky;
-  top: 0;
   background: rgba(40, 45, 52, 1);
   color: var(--text-main);
   font-weight: 700;
@@ -617,7 +657,20 @@ html, body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  z-index: 10;
+}
+
+/* Rounded top corners for header */
+.package-table-header thead tr th:first-child {
+  border-top-left-radius: calc(var(--radius) - 2px);
+}
+
+.package-table-header thead tr th:last-child {
+  border-top-right-radius: calc(var(--radius) - 2px);
+}
+
+/* Ensure body table columns match header */
+.package-table-body {
+  margin-top: -2px;
 }
 
 .package-table tbody tr {
