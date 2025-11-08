@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpCircle, CirclePlus, Info, CircleX, CircleCheckBig, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUpCircle, CirclePlus, Info, CircleX, CircleCheckBig, ArrowUp, ArrowDown, TriangleAlert } from "lucide-react";
 
 interface PackageEntry {
     name: string;
@@ -12,6 +12,7 @@ interface PackageEntry {
     dependencies?: string[];
     conflicts?: string[];
     isInstalled?: boolean;
+    warning?: string;
 }
 
 interface PackageTableProps {
@@ -183,6 +184,24 @@ const PackageTable: React.FC<PackageTableProps> = ({
                     {t('table.installedStatus')}
                   </span>
                 : <span style={{ color: "#888" }}>{t('table.notInstalledStatus')}</span>;
+        }
+        if (col.key === "name" && pkg.warning) {
+            return (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <span>{pkg.name}</span>
+                    <span 
+                        className="warning-icon-wrapper"
+                        title={pkg.warning}
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            cursor: "help",
+                        }}
+                    >
+                        <TriangleAlert size={16} color="#ff9800" />
+                    </span>
+                </div>
+            );
         }
         return (pkg as any)[col.key];
     };

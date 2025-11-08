@@ -2166,3 +2166,61 @@ html, body {
   padding: 40px;
   font-size: 16px;
 }
+
+/* Warning icon tooltip styles */
+.warning-icon-wrapper {
+  position: relative;
+  transition: opacity var(--transition);
+}
+
+.warning-icon-wrapper:hover {
+  opacity: 0.8;
+}
+
+.warning-icon-wrapper::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--glass-bg-strong);
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: pre-wrap;
+  max-width: 400px;
+  min-width: 200px;
+  box-shadow: var(--glass-shadow-strong);
+  border: 1px solid var(--glass-border-strong);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+  z-index: 1000;
+  line-height: 1.4;
+}
+
+.warning-icon-wrapper:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.warning-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--glass-bg-strong);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+  z-index: 1000;
+}
+
+.warning-icon-wrapper:hover::before {
+  opacity: 1;
+}

@@ -919,6 +919,86 @@ func (a *App) clearSessionLogs() {
 	a.sessionLogs = make([]string, 0)
 }
 
+// extractJSONFromBrewOutput extracts the JSON portion from Homebrew command output
+// Homebrew may output warnings or error messages before the JSON, which can cause parsing to fail
+// This function finds the start of the JSON (either '{' or '[') and returns just the JSON portion
+// It also returns any warnings that appeared before the JSON for logging purposes
+func extractJSONFromBrewOutput(output string) (jsonOutput string, warnings string, err error) {
+	outputStr := strings.TrimSpace(output)
+
+	// Find the start of JSON (either object or array)
+	jsonStart := strings.Index(outputStr, "{")
+	if jsonStart == -1 {
+		jsonStart = strings.Index(outputStr, "[")
+	}
+
+	if jsonStart == -1 {
+		return "", "", fmt.Errorf("no JSON found in output")
+	}
+
+	// Extract warnings if any
+	if jsonStart > 0 {
+		warnings = strings.TrimSpace(outputStr[:jsonStart])
+	}
+
+	// Extract JSON portion
+	jsonOutput = outputStr[jsonStart:]
+
+	return jsonOutput, warnings, nil
+}
+
+// parseBrewWarnings parses Homebrew warnings and maps them to specific packages
+// Returns a map of package names to their warning messages
+func parseBrewWarnings(warnings string) map[string]string {
+	warningMap := make(map[string]string)
+
+	if warnings == "" {
+		return warningMap
+	}
+
+	// Split warnings into individual warning blocks
+	lines := strings.Split(warnings, "\n")
+	var currentWarning strings.Builder
+	var currentPackage string
+
+	for _, line := range lines {
+		// Check if line contains a formula/cask file path
+		// Format: /path/to/Taps/username/homebrew-tap/Formula/package-name.rb:12
+		if strings.Contains(line, "/Formula/") || strings.Contains(line, "/Casks/") {
+			// Extract package name from file path
+			var formulaPath string
+			if idx := strings.Index(line, "/Formula/"); idx != -1 {
+				formulaPath = line[idx+9:] // Skip "/Formula/"
+			} else if idx := strings.Index(line, "/Casks/"); idx != -1 {
+				formulaPath = line[idx+7:] // Skip "/Casks/"
+			}
+
+			if formulaPath != "" {
+				// Extract package name (remove .rb extension and line numbers)
+				packageName := formulaPath
+				if idx := strings.Index(packageName, ".rb"); idx != -1 {
+					packageName = packageName[:idx]
+				}
+				if idx := strings.Index(packageName, ":"); idx != -1 {
+					packageName = packageName[:idx]
+				}
+				currentPackage = packageName
+			}
+		}
+
+		// Build up the warning message
+		currentWarning.WriteString(line)
+		currentWarning.WriteString("\n")
+	}
+
+	// Store the warning for the package
+	if currentPackage != "" {
+		warningMap[currentPackage] = strings.TrimSpace(currentWarning.String())
+	}
+
+	return warningMap
+}
+
 // getBackendMessage returns a translated backend message
 func (a *App) getBackendMessage(key string, params map[string]string) string {
 	var messages map[string]string
@@ -1349,6 +1429,22 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 		return sizes
 	}
 
+	// Extract JSON portion from output (handling potential Homebrew warnings)
+	outputStr := strings.TrimSpace(string(output))
+	jsonOutput, warnings, err := extractJSONFromBrewOutput(outputStr)
+	if err != nil {
+		// If JSON extraction fails, return unknown sizes
+		for _, name := range packageNames {
+			sizes[name] = "Unknown"
+		}
+		return sizes
+	}
+
+	// Log warnings if any were detected
+	if warnings != "" {
+		a.appendSessionLog(fmt.Sprintf("Homebrew warnings in package sizes: %s", warnings))
+	}
+
 	// Parse JSON response
 	var brewInfo struct {
 		Formulae []struct {
@@ -1370,7 +1466,7 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 		} `json:"casks"`
 	}
 
-	if err := json.Unmarshal(output, &brewInfo); err != nil {
+	if err := json.Unmarshal([]byte(jsonOutput), &brewInfo); err != nil {
 		for _, name := range packageNames {
 			sizes[name] = "Unknown"
 		}
@@ -1779,6 +1875,20 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		return [][]string{}
 	}
 
+	// Extract JSON portion from output (in case there are warnings before the JSON)
+	jsonOutput, warnings, err := extractJSONFromBrewOutput(outputStr)
+	if err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Failed to extract JSON from brew outdated output: %v", err)}}
+	}
+
+	// Parse warnings to map them to specific packages
+	warningMap := parseBrewWarnings(warnings)
+
+	// Log warnings if any were detected
+	if warnings != "" {
+		a.appendSessionLog(fmt.Sprintf("Homebrew warnings detected:\n%s", warnings))
+	}
+
 	// Parse JSON response from brew outdated
 	var brewOutdated struct {
 		Formulae []struct {
@@ -1795,7 +1905,7 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		} `json:"casks"`
 	}
 
-	if err := json.Unmarshal(output, &brewOutdated); err != nil {
+	if err := json.Unmarshal([]byte(jsonOutput), &brewOutdated); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to parse outdated packages: %v", err)}}
 	}
 
@@ -1816,11 +1926,19 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		}
 
 		formulaeNames = append(formulaeNames, formula.Name)
+
+		// Get warning for this package if any
+		warning := ""
+		if w, found := warningMap[formula.Name]; found {
+			warning = w
+		}
+
 		updatablePackages = append(updatablePackages, []string{
 			formula.Name,
 			installedVersion,
 			formula.CurrentVersion,
-			"", // size placeholder, will be filled below
+			"",      // size placeholder, will be filled below
+			warning, // warning message
 		})
 	}
 
@@ -1832,11 +1950,19 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		}
 
 		caskNames = append(caskNames, cask.Name)
+
+		// Get warning for this cask if any
+		warning := ""
+		if w, found := warningMap[cask.Name]; found {
+			warning = w
+		}
+
 		updatablePackages = append(updatablePackages, []string{
 			cask.Name,
 			installedVersion,
 			cask.CurrentVersion,
-			"", // size placeholder, will be filled below
+			"",      // size placeholder, will be filled below
+			warning, // warning message
 		})
 	}
 
@@ -2233,11 +2359,25 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 		}
 	}
 
+	// Extract JSON portion from output (handling potential Homebrew warnings)
+	outputStr := strings.TrimSpace(string(output))
+	jsonOutput, warnings, err := extractJSONFromBrewOutput(outputStr)
+	if err != nil {
+		return map[string]interface{}{
+			"error": fmt.Sprintf("Failed to extract JSON from package info: %v", err),
+		}
+	}
+
+	// Log warnings if any were detected
+	if warnings != "" {
+		a.appendSessionLog(fmt.Sprintf("Homebrew warnings in package info for %s: %s", packageName, warnings))
+	}
+
 	var result struct {
 		Formulae []map[string]interface{} `json:"formulae"`
 		Casks    []map[string]interface{} `json:"casks"`
 	}
-	if err := json.Unmarshal(output, &result); err != nil {
+	if err := json.Unmarshal([]byte(jsonOutput), &result); err != nil {
 		return map[string]interface{}{
 			"error": "Failed to parse package info",
 		}

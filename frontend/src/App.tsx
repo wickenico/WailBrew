@@ -57,6 +57,7 @@ interface PackageEntry {
     dependencies?: string[];
     conflicts?: string[];
     isInstalled?: boolean;
+    warning?: string;
 }
 
 interface RepositoryEntry {
@@ -177,12 +178,13 @@ const WailBrewApp = () => {
                     size,
                     isInstalled: true,
                 }));
-                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion, size]) => ({
+                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                     size,
                     isInstalled: true,
+                    warning: warning || undefined,
                 }));
                 const installedNames = new Set(installedFormatted.map(pkg => pkg.name));
                 const allFormatted = safeAll.map(([name, desc, size]) => ({
@@ -1032,12 +1034,13 @@ const WailBrewApp = () => {
             if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
                 setUpdatablePackages([]);
             } else {
-                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size]) => ({
+                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                     size,
                     isInstalled: true,
+                    warning: warning || undefined,
                 }));
                 setUpdatablePackages(formatted);
             }
