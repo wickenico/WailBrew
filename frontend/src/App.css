@@ -62,20 +62,27 @@ html, body {
 
 /* Custom scrollbar for sidebar */
 .sidebar::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  background: transparent;
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  margin: 4px 0;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
   background: var(--glass-border);
-  border-radius: 4px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all var(--transition);
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: var(--glass-border-strong);
+  background-clip: padding-box;
 }
 
 .sidebar-resize-handle {
@@ -550,25 +557,29 @@ html, body {
 
 /* Custom scrollbar styling for tables */
 .table-container::-webkit-scrollbar {
-  width: 12px;
+  width: 14px;
+  background: transparent;
 }
 
 .table-container::-webkit-scrollbar-track {
-  background: rgba(30,34,40,0.5);
-  border-radius: 10px;
+  background: rgba(30, 34, 40, 0.6);
+  border-radius: 8px;
+  margin: 8px 4px 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 10px;
-  border: 2px solid rgba(30,34,40,0.82);
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
+  border-radius: 8px;
+  border: 3px solid rgba(30, 34, 40, 0.6);
   transition: all var(--transition);
+  min-height: 40px;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-  transform: scaleX(1.15);
-  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  border-width: 2px;
+  box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
 }
 
 .package-table {
@@ -1053,25 +1064,29 @@ html, body {
 }
 
 .doctor-log::-webkit-scrollbar {
-  width: 12px;
+  width: 14px;
+  background: transparent;
 }
 
 .doctor-log::-webkit-scrollbar-track {
-  background: rgba(30,34,40,0.5);
-  border-radius: 10px;
+  background: rgba(30, 34, 40, 0.6);
+  border-radius: 8px;
+  margin: 8px 4px 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .doctor-log::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 10px;
-  border: 2px solid rgba(30,34,40,0.82);
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
+  border-radius: 8px;
+  border: 3px solid rgba(30, 34, 40, 0.6);
   transition: all var(--transition);
+  min-height: 40px;
 }
 
 .doctor-log::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-  transform: scaleX(1.15);
-  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  border-width: 2px;
+  box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
 }
 
 .doctor-footer {
@@ -1101,25 +1116,29 @@ html, body {
 }
 
 .log-output::-webkit-scrollbar {
-  width: 12px;
+  width: 14px;
+  background: transparent;
 }
 
 .log-output::-webkit-scrollbar-track {
-  background: rgba(30,34,40,0.5);
-  border-radius: 10px;
+  background: rgba(30, 34, 40, 0.6);
+  border-radius: 8px;
+  margin: 8px 4px 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .log-output::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 10px;
-  border: 2px solid rgba(30,34,40,0.85);
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
+  border-radius: 8px;
+  border: 3px solid rgba(30, 34, 40, 0.6);
   transition: all var(--transition);
+  min-height: 40px;
 }
 
 .log-output::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-  transform: scaleX(1.15);
-  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  border-width: 2px;
+  box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
 }
 
 .log-dialog-box {
@@ -1192,25 +1211,29 @@ html, body {
 }
 
 .about-content::-webkit-scrollbar {
-  width: 12px;
+  width: 14px;
+  background: transparent;
 }
 
 .about-content::-webkit-scrollbar-track {
-  background: rgba(30,34,40,0.5);
-  border-radius: 10px;
+  background: rgba(30, 34, 40, 0.6);
+  border-radius: 8px;
+  margin: 8px 4px 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .about-content::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 10px;
-  border: 2px solid var(--glass-bg-strong);
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
+  border-radius: 8px;
+  border: 3px solid rgba(30, 34, 40, 0.6);
   transition: all var(--transition);
+  min-height: 40px;
 }
 
 .about-content::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-  transform: scaleX(1.15);
-  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  border-width: 2px;
+  box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
 }
 
 .about-app-section h1 {
@@ -1603,25 +1626,29 @@ html, body {
 }
 
 .release-notes-content::-webkit-scrollbar {
-  width: 10px;
+  width: 14px;
+  background: transparent;
 }
 
 .release-notes-content::-webkit-scrollbar-track {
-  background: rgba(30,34,40,0.5);
-  border-radius: 10px;
+  background: rgba(30, 34, 40, 0.6);
+  border-radius: 8px;
+  margin: 8px 4px 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .release-notes-content::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
+  border-radius: 8px;
+  border: 3px solid rgba(30, 34, 40, 0.6);
   transition: all var(--transition);
+  min-height: 40px;
 }
 
 .release-notes-content::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-  transform: scaleX(1.15);
-  box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  border-width: 2px;
+  box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
 }
 
 .release-notes-content p {
