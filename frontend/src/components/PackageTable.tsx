@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpCircle, CirclePlus, Info, CircleX, CircleCheckBig, ArrowUp, ArrowDown, TriangleAlert } from "lucide-react";
+import { ArrowUpCircle, CirclePlus, Info, CircleX, CircleCheckBig, ArrowUp, ArrowDown, TriangleAlert, CheckSquare, Square } from "lucide-react";
 
 interface PackageEntry {
     name: string;
@@ -25,6 +25,8 @@ interface PackageTableProps {
     onShowInfo?: (pkg: PackageEntry) => void;
     onUpdate?: (pkg: PackageEntry) => void;
     onInstall?: (pkg: PackageEntry) => void;
+    multiSelectMode?: boolean;
+    selectedPackages?: Set<string>;
 }
 
 // Helper function to parse size strings for sorting (e.g., "10M", "2.5G", "1K")
@@ -58,6 +60,8 @@ const PackageTable: React.FC<PackageTableProps> = ({
     onShowInfo,
     onUpdate,
     onInstall,
+    multiSelectMode = false,
+    selectedPackages = new Set(),
 }) => {
     const { t } = useTranslation();
     const selectedRowRef = useRef<HTMLTableRowElement>(null);
@@ -218,6 +222,13 @@ const PackageTable: React.FC<PackageTableProps> = ({
             <table className="package-table">
                 <thead>
                     <tr>
+                        {multiSelectMode && (
+                            <th style={{ width: '50px', textAlign: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <CheckSquare size={16} style={{ opacity: 0.6 }} />
+                                </div>
+                            </th>
+                        )}
                         {columns.map(col => {
                             const isSortable = col.sortable !== false && col.key !== 'actions';
                             const isCurrentSort = sortKey === col.key;
@@ -251,20 +262,34 @@ const PackageTable: React.FC<PackageTableProps> = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedPackages.map(pkg => (
-                        <tr
-                            key={pkg.name}
-                            ref={selectedPackage?.name === pkg.name ? selectedRowRef : null}
-                            className={selectedPackage?.name === pkg.name ? "selected" : ""}
-                            onClick={() => onSelect(pkg)}
-                        >
-                            {columns.map(col => (
-                                <td key={col.key}>
-                                    {renderCellContent(pkg, col)}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
+                    {sortedPackages.map(pkg => {
+                        const isSelected = multiSelectMode ? selectedPackages.has(pkg.name) : selectedPackage?.name === pkg.name;
+                        return (
+                            <tr
+                                key={pkg.name}
+                                ref={!multiSelectMode && selectedPackage?.name === pkg.name ? selectedRowRef : null}
+                                className={isSelected ? "selected" : ""}
+                                onClick={() => onSelect(pkg)}
+                            >
+                                {multiSelectMode && (
+                                    <td style={{ width: '50px', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            {selectedPackages.has(pkg.name) ? (
+                                                <CheckSquare size={20} color={isSelected ? "#ffffff" : "#4fc3f7"} />
+                                            ) : (
+                                                <Square size={20} color={isSelected ? "#ffffff" : undefined} style={{ opacity: isSelected ? 0.8 : 0.6 }} />
+                                            )}
+                                        </div>
+                                    </td>
+                                )}
+                                {columns.map(col => (
+                                    <td key={col.key}>
+                                        {renderCellContent(pkg, col)}
+                                    </td>
+                                ))}
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         )}

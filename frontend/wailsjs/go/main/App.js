@@ -133,3 +133,7 @@ export function UpdateBrewPackage(arg1) {
 export function UpdateHomebrew() {
   return window['go']['main']['App']['UpdateHomebrew']();
 }
+
+export function UpdateSelectedBrewPackages(arg1) {
+  return window['go']['main']['App']['UpdateSelectedBrewPackages'](arg1);
+}

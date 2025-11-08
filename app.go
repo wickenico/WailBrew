@@ -2248,6 +2248,104 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	return finalMessage
 }
 
+// UpdateSelectedBrewPackages upgrades specific packages with live progress updates
+func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
+	// Validate brew installation first
+	if err := a.validateBrewInstallation(); err != nil {
+		return fmt.Sprintf("❌ Homebrew validation failed: %v", err)
+	}
+
+	if len(packageNames) == 0 {
+		return "❌ No packages selected for update"
+	}
+
+	// Build brew upgrade command with specific packages
+	args := []string{"upgrade"}
+	args = append(args, packageNames...)
+
+	cmd := exec.Command(a.brewPath, args...)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return fmt.Sprintf("❌ Error creating output pipe: %v", err)
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return fmt.Sprintf("❌ Error creating error pipe: %v", err)
+	}
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Sprintf("❌ Error starting update: %v", err)
+	}
+
+	// Track which packages were updated (especially wailbrew)
+	updatedPackages := make(map[string]bool)
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("📦 %s", line))
+
+				// Detect if wailbrew is being updated
+				if strings.Contains(strings.ToLower(line), "wailbrew") {
+					if strings.Contains(line, "Upgrading") || strings.Contains(line, "Installing") {
+						parts := strings.Fields(line)
+						for i, part := range parts {
+							if (part == "Upgrading" || part == "Installing") && i+1 < len(parts) {
+								pkgName := strings.ToLower(parts[i+1])
+								pkgName = strings.Trim(pkgName, ":.,!?")
+								if pkgName == "wailbrew" {
+									updatedPackages["wailbrew"] = true
+								}
+							}
+						}
+					}
+					if strings.Contains(line, "successfully") && strings.Contains(strings.ToLower(line), "wailbrew") {
+						updatedPackages["wailbrew"] = true
+					}
+				}
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+
+	var finalMessage string
+	if err != nil {
+		finalMessage = fmt.Sprintf("❌ Update failed for selected packages: %v", err)
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+	} else {
+		finalMessage = fmt.Sprintf("✅ Successfully updated %d selected package(s)", len(packageNames))
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
+	}
+
+	// Signal completion
+	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+
+	// If WailBrew was updated, emit event to show restart dialog
+	if updatedPackages["wailbrew"] && a.ctx != nil {
+		rt.EventsEmit(a.ctx, "wailbrewUpdated")
+	}
+
+	return finalMessage
+}
+
 // UpdateAllBrewPackages upgrades all outdated packages with live progress updates
 func (a *App) UpdateAllBrewPackages() string {
 	// Emit initial progress

@@ -67,3 +67,5 @@ export function UpdateBrewDatabaseWithOutput():Promise<string>;
 export function UpdateBrewPackage(arg1:string):Promise<string>;
 
 export function UpdateHomebrew():Promise<string>;
+
+export function UpdateSelectedBrewPackages(arg1:Array<string>):Promise<string>;
