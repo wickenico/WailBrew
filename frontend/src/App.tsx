@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from 'react-hot-toast';
-import { RefreshCw, Sparkles, Copy } from 'lucide-react';
+import { RefreshCw, Sparkles, Copy, X } from 'lucide-react';
 import "./style.css";
 import "./App.css";
 import {
@@ -322,38 +322,64 @@ const WailBrewApp = () => {
                 
                 // Show toast notification
                 toast(
-                    () => (
-                        <div>
-                            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
-                                {newPackagesCount === 1 
-                                    ? t('toast.newOutdatedPackages_one', { count: newPackagesCount })
-                                    : t('toast.newOutdatedPackages_other', { count: newPackagesCount })
-                                }
+                    (t_obj) => (
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                    {newPackagesCount === 1 
+                                        ? t('toast.newOutdatedPackages_one', { count: newPackagesCount })
+                                        : t('toast.newOutdatedPackages_other', { count: newPackagesCount })
+                                    }
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setView("updatable");
+                                        toast.dismiss(t_obj.id);
+                                    }}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        background: 'rgba(59, 130, 246, 0.8)',
+                                        border: 'none',
+                                        borderRadius: '6px',
+                                        color: '#fff',
+                                        cursor: 'pointer',
+                                        fontSize: '0.875rem',
+                                        fontWeight: 500,
+                                        transition: 'background 0.2s',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(59, 130, 246, 1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)';
+                                    }}
+                                >
+                                    {t('toast.viewOutdated')}
+                                </button>
                             </div>
                             <button
-                                onClick={() => {
-                                    setView("updatable");
-                                    toast.dismiss();
-                                }}
+                                onClick={() => toast.dismiss(t_obj.id)}
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    background: 'rgba(59, 130, 246, 0.8)',
+                                    background: 'transparent',
                                     border: 'none',
-                                    borderRadius: '6px',
-                                    color: '#fff',
+                                    color: 'rgba(255, 255, 255, 0.6)',
                                     cursor: 'pointer',
-                                    fontSize: '0.875rem',
-                                    fontWeight: 500,
-                                    transition: 'background 0.2s',
+                                    padding: '0.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'color 0.2s',
+                                    flexShrink: 0,
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.background = 'rgba(59, 130, 246, 1)';
+                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)';
+                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
                                 }}
+                                title="Dismiss"
                             >
-                                {t('toast.viewOutdated')}
+                                <X size={18} />
                             </button>
                         </div>
                     ),
@@ -423,53 +449,79 @@ const WailBrewApp = () => {
                     const upgradeCommand = 'brew update\nbrew upgrade --cask wailbrew';
                     
                     toast(
-                        () => (
-                            <div>
-                                <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
-                                <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
-                                    {t('toast.versionReady', { version: updateInfo.latestVersion })}
-                                </div>
-                                <div 
-                                    role="button"
-                                    tabIndex={0}
-                                    style={{ 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        gap: '0.5rem',
-                                        marginTop: '0.5rem',
-                                        padding: '0.4rem 0.6rem',
-                                        background: 'rgba(0, 0, 0, 0.3)',
-                                        borderRadius: '6px',
-                                        fontSize: '0.8rem',
-                                        fontFamily: 'monospace',
-                                        cursor: 'pointer',
-                                        transition: 'background 0.2s',
-                                        outline: 'none',
-                                    }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigator.clipboard.writeText(upgradeCommand);
-                                        toast.success('Copied to clipboard!', { duration: 2000 });
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
+                        (t_obj) => (
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
+                                    <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
+                                        {t('toast.versionReady', { version: updateInfo.latestVersion })}
+                                    </div>
+                                    <div 
+                                        role="button"
+                                        tabIndex={0}
+                                        style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            gap: '0.5rem',
+                                            marginTop: '0.5rem',
+                                            padding: '0.4rem 0.6rem',
+                                            background: 'rgba(0, 0, 0, 0.3)',
+                                            borderRadius: '6px',
+                                            fontSize: '0.8rem',
+                                            fontFamily: 'monospace',
+                                            cursor: 'pointer',
+                                            transition: 'background 0.2s',
+                                            outline: 'none',
+                                        }}
+                                        onClick={(e) => {
                                             e.stopPropagation();
                                             navigator.clipboard.writeText(upgradeCommand);
                                             toast.success('Copied to clipboard!', { duration: 2000 });
-                                        }
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                navigator.clipboard.writeText(upgradeCommand);
+                                                toast.success('Copied to clipboard!', { duration: 2000 });
+                                            }
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                        }}
+                                        title="Click to copy"
+                                    >
+                                        <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
+                                        <Copy size={16} style={{ opacity: 0.7 }} />
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => toast.dismiss(t_obj.id)}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: 'rgba(255, 255, 255, 0.6)',
+                                        cursor: 'pointer',
+                                        padding: '0.25rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'color 0.2s',
+                                        flexShrink: 0,
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
                                     }}
-                                    title="Click to copy"
+                                    title="Dismiss"
                                 >
-                                    <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
-                                    <Copy size={16} style={{ opacity: 0.7 }} />
-                                </div>
+                                    <X size={18} />
+                                </button>
                             </div>
                         ),
                         {
@@ -479,10 +531,42 @@ const WailBrewApp = () => {
                         }
                     );
                 } else {
-                    toast.success(t('toast.upToDate'), {
-                        duration: 4000,
-                        position: 'bottom-center',
-                    });
+                    toast.success(
+                        (t_obj) => (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <span style={{ flex: 1 }}>{t('toast.upToDate')}</span>
+                                <button
+                                    onClick={() => toast.dismiss(t_obj.id)}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: 'rgba(255, 255, 255, 0.6)',
+                                        cursor: 'pointer',
+                                        padding: '0.25rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'color 0.2s',
+                                        flexShrink: 0,
+                                        marginLeft: 'auto',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                    }}
+                                    title="Dismiss"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+                        ),
+                        {
+                            duration: 4000,
+                            position: 'bottom-center',
+                        }
+                    );
                 }
             }, 2000); // Delay 2 seconds after app load
         } catch (error) {
@@ -538,51 +622,77 @@ const WailBrewApp = () => {
                     const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
                     
                     toast(
-                        () => (
-                            <div>
-                                <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
-                                    {t('toast.newPackagesDiscovered', { count: totalNew, message })}
-                                </div>
-                                {(newFormulae.length > 0 || newCasks.length > 0) && (
-                                    <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
-                                        {newFormulae.length > 0 && (
-                                            <div style={{ marginBottom: '0.25rem' }}>
-                                                <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
-                                                {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
-                                            </div>
-                                        )}
-                                        {newCasks.length > 0 && (
-                                            <div>
-                                                <strong>{t('toast.newCasksLabel')}</strong> {newCasks.slice(0, 5).join(', ')}
-                                                {newCasks.length > 5 && ` ${t('toast.andMore', { count: newCasks.length - 5 })}`}
-                                            </div>
-                                        )}
+                        (t_obj) => (
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                        {t('toast.newPackagesDiscovered', { count: totalNew, message })}
                                     </div>
-                                )}
+                                    {(newFormulae.length > 0 || newCasks.length > 0) && (
+                                        <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
+                                            {newFormulae.length > 0 && (
+                                                <div style={{ marginBottom: '0.25rem' }}>
+                                                    <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
+                                                    {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
+                                                </div>
+                                            )}
+                                            {newCasks.length > 0 && (
+                                                <div>
+                                                    <strong>{t('toast.newCasksLabel')}</strong> {newCasks.slice(0, 5).join(', ')}
+                                                    {newCasks.length > 5 && ` ${t('toast.andMore', { count: newCasks.length - 5 })}`}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setView("all");
+                                            toast.dismiss(t_obj.id);
+                                        }}
+                                        style={{
+                                            padding: '0.5rem 1rem',
+                                            background: 'rgba(34, 197, 94, 0.8)',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            color: '#fff',
+                                            cursor: 'pointer',
+                                            fontSize: '0.875rem',
+                                            fontWeight: 500,
+                                            transition: 'background 0.2s',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                        }}
+                                    >
+                                        {t('toast.viewAllPackages')}
+                                    </button>
+                                </div>
                                 <button
-                                    onClick={() => {
-                                        setView("all");
-                                        toast.dismiss('newPackagesDiscovered');
-                                    }}
+                                    onClick={() => toast.dismiss(t_obj.id)}
                                     style={{
-                                        padding: '0.5rem 1rem',
-                                        background: 'rgba(34, 197, 94, 0.8)',
+                                        background: 'transparent',
                                         border: 'none',
-                                        borderRadius: '6px',
-                                        color: '#fff',
+                                        color: 'rgba(255, 255, 255, 0.6)',
                                         cursor: 'pointer',
-                                        fontSize: '0.875rem',
-                                        fontWeight: 500,
-                                        transition: 'background 0.2s',
+                                        padding: '0.25rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'color 0.2s',
+                                        flexShrink: 0,
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
                                     }}
+                                    title="Dismiss"
                                 >
-                                    {t('toast.viewAllPackages')}
+                                    <X size={18} />
                                 </button>
                             </div>
                         ),
