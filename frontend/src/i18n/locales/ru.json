@@ -70,7 +70,12 @@
     "conflicts": "Конфликты",
     "installed": "Установлено",
     "notInstalled": "Не установлено",
-    "noSelection": "Пакет не выбран"
+    "noSelection": "Пакет не выбран",
+    "downloadStatistics": "Статистика загрузок",
+    "last30Days": "Последние 30 дней",
+    "last90Days": "Последние 90 дней",
+    "last365Days": "Последние 365 дней",
+    "loadingAnalytics": "Загрузка статистики..."
   },
   "tableColumns": {
     "name": "Название",

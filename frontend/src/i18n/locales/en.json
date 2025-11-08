@@ -72,7 +72,12 @@
     "conflicts": "Conflicts",
     "installed": "Installed",
     "notInstalled": "Not installed",
-    "noSelection": "No package selected"
+    "noSelection": "No package selected",
+    "downloadStatistics": "Download Statistics",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days",
+    "last365Days": "Last 365 Days",
+    "loadingAnalytics": "Loading analytics..."
   },
   "tableColumns": {
     "name": "Name",

@@ -70,7 +70,12 @@
     "conflicts": "Çakışmalar",
     "installed": "Yüklendi",
     "notInstalled": "Yüklenmedi",
-    "noSelection": "Hiçbir paket seçilmedi"
+    "noSelection": "Hiçbir paket seçilmedi",
+    "downloadStatistics": "İndirme İstatistikleri",
+    "last30Days": "Son 30 Gün",
+    "last90Days": "Son 90 Gün",
+    "last365Days": "Son 365 Gün",
+    "loadingAnalytics": "İstatistikler yükleniyor..."
   },
   "tableColumns": {
     "name": "İsim",

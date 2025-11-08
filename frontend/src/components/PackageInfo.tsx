@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, TrendingUp, Calendar, BarChart3 } from "lucide-react";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageEntry {
@@ -22,9 +22,19 @@ interface PackageInfoProps {
     onSelectDependency?: (dependencyName: string) => void;
 }
 
+interface AnalyticsData {
+    install_on_request: {
+        "30d": { [key: string]: number };
+        "90d": { [key: string]: number };
+        "365d": { [key: string]: number };
+    };
+}
+
 const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view, onSelectDependency }) => {
     const { t } = useTranslation();
     const [isHomepageHovered, setIsHomepageHovered] = useState(false);
+    const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+    const [loadingAnalytics, setLoadingAnalytics] = useState(false);
     
     const name = packageEntry?.name || t('common.notAvailable');
     const desc = packageEntry?.desc || t('common.notAvailable');
@@ -44,93 +54,223 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         }
     };
 
+    // Fetch analytics data from Homebrew API
+    useEffect(() => {
+        if (!packageEntry?.name) {
+            setAnalytics(null);
+            return;
+        }
+
+        const fetchAnalytics = async () => {
+            setLoadingAnalytics(true);
+            try {
+                // Try formula first, then cask if formula fails
+                let response = await fetch(`https://formulae.brew.sh/api/formula/${packageEntry.name}.json`);
+                
+                if (!response.ok) {
+                    // Try cask API
+                    response = await fetch(`https://formulae.brew.sh/api/cask/${packageEntry.name}.json`);
+                }
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.analytics?.install_on_request) {
+                        setAnalytics(data.analytics);
+                    } else {
+                        setAnalytics(null);
+                    }
+                } else {
+                    setAnalytics(null);
+                }
+            } catch (error) {
+                console.error('Failed to fetch analytics:', error);
+                setAnalytics(null);
+            } finally {
+                setLoadingAnalytics(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, [packageEntry?.name]);
+
+    const formatNumber = (num: number): string => {
+        return num.toLocaleString();
+    };
+
+    const getInstallCount = (period: "30d" | "90d" | "365d"): number => {
+        if (!analytics?.install_on_request?.[period]) return 0;
+        const periodData = analytics.install_on_request[period];
+        const mainPackage = Object.keys(periodData).find(key => !key.includes('--HEAD'));
+        return mainPackage ? periodData[mainPackage] : 0;
+    };
+
     return (
-        <>
-            <p>
-                <strong>{name}</strong>{" "}
-                {packageEntry && loadingDetailsFor === packageEntry.name && (
-                    <span style={{ fontSize: "12px", color: "#888" }}>{t('packageInfo.loading')}</span>
-                )}
-            </p>
-            <p>{t('packageInfo.description')}: {desc}</p>
-            <p>
-                {t('packageInfo.homepage')}:{" "}
-                {isValidUrl(homepage) ? (
-                    <span
-                        onClick={handleHomepageClick}
-                        style={{
-                            color: '#4a9eff',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#6bb3ff';
-                            e.currentTarget.style.textDecoration = 'none';
-                            setIsHomepageHovered(true);
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = '#4a9eff';
-                            e.currentTarget.style.textDecoration = 'underline';
-                            setIsHomepageHovered(false);
-                        }}
-                        title={homepage}
-                    >
-                        {homepage}
-                        {isHomepageHovered && (
-                            <ExternalLink size={14} style={{ color: '#4fc3f7' }} />
-                        )}
-                    </span>
-                ) : (
-                    <span>{homepage}</span>
-                )}
-            </p>
-            {view === "all" ? (
-                <p>{t('packageInfo.status')}: {status}</p>
-            ) : (
-                <p>{t('packageInfo.version')}: {version}</p>
-            )}
-            <p>
-                {t('packageInfo.dependencies')}:{" "}
-                {dependencies.length > 0 ? (
-                    dependencies.map((dep, index) => (
-                        <React.Fragment key={dep}>
-                            {onSelectDependency ? (
-                                <span
-                                    onClick={() => onSelectDependency(dep)}
-                                    style={{
-                                        color: '#4a9eff',
-                                        textDecoration: 'underline',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.color = '#6bb3ff';
-                                        e.currentTarget.style.textDecoration = 'none';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.color = '#4a9eff';
-                                        e.currentTarget.style.textDecoration = 'underline';
-                                    }}
-                                    title={`Click to view ${dep}`}
-                                >
-                                    {dep}
-                                </span>
-                            ) : (
-                                <span>{dep}</span>
+        <div className="package-info-container">
+            <div className="package-info-main">
+                <p>
+                    <strong>{name}</strong>{" "}
+                    {packageEntry && loadingDetailsFor === packageEntry.name && (
+                        <span style={{ fontSize: "12px", color: "#888" }}>{t('packageInfo.loading')}</span>
+                    )}
+                </p>
+                <p>{t('packageInfo.description')}: {desc}</p>
+                <p>
+                    {t('packageInfo.homepage')}:{" "}
+                    {isValidUrl(homepage) ? (
+                        <span
+                            onClick={handleHomepageClick}
+                            style={{
+                                color: '#4a9eff',
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.color = '#6bb3ff';
+                                e.currentTarget.style.textDecoration = 'none';
+                                setIsHomepageHovered(true);
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.color = '#4a9eff';
+                                e.currentTarget.style.textDecoration = 'underline';
+                                setIsHomepageHovered(false);
+                            }}
+                            title={homepage}
+                        >
+                            {homepage}
+                            {isHomepageHovered && (
+                                <ExternalLink size={14} style={{ color: '#4fc3f7' }} />
                             )}
-                            {index < dependencies.length - 1 && ", "}
-                        </React.Fragment>
-                    ))
+                        </span>
+                    ) : (
+                        <span>{homepage}</span>
+                    )}
+                </p>
+                {view === "all" ? (
+                    <p>{t('packageInfo.status')}: {status}</p>
                 ) : (
-                    <span>{t('common.notAvailable')}</span>
+                    <p>{t('packageInfo.version')}: {version}</p>
                 )}
-            </p>
-            <p>{t('packageInfo.conflicts')}: {conflicts}</p>
-        </>
+                <p>
+                    {t('packageInfo.dependencies')}:{" "}
+                    {dependencies.length > 0 ? (
+                        dependencies.map((dep, index) => (
+                            <React.Fragment key={dep}>
+                                {onSelectDependency ? (
+                                    <span
+                                        onClick={() => onSelectDependency(dep)}
+                                        style={{
+                                            color: '#4a9eff',
+                                            textDecoration: 'underline',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.color = '#6bb3ff';
+                                            e.currentTarget.style.textDecoration = 'none';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.color = '#4a9eff';
+                                            e.currentTarget.style.textDecoration = 'underline';
+                                        }}
+                                        title={`Click to view ${dep}`}
+                                    >
+                                        {dep}
+                                    </span>
+                                ) : (
+                                    <span>{dep}</span>
+                                )}
+                                {index < dependencies.length - 1 && ", "}
+                            </React.Fragment>
+                        ))
+                    ) : (
+                        <span>{t('common.notAvailable')}</span>
+                    )}
+                </p>
+                <p>{t('packageInfo.conflicts')}: {conflicts}</p>
+            </div>
+
+            <div className="package-analytics">
+                {loadingAnalytics ? (
+                    <div className="analytics-loading">{t('packageInfo.loadingAnalytics')}</div>
+                ) : analytics ? (
+                    <>
+                        <div className="analytics-header">
+                            <BarChart3 size={16} />
+                            <span>{t('packageInfo.downloadStatistics')}</span>
+                        </div>
+                        <div className="analytics-stats">
+                            <div className="analytics-stat">
+                                <div className="stat-icon">
+                                    <Calendar size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <div className="stat-label">{t('packageInfo.last30Days')}</div>
+                                    <div className="stat-value">{formatNumber(getInstallCount("30d"))}</div>
+                                </div>
+                            </div>
+                            <div className="analytics-stat">
+                                <div className="stat-icon">
+                                    <TrendingUp size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <div className="stat-label">{t('packageInfo.last90Days')}</div>
+                                    <div className="stat-value">{formatNumber(getInstallCount("90d"))}</div>
+                                </div>
+                            </div>
+                            <div className="analytics-stat">
+                                <div className="stat-icon">
+                                    <BarChart3 size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <div className="stat-label">{t('packageInfo.last365Days')}</div>
+                                    <div className="stat-value">{formatNumber(getInstallCount("365d"))}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="analytics-header">
+                            <BarChart3 size={16} />
+                            <span>{t('packageInfo.downloadStatistics')}</span>
+                        </div>
+                        <div className="analytics-stats">
+                            <div className="analytics-stat analytics-stat-placeholder">
+                                <div className="stat-icon">
+                                    <Calendar size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <div className="stat-label">{t('packageInfo.last30Days')}</div>
+                                    <div className="stat-value">--</div>
+                                </div>
+                            </div>
+                            <div className="analytics-stat analytics-stat-placeholder">
+                                <div className="stat-icon">
+                                    <TrendingUp size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <div className="stat-label">{t('packageInfo.last90Days')}</div>
+                                    <div className="stat-value">--</div>
+                                </div>
+                            </div>
+                            <div className="analytics-stat analytics-stat-placeholder">
+                                <div className="stat-icon">
+                                    <BarChart3 size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <div className="stat-label">{t('packageInfo.last365Days')}</div>
+                                    <div className="stat-value">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
     );
 };
 

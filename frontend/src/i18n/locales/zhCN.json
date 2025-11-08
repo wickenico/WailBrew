@@ -70,7 +70,12 @@
     "conflicts": "冲突",
     "installed": "已安装",
     "notInstalled": "未安装",
-    "noSelection": "未选择软件包"
+    "noSelection": "未选择软件包",
+    "downloadStatistics": "下载统计",
+    "last30Days": "最近 30 天",
+    "last90Days": "最近 90 天",
+    "last365Days": "最近 365 天",
+    "loadingAnalytics": "加载统计数据..."
   },
   "tableColumns": {
     "name": "名称",

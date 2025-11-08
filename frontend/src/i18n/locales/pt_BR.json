@@ -70,7 +70,12 @@
     "conflicts": "Conflitos",
     "installed": "Instalado",
     "notInstalled": "Não instalado",
-    "noSelection": "Nenhum pacote selecionado"
+    "noSelection": "Nenhum pacote selecionado",
+    "downloadStatistics": "Estatísticas de download",
+    "last30Days": "Últimos 30 dias",
+    "last90Days": "Últimos 90 dias",
+    "last365Days": "Últimos 365 dias",
+    "loadingAnalytics": "Carregando estatísticas..."
   },
   "tableColumns": {
     "name": "Nome",
