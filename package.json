@@ -1,0 +1,26 @@
+{
+  "name": "wailbrew",
+  "version": "0.7.13",
+  "description": "Manage Homebrew packages with a UI",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wickenico/WailBrew.git"
+  },
+  "author": "Nico Wickersheim <nico.wickersheim@yahoo.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/release-notes-generator": "^12.1.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "semantic-release": "^23.0.0"
+  },
+  "scripts": {
+    "semantic-release": "semantic-release"
+  }
+}
+

@@ -1,0 +1,71 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          { "type": "feat", "release": "minor" },
+          { "type": "fix", "release": "patch" },
+          { "type": "perf", "release": "patch" },
+          { "type": "revert", "release": "patch" },
+          { "type": "docs", "release": false },
+          { "type": "style", "release": false },
+          { "type": "refactor", "release": "patch" },
+          { "type": "test", "release": false },
+          { "type": "build", "release": false },
+          { "type": "ci", "release": false },
+          { "type": "chore", "release": false },
+          { "breaking": true, "release": "major" }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            { "type": "feat", "section": "✨ Features" },
+            { "type": "fix", "section": "🐛 Bug Fixes" },
+            { "type": "perf", "section": "⚡ Performance" },
+            { "type": "revert", "section": "🔙 Reverts" },
+            { "type": "refactor", "section": "♻️ Refactoring" }
+          ]
+        }
+      }
+    ],
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "node -e \"const fs = require('fs'); const pkg = JSON.parse(fs.readFileSync('./frontend/package.json')); pkg.version = '${nextRelease.version}'; fs.writeFileSync('./frontend/package.json', JSON.stringify(pkg, null, 2) + '\\n');\""
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["frontend/package.json", "CHANGELOG.md"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "releases/wailbrew-v${nextRelease.version}.zip",
+            "label": "WailBrew-v${nextRelease.version}.zip"
+          }
+        ]
+      }
+    ]
+  ]
+}
+

@@ -1,0 +1,150 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install
+
+      - name: Determine next version
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx semantic-release --dry-run > semantic-output.txt || true
+          cat semantic-output.txt
+          
+          # Extract version from semantic-release output
+          VERSION=$(grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' semantic-output.txt || echo "")
+          
+          if [ -z "$VERSION" ]; then
+            echo "No new version to release"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "New version: $VERSION"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build application
+        if: steps.semantic.outputs.should_release == 'true'
+        run: |
+          VERSION=${{ steps.semantic.outputs.version }}
+          wails build -platform darwin/universal -ldflags "-X main.Version=$VERSION"
+
+      - name: Import Code-Signing Certificates
+        if: steps.semantic.outputs.should_release == 'true'
+        uses: Apple-Actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATES_P12_PASSWORD }}
+
+      - name: Setup notarization credentials
+        if: steps.semantic.outputs.should_release == 'true'
+        run: |
+          xcrun notarytool store-credentials "wailbrew-notary" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_APP_PASSWORD }}"
+
+      - name: Sign, Notarize and Create Release ZIP
+        if: steps.semantic.outputs.should_release == 'true'
+        env:
+          IDENTITY: "${{ secrets.APPLE_IDENTITY }}"
+          NOTARY_PROFILE: "wailbrew-notary"
+        run: |
+          VERSION=${{ steps.semantic.outputs.version }}
+          chmod +x ./scripts/release.sh
+          ./scripts/release.sh "$VERSION" build/bin/WailBrew.app
+
+      - name: Calculate SHA256
+        if: steps.semantic.outputs.should_release == 'true'
+        id: sha
+        run: |
+          VERSION=${{ steps.semantic.outputs.version }}
+          SHA=$(shasum -a 256 "releases/wailbrew-v${VERSION}.zip" | awk '{print $1}')
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+          echo "SHA256: $SHA"
+
+      - name: Run semantic-release
+        if: steps.semantic.outputs.should_release == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Checkout homebrew-wailbrew repo
+        if: steps.semantic.outputs.should_release == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: wickenico/homebrew-wailbrew
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-wailbrew
+
+      - name: Update Homebrew Cask
+        if: steps.semantic.outputs.should_release == 'true'
+        run: |
+          VERSION=${{ steps.semantic.outputs.version }}
+          SHA=${{ steps.sha.outputs.sha256 }}
+          CASK_FILE="homebrew-wailbrew/Casks/wailbrew.rb"
+          
+          # Update version
+          sed -i '' -E "s/(^ *version \")([^\"]+)(\".*)/\1${VERSION}\3/" "$CASK_FILE"
+          
+          # Update sha256
+          sed -i '' -E "s/(^ *sha256 \")([a-f0-9]+)(\".*)/\1${SHA}\3/" "$CASK_FILE"
+          
+          echo "Updated Cask file:"
+          cat "$CASK_FILE"
+
+      - name: Commit and Push to homebrew-wailbrew
+        if: steps.semantic.outputs.should_release == 'true'
+        working-directory: homebrew-wailbrew
+        run: |
+          VERSION=${{ steps.semantic.outputs.version }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/wailbrew.rb
+          git commit -m "chore: bump wailbrew to ${VERSION}"
+          git push
+
