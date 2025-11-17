@@ -58,6 +58,7 @@ type MenuTranslations struct {
 		VisitGitHub    string `json:"visitGitHub"`
 		ReportBug      string `json:"reportBug"`
 		VisitSubreddit string `json:"visitSubreddit"`
+		SponsorProject string `json:"sponsorProject"`
 		Quit           string `json:"quit"`
 	} `json:"app"`
 	View struct {
@@ -103,6 +104,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "About WailBrew",
@@ -111,6 +113,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "Visit GitHub Repo",
 				ReportBug:      "Report Bug",
 				VisitSubreddit: "Visit Subreddit",
+				SponsorProject: "Sponsor Project",
 				Quit:           "Quit",
 			},
 			View: struct {
@@ -174,6 +177,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "Über WailBrew",
@@ -182,6 +186,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "GitHub Repo besuchen",
 				ReportBug:      "Fehler melden",
 				VisitSubreddit: "Subreddit besuchen",
+				SponsorProject: "Projekt unterstützen",
 				Quit:           "Beenden",
 			},
 			View: struct {
@@ -245,6 +250,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "À propos de WailBrew",
@@ -253,6 +259,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "Visiter le dépôt GitHub",
 				ReportBug:      "Signaler un bug",
 				VisitSubreddit: "Visiter le Subreddit",
+				SponsorProject: "Soutenir le projet",
 				Quit:           "Quitter",
 			},
 			View: struct {
@@ -316,6 +323,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "WailBrew Hakkında",
@@ -324,6 +332,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "GitHub Deposunu Ziyaret Et",
 				ReportBug:      "Hata Bildir",
 				VisitSubreddit: "Subreddit'i Ziyaret Et",
+				SponsorProject: "Projeyi Destekle",
 				Quit:           "Çık",
 			},
 			View: struct {
@@ -387,6 +396,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "关于 WailBrew",
@@ -395,6 +405,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "访问 GitHub 仓库",
 				ReportBug:      "报告 Bug",
 				VisitSubreddit: "访问 Subreddit",
+				SponsorProject: "赞助项目",
 				Quit:           "退出",
 			},
 			View: struct {
@@ -458,6 +469,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "Sobre o WailBrew",
@@ -466,6 +478,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "Visitar Repositório no GitHub",
 				ReportBug:      "Reportar um Bug",
 				VisitSubreddit: "Visitar Subreddit",
+				SponsorProject: "Apoiar o Projeto",
 				Quit:           "Sair",
 			},
 			View: struct {
@@ -529,6 +542,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "О WailBrew",
@@ -537,6 +551,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "Посетить репозиторий на GitHub",
 				ReportBug:      "Сообщить об ошибке",
 				VisitSubreddit: "Посетить Subreddit",
+				SponsorProject: "Поддержать проект",
 				Quit:           "Выход",
 			},
 			View: struct {
@@ -601,6 +616,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub    string `json:"visitGitHub"`
 				ReportBug      string `json:"reportBug"`
 				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
 				Quit           string `json:"quit"`
 			}{
 				About:          "About WailBrew",
@@ -609,6 +625,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				VisitGitHub:    "Visit GitHub Repo",
 				ReportBug:      "Report Bug",
 				VisitSubreddit: "Visit Subreddit",
+				SponsorProject: "Sponsor Project",
 				Quit:           "Quit",
 			},
 			View: struct {
@@ -1217,6 +1234,9 @@ func (a *App) menu() *menu.Menu {
 	})
 	AppSubmenu.AddText(translations.App.VisitSubreddit, nil, func(cd *menu.CallbackData) {
 		a.OpenURL("https://www.reddit.com/r/WailBrew/")
+	})
+	AppSubmenu.AddText(translations.App.SponsorProject, nil, func(cd *menu.CallbackData) {
+		a.OpenURL("https://github.com/sponsors/wickenico")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.App.Quit, keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
