@@ -151,6 +151,9 @@
     "homebrewWebsite": "Homebrew 網站",
     "acknowledgments": "致謝：",
     "acknowledgmentText": "靈感來自 Bruno Philipe 的 {{cakebrew}}。\\n感謝他在原創 Homebrew 圖形化介面上的傑出工作！",
+    "translationTitle": "翻譯貢獻者：",
+    "translationThanks": "衷心感謝所有為翻譯做出貢獻的人！",
+    "improveTranslations": "→ 協助改進翻譯",
     "copyright": "Copyright © 2025 Nico Wickersheim. All rights reserved."
   },
   "language": {

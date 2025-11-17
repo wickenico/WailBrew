@@ -151,6 +151,9 @@
     "homebrewWebsite": "Site Web Homebrew",
     "acknowledgments": "Remerciements :",
     "acknowledgmentText": "Inspiré par {{cakebrew}} de Bruno Philipe.\\nMerci pour l'excellent travail sur l'interface graphique Homebrew originale !",
+    "translationTitle": "Traductions :",
+    "translationThanks": "Un grand merci à tous ceux qui ont contribué aux traductions !",
+    "improveTranslations": "→ Aider à améliorer les traductions",
     "copyright": "Copyright © 2025 Nico Wickersheim. Tous droits réservés."
   },
   "language": {

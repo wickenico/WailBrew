@@ -151,6 +151,9 @@
     "homebrewWebsite": "Сайт Homebrew",
     "acknowledgments": "Благодарности:",
     "acknowledgmentText": "Вдохновлено {{cakebrew}} от Бруно Филипе.\\nСпасибо за отличную работу над оригинальным GUI для Homebrew!",
+    "translationTitle": "Переводы:",
+    "translationThanks": "Огромное спасибо всем, кто внес вклад в переводы!",
+    "improveTranslations": "→ Помочь улучшить переводы",
     "copyright": "Copyright © 2025 Нико Викершайм. Все права защищены."
   },
   "language": {

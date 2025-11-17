@@ -1427,6 +1427,32 @@ html, body {
   transition: color var(--transition);
 }
 
+.about-translations {
+  margin: 24px 0;
+  text-align: left;
+}
+
+.about-translations h4 {
+  font-size: 14px;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+.about-translations p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 8px 0;
+  line-height: 1.6;
+}
+
+.about-contributors {
+  font-size: 13px !important;
+  color: var(--text-tertiary) !important;
+  line-height: 1.8 !important;
+  word-wrap: break-word;
+}
+
 .about-acknowledgments a:hover {
   color: var(--accent-hover);
   text-decoration: underline;

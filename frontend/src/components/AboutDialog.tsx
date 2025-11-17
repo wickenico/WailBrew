@@ -121,6 +121,25 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                             </p>
                         </div>
                         
+                        <div className="about-translations">
+                            <h4>{t('about.translationTitle')}</h4>
+                            <p>{t('about.translationThanks')}</p>
+                            <p className="about-contributors">
+                                egesucu, ultrazg, viniciusmi00, appleboy
+                            </p>
+                            <p style={{ marginTop: '12px' }}>
+                                <span 
+                                    className="clickable-link"
+                                    onClick={() => handleLinkClick("https://github.com/wickenico/WailBrew/discussions/129")}
+                                    onKeyDown={(e) => handleKeyDown(e, "https://github.com/wickenico/WailBrew/discussions/129")}
+                                    role="button"
+                                    tabIndex={0}
+                                >
+                                    {t('about.improveTranslations')}
+                                </span>
+                            </p>
+                        </div>
+                        
                         <div className="about-copyright">
                             <p>{t('about.copyright')}</p>
                         </div>
