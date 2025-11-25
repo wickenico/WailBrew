@@ -83,6 +83,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## 🐛 Troubleshooting
 ### Common Issues
+- **Linux running problem**: Check this [post](https://github.com/wickenico/WailBrew/issues/138#issue-3660201918) from [dsmyth](https://github.com/dsmyth), thank you! 
 - **Homebrew not found**: Ensure Homebrew is correctly installed
 - **Permission errors**: May need to run the app with appropriate permissions
 - **Slow performance**: Close other resource-intensive applications
