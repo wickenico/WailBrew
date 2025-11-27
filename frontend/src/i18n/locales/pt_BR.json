@@ -8,6 +8,7 @@
     "all": "Fórmulas",
     "leaves": "Leaves",
     "repositories": "Repositórios",
+    "homebrew": "Homebrew",
     "doctor": "Diagnóstico",
     "cleanup": "Limpeza",
     "settings": "Configurações"
@@ -19,6 +20,7 @@
     "allFormulas": "Fórmulas",
     "leaves": "Leaves",
     "repositories": "Repositórios",
+    "homebrew": "Homebrew",
     "homebrewDoctor": "Diagnóstico do Homebrew",
     "homebrewCleanup": "Limpeza do Homebrew"
   },
@@ -92,8 +94,14 @@
     "allFormulas": "Todas as fórmulas do Homebrew disponíveis. O destaque em verde mostra as fórmulas instaladas.",
     "leaves": "Leaves são fórmulas que não são necessárias como dependências por outras fórmulas instaladas.",
     "repositories": "Repositórios (Taps) são fontes para fórmulas. Eles contêm pacotes adicionais além do repositório padrão.",
+    "homebrew": "Gerencie e atualize o próprio Homebrew. Verifique a versão instalada e atualize o core do Homebrew quando uma nova versão estiver disponível.",
     "doctor": "O Diagnóstico é um recurso do Homebrew que pode detectar as causas mais comuns de erros.",
     "cleanup": "A Limpeza remove downloads desatualizados e arquivos em cache para liberar espaço em disco."
+  },
+  "homebrew": {
+    "currentVersion": "Versão Atual",
+    "upToDate": "Atualizado",
+    "updateAvailable": "Atualização disponível: v{{version}}"
   },
   "cleanup": {
     "estimatedSpace": "Espaço estimado para liberar: {{size}}",
@@ -237,8 +245,20 @@
     "currentVersionIs": "A versão {{version}} é a versão atual.",
     "tryAgain": "Tentar novamente",
     "gotIt": "Entendi",
+    "downloadAndInstall": "Download & Install",
+    "installing": "Installing...",
+    "updateInstalled": "Atualização Instalada!",
+    "restartMessage": "A atualização foi instalada com sucesso. Por favor, reinicie o WailBrew para usar a nova versão.",
+    "restartNow": "Reiniciar Agora",
     "rateLimitError": "Limite de taxa da API do GitHub excedido. A verificação de atualizações usa a API do GitHub que tem um limite para solicitações não autenticadas.",
     "rateLimitAdvice": "Por favor, aguarde alguns minutos e tente novamente. O limite de taxa é redefinido a cada hora."
+  },
+  "restartDialog": {
+    "title": "É necessário reiniciar.",
+    "message": "O WailBrew foi atualizado.!",
+    "description": "O WailBrew foi atualizado com sucesso. Por favor, reinicie o aplicativo para usar a nova versão.",
+    "restartNow": "Reiniciar Agora",
+    "later": "Mais tarde"
   },
   "toast": {
     "updateAvailable": "Atualização disponível!",
