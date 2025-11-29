@@ -1817,6 +1817,13 @@ func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
 		NewCasks:    []string{},
 	}
 
+	// If knownPackages is empty, this is the first call - initialize it
+	// and don't report all packages as "new"
+	if len(a.knownPackages) == 0 {
+		a.knownPackages = currentPackages
+		return newInfo, nil
+	}
+
 	// Find new packages
 	for pkg := range currentPackages {
 		if !a.knownPackages[pkg] {
