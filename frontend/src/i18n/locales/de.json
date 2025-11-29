@@ -245,8 +245,20 @@
     "currentVersionIs": "Version {{version}} ist die aktuelle Version.",
     "tryAgain": "Erneut versuchen",
     "gotIt": "Verstanden",
+    "downloadAndInstall": "Herunterladen & Installieren",
+    "installing": "Installiere...",
+    "updateInstalled": "Update installiert!",
+    "restartMessage": "Das Update wurde erfolgreich installiert. Bitte starten Sie WailBrew neu, um die neue Version zu verwenden.",
+    "restartNow": "Jetzt neu starten",
     "rateLimitError": "GitHub API-Rate-Limit überschritten. Die Update-Prüfung verwendet GitHubs API, die ein Limit für nicht authentifizierte Anfragen hat.",
     "rateLimitAdvice": "Bitte warten Sie einige Minuten und versuchen Sie es erneut. Das Rate-Limit wird stündlich zurückgesetzt."
+  },
+  "restartDialog": {
+    "title": "Neustart erforderlich",
+    "message": "WailBrew wurde aktualisiert!",
+    "description": "WailBrew wurde erfolgreich aktualisiert. Bitte starten Sie die Anwendung neu, um die neue Version zu verwenden.",
+    "restartNow": "Jetzt neu starten",
+    "later": "Später"
   },
   "toast": {
     "updateAvailable": "Update verfügbar!",

@@ -8,6 +8,7 @@
     "all": "Formulae",
     "leaves": "独立包",
     "repositories": "软件源",
+    "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "settings": "软件设置"
@@ -19,6 +20,7 @@
     "allFormulas": "Formulae",
     "leaves": "独立包",
     "repositories": "软件源",
+    "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup"
   },
@@ -92,8 +94,14 @@
     "allFormulas": "所有可用的 Homebrew formulae。已安装的 Formulae 正以绿色高亮显示。",
     "leaves": "独立包是未被其他已安装 Formulae 依赖的 Formulae。",
     "repositories": "软件源（Taps）是 Formulae 的来源。它们除了包含标准存储库外，还包含其他软件包。",
+    "homebrew": "管理和更新 Homebrew 本身。检查已安装的版本，并在有新版本可用时更新 Homebrew 核心。",
     "doctor": "Doctor 是 Homebrew 的一项内置功能，可以检测最常见的错误原因。",
     "cleanup": "Cleanup 会删除已下载和缓存的文件以释放磁盘空间。"
+  },
+  "homebrew": {
+    "currentVersion": "当前版本",
+    "upToDate": "已是最新",
+    "updateAvailable": "有可用更新: v{{version}}"
   },
   "cleanup": {
     "estimatedSpace": "预计可释放空间：{{size}}",
@@ -237,8 +245,20 @@
     "currentVersionIs": "当前版本 {{version}}",
     "tryAgain": "重试",
     "gotIt": "知道了",
+    "downloadAndInstall": "下载并安装",
+    "installing": "安装中...",
+    "updateInstalled": "更新已安装！",
+    "restartMessage": "更新已成功安装。请重启 WailBrew 以使用新版本。",
+    "restartNow": "立即重启",
     "rateLimitError": "GitHub API 速率限制已超出。更新检查使用 GitHub API，该 API 对未经身份验证的请求有限制。",
     "rateLimitAdvice": "请等待几分钟后重试。速率限制每小时重置一次。"
+  },
+  "restartDialog": {
+    "title": "需要重启",
+    "message": "WailBrew 已更新！",
+    "description": "WailBrew 已成功更新。请重启应用程序以使用新版本。",
+    "restartNow": "立即重启",
+    "later": "稍后"
   },
   "toast": {
     "updateAvailable": "有可用的更新！",

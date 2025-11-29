@@ -8,6 +8,7 @@
     "all": "Tüm Formüller",
     "leaves": "Yapraklar",
     "repositories": "Depolar",
+    "homebrew": "Homebrew",
     "doctor": "Doktor",
     "cleanup": "Temizlik",
     "settings": "Ayarlar"
@@ -19,6 +20,7 @@
     "allFormulas": "Formül",
     "leaves": "Yaprak",
     "repositories": "Depo",
+    "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doktoru",
     "homebrewCleanup": "Homebrew Temizliği"
   },
@@ -92,8 +94,14 @@
     "allFormulas": "Tüm Homebrew formülleri mevcut. Yeşil olanlar hazırda yüklü olanları gösteriyor.",
     "leaves": "Yapraklar, yüklenmiş diğer formüllere bağlı olmayan formüllerdir.",
     "repositories": "Depolar (Taps) formül kaynaklarıdır. Bunlar standart depoların yanısıra ek paketleri içerir.",
+    "homebrew": "Homebrew'i yönetin ve güncelleyin. Yüklü sürümü kontrol edin ve yeni bir sürüm mevcut olduğunda Homebrew çekirdeğini güncelleyin.",
     "doctor": "Doktor, en sık karşılaşılan hataları saptayan bir Homebrew özelliğidir.",
     "cleanup": "Temizlik eskimiş indirmeleri ve önbelleklenmiş dosyaları disk alanı açmak için siler."
+  },
+  "homebrew": {
+    "currentVersion": "Mevcut Sürüm",
+    "upToDate": "Güncel",
+    "updateAvailable": "Güncelleme mevcut: v{{version}}"
   },
   "cleanup": {
     "estimatedSpace": "Tahmini boşaltılacak alan: {{size}}",
@@ -237,8 +245,20 @@
     "currentVersionIs": "Sürüm {{version}} güncel sürümdür.",
     "tryAgain": "Tekrar dene",
     "gotIt": "Anlaşıldı",
+    "downloadAndInstall": "İndir ve Yükle",
+    "installing": "Yükleniyor...",
+    "updateInstalled": "Güncelleme Yüklendi!",
+    "restartMessage": "Güncelleme başarıyla yüklendi. Yeni sürümü kullanmak için lütfen WailBrew'i yeniden başlatın.",
+    "restartNow": "Şimdi Yeniden Başlat",
     "rateLimitError": "GitHub API hız limiti aşıldı. Güncelleme kontrolü, kimlik doğrulaması yapılmamış istekler için sınırlı olan GitHub API'sini kullanır.",
     "rateLimitAdvice": "Lütfen birkaç dakika bekleyin ve tekrar deneyin. Hız limiti her saat başı sıfırlanır."
+  },
+  "restartDialog": {
+    "title": "Yeniden Başlatma Gerekli",
+    "message": "WailBrew güncellendi!",
+    "description": "WailBrew başarıyla güncellendi. Yeni sürümü kullanmak için lütfen uygulamayı yeniden başlatın.",
+    "restartNow": "Şimdi Yeniden Başlat",
+    "later": "Daha Sonra"
   },
   "toast": {
     "updateAvailable": "Güncelleme var!",
