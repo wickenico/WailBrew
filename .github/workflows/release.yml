@@ -1,0 +1,163 @@
+name: WailBrew Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: macos-latest
+    env:
+      NOTARY_PROFILE: wailbrew-notary
+
+    steps:
+      - name: Checkout WailBrew
+        uses: actions/checkout@v4
+
+      - name: Checkout homebrew-wailbrew tap
+        uses: actions/checkout@v4
+        with:
+          repository: wickenico/homebrew-wailbrew
+          path: homebrew-wailbrew
+          token: ${{ secrets.HOMEBREW_TAP_PAT }}
+
+      - name: Import Apple Developer ID certificate
+        env:
+          MACOS_CERT_P12_BASE64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+        run: |
+          # Decode certificate from base64
+          echo "$MACOS_CERT_P12_BASE64" | base64 --decode > certificate.p12
+
+          # Create a dedicated keychain
+          security create-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$MACOS_CERT_PASSWORD" -T /usr/bin/codesign
+
+          # Use the new keychain
+          security list-keychains -d user -s build.keychain login.keychain
+          security default-keychain -d user -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+
+      - name: Configure notarytool profile
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          xcrun notarytool store-credentials "$NOTARY_PROFILE" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD"
+
+      - name: Compute version and previous tag
+        id: meta
+        run: |
+          # Version is taken from frontend/package.json via get-version.js
+          VERSION=$(node ./get-version.js)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Previous tag (for Full Changelog link)
+          if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+            PREV_TAG=$(git describe --tags --abbrev=0)
+          else
+            PREV_TAG=""
+          fi
+          echo "prev_tag=$PREV_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build, sign, notarize and update cask
+        # This uses your existing Makefile + scripts/release.sh
+        # and passes CASK_FILE so the tap is auto-bumped.
+        env:
+          NOTARY_PROFILE: ${{ env.NOTARY_PROFILE }}
+        run: |
+          CASK_FILE="$GITHUB_WORKSPACE/homebrew-wailbrew/Casks/wailbrew.rb" \
+          make release-universal
+
+      - name: Commit and push updated cask
+        working-directory: homebrew-wailbrew
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git status --porcelain | grep -q "Casks/wailbrew.rb"; then
+            git add Casks/wailbrew.rb
+            git commit -m "Bump wailbrew to ${{ steps.meta.outputs.version }}"
+            git push
+          else
+            echo "No changes in Casks/wailbrew.rb (nothing to commit)."
+          fi
+
+      - name: Create tag for this release
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: Generate release notes body
+        id: notes
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          PREV_TAG="${{ steps.meta.outputs.prev_tag }}"
+
+          cat > RELEASE_NOTES.md <<EOF
+          Release v${VERSION}
+          
+          ⬆️ Upgrade Steps
+          ----------------
+          
+          brew update
+          brew upgrade --cask wailbrew
+          
+          ✨ New Features
+          --------------
+          
+          🐛 Bug Fixes
+          ------------
+          
+          💎 Improvements
+          ---------------
+          
+          📦 Package Updates
+          ------------------
+          
+          EOF
+          
+          # Collect package updates (Dependabot) since previous tag
+          if [ -n "$PREV_TAG" ]; then
+          RANGE="${PREV_TAG}...HEAD"
+          else
+          RANGE="HEAD"
+          fi
+          
+          PKG_COMMITS=$(git log $RANGE --oneline --grep "dependabot" || true)
+          
+          if [ -n "$PKG_COMMITS" ]; then
+          echo "" >> RELEASE_NOTES.md
+          echo "$PKG_COMMITS" | while read -r line; do
+          echo "* $line" >> RELEASE_NOTES.md
+          done
+          else
+          echo "" >> RELEASE_NOTES.md
+          echo "* None." >> RELEASE_NOTES.md
+          fi
+          
+          echo "" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "* * *" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          if [ -n "$PREV_TAG" ]; then
+        echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_TAG}...v${VERSION}" >> RELEASE_NOTES.md
+          else
+        echo "**Full Changelog Commits**: https://github.com/${GITHUB_REPOSITORY}/commits/v${VERSION}" >> RELEASE_NOTES.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.meta.outputs.version }}
+          name: v${{ steps.meta.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          files: releases/wailbrew-v${{ steps.meta.outputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
