@@ -60,6 +60,15 @@ jobs:
           # Ensure Go bin is on PATH for this job
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'   # or 20, any modern LTS is fine
+
+      - name: Install pnpm
+        run: |
+          npm install -g pnpm
+
       - name: Compute version and previous tag
         id: meta
         run: |
