@@ -10,6 +10,9 @@ on:
         description: 'SHA256 of wailbrew-v<version>.zip'
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -62,12 +65,6 @@ jobs:
           git add Casks/wailbrew.rb
           git commit -m "Bump wailbrew to ${{ github.event.inputs.version }}" || echo "No changes to commit"
           git push
-
-      - name: Create tag in WailBrew
-        run: |
-          VERSION="${{ github.event.inputs.version }}"
-          git tag "v${VERSION}"
-          git push origin "v${VERSION}"
 
       - name: Generate release notes body
         run: |
