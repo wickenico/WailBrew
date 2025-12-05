@@ -145,13 +145,8 @@ jobs:
           echo "" >> RELEASE_NOTES.md
           echo "* * *" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
+          echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_TAG}...v${VERSION}" >> RELEASE_NOTES.md
           
-          if [ -n "$PREV_TAG" ]; then
-        echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_TAG}...v${VERSION}" >> RELEASE_NOTES.md
-          else
-        echo "**Full Changelog Commits**: https://github.com/${GITHUB_REPOSITORY}/commits/v${VERSION}" >> RELEASE_NOTES.md
-          fi
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
