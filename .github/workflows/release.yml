@@ -20,6 +20,9 @@ jobs:
     steps:
       - name: Checkout WailBrew
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Checkout homebrew-wailbrew tap
         uses: actions/checkout@v6
@@ -34,12 +37,28 @@ jobs:
           VERSION="${{ github.event.inputs.version }}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-          if git describe --tags --abbrev=0 >/dev/null 2>&1; then
-            PREV_TAG=$(git describe --tags --abbrev=0)
-          else
-            PREV_TAG=""
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            echo "Error: No previous tag found. Cannot generate release notes."
+            exit 1
           fi
           echo "prev_tag=$PREV_TAG" >> "$GITHUB_OUTPUT"
+          
+          # Generate release notes from git commits
+          RELEASE_NOTES=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse)
+          
+          # If no commits found, use a default message
+          if [ -z "$RELEASE_NOTES" ]; then
+            RELEASE_NOTES="No changes detected"
+          fi
+          
+          # Generate changelog link
+          CHANGELOG_LINK="**Full Changelog**: https://github.com/wickenico/WailBrew/compare/${PREV_TAG}...v${VERSION}"
+          
+          echo "release_notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$RELEASE_NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "changelog_link=$CHANGELOG_LINK" >> "$GITHUB_OUTPUT"
 
       - name: Update Homebrew cask
         working-directory: homebrew-wailbrew
@@ -66,12 +85,17 @@ jobs:
           git commit -m "Bump wailbrew to ${{ github.event.inputs.version }}" || echo "No changes to commit"
           git push
 
-      - name: Create GitHub Release (auto notes)
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: v${{ github.event.inputs.version }}
-          generate_release_notes: true
+          body: |
+            ## Changes
+            
+            ${{ steps.meta.outputs.release_notes }}
+            
+            ${{ steps.meta.outputs.changelog_link }}
           files: releases/wailbrew-v${{ github.event.inputs.version }}.zip
           fail_on_unmatched_files: false
         env:
