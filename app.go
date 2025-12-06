@@ -23,7 +23,7 @@ import (
 var Version = "0.dev"
 
 // Standard PATH and locale for brew commands
-const brewEnvPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+const brewEnvPath = "PATH=/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin"
 const brewEnvLang = "LANG=en_US.UTF-8"
 const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
 const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
@@ -2562,10 +2562,24 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 
 func (a *App) RunBrewDoctor() string {
 	output, err := a.runBrewCommand("doctor")
+	outputStr := string(output)
+
+	// brew doctor exits with status 1 when there are warnings, which is normal behavior
+	// Check if the output contains the standard brew doctor warning preamble
+	// If it does, this is expected output and should be displayed as-is
 	if err != nil {
-		return fmt.Sprintf("Error running brew doctor: %v\n\nOutput:\n%s", err, string(output))
+		// Check if this is a real error (timeout, command not found, etc.) or just warnings
+		// Real errors typically don't contain the standard brew doctor output
+		if strings.Contains(outputStr, "Please note that these warnings are just used to help the Homebrew maintainers") ||
+			strings.Contains(outputStr, "Warning:") ||
+			strings.Contains(outputStr, "Your system is ready to brew") {
+			// This is valid brew doctor output with warnings, return it as-is
+			return outputStr
+		}
+		// This is a real error, show error message
+		return fmt.Sprintf("Error running brew doctor: %v\n\nOutput:\n%s", err, outputStr)
 	}
-	return string(output)
+	return outputStr
 }
 
 // GetBrewCleanupDryRun runs brew cleanup --dry-run and returns the estimated space that can be freed
