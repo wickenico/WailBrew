@@ -61,75 +61,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git status
+
           git add Casks/wailbrew.rb
           git commit -m "Bump wailbrew to ${{ github.event.inputs.version }}" || echo "No changes to commit"
           git push
 
-      - name: Generate release notes body
-        run: |
-          VERSION="${{ github.event.inputs.version }}"
-          PREV_TAG="${{ steps.meta.outputs.prev_tag }}"
-
-          cat > RELEASE_NOTES.md <<EOF
-          Release v${VERSION}
-
-          ⬆️ Upgrade Steps
-          ----------------
-
-          brew update
-          brew upgrade --cask wailbrew
-
-          ✨ New Features
-          --------------
-
-          🐛 Bug Fixes
-          ------------
-
-          💎 Improvements
-          ---------------
-
-          📦 Package Updates
-          ------------------
-
-          EOF
-
-          # Collect package updates (Dependabot) since previous tag
-          if [ -n "$PREV_TAG" ]; then
-            RANGE="${PREV_TAG}...HEAD"
-          else
-            RANGE="HEAD"
-          fi
-
-          PKG_COMMITS=$(git log $RANGE --oneline --grep "dependabot" || true)
-
-          if [ -n "$PKG_COMMITS" ]; then
-            echo "" >> RELEASE_NOTES.md
-            echo "$PKG_COMMITS" | while read -r line; do
-              echo "* $line" >> RELEASE_NOTES.md
-            done
-          else
-            echo "" >> RELEASE_NOTES.md
-            echo "* None." >> RELEASE_NOTES.md
-          fi
-
-          echo "" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "* * *" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-
-          if [ -n "$PREV_TAG" ]; then
-            echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_TAG}...v${VERSION}" >> RELEASE_NOTES.md
-          else
-            echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/commits/v${VERSION}" >> RELEASE_NOTES.md
-          fi
-
-      - name: Create GitHub Release
+      - name: Create GitHub Release (auto notes)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: v${{ github.event.inputs.version }}
-          body_path: RELEASE_NOTES.md
+          generate_release_notes: true
           files: releases/wailbrew-v${{ github.event.inputs.version }}.zip
           fail_on_unmatched_files: false
         env:
