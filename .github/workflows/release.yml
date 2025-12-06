@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout WailBrew
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout homebrew-wailbrew tap
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: wickenico/homebrew-wailbrew
           path: homebrew-wailbrew
