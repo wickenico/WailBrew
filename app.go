@@ -2582,6 +2582,52 @@ func (a *App) RunBrewDoctor() string {
 	return outputStr
 }
 
+// GetDeprecatedFormulae parses the brew doctor output and returns a list of deprecated formulae
+func (a *App) GetDeprecatedFormulae(doctorOutput string) []string {
+	var deprecated []string
+
+	// Look for the deprecated formulae section
+	// Pattern: "Warning: Some installed formulae are deprecated or disabled."
+	// Followed by: "You should find replacements for the following formulae:"
+	// Then a list of formulae, one per line, indented with spaces
+	lines := strings.Split(doctorOutput, "\n")
+	inDeprecatedSection := false
+
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+
+		// Check if we're entering the deprecated section
+		if strings.Contains(trimmed, "Some installed formulae are deprecated or disabled") ||
+			strings.Contains(trimmed, "You should find replacements for the following formulae") {
+			inDeprecatedSection = true
+			continue
+		}
+
+		// If we're in the deprecated section and the line starts with spaces (indented),
+		// it's likely a formula name
+		if inDeprecatedSection {
+			// Check if line is indented (starts with spaces) and contains a formula name
+			if strings.HasPrefix(line, "  ") && trimmed != "" {
+				// Extract formula name (remove leading spaces and any trailing content)
+				formula := strings.TrimSpace(trimmed)
+				// Remove any trailing colon or other punctuation
+				formula = strings.TrimRight(formula, ":")
+				if formula != "" {
+					deprecated = append(deprecated, formula)
+				}
+			} else if trimmed == "" {
+				// Empty line might be separator, continue
+				continue
+			} else if !strings.HasPrefix(line, " ") {
+				// Line doesn't start with space, we've left the deprecated section
+				break
+			}
+		}
+	}
+
+	return deprecated
+}
+
 // GetBrewCleanupDryRun runs brew cleanup --dry-run and returns the estimated space that can be freed
 func (a *App) GetBrewCleanupDryRun() (string, error) {
 	output, err := a.runBrewCommand("cleanup", "--dry-run")

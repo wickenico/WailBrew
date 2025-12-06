@@ -28,6 +28,7 @@ import {
     UpdateHomebrew,
     GetSessionLogs,
     GetBrewCleanupDryRun,
+    GetDeprecatedFormulae,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -98,6 +99,7 @@ const WailBrewApp = () => {
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
+    const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [homebrewLog, setHomebrewLog] = useState<string>("");
     const [homebrewVersion, setHomebrewVersion] = useState<string>("");
     const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{isUpToDate: boolean | null, latestVersion: string | null}>({isUpToDate: null, latestVersion: null});
@@ -906,6 +908,12 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("packageUninstallComplete", async (finalMessage: string) => {
             // Update the package list after successful uninstall
             await handleRefreshPackages();
+            
+            // If we're on the doctor view, refresh deprecated formulae
+            if (view === "doctor" && doctorLog) {
+                const deprecated = await GetDeprecatedFormulae(doctorLog);
+                setDeprecatedFormulae(deprecated || []);
+            }
 
             setIsUninstallRunning(false);
             
@@ -1644,11 +1652,23 @@ const WailBrewApp = () => {
                 {view === "doctor" && (
                     <DoctorView
                         doctorLog={doctorLog}
-                        onClearLog={() => setDoctorLog("")}
+                        deprecatedFormulae={deprecatedFormulae}
+                        onClearLog={() => {
+                            setDoctorLog("");
+                            setDeprecatedFormulae([]);
+                        }}
                         onRunDoctor={async () => {
                             setDoctorLog(t('dialogs.runningDoctor'));
+                            setDeprecatedFormulae([]);
                             const result = await RunBrewDoctor();
                             setDoctorLog(result);
+                            // Parse deprecated formulae from the output
+                            const deprecated = await GetDeprecatedFormulae(result);
+                            setDeprecatedFormulae(deprecated || []);
+                        }}
+                        onUninstallDeprecated={async (formula: string) => {
+                            setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
+                            setShowConfirm(true);
                         }}
                     />
                 )}

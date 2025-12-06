@@ -22,7 +22,8 @@
     "repositories": "Репозитории",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Диагностика Homebrew",
-    "homebrewCleanup": "Очистка Homebrew"
+    "homebrewCleanup": "Очистка Homebrew",
+    "deprecatedFormulae": "Устаревшие пакеты"
   },
   "search": {
     "placeholder": "Поиск...",
@@ -53,7 +54,8 @@
     "yesUpdateSelected": "Да, обновить {{count}} выбранных",
     "ok": "ОК",
     "close": "Закрыть",
-    "updateHomebrew": "Обновить Homebrew"
+    "updateHomebrew": "Обновить Homebrew",
+    "uninstallDeprecated": "Удалить устаревший пакет \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} из {{total}} выбрано"

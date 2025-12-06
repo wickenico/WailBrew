@@ -22,7 +22,8 @@
     "repositories": "軟體庫",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew 診斷",
-    "homebrewCleanup": "Homebrew 清理"
+    "homebrewCleanup": "Homebrew 清理",
+    "deprecatedFormulae": "已棄用的套件"
   },
   "search": {
     "placeholder": "搜尋...",
@@ -53,7 +54,8 @@
     "yesUpdateSelected": "是，更新 {{count}} 個已選",
     "ok": "確定",
     "close": "關閉",
-    "updateHomebrew": "更新 Homebrew"
+    "updateHomebrew": "更新 Homebrew",
+    "uninstallDeprecated": "解除安裝已棄用的套件 \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "已選 {{count}}/{{total}}"

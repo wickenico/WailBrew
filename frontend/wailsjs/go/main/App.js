@@ -70,6 +70,10 @@ export function GetCurrentLanguage() {
   return window['go']['main']['App']['GetCurrentLanguage']();
 }
 
+export function GetDeprecatedFormulae(arg1) {
+  return window['go']['main']['App']['GetDeprecatedFormulae'](arg1);
+}
+
 export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }

@@ -22,7 +22,8 @@
     "repositories": "Depo",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doktoru",
-    "homebrewCleanup": "Homebrew Temizliği"
+    "homebrewCleanup": "Homebrew Temizliği",
+    "deprecatedFormulae": "Kullanımdan Kaldırılan Formüller"
   },
   "search": {
     "placeholder": "Ara...",
@@ -53,7 +54,8 @@
     "yesUpdateSelected": "Evet, {{count}} seçiliyi güncelle",
     "ok": "Ok",
     "close": "Kapat",
-    "updateHomebrew": "Homebrew'i güncelle"
+    "updateHomebrew": "Homebrew'i güncelle",
+    "uninstallDeprecated": "Kullanımdan kaldırılan formül \"{{name}}\" kaldır"
   },
   "multiSelect": {
     "selectedCount": "{{total}} içinden {{count}} seçildi"

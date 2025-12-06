@@ -22,7 +22,8 @@
     "repositories": "软件源",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
-    "homebrewCleanup": "Homebrew Cleanup"
+    "homebrewCleanup": "Homebrew Cleanup",
+    "deprecatedFormulae": "已弃用的包"
   },
   "search": {
     "placeholder": "搜索...",
@@ -53,7 +54,8 @@
     "yesUpdateSelected": "是，更新 {{count}} 个已选",
     "ok": "Ok",
     "close": "关闭",
-    "updateHomebrew": "更新 Homebrew"
+    "updateHomebrew": "更新 Homebrew",
+    "uninstallDeprecated": "卸载已弃用的包 \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "已选 {{count}}/{{total}}"

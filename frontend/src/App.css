@@ -1159,6 +1159,88 @@ html, body {
   color: var(--text-secondary);
 }
 
+.deprecated-formulae-section {
+  background: rgba(255, 152, 0, 0.08);
+  border: 2px solid rgba(255, 152, 0, 0.2);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--glass-shadow);
+}
+
+.deprecated-formulae-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.deprecated-formulae-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.deprecated-count {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.deprecated-formulae-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deprecated-formula-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 152, 0, 0.15);
+  border-radius: calc(var(--radius) * 0.8);
+  transition: all var(--transition);
+}
+
+.deprecated-formula-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 152, 0, 0.3);
+}
+
+.deprecated-formula-name {
+  font-family: monospace;
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.deprecated-uninstall-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(229, 115, 115, 0.1);
+  border: 1px solid rgba(229, 115, 115, 0.3);
+  color: #e57373;
+  padding: 6px 12px;
+  border-radius: calc(var(--radius) * 0.7);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all var(--transition);
+}
+
+.deprecated-uninstall-button:hover {
+  background: rgba(229, 115, 115, 0.2);
+  border-color: #ef5350;
+  color: #ef5350;
+  transform: scale(1.05);
+}
+
 .log-output {
   background: rgba(30,34,40,0.85);
   border: 1px solid var(--glass-border-strong);

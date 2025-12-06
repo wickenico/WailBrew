@@ -22,7 +22,8 @@
     "repositories": "Repositories",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
-    "homebrewCleanup": "Homebrew Cleanup"
+    "homebrewCleanup": "Homebrew Cleanup",
+    "deprecatedFormulae": "Veraltete Formeln"
   },
   "search": {
     "placeholder": "Suchen...",
@@ -53,7 +54,8 @@
     "yesUpdateSelected": "Ja, {{count}} ausgewählte aktualisieren",
     "ok": "Ok",
     "close": "Schließen",
-    "updateHomebrew": "Homebrew aktualisieren"
+    "updateHomebrew": "Homebrew aktualisieren",
+    "uninstallDeprecated": "Veraltete Formel \"{{name}}\" deinstallieren"
   },
   "multiSelect": {
     "selectedCount": "{{count}} von {{total}} ausgewählt"
