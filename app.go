@@ -81,6 +81,7 @@ type MenuTranslations struct {
 		ExportFailed    string `json:"exportFailed"`
 		ExportMessage   string `json:"exportMessage"`
 		ViewSessionLogs string `json:"viewSessionLogs"`
+		RefreshPackages string `json:"refreshPackages"`
 	} `json:"tools"`
 	Help struct {
 		Title        string `json:"title"`
@@ -148,6 +149,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Tools",
 				ExportBrewfile:  "Export Brewfile...",
@@ -155,6 +157,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed:    "Export Failed",
 				ExportMessage:   "Brewfile exported successfully to:\n%s",
 				ViewSessionLogs: "View Session Logs...",
+				RefreshPackages: "Refresh Packages",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -221,6 +224,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Werkzeuge",
 				ExportBrewfile:  "Brewfile exportieren...",
@@ -228,6 +232,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed:    "Export Fehlgeschlagen",
 				ExportMessage:   "Brewfile erfolgreich exportiert nach:\n%s",
 				ViewSessionLogs: "Sitzungsprotokolle anzeigen...",
+				RefreshPackages: "Pakete aktualisieren",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -294,6 +299,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Outils",
 				ExportBrewfile:  "Exporter Brewfile...",
@@ -301,6 +307,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed:    "Échec de l'Export",
 				ExportMessage:   "Brewfile exporté avec succès vers :\n%s",
 				ViewSessionLogs: "Afficher les journaux de session...",
+				RefreshPackages: "Actualiser les paquets",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -367,12 +374,14 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Araçlar",
 				ExportBrewfile:  "Brewfile Dışa Aktar...",
 				ExportSuccess:   "Dışa Aktarma Başarılı",
 				ExportFailed:    "Dışa Aktarma Başarısız",
 				ExportMessage:   "Brewfile başarıyla şuraya aktarıldı:\n%s",
+				RefreshPackages: "Paketleri Yenile",
 				ViewSessionLogs: "Oturum Günlüklerini Görüntüle...",
 			},
 			Help: struct {
@@ -440,12 +449,14 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "工具",
 				ExportBrewfile:  "导出 Brewfile...",
 				ExportSuccess:   "导出成功",
 				ExportFailed:    "导出失败",
 				ExportMessage:   "Brewfile 已成功导出到:\n%s",
+				RefreshPackages: "刷新软件包",
 				ViewSessionLogs: "查看会话日志...",
 			},
 			Help: struct {
@@ -513,6 +524,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Ferramentas",
 				ExportBrewfile:  "Exportar Brewfile...",
@@ -520,6 +532,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed:    "Falha na Exportação",
 				ExportMessage:   "Brewfile exportado com sucesso para:\n%s",
 				ViewSessionLogs: "Ver Registros de Sessão...",
+				RefreshPackages: "Atualizar Pacotes",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -586,6 +599,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Инструменты",
 				ExportBrewfile:  "Экспортировать Brewfile...",
@@ -593,6 +607,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed:    "Не удалось экспортировать",
 				ExportMessage:   "Brewfile успешно экспортирован в:\n%s",
 				ViewSessionLogs: "Просмотр журналов сеанса...",
+				RefreshPackages: "Обновить пакеты",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -660,6 +675,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed    string `json:"exportFailed"`
 				ExportMessage   string `json:"exportMessage"`
 				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
 			}{
 				Title:           "Tools",
 				ExportBrewfile:  "Export Brewfile...",
@@ -667,6 +683,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				ExportFailed:    "Export Failed",
 				ExportMessage:   "Brewfile exported successfully to:\n%s",
 				ViewSessionLogs: "View Session Logs...",
+				RefreshPackages: "Refresh Packages",
 			},
 			Help: struct {
 				Title        string `json:"title"`
@@ -1353,6 +1370,10 @@ func (a *App) menu() *menu.Menu {
 
 	// Tools Menu
 	ToolsMenu := AppMenu.AddSubmenu(translations.Tools.Title)
+	ToolsMenu.AddText(translations.Tools.RefreshPackages, keys.Combo("r", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "refreshPackagesData")
+	})
+	ToolsMenu.AddSeparator()
 	ToolsMenu.AddText(translations.Tools.ExportBrewfile, keys.CmdOrCtrl("e"), func(cd *menu.CallbackData) {
 		// Open file picker dialog to save Brewfile
 		saveDialog, err := rt.SaveFileDialog(a.ctx, rt.SaveDialogOptions{

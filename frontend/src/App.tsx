@@ -601,6 +601,9 @@ const WailBrewApp = () => {
         const unlistenRefresh = EventsOn("refreshPackages", () => {
             window.location.reload();
         });
+        const unlistenRefreshPackages = EventsOn("refreshPackagesData", () => {
+            handleRefreshPackages();
+        });
         const unlistenAbout = EventsOn("showAbout", () => {
             setShowAbout(true);
         });
@@ -1498,6 +1501,10 @@ const WailBrewApp = () => {
         setLoading(true);
         setError("");
         
+        // Store current package names for comparison
+        const currentAllPackageNames = new Set(allPackages.map(pkg => pkg.name));
+        const currentCaskNames = new Set(casks.map(cask => cask.name));
+        
         // Clear existing data to show clean loading state
         setPackages([]);
         setCasks([]);
@@ -1537,10 +1544,11 @@ const WailBrewApp = () => {
                 setPackages(formatted);
             }
 
+            let casksFormatted: PackageEntry[] = [];
             if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
                 setCasks([]);
             } else {
-                const casksFormatted = safeInstalledCasks.map(([name, installedVersion, size]) => ({
+                casksFormatted = safeInstalledCasks.map(([name, installedVersion, size]) => ({
                     name,
                     installedVersion,
                     size,
@@ -1575,6 +1583,122 @@ const WailBrewApp = () => {
                     isInstalled: installedMap.has(name),
                 }));
                 setAllPackages(formatted);
+                
+                // Detect new packages
+                const newFormulae = formatted
+                    .filter(pkg => !pkg.isInstalled && !currentAllPackageNames.has(pkg.name))
+                    .map(pkg => pkg.name);
+                
+                const newCasks = casksFormatted
+                    .filter((cask: PackageEntry) => !currentCaskNames.has(cask.name))
+                    .map((cask: PackageEntry) => cask.name);
+                
+                const totalNew = newFormulae.length + newCasks.length;
+                
+                if (totalNew > 0) {
+                    // Dismiss any existing new packages toast to prevent duplicates
+                    toast.dismiss('newPackagesDiscovered');
+                    
+                    const formulaeText = newFormulae.length > 0 
+                        ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
+                        : '';
+                    const casksText = newCasks.length > 0
+                        ? `${newCasks.length} ${t('toast.newCask', { count: newCasks.length })}`
+                        : '';
+                    const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
+                    
+                    toast(
+                        (t_obj) => (
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                        {t('toast.newPackagesDiscovered', { count: totalNew, message })}
+                                    </div>
+                                    {(newFormulae.length > 0 || newCasks.length > 0) && (
+                                        <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
+                                            {newFormulae.length > 0 && (
+                                                <div style={{ marginBottom: '0.25rem' }}>
+                                                    <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
+                                                    {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
+                                                </div>
+                                            )}
+                                            {newCasks.length > 0 && (
+                                                <div>
+                                                    <strong>{t('toast.newCasksLabel')}</strong> {newCasks.slice(0, 5).join(', ')}
+                                                    {newCasks.length > 5 && ` ${t('toast.andMore', { count: newCasks.length - 5 })}`}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setView("all");
+                                            toast.dismiss(t_obj.id);
+                                        }}
+                                        style={{
+                                            padding: '0.5rem 1rem',
+                                            background: 'rgba(34, 197, 94, 0.8)',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            color: '#fff',
+                                            cursor: 'pointer',
+                                            fontSize: '0.875rem',
+                                            fontWeight: 500,
+                                            transition: 'background 0.2s',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                        }}
+                                    >
+                                        {t('toast.viewAllPackages')}
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={() => toast.dismiss(t_obj.id)}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: 'rgba(255, 255, 255, 0.6)',
+                                        cursor: 'pointer',
+                                        fontSize: '1.25rem',
+                                        lineHeight: 1,
+                                        padding: 0,
+                                        width: '24px',
+                                        height: '24px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                    }}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ),
+                        {
+                            duration: 10000,
+                            position: 'bottom-center',
+                            style: {
+                                background: 'rgba(30, 30, 30, 0.95)',
+                                color: '#fff',
+                                padding: '1rem',
+                                borderRadius: '8px',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                maxWidth: '500px',
+                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                            },
+                            id: 'newPackagesDiscovered',
+                        }
+                    );
+                }
             }
 
             if (safeLeaves.length === 1 && safeLeaves[0] === "Error") {
