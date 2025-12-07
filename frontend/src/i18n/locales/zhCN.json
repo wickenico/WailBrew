@@ -27,7 +27,9 @@
   },
   "search": {
     "placeholder": "搜索...",
-    "clearSearch": "清除搜索"
+    "clearSearch": "清除搜索",
+    "recentSearches": "最近搜索",
+    "removeFromHistory": "从历史记录中删除\"{{item}}\""
   },
   "buttons": {
     "uninstall": "卸载 \"{{name}}\"",

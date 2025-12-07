@@ -27,7 +27,9 @@
   },
   "search": {
     "placeholder": "Buscar...",
-    "clearSearch": "Limpar busca"
+    "clearSearch": "Limpar busca",
+    "recentSearches": "Buscas Recentes",
+    "removeFromHistory": "Remover \"{{item}}\" do histórico"
   },
   "buttons": {
     "uninstall": "Desinstalar \"{{name}}\"",

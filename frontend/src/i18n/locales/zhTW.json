@@ -27,7 +27,9 @@
   },
   "search": {
     "placeholder": "搜尋...",
-    "clearSearch": "清除搜尋"
+    "clearSearch": "清除搜尋",
+    "recentSearches": "最近搜尋",
+    "removeFromHistory": "從歷史記錄中刪除\"{{item}}\""
   },
   "buttons": {
     "uninstall": "解除安裝 \"{{name}}\"",

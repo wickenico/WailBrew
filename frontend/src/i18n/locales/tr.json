@@ -27,7 +27,9 @@
   },
   "search": {
     "placeholder": "Ara...",
-    "clearSearch": "Aramayı Temizle"
+    "clearSearch": "Aramayı Temizle",
+    "recentSearches": "Son Aramalar",
+    "removeFromHistory": "\"{{item}}\" geçmişten kaldır"
   },
   "buttons": {
     "uninstall": "\"{{name}}\" kaldır",

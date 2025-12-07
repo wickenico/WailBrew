@@ -27,7 +27,9 @@
   },
   "search": {
     "placeholder": "Поиск...",
-    "clearSearch": "Очистить поиск"
+    "clearSearch": "Очистить поиск",
+    "recentSearches": "Недавние поиски",
+    "removeFromHistory": "Удалить \"{{item}}\" из истории"
   },
   "buttons": {
     "uninstall": "Удалить \"{{name}}\"",
