@@ -40,6 +40,8 @@ export function GetDeprecatedFormulae(arg1:string):Promise<Array<string>>;
 
 export function GetHomebrewVersion():Promise<string>;
 
+export function GetMirrorSource():Promise<Record<string, string>>;
+
 export function GetSessionLogs():Promise<string>;
 
 export function InstallBrewPackage(arg1:string):Promise<string>;
@@ -59,6 +61,8 @@ export function RunBrewDoctor():Promise<string>;
 export function SetBrewPath(arg1:string):Promise<void>;
 
 export function SetLanguage(arg1:string):Promise<void>;
+
+export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
 
 export function UpdateAllBrewPackages():Promise<string>;
 

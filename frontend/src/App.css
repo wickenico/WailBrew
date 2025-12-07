@@ -2106,6 +2106,34 @@ html, body {
   color: var(--text-main);
   font-size: 16px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.beta-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+  animation: pulse-beta 2s ease-in-out infinite;
+}
+
+@keyframes pulse-beta {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
 }
 
 .settings-item-subtitle {
@@ -2240,6 +2268,30 @@ html, body {
 }
 
 .path-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mirror-select {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-size: 14px;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.mirror-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.15);
+}
+
+.mirror-select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

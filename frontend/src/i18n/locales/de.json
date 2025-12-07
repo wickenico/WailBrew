@@ -310,13 +310,32 @@
       "pathUpdated": "Brew-Pfad erfolgreich aktualisiert!",
       "pathReset": "Pfad auf aktuellen Wert zurückgesetzt.",
       "noChanges": "Keine Änderungen zu speichern.",
-      "pathDetected": "Brew-Pfad automatisch erkannt: {{path}}"
+      "pathDetected": "Brew-Pfad automatisch erkannt: {{path}}",
+      "mirrorSourceUpdated": "Spiegelquelle erfolgreich aktualisiert!",
+      "mirrorSourceReset": "Spiegelquelle auf aktuellen Wert zurückgesetzt."
     },
     "errors": {
       "failedToGetPath": "Aktueller Brew-Pfad konnte nicht abgerufen werden.",
       "emptyPath": "Bitte geben Sie einen gültigen Brew-Pfad ein.",
       "invalidPath": "Ungültiger Brew-Pfad. Bitte überprüfen Sie, dass der Pfad existiert und eine gültige Brew-Ausführungsdatei ist.",
-      "autoDetectionFailed": "Brew-Pfad konnte nicht automatisch erkannt werden. Bitte geben Sie den Pfad manuell ein."
+      "autoDetectionFailed": "Brew-Pfad konnte nicht automatisch erkannt werden. Bitte geben Sie den Pfad manuell ein.",
+      "failedToSetMirrorSource": "Spiegelquelle konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration."
+    },
+    "mirrorSource": {
+      "title": "Homebrew Spiegelquelle",
+      "description": "Wechseln Sie Homebrew-Spiegelquellen, um Download-Geschwindigkeiten in Regionen mit Netzwerkproblemen zu verbessern. Dies konfiguriert die Umgebungsvariablen HOMEBREW_GIT_REMOTE und HOMEBREW_BOTTLE_DOMAIN.",
+      "selectMirror": "Spiegelquelle auswählen",
+      "custom": "Benutzerdefiniert",
+      "customGitRemote": "Benutzerdefinierte Git-Remote-URL",
+      "customBottleDomain": "Benutzerdefinierte Bottle-Domain-URL",
+      "note": "Hinweis: Das Ändern der Spiegelquelle wirkt sich auf alle Homebrew-Operationen aus. Starten Sie die App neu oder aktualisieren Sie Pakete nach der Änderung.",
+      "mirrors": {
+        "official": "Offiziell (Standard)",
+        "tsinghua": "Tsinghua-Universität (China)",
+        "aliyun": "Alibaba Cloud (China)",
+        "ustc": "USTC (China)",
+        "tencent": "Tencent Cloud (China)"
+      }
     }
   }
 }

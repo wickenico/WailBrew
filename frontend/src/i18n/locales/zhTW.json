@@ -310,13 +310,32 @@
       "pathUpdated": "Brew 路徑更新成功！",
       "pathReset": "路徑已重設為目前值。",
       "noChanges": "沒有要儲存的變更。",
-      "pathDetected": "自動偵測的 brew 路徑：{{path}}"
+      "pathDetected": "自動偵測的 brew 路徑：{{path}}",
+      "mirrorSourceUpdated": "鏡像源更新成功！",
+      "mirrorSourceReset": "鏡像源已重設為目前值。"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
       "emptyPath": "請輸入有效的 brew 路徑。",
       "invalidPath": "無效的 brew 路徑。請檢查路徑是否存在且為有效的 brew 執行檔。",
-      "autoDetectionFailed": "無法自動偵測 brew 路徑。請手動輸入路徑。"
+      "autoDetectionFailed": "無法自動偵測 brew 路徑。請手動輸入路徑。",
+      "failedToSetMirrorSource": "設定鏡像源失敗。請檢查您的設定。"
+    },
+    "mirrorSource": {
+      "title": "Homebrew 鏡像源",
+      "description": "切換 Homebrew 鏡像源以改善網路問題地區的下載速度。這將設定 HOMEBREW_GIT_REMOTE 和 HOMEBREW_BOTTLE_DOMAIN 環境變數。",
+      "selectMirror": "選擇鏡像源",
+      "custom": "自訂",
+      "customGitRemote": "自訂 Git 遠端 URL",
+      "customBottleDomain": "自訂 Bottle 網域 URL",
+      "note": "注意：更改鏡像源將影響所有 Homebrew 操作。更改後請重啟應用程式或重新整理套件資料。",
+      "mirrors": {
+        "official": "官方（預設）",
+        "tsinghua": "清華大學（中國）",
+        "aliyun": "阿里雲（中國）",
+        "ustc": "中科大（中國）",
+        "tencent": "騰訊雲（中國）"
+      }
     }
   }
 }

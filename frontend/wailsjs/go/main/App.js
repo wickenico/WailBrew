@@ -78,6 +78,10 @@ export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }
 
+export function GetMirrorSource() {
+  return window['go']['main']['App']['GetMirrorSource']();
+}
+
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
 }
@@ -116,6 +120,10 @@ export function SetBrewPath(arg1) {
 
 export function SetLanguage(arg1) {
   return window['go']['main']['App']['SetLanguage'](arg1);
+}
+
+export function SetMirrorSource(arg1, arg2) {
+  return window['go']['main']['App']['SetMirrorSource'](arg1, arg2);
 }
 
 export function UpdateAllBrewPackages() {

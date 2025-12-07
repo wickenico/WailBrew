@@ -310,13 +310,32 @@
       "pathUpdated": "Chemin brew mis à jour avec succès !",
       "pathReset": "Chemin réinitialisé à la valeur actuelle.",
       "noChanges": "Aucune modification à enregistrer.",
-      "pathDetected": "Chemin brew détecté automatiquement : {{path}}"
+      "pathDetected": "Chemin brew détecté automatiquement : {{path}}",
+      "mirrorSourceUpdated": "Source miroir mise à jour avec succès !",
+      "mirrorSourceReset": "Source miroir réinitialisée à la valeur actuelle."
     },
     "errors": {
       "failedToGetPath": "Échec de la récupération du chemin brew actuel.",
       "emptyPath": "Veuillez entrer un chemin brew valide.",
       "invalidPath": "Chemin brew invalide. Veuillez vérifier que le chemin existe et est un exécutable brew valide.",
-      "autoDetectionFailed": "Impossible de détecter automatiquement le chemin brew. Veuillez entrer le chemin manuellement."
+      "autoDetectionFailed": "Impossible de détecter automatiquement le chemin brew. Veuillez entrer le chemin manuellement.",
+      "failedToSetMirrorSource": "Échec de la configuration de la source miroir. Veuillez vérifier votre configuration."
+    },
+    "mirrorSource": {
+      "title": "Source miroir Homebrew",
+      "description": "Changez les sources miroir Homebrew pour améliorer les vitesses de téléchargement dans les régions ayant des problèmes réseau. Cela configure les variables d'environnement HOMEBREW_GIT_REMOTE et HOMEBREW_BOTTLE_DOMAIN.",
+      "selectMirror": "Sélectionner la source miroir",
+      "custom": "Personnalisé",
+      "customGitRemote": "URL Git distante personnalisée",
+      "customBottleDomain": "URL de domaine Bottle personnalisée",
+      "note": "Note : Changer la source miroir affectera toutes les opérations Homebrew. Redémarrez l'application ou actualisez les packages après le changement.",
+      "mirrors": {
+        "official": "Officiel (par défaut)",
+        "tsinghua": "Université Tsinghua (Chine)",
+        "aliyun": "Alibaba Cloud (Chine)",
+        "ustc": "USTC (Chine)",
+        "tencent": "Tencent Cloud (Chine)"
+      }
     }
   }
 }

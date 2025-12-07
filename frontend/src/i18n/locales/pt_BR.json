@@ -310,13 +310,32 @@
       "pathUpdated": "Caminho do brew atualizado com sucesso!",
       "pathReset": "Caminho redefinido para o valor atual.",
       "noChanges": "Nenhuma alteração para salvar.",
-      "pathDetected": "Caminho do brew detectado automaticamente: {{path}}"
+      "pathDetected": "Caminho do brew detectado automaticamente: {{path}}",
+      "mirrorSourceUpdated": "Fonte de espelho atualizada com sucesso!",
+      "mirrorSourceReset": "Fonte de espelho redefinida para o valor atual."
     },
     "errors": {
       "failedToGetPath": "Falha ao obter o caminho atual do brew.",
       "emptyPath": "Por favor, insira um caminho válido para o brew.",
       "invalidPath": "Caminho do brew inválido. Verifique se o caminho existe e é um executável válido do brew.",
-      "autoDetectionFailed": "Não foi possível detectar o caminho do brew automaticamente. Por favor, insira o caminho manualmente."
+      "autoDetectionFailed": "Não foi possível detectar o caminho do brew automaticamente. Por favor, insira o caminho manualmente.",
+      "failedToSetMirrorSource": "Falha ao definir a fonte de espelho. Verifique sua configuração."
+    },
+    "mirrorSource": {
+      "title": "Fonte de Espelho Homebrew",
+      "description": "Altere as fontes de espelho do Homebrew para melhorar as velocidades de download em regiões com problemas de rede. Isso configura as variáveis de ambiente HOMEBREW_GIT_REMOTE e HOMEBREW_BOTTLE_DOMAIN.",
+      "selectMirror": "Selecionar Fonte de Espelho",
+      "custom": "Personalizado",
+      "customGitRemote": "URL Git Remota Personalizada",
+      "customBottleDomain": "URL de Domínio Bottle Personalizada",
+      "note": "Nota: Alterar a fonte de espelho afetará todas as operações do Homebrew. Reinicie o aplicativo ou atualize os pacotes após a alteração.",
+      "mirrors": {
+        "official": "Oficial (Padrão)",
+        "tsinghua": "Universidade Tsinghua (China)",
+        "aliyun": "Alibaba Cloud (China)",
+        "ustc": "USTC (China)",
+        "tencent": "Tencent Cloud (China)"
+      }
     }
   }
 }
