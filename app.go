@@ -1023,172 +1023,188 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 	switch a.currentLanguage {
 	case "en":
 		messages = map[string]string{
-			"updateStart":            "🔄 Starting update for '{{name}}'...",
-			"updateSuccess":          "✅ Update for '{{name}}' completed successfully!",
-			"updateFailed":           "❌ Update for '{{name}}' failed: {{error}}",
-			"updateAllStart":         "🔄 Starting update for all packages...",
-			"updateAllSuccess":       "✅ Update for all packages completed successfully!",
-			"updateAllFailed":        "❌ Update for all packages failed: {{error}}",
-			"installStart":           "🔄 Starting installation for '{{name}}'...",
-			"installSuccess":         "✅ Installation for '{{name}}' completed successfully!",
-			"installFailed":          "❌ Installation for '{{name}}' failed: {{error}}",
-			"uninstallStart":         "🔄 Starting uninstallation for '{{name}}'...",
-			"uninstallSuccess":       "✅ Uninstallation for '{{name}}' completed successfully!",
-			"uninstallFailed":        "❌ Uninstallation for '{{name}}' failed: {{error}}",
-			"errorCreatingPipe":      "❌ Error creating output pipe: {{error}}",
-			"errorCreatingErrorPipe": "❌ Error creating error pipe: {{error}}",
-			"errorStartingUpdate":    "❌ Error starting update: {{error}}",
-			"errorStartingUpdateAll": "❌ Error starting update all: {{error}}",
-			"errorStartingInstall":   "❌ Error starting installation: {{error}}",
-			"errorStartingUninstall": "❌ Error starting uninstallation: {{error}}",
+			"updateStart":               "🔄 Starting update for '{{name}}'...",
+			"updateSuccess":             "✅ Update for '{{name}}' completed successfully!",
+			"updateFailed":              "❌ Update for '{{name}}' failed: {{error}}",
+			"updateAllStart":            "🔄 Starting update for all packages...",
+			"updateAllSuccess":          "✅ Update for all packages completed successfully!",
+			"updateAllFailed":           "❌ Update for all packages failed: {{error}}",
+			"updateRetryingWithForce":   "🔄 Retrying update for '{{name}}' with --force (app may be in use)...",
+			"updateRetryingFailedCasks": "🔄 Retrying {{count}} failed cask(s) with --force...",
+			"installStart":              "🔄 Starting installation for '{{name}}'...",
+			"installSuccess":            "✅ Installation for '{{name}}' completed successfully!",
+			"installFailed":             "❌ Installation for '{{name}}' failed: {{error}}",
+			"uninstallStart":            "🔄 Starting uninstallation for '{{name}}'...",
+			"uninstallSuccess":          "✅ Uninstallation for '{{name}}' completed successfully!",
+			"uninstallFailed":           "❌ Uninstallation for '{{name}}' failed: {{error}}",
+			"errorCreatingPipe":         "❌ Error creating output pipe: {{error}}",
+			"errorCreatingErrorPipe":    "❌ Error creating error pipe: {{error}}",
+			"errorStartingUpdate":       "❌ Error starting update: {{error}}",
+			"errorStartingUpdateAll":    "❌ Error starting update all: {{error}}",
+			"errorStartingInstall":      "❌ Error starting installation: {{error}}",
+			"errorStartingUninstall":    "❌ Error starting uninstallation: {{error}}",
 		}
 	case "de":
 		messages = map[string]string{
-			"updateStart":            "🔄 Starte Update für '{{name}}'...",
-			"updateSuccess":          "✅ Update für '{{name}}' erfolgreich abgeschlossen!",
-			"updateFailed":           "❌ Update für '{{name}}' fehlgeschlagen: {{error}}",
-			"updateAllStart":         "🔄 Starte Update für alle Pakete...",
-			"updateAllSuccess":       "✅ Update für alle Pakete erfolgreich abgeschlossen!",
-			"updateAllFailed":        "❌ Update für alle Pakete fehlgeschlagen: {{error}}",
-			"installStart":           "🔄 Starte Installation für '{{name}}'...",
-			"installSuccess":         "✅ Installation für '{{name}}' erfolgreich abgeschlossen!",
-			"installFailed":          "❌ Installation für '{{name}}' fehlgeschlagen: {{error}}",
-			"uninstallStart":         "🔄 Starte Deinstallation für '{{name}}'...",
-			"uninstallSuccess":       "✅ Deinstallation für '{{name}}' erfolgreich abgeschlossen!",
-			"uninstallFailed":        "❌ Deinstallation für '{{name}}' fehlgeschlagen: {{error}}",
-			"errorCreatingPipe":      "❌ Fehler beim Erstellen der Ausgabe-Pipe: {{error}}",
-			"errorCreatingErrorPipe": "❌ Fehler beim Erstellen der Fehler-Pipe: {{error}}",
-			"errorStartingUpdate":    "❌ Fehler beim Starten des Updates: {{error}}",
-			"errorStartingUpdateAll": "❌ Fehler beim Starten des Updates aller Pakete: {{error}}",
-			"errorStartingInstall":   "❌ Fehler beim Starten der Installation: {{error}}",
-			"errorStartingUninstall": "❌ Fehler beim Starten der Deinstallation: {{error}}",
+			"updateStart":               "🔄 Starte Update für '{{name}}'...",
+			"updateSuccess":             "✅ Update für '{{name}}' erfolgreich abgeschlossen!",
+			"updateFailed":              "❌ Update für '{{name}}' fehlgeschlagen: {{error}}",
+			"updateAllStart":            "🔄 Starte Update für alle Pakete...",
+			"updateAllSuccess":          "✅ Update für alle Pakete erfolgreich abgeschlossen!",
+			"updateAllFailed":           "❌ Update für alle Pakete fehlgeschlagen: {{error}}",
+			"updateRetryingWithForce":   "🔄 Wiederhole Update für '{{name}}' mit --force (App könnte in Verwendung sein)...",
+			"updateRetryingFailedCasks": "🔄 Wiederhole {{count}} fehlgeschlagene Cask(s) mit --force...",
+			"installStart":              "🔄 Starte Installation für '{{name}}'...",
+			"installSuccess":            "✅ Installation für '{{name}}' erfolgreich abgeschlossen!",
+			"installFailed":             "❌ Installation für '{{name}}' fehlgeschlagen: {{error}}",
+			"uninstallStart":            "🔄 Starte Deinstallation für '{{name}}'...",
+			"uninstallSuccess":          "✅ Deinstallation für '{{name}}' erfolgreich abgeschlossen!",
+			"uninstallFailed":           "❌ Deinstallation für '{{name}}' fehlgeschlagen: {{error}}",
+			"errorCreatingPipe":         "❌ Fehler beim Erstellen der Ausgabe-Pipe: {{error}}",
+			"errorCreatingErrorPipe":    "❌ Fehler beim Erstellen der Fehler-Pipe: {{error}}",
+			"errorStartingUpdate":       "❌ Fehler beim Starten des Updates: {{error}}",
+			"errorStartingUpdateAll":    "❌ Fehler beim Starten des Updates aller Pakete: {{error}}",
+			"errorStartingInstall":      "❌ Fehler beim Starten der Installation: {{error}}",
+			"errorStartingUninstall":    "❌ Fehler beim Starten der Deinstallation: {{error}}",
 		}
 	case "fr":
 		messages = map[string]string{
-			"updateStart":            "🔄 Démarrage de la mise à jour pour '{{name}}'...",
-			"updateSuccess":          "✅ Mise à jour pour '{{name}}' terminée avec succès !",
-			"updateFailed":           "❌ Mise à jour pour '{{name}}' échouée : {{error}}",
-			"updateAllStart":         "🔄 Démarrage de la mise à jour pour tous les paquets...",
-			"updateAllSuccess":       "✅ Mise à jour pour tous les paquets terminée avec succès !",
-			"updateAllFailed":        "❌ Mise à jour pour tous les paquets échouée : {{error}}",
-			"installStart":           "🔄 Démarrage de l'installation pour '{{name}}'...",
-			"installSuccess":         "✅ Installation pour '{{name}}' terminée avec succès !",
-			"installFailed":          "❌ Installation pour '{{name}}' échouée : {{error}}",
-			"uninstallStart":         "🔄 Démarrage de la désinstallation pour '{{name}}'...",
-			"uninstallSuccess":       "✅ Désinstallation pour '{{name}}' terminée avec succès !",
-			"uninstallFailed":        "❌ Désinstallation pour '{{name}}' échouée : {{error}}",
-			"errorCreatingPipe":      "❌ Erreur lors de la création du pipe de sortie : {{error}}",
-			"errorCreatingErrorPipe": "❌ Erreur lors de la création du pipe d'erreur : {{error}}",
-			"errorStartingUpdate":    "❌ Erreur lors du démarrage de la mise à jour : {{error}}",
-			"errorStartingUpdateAll": "❌ Erreur lors du démarrage de la mise à jour de tous les paquets : {{error}}",
-			"errorStartingInstall":   "❌ Erreur lors du démarrage de l'installation : {{error}}",
-			"errorStartingUninstall": "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
+			"updateStart":               "🔄 Démarrage de la mise à jour pour '{{name}}'...",
+			"updateSuccess":             "✅ Mise à jour pour '{{name}}' terminée avec succès !",
+			"updateFailed":              "❌ Mise à jour pour '{{name}}' échouée : {{error}}",
+			"updateAllStart":            "🔄 Démarrage de la mise à jour pour tous les paquets...",
+			"updateAllSuccess":          "✅ Mise à jour pour tous les paquets terminée avec succès !",
+			"updateAllFailed":           "❌ Mise à jour pour tous les paquets échouée : {{error}}",
+			"updateRetryingWithForce":   "🔄 Nouvelle tentative de mise à jour pour '{{name}}' avec --force (l'application peut être en cours d'utilisation)...",
+			"updateRetryingFailedCasks": "🔄 Nouvelle tentative pour {{count}} cask(s) ayant échoué avec --force...",
+			"installStart":              "🔄 Démarrage de l'installation pour '{{name}}'...",
+			"installSuccess":            "✅ Installation pour '{{name}}' terminée avec succès !",
+			"installFailed":             "❌ Installation pour '{{name}}' échouée : {{error}}",
+			"uninstallStart":            "🔄 Démarrage de la désinstallation pour '{{name}}'...",
+			"uninstallSuccess":          "✅ Désinstallation pour '{{name}}' terminée avec succès !",
+			"uninstallFailed":           "❌ Désinstallation pour '{{name}}' échouée : {{error}}",
+			"errorCreatingPipe":         "❌ Erreur lors de la création du pipe de sortie : {{error}}",
+			"errorCreatingErrorPipe":    "❌ Erreur lors de la création du pipe d'erreur : {{error}}",
+			"errorStartingUpdate":       "❌ Erreur lors du démarrage de la mise à jour : {{error}}",
+			"errorStartingUpdateAll":    "❌ Erreur lors du démarrage de la mise à jour de tous les paquets : {{error}}",
+			"errorStartingInstall":      "❌ Erreur lors du démarrage de l'installation : {{error}}",
+			"errorStartingUninstall":    "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
 		}
 	case "tr":
 		messages = map[string]string{
-			"updateStart":            "🔄 '{{name}}' için güncelleme başlıyor...",
-			"updateSuccess":          "✅ '{{name}}' için güncelleme başarıyla tamamlandı!",
-			"updateFailed":           "❌ '{{name}}' için güncelleme hata verdi: {{error}}",
-			"updateAllStart":         "🔄 Tüm paketler için güncelleme başlıyor...",
-			"updateAllSuccess":       "✅ Tüm paketler için güncelleme başarıyla tamamlandı!",
-			"updateAllFailed":        "❌ Tüm paketler için güncelleme hata verdi: {{error}}",
-			"installStart":           "🔄 '{{name}}' için kurulum başlıyor...",
-			"installSuccess":         "✅ '{{name}}' için kurulum başarıyla tamamlandı!",
-			"installFailed":          "❌ '{{name}}' için kurulum hata verdi: {{error}}",
-			"uninstallStart":         "🔄 '{{name}}' kaldırılıyor...",
-			"uninstallSuccess":       "✅ '{{name}}' başarıyla kaldırıldı!",
-			"uninstallFailed":        "❌ '{{name}}' için kaldırılma hata verdi: {{error}}",
-			"errorCreatingPipe":      "❌ Çıktı borusu yaratılırken bir hata oluştu: {{error}}",
-			"errorCreatingErrorPipe": "❌ Hata borusu yaratılırken bir hata oluştu: {{error}}",
-			"errorStartingUpdate":    "❌ Güncellenirken bir hata oluştu: {{error}}",
-			"errorStartingUpdateAll": "❌ Tümü güncellenirken bir hata oluştu: {{error}}",
-			"errorStartingInstall":   "❌ Kurulurken bir hata oluştu: {{error}}",
-			"errorStartingUninstall": "❌ Kaldırılma başlatılırken bir hata oluştu: {{error}}",
+			"updateStart":               "🔄 '{{name}}' için güncelleme başlıyor...",
+			"updateSuccess":             "✅ '{{name}}' için güncelleme başarıyla tamamlandı!",
+			"updateFailed":              "❌ '{{name}}' için güncelleme hata verdi: {{error}}",
+			"updateAllStart":            "🔄 Tüm paketler için güncelleme başlıyor...",
+			"updateAllSuccess":          "✅ Tüm paketler için güncelleme başarıyla tamamlandı!",
+			"updateAllFailed":           "❌ Tüm paketler için güncelleme hata verdi: {{error}}",
+			"updateRetryingWithForce":   "🔄 '{{name}}' için güncelleme --force ile yeniden deneniyor (uygulama kullanımda olabilir)...",
+			"updateRetryingFailedCasks": "🔄 {{count}} başarısız cask --force ile yeniden deneniyor...",
+			"installStart":              "🔄 '{{name}}' için kurulum başlıyor...",
+			"installSuccess":            "✅ '{{name}}' için kurulum başarıyla tamamlandı!",
+			"installFailed":             "❌ '{{name}}' için kurulum hata verdi: {{error}}",
+			"uninstallStart":            "🔄 '{{name}}' kaldırılıyor...",
+			"uninstallSuccess":          "✅ '{{name}}' başarıyla kaldırıldı!",
+			"uninstallFailed":           "❌ '{{name}}' için kaldırılma hata verdi: {{error}}",
+			"errorCreatingPipe":         "❌ Çıktı borusu yaratılırken bir hata oluştu: {{error}}",
+			"errorCreatingErrorPipe":    "❌ Hata borusu yaratılırken bir hata oluştu: {{error}}",
+			"errorStartingUpdate":       "❌ Güncellenirken bir hata oluştu: {{error}}",
+			"errorStartingUpdateAll":    "❌ Tümü güncellenirken bir hata oluştu: {{error}}",
+			"errorStartingInstall":      "❌ Kurulurken bir hata oluştu: {{error}}",
+			"errorStartingUninstall":    "❌ Kaldırılma başlatılırken bir hata oluştu: {{error}}",
 		}
 	case "zhCN":
 		messages = map[string]string{
-			"updateStart":            "🔄 开始更新 '{{name}}'...",
-			"updateSuccess":          "✅ '{{name}}' 更新成功！",
-			"updateFailed":           "❌ 更新 '{{name}}' 失败：{{error}}",
-			"updateAllStart":         "🔄 开始更新所有软件包...",
-			"updateAllSuccess":       "✅ 所有软件包的更新已成功完成！",
-			"updateAllFailed":        "❌ 所有软件包更新失败：{{error}}",
-			"installStart":           "🔄 开始安装 '{{name}}'...",
-			"installSuccess":         "✅ '{{name}}' 安装成功！",
-			"installFailed":          "❌ '{{name}}' 安装失败：{{error}}",
-			"uninstallStart":         "🔄 开始卸载 '{{name}}'...",
-			"uninstallSuccess":       "✅ '{{name}}' 卸载成功！",
-			"uninstallFailed":        "❌ 卸载 '{{name}}' 失败：{{error}}",
-			"errorCreatingPipe":      "❌ 无法建立输出通道：{{error}}",
-			"errorCreatingErrorPipe": "❌ 无法建立错误通道：{{error}}",
-			"errorStartingUpdate":    "❌ 准备更新时出错：{{error}}",
-			"errorStartingUpdateAll": "❌ 准备更新所有软件包时出错：{{error}}",
-			"errorStartingInstall":   "❌ 准备安装时出错：{{error}}",
-			"errorStartingUninstall": "❌ 准备卸载时出错：{{error}}",
+			"updateStart":               "🔄 开始更新 '{{name}}'...",
+			"updateSuccess":             "✅ '{{name}}' 更新成功！",
+			"updateFailed":              "❌ 更新 '{{name}}' 失败：{{error}}",
+			"updateAllStart":            "🔄 开始更新所有软件包...",
+			"updateAllSuccess":          "✅ 所有软件包的更新已成功完成！",
+			"updateAllFailed":           "❌ 所有软件包更新失败：{{error}}",
+			"updateRetryingWithForce":   "🔄 使用 --force 重试更新 '{{name}}'（应用可能正在使用中）...",
+			"updateRetryingFailedCasks": "🔄 使用 --force 重试 {{count}} 个失败的 cask...",
+			"installStart":              "🔄 开始安装 '{{name}}'...",
+			"installSuccess":            "✅ '{{name}}' 安装成功！",
+			"installFailed":             "❌ '{{name}}' 安装失败：{{error}}",
+			"uninstallStart":            "🔄 开始卸载 '{{name}}'...",
+			"uninstallSuccess":          "✅ '{{name}}' 卸载成功！",
+			"uninstallFailed":           "❌ 卸载 '{{name}}' 失败：{{error}}",
+			"errorCreatingPipe":         "❌ 无法建立输出通道：{{error}}",
+			"errorCreatingErrorPipe":    "❌ 无法建立错误通道：{{error}}",
+			"errorStartingUpdate":       "❌ 准备更新时出错：{{error}}",
+			"errorStartingUpdateAll":    "❌ 准备更新所有软件包时出错：{{error}}",
+			"errorStartingInstall":      "❌ 准备安装时出错：{{error}}",
+			"errorStartingUninstall":    "❌ 准备卸载时出错：{{error}}",
 		}
 	case "pt_BR":
 		messages = map[string]string{
-			"updateStart":            "🔄 Iniciando atualização de '{{name}}'...",
-			"updateSuccess":          "✅ Atualização de '{{name}}' concluída com sucesso!",
-			"updateFailed":           "❌ Falha na atualização de '{{name}}': {{error}}",
-			"updateAllStart":         "🔄 Iniciando atualização de todos os pacotes...",
-			"updateAllSuccess":       "✅ Atualização de todos os pacotes concluída com sucesso!",
-			"updateAllFailed":        "❌ Falha na atualização de todos os pacotes: {{error}}",
-			"installStart":           "🔄 Iniciando instalação de '{{name}}'...",
-			"installSuccess":         "✅ Instalação de '{{name}}' concluída com sucesso!",
-			"installFailed":          "❌ Falha na instalação de '{{name}}': {{error}}",
-			"uninstallStart":         "🔄 Iniciando desinstalação de '{{name}}'...",
-			"uninstallSuccess":       "✅ Desinstalação de '{{name}}' concluída com sucesso!",
-			"uninstallFailed":        "❌ Falha na desinstalação de '{{name}}': {{error}}",
-			"errorCreatingPipe":      "❌ Erro ao criar pipe de saída: {{error}}",
-			"errorCreatingErrorPipe": "❌ Erro ao criar pipe de erro: {{error}}",
-			"errorStartingUpdate":    "❌ Erro ao iniciar atualização: {{error}}",
-			"errorStartingUpdateAll": "❌ Erro ao iniciar a atualização de tudo: {{error}}",
-			"errorStartingInstall":   "❌ Erro ao iniciar instalação: {{error}}",
-			"errorStartingUninstall": "❌ Erro ao iniciar desinstalação: {{error}}",
+			"updateStart":               "🔄 Iniciando atualização de '{{name}}'...",
+			"updateSuccess":             "✅ Atualização de '{{name}}' concluída com sucesso!",
+			"updateFailed":              "❌ Falha na atualização de '{{name}}': {{error}}",
+			"updateAllStart":            "🔄 Iniciando atualização de todos os pacotes...",
+			"updateAllSuccess":          "✅ Atualização de todos os pacotes concluída com sucesso!",
+			"updateAllFailed":           "❌ Falha na atualização de todos os pacotes: {{error}}",
+			"updateRetryingWithForce":   "🔄 Tentando novamente atualização de '{{name}}' com --force (aplicativo pode estar em uso)...",
+			"updateRetryingFailedCasks": "🔄 Tentando novamente {{count}} cask(s) com falha com --force...",
+			"installStart":              "🔄 Iniciando instalação de '{{name}}'...",
+			"installSuccess":            "✅ Instalação de '{{name}}' concluída com sucesso!",
+			"installFailed":             "❌ Falha na instalação de '{{name}}': {{error}}",
+			"uninstallStart":            "🔄 Iniciando desinstalação de '{{name}}'...",
+			"uninstallSuccess":          "✅ Desinstalação de '{{name}}' concluída com sucesso!",
+			"uninstallFailed":           "❌ Falha na desinstalação de '{{name}}': {{error}}",
+			"errorCreatingPipe":         "❌ Erro ao criar pipe de saída: {{error}}",
+			"errorCreatingErrorPipe":    "❌ Erro ao criar pipe de erro: {{error}}",
+			"errorStartingUpdate":       "❌ Erro ao iniciar atualização: {{error}}",
+			"errorStartingUpdateAll":    "❌ Erro ao iniciar a atualização de tudo: {{error}}",
+			"errorStartingInstall":      "❌ Erro ao iniciar instalação: {{error}}",
+			"errorStartingUninstall":    "❌ Erro ao iniciar desinstalação: {{error}}",
 		}
 	case "ru":
 		messages = map[string]string{
-			"updateStart":            "🔄 Начинается обновление '{{name}}'...",
-			"updateSuccess":          "✅ Обновление '{{name}}' успешно завершено!",
-			"updateFailed":           "❌ Не удалось обновить '{{name}}': {{error}}",
-			"updateAllStart":         "🔄 Начинается обновление всех пакетов...",
-			"updateAllSuccess":       "✅ Обновление всех пакетов успешно завершено!",
-			"updateAllFailed":        "❌ Не удалось обновить все пакеты: {{error}}",
-			"installStart":           "🔄 Начинается установка '{{name}}'...",
-			"installSuccess":         "✅ Установка '{{name}}' успешно завершена!",
-			"installFailed":          "❌ Не удалось установить '{{name}}': {{error}}",
-			"uninstallStart":         "🔄 Начинается удаление '{{name}}'...",
-			"uninstallSuccess":       "✅ Удаление '{{name}}' успешно завершено!",
-			"uninstallFailed":        "❌ Не удалось удалить '{{name}}': {{error}}",
-			"errorCreatingPipe":      "❌ Ошибка создания выходного канала: {{error}}",
-			"errorCreatingErrorPipe": "❌ Ошибка создания канала ошибок: {{error}}",
-			"errorStartingUpdate":    "❌ Ошибка запуска обновления: {{error}}",
-			"errorStartingUpdateAll": "❌ Ошибка запуска обновления всех пакетов: {{error}}",
-			"errorStartingInstall":   "❌ Ошибка запуска установки: {{error}}",
-			"errorStartingUninstall": "❌ Ошибка запуска удаления: {{error}}",
+			"updateStart":               "🔄 Начинается обновление '{{name}}'...",
+			"updateSuccess":             "✅ Обновление '{{name}}' успешно завершено!",
+			"updateFailed":              "❌ Не удалось обновить '{{name}}': {{error}}",
+			"updateAllStart":            "🔄 Начинается обновление всех пакетов...",
+			"updateAllSuccess":          "✅ Обновление всех пакетов успешно завершено!",
+			"updateAllFailed":           "❌ Не удалось обновить все пакеты: {{error}}",
+			"updateRetryingWithForce":   "🔄 Повторная попытка обновления '{{name}}' с --force (приложение может быть запущено)...",
+			"updateRetryingFailedCasks": "🔄 Повторная попытка для {{count}} неудачных cask с --force...",
+			"installStart":              "🔄 Начинается установка '{{name}}'...",
+			"installSuccess":            "✅ Установка '{{name}}' успешно завершена!",
+			"installFailed":             "❌ Не удалось установить '{{name}}': {{error}}",
+			"uninstallStart":            "🔄 Начинается удаление '{{name}}'...",
+			"uninstallSuccess":          "✅ Удаление '{{name}}' успешно завершено!",
+			"uninstallFailed":           "❌ Не удалось удалить '{{name}}': {{error}}",
+			"errorCreatingPipe":         "❌ Ошибка создания выходного канала: {{error}}",
+			"errorCreatingErrorPipe":    "❌ Ошибка создания канала ошибок: {{error}}",
+			"errorStartingUpdate":       "❌ Ошибка запуска обновления: {{error}}",
+			"errorStartingUpdateAll":    "❌ Ошибка запуска обновления всех пакетов: {{error}}",
+			"errorStartingInstall":      "❌ Ошибка запуска установки: {{error}}",
+			"errorStartingUninstall":    "❌ Ошибка запуска удаления: {{error}}",
 		}
 	default:
 		// Default to English
 		messages = map[string]string{
-			"updateStart":            "🔄 Starting update for '{{name}}'...",
-			"updateSuccess":          "✅ Update for '{{name}}' completed successfully!",
-			"updateFailed":           "❌ Update for '{{name}}' failed: {{error}}",
-			"updateAllStart":         "🔄 Starting update for all packages...",
-			"updateAllSuccess":       "✅ Update for all packages completed successfully!",
-			"updateAllFailed":        "❌ Update for all packages failed: {{error}}",
-			"installStart":           "🔄 Starting installation for '{{name}}'...",
-			"installSuccess":         "✅ Installation for '{{name}}' completed successfully!",
-			"installFailed":          "❌ Installation for '{{name}}' failed: {{error}}",
-			"uninstallStart":         "🔄 Starting uninstallation for '{{name}}'...",
-			"uninstallSuccess":       "✅ Uninstallation for '{{name}}' completed successfully!",
-			"uninstallFailed":        "❌ Uninstallation for '{{name}}' failed: {{error}}",
-			"errorCreatingPipe":      "❌ Error creating output pipe: {{error}}",
-			"errorCreatingErrorPipe": "❌ Error creating error pipe: {{error}}",
-			"errorStartingUpdate":    "❌ Error starting update: {{error}}",
-			"errorStartingUpdateAll": "❌ Error starting update all: {{error}}",
-			"errorStartingInstall":   "❌ Error starting installation: {{error}}",
-			"errorStartingUninstall": "❌ Error starting uninstallation: {{error}}",
+			"updateStart":               "🔄 Starting update for '{{name}}'...",
+			"updateSuccess":             "✅ Update for '{{name}}' completed successfully!",
+			"updateFailed":              "❌ Update for '{{name}}' failed: {{error}}",
+			"updateAllStart":            "🔄 Starting update for all packages...",
+			"updateAllSuccess":          "✅ Update for all packages completed successfully!",
+			"updateAllFailed":           "❌ Update for all packages failed: {{error}}",
+			"updateRetryingWithForce":   "🔄 Retrying update for '{{name}}' with --force (app may be in use)...",
+			"updateRetryingFailedCasks": "🔄 Retrying {{count}} failed cask(s) with --force...",
+			"installStart":              "🔄 Starting installation for '{{name}}'...",
+			"installSuccess":            "✅ Installation for '{{name}}' completed successfully!",
+			"installFailed":             "❌ Installation for '{{name}}' failed: {{error}}",
+			"uninstallStart":            "🔄 Starting uninstallation for '{{name}}'...",
+			"uninstallSuccess":          "✅ Uninstallation for '{{name}}' completed successfully!",
+			"uninstallFailed":           "❌ Uninstallation for '{{name}}' failed: {{error}}",
+			"errorCreatingPipe":         "❌ Error creating output pipe: {{error}}",
+			"errorCreatingErrorPipe":    "❌ Error creating error pipe: {{error}}",
+			"errorStartingUpdate":       "❌ Error starting update: {{error}}",
+			"errorStartingUpdateAll":    "❌ Error starting update all: {{error}}",
+			"errorStartingInstall":      "❌ Error starting installation: {{error}}",
+			"errorStartingUninstall":    "❌ Error starting uninstallation: {{error}}",
 		}
 	}
 
@@ -2194,13 +2210,101 @@ func (a *App) InstallBrewPackage(packageName string) string {
 	return successMsg
 }
 
+// isPackageCask checks if a package is a cask
+func (a *App) isPackageCask(packageName string) bool {
+	output, err := a.runBrewCommand("info", "--json=v2", packageName)
+	if err != nil {
+		return false
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	jsonOutput, _, err := extractJSONFromBrewOutput(outputStr)
+	if err != nil {
+		return false
+	}
+
+	var result struct {
+		Formulae []map[string]interface{} `json:"formulae"`
+		Casks    []map[string]interface{} `json:"casks"`
+	}
+	if err := json.Unmarshal([]byte(jsonOutput), &result); err != nil {
+		return false
+	}
+
+	// If found in casks but not in formulae, it's a cask
+	return len(result.Casks) > 0 && len(result.Formulae) == 0
+}
+
+// isAppAlreadyExistsError checks if the error is the "app already exists" error
+func (a *App) isAppAlreadyExistsError(stderrOutput string) bool {
+	return strings.Contains(stderrOutput, "It seems there is already an app at") ||
+		strings.Contains(stderrOutput, "already an App at")
+}
+
+// extractFailedPackagesFromError extracts package names from "app already exists" errors
+func (a *App) extractFailedPackagesFromError(stderrOutput string) []string {
+	var failedPackages []string
+	lines := strings.Split(stderrOutput, "\n")
+	for _, line := range lines {
+		// Error format: "Error: package-name: It seems there is already an app at..."
+		if strings.Contains(line, "It seems there is already an app at") ||
+			strings.Contains(line, "already an App at") {
+			// Try to extract package name
+			// Format is typically: "Error: package-name: It seems..."
+			parts := strings.Split(line, ":")
+			if len(parts) >= 3 {
+				// Format: "Error" : "package-name" : "It seems..."
+				pkgName := strings.TrimSpace(parts[1])
+				if pkgName != "" {
+					failedPackages = append(failedPackages, pkgName)
+				}
+			} else if len(parts) >= 2 {
+				// Fallback: "package-name: It seems..."
+				pkgName := strings.TrimSpace(parts[0])
+				if pkgName != "" && !strings.Contains(pkgName, "Error") {
+					failedPackages = append(failedPackages, pkgName)
+				}
+			}
+		}
+	}
+	return failedPackages
+}
+
 // UpdateBrewPackage upgrades a package with live progress updates
 func (a *App) UpdateBrewPackage(packageName string) string {
 	// Emit initial progress
 	startMessage := a.getBackendMessage("updateStart", map[string]string{"name": packageName})
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
-	cmd := exec.Command(a.brewPath, "upgrade", packageName)
+	// Try normal upgrade first
+	finalMessage, wailbrewUpdated, shouldRetry := a.runUpdateCommand(packageName, false)
+
+	// If update failed with "app already exists" error and it's a cask, retry with --force
+	if shouldRetry && a.isPackageCask(packageName) {
+		rt.EventsEmit(a.ctx, "packageUpdateProgress", a.getBackendMessage("updateRetryingWithForce", map[string]string{"name": packageName}))
+		finalMessage, wailbrewUpdated, _ = a.runUpdateCommand(packageName, true)
+	}
+
+	// Signal completion
+	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+
+	// If WailBrew was updated, emit event to show restart dialog
+	if wailbrewUpdated && a.ctx != nil {
+		rt.EventsEmit(a.ctx, "wailbrewUpdated")
+	}
+
+	return finalMessage
+}
+
+// runUpdateCommand executes the brew upgrade command and returns the result
+func (a *App) runUpdateCommand(packageName string, useForce bool) (finalMessage string, wailbrewUpdated bool, shouldRetry bool) {
+	args := []string{"upgrade"}
+	if useForce {
+		args = append(args, "--force")
+	}
+	args = append(args, packageName)
+
+	cmd := exec.Command(a.brewPath, args...)
 	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	// Create pipes for real-time output
@@ -2208,22 +2312,25 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	if err != nil {
 		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
-		return errorMsg
+		return errorMsg, false, false
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
-		return errorMsg
+		return errorMsg, false, false
 	}
 
 	// Start the command
 	if err := cmd.Start(); err != nil {
 		errorMsg := a.getBackendMessage("errorStartingUpdate", map[string]string{"error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", errorMsg)
-		return errorMsg
+		return errorMsg, false, false
 	}
+
+	// Capture stderr for error detection
+	var stderrOutput strings.Builder
 
 	// Read and emit output in real-time
 	go func() {
@@ -2241,6 +2348,8 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
 			if line != "" {
+				stderrOutput.WriteString(line)
+				stderrOutput.WriteString("\n")
 				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
 			}
 		}
@@ -2249,30 +2358,26 @@ func (a *App) UpdateBrewPackage(packageName string) string {
 	// Wait for command to complete
 	err = cmd.Wait()
 
-	var finalMessage string
-	var wailbrewUpdated bool
 	if err != nil {
+		stderrStr := stderrOutput.String()
+		// Check if this is the "app already exists" error and we haven't tried --force yet
+		if !useForce && a.isAppAlreadyExistsError(stderrStr) {
+			return "", false, true
+		}
 		finalMessage = a.getBackendMessage("updateFailed", map[string]string{"name": packageName, "error": err.Error()})
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
-	} else {
-		finalMessage = a.getBackendMessage("updateSuccess", map[string]string{"name": packageName})
-		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
-
-		// Check if WailBrew itself was updated
-		if strings.ToLower(packageName) == "wailbrew" {
-			wailbrewUpdated = true
-		}
+		return finalMessage, false, false
 	}
 
-	// Signal completion
-	rt.EventsEmit(a.ctx, "packageUpdateComplete", finalMessage)
+	finalMessage = a.getBackendMessage("updateSuccess", map[string]string{"name": packageName})
+	rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
 
-	// If WailBrew was updated, emit event to show restart dialog
-	if wailbrewUpdated && a.ctx != nil {
-		rt.EventsEmit(a.ctx, "wailbrewUpdated")
+	// Check if WailBrew itself was updated
+	if strings.ToLower(packageName) == "wailbrew" {
+		wailbrewUpdated = true
 	}
 
-	return finalMessage
+	return finalMessage, wailbrewUpdated, false
 }
 
 // UpdateSelectedBrewPackages upgrades specific packages with live progress updates
@@ -2309,6 +2414,7 @@ func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
 
 	// Track which packages were updated (especially wailbrew)
 	updatedPackages := make(map[string]bool)
+	var stderrOutput strings.Builder
 
 	// Read and emit output in real-time
 	go func() {
@@ -2345,6 +2451,8 @@ func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
 			if line != "" {
+				stderrOutput.WriteString(line)
+				stderrOutput.WriteString("\n")
 				rt.EventsEmit(a.ctx, "packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
 			}
 		}
@@ -2355,7 +2463,33 @@ func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
 
 	var finalMessage string
 	if err != nil {
-		finalMessage = fmt.Sprintf("❌ Update failed for selected packages: %v", err)
+		stderrStr := stderrOutput.String()
+		// Check if this is the "app already exists" error
+		if a.isAppAlreadyExistsError(stderrStr) {
+			// Extract failed package names
+			failedPackages := a.extractFailedPackagesFromError(stderrStr)
+			// Filter to only casks
+			var failedCasks []string
+			for _, pkg := range failedPackages {
+				if a.isPackageCask(pkg) {
+					failedCasks = append(failedCasks, pkg)
+				}
+			}
+
+			// Retry failed casks with --force
+			if len(failedCasks) > 0 {
+				rt.EventsEmit(a.ctx, "packageUpdateProgress", a.getBackendMessage("updateRetryingFailedCasks", map[string]string{"count": fmt.Sprintf("%d", len(failedCasks))}))
+				for _, pkg := range failedCasks {
+					rt.EventsEmit(a.ctx, "packageUpdateProgress", a.getBackendMessage("updateRetryingWithForce", map[string]string{"name": pkg}))
+					_, _, _ = a.runUpdateCommand(pkg, true)
+				}
+				finalMessage = fmt.Sprintf("✅ Retried %d failed cask(s) with --force", len(failedCasks))
+			} else {
+				finalMessage = fmt.Sprintf("❌ Update failed for selected packages: %v", err)
+			}
+		} else {
+			finalMessage = fmt.Sprintf("❌ Update failed for selected packages: %v", err)
+		}
 		rt.EventsEmit(a.ctx, "packageUpdateProgress", finalMessage)
 	} else {
 		finalMessage = fmt.Sprintf("✅ Successfully updated %d selected package(s)", len(packageNames))
