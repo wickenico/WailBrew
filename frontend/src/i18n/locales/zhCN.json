@@ -55,7 +55,10 @@
     "ok": "Ok",
     "close": "关闭",
     "updateHomebrew": "更新 Homebrew",
-    "uninstallDeprecated": "卸载已弃用的包 \"{{name}}\""
+    "uninstallDeprecated": "卸载已弃用的包 \"{{name}}\"",
+    "untap": "取消连接 \"{{name}}\"",
+    "tap": "连接软件源",
+    "yesUntap": "是，取消连接"
   },
   "multiSelect": {
     "selectedCount": "已选 {{count}}/{{total}}"
@@ -115,11 +118,22 @@
     "confirmUpdate": "您确定要更新 \"{{name}}\" 吗？",
     "confirmUpdateAll": "您确定要更新所有可更新的软件包吗？",
     "confirmUpdateSelected": "您确定要更新 {{count}} 个已选软件包吗？",
+    "confirmUntap": "您确定要取消连接 \"{{name}}\" 吗？",
     "updateLogs": "{{name}} 的更新日志",
     "updateAllLogs": "所有可更新软件包的更新日志",
     "updateSelectedLogs": "已选软件包的更新日志",
     "installLogs": "{{name}} 的安装日志",
     "uninstallLogs": "{{name}} 的卸载日志",
+    "untapLogs": "{{name}} 的取消连接日志",
+    "untapping": "正在取消连接 \"{{name}}\"...\n请等待...",
+    "tapLogs": "{{name}} 的连接日志",
+    "tapping": "正在连接 \"{{name}}\"...\n请等待...",
+    "tapInputTitle": "连接软件源",
+    "tapInputPlaceholder": "用户/仓库（例如：homebrew/cask）",
+    "tapInputHint": "请输入软件源名称，格式：用户/仓库",
+    "tapInputEmpty": "请输入软件源名称",
+    "tapInputInvalid": "格式无效。软件源名称必须为格式：用户/仓库",
+    "repositoryInfo": "{{name}} 的信息",
     "packageInfo": "{{name}} 的信息",
     "sessionLogs": "会话日志",
     "updating": "正在更新 \"{{name}}\"...\n请等待...",
@@ -216,7 +230,9 @@
     "installedStatus": "已安装",
     "notInstalledStatus": "未安装",
     "package": "个软件包",
-    "packages": "个软件包"
+    "packages": "个软件包",
+    "repository": "个软件源",
+    "repositories": "个软件源"
   },
   "repository": {
     "noSelection": "未选择软件源",

@@ -1053,6 +1053,14 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ Error starting update all: {{error}}",
 			"errorStartingInstall":      "❌ Error starting installation: {{error}}",
 			"errorStartingUninstall":    "❌ Error starting uninstallation: {{error}}",
+			"untapStart":                "🔄 Starting untap for '{{name}}'...",
+			"untapSuccess":              "✅ Untap for '{{name}}' completed successfully!",
+			"untapFailed":               "❌ Untap for '{{name}}' failed: {{error}}",
+			"errorStartingUntap":        "❌ Error starting untap: {{error}}",
+			"tapStart":                  "🔄 Starting tap for '{{name}}'...",
+			"tapSuccess":                "✅ Tap for '{{name}}' completed successfully!",
+			"tapFailed":                 "❌ Tap for '{{name}}' failed: {{error}}",
+			"errorStartingTap":          "❌ Error starting tap: {{error}}",
 		}
 	case "de":
 		messages = map[string]string{
@@ -1076,6 +1084,14 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ Fehler beim Starten des Updates aller Pakete: {{error}}",
 			"errorStartingInstall":      "❌ Fehler beim Starten der Installation: {{error}}",
 			"errorStartingUninstall":    "❌ Fehler beim Starten der Deinstallation: {{error}}",
+			"untapStart":                "🔄 Starte Untap für '{{name}}'...",
+			"untapSuccess":              "✅ Untap für '{{name}}' erfolgreich abgeschlossen!",
+			"untapFailed":               "❌ Untap für '{{name}}' fehlgeschlagen: {{error}}",
+			"errorStartingUntap":        "❌ Fehler beim Starten des Untaps: {{error}}",
+			"tapStart":                  "🔄 Starte Tap für '{{name}}'...",
+			"tapSuccess":                "✅ Tap für '{{name}}' erfolgreich abgeschlossen!",
+			"tapFailed":                 "❌ Tap für '{{name}}' fehlgeschlagen: {{error}}",
+			"errorStartingTap":          "❌ Fehler beim Starten des Taps: {{error}}",
 		}
 	case "fr":
 		messages = map[string]string{
@@ -1122,6 +1138,14 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ Tümü güncellenirken bir hata oluştu: {{error}}",
 			"errorStartingInstall":      "❌ Kurulurken bir hata oluştu: {{error}}",
 			"errorStartingUninstall":    "❌ Kaldırılma başlatılırken bir hata oluştu: {{error}}",
+			"untapStart":                "🔄 '{{name}}' için untap başlıyor...",
+			"untapSuccess":              "✅ '{{name}}' için untap başarıyla tamamlandı!",
+			"untapFailed":               "❌ '{{name}}' için untap hata verdi: {{error}}",
+			"errorStartingUntap":        "❌ Untap başlatılırken bir hata oluştu: {{error}}",
+			"tapStart":                  "🔄 '{{name}}' için tap başlıyor...",
+			"tapSuccess":                "✅ '{{name}}' için tap başarıyla tamamlandı!",
+			"tapFailed":                 "❌ '{{name}}' için tap hata verdi: {{error}}",
+			"errorStartingTap":          "❌ Tap başlatılırken bir hata oluştu: {{error}}",
 		}
 	case "zhCN":
 		messages = map[string]string{
@@ -1145,6 +1169,14 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ 准备更新所有软件包时出错：{{error}}",
 			"errorStartingInstall":      "❌ 准备安装时出错：{{error}}",
 			"errorStartingUninstall":    "❌ 准备卸载时出错：{{error}}",
+			"untapStart":                "🔄 开始取消 '{{name}}' 的 tap...",
+			"untapSuccess":              "✅ '{{name}}' 的 untap 成功！",
+			"untapFailed":               "❌ 取消 '{{name}}' 的 tap 失败：{{error}}",
+			"errorStartingUntap":        "❌ 准备取消 tap 时出错：{{error}}",
+			"tapStart":                  "🔄 开始添加 '{{name}}' 的 tap...",
+			"tapSuccess":                "✅ '{{name}}' 的 tap 成功！",
+			"tapFailed":                 "❌ 添加 '{{name}}' 的 tap 失败：{{error}}",
+			"errorStartingTap":          "❌ 准备添加 tap 时出错：{{error}}",
 		}
 	case "pt_BR":
 		messages = map[string]string{
@@ -1168,6 +1200,14 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ Erro ao iniciar a atualização de tudo: {{error}}",
 			"errorStartingInstall":      "❌ Erro ao iniciar instalação: {{error}}",
 			"errorStartingUninstall":    "❌ Erro ao iniciar desinstalação: {{error}}",
+			"untapStart":                "🔄 Iniciando untap de '{{name}}'...",
+			"untapSuccess":              "✅ Untap de '{{name}}' concluído com sucesso!",
+			"untapFailed":               "❌ Falha no untap de '{{name}}': {{error}}",
+			"errorStartingUntap":        "❌ Erro ao iniciar untap: {{error}}",
+			"tapStart":                  "🔄 Iniciando tap de '{{name}}'...",
+			"tapSuccess":                "✅ Tap de '{{name}}' concluído com sucesso!",
+			"tapFailed":                 "❌ Falha no tap de '{{name}}': {{error}}",
+			"errorStartingTap":          "❌ Erro ao iniciar tap: {{error}}",
 		}
 	case "ru":
 		messages = map[string]string{
@@ -1191,6 +1231,14 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ Ошибка запуска обновления всех пакетов: {{error}}",
 			"errorStartingInstall":      "❌ Ошибка запуска установки: {{error}}",
 			"errorStartingUninstall":    "❌ Ошибка запуска удаления: {{error}}",
+			"untapStart":                "🔄 Начинается untap для '{{name}}'...",
+			"untapSuccess":              "✅ Untap для '{{name}}' успешно завершён!",
+			"untapFailed":               "❌ Не удалось выполнить untap для '{{name}}': {{error}}",
+			"errorStartingUntap":        "❌ Ошибка запуска untap: {{error}}",
+			"tapStart":                  "🔄 Начинается tap для '{{name}}'...",
+			"tapSuccess":                "✅ Tap для '{{name}}' успешно завершён!",
+			"tapFailed":                 "❌ Не удалось выполнить tap для '{{name}}': {{error}}",
+			"errorStartingTap":          "❌ Ошибка запуска tap: {{error}}",
 		}
 	default:
 		// Default to English
@@ -1215,6 +1263,10 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"errorStartingUpdateAll":    "❌ Error starting update all: {{error}}",
 			"errorStartingInstall":      "❌ Error starting installation: {{error}}",
 			"errorStartingUninstall":    "❌ Error starting uninstallation: {{error}}",
+			"untapStart":                "🔄 Starting untap for '{{name}}'...",
+			"untapSuccess":              "✅ Untap for '{{name}}' completed successfully!",
+			"untapFailed":               "❌ Untap for '{{name}}' failed: {{error}}",
+			"errorStartingUntap":        "❌ Error starting untap: {{error}}",
 		}
 	}
 
@@ -2082,6 +2134,152 @@ func (a *App) GetBrewTaps() [][]string {
 	}
 
 	return taps
+}
+
+// UntapBrewRepository untaps a repository with live progress updates
+func (a *App) UntapBrewRepository(repositoryName string) string {
+	// Emit initial progress
+	startMessage := a.getBackendMessage("untapStart", map[string]string{"name": repositoryName})
+	rt.EventsEmit(a.ctx, "repositoryUntapProgress", startMessage)
+
+	cmd := exec.Command(a.brewPath, "untap", repositoryName)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryUntapProgress", errorMsg)
+		return errorMsg
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryUntapProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := a.getBackendMessage("errorStartingUntap", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryUntapProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "repositoryUntapProgress", fmt.Sprintf("🗑️ %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "repositoryUntapProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+	if err != nil {
+		errorMsg := a.getBackendMessage("untapFailed", map[string]string{"name": repositoryName, "error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryUntapProgress", errorMsg)
+		rt.EventsEmit(a.ctx, "repositoryUntapComplete", errorMsg)
+		return errorMsg
+	}
+
+	// Success
+	successMsg := a.getBackendMessage("untapSuccess", map[string]string{"name": repositoryName})
+	rt.EventsEmit(a.ctx, "repositoryUntapProgress", successMsg)
+	rt.EventsEmit(a.ctx, "repositoryUntapComplete", successMsg)
+	return successMsg
+}
+
+// TapBrewRepository taps a repository with live progress updates
+func (a *App) TapBrewRepository(repositoryName string) string {
+	// Emit initial progress
+	startMessage := a.getBackendMessage("tapStart", map[string]string{"name": repositoryName})
+	rt.EventsEmit(a.ctx, "repositoryTapProgress", startMessage)
+
+	cmd := exec.Command(a.brewPath, "tap", repositoryName)
+	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
+
+	// Create pipes for real-time output
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryTapProgress", errorMsg)
+		return errorMsg
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		errorMsg := a.getBackendMessage("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryTapProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		errorMsg := a.getBackendMessage("errorStartingTap", map[string]string{"error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryTapProgress", errorMsg)
+		return errorMsg
+	}
+
+	// Read and emit output in real-time
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "repositoryTapProgress", fmt.Sprintf("📦 %s", line))
+			}
+		}
+	}()
+
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line != "" {
+				rt.EventsEmit(a.ctx, "repositoryTapProgress", fmt.Sprintf("⚠️ %s", line))
+			}
+		}
+	}()
+
+	// Wait for command to complete
+	err = cmd.Wait()
+	if err != nil {
+		errorMsg := a.getBackendMessage("tapFailed", map[string]string{"name": repositoryName, "error": err.Error()})
+		rt.EventsEmit(a.ctx, "repositoryTapProgress", errorMsg)
+		rt.EventsEmit(a.ctx, "repositoryTapComplete", errorMsg)
+		return errorMsg
+	}
+
+	// Success
+	successMsg := a.getBackendMessage("tapSuccess", map[string]string{"name": repositoryName})
+	rt.EventsEmit(a.ctx, "repositoryTapProgress", successMsg)
+	rt.EventsEmit(a.ctx, "repositoryTapComplete", successMsg)
+	return successMsg
+}
+
+// GetBrewTapInfo retrieves information about a tapped repository
+func (a *App) GetBrewTapInfo(repositoryName string) string {
+	output, err := a.runBrewCommand("tap-info", repositoryName)
+	if err != nil {
+		return fmt.Sprintf("Error: Failed to get tap info: %v", err)
+	}
+
+	return string(output)
 }
 
 // RemoveBrewPackage uninstalls a package with live progress updates

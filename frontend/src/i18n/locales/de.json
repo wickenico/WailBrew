@@ -55,7 +55,10 @@
     "ok": "Ok",
     "close": "Schließen",
     "updateHomebrew": "Homebrew aktualisieren",
-    "uninstallDeprecated": "Veraltete Formel \"{{name}}\" deinstallieren"
+    "uninstallDeprecated": "Veraltete Formel \"{{name}}\" deinstallieren",
+    "untap": "\"{{name}}\" enttappen",
+    "tap": "Repository tappen",
+    "yesUntap": "Ja, enttappen"
   },
   "multiSelect": {
     "selectedCount": "{{count}} von {{total}} ausgewählt"
@@ -115,11 +118,22 @@
     "confirmUpdate": "Möchten Sie \"{{name}}\" wirklich aktualisieren?",
     "confirmUpdateAll": "Möchten Sie wirklich alle veralteten Pakete aktualisieren?",
     "confirmUpdateSelected": "Möchten Sie wirklich {{count}} ausgewählte(s) Paket(e) aktualisieren?",
+    "confirmUntap": "Möchten Sie \"{{name}}\" wirklich enttappen?",
     "updateLogs": "Update-Logs für {{name}}",
     "updateAllLogs": "Update-Logs für alle Pakete",
     "updateSelectedLogs": "Update-Logs für ausgewählte Pakete",
     "installLogs": "Installations-Logs für {{name}}",
     "uninstallLogs": "Deinstallations-Logs für {{name}}",
+    "untapLogs": "Enttapp-Logs für {{name}}",
+    "untapping": "Enttappe \"{{name}}\"...\nBitte warten...",
+    "tapLogs": "Tapp-Logs für {{name}}",
+    "tapping": "Tappe \"{{name}}\"...\nBitte warten...",
+    "tapInputTitle": "Repository tappen",
+    "tapInputPlaceholder": "benutzer/repo (z.B. homebrew/cask)",
+    "tapInputHint": "Repository-Name im Format eingeben: benutzer/repo",
+    "tapInputEmpty": "Bitte geben Sie einen Repository-Namen ein",
+    "tapInputInvalid": "Ungültiges Format. Repository-Name muss im Format sein: benutzer/repo",
+    "repositoryInfo": "Info für {{name}}",
     "packageInfo": "Info für {{name}}",
     "sessionLogs": "Sitzungsprotokolle",
     "updating": "Aktualisiere \"{{name}}\"...\nBitte warten...",
@@ -216,7 +230,9 @@
     "installedStatus": "Installiert",
     "notInstalledStatus": "Nicht installiert",
     "package": "Paket",
-    "packages": "Pakete"
+    "packages": "Pakete",
+    "repository": "Repository",
+    "repositories": "Repositories"
   },
   "repository": {
     "noSelection": "Kein Repository ausgewählt",

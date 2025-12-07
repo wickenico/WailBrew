@@ -20,6 +20,9 @@ import {
     GetAllBrewPackages,
     GetBrewLeaves,
     GetBrewTaps,
+    UntapBrewRepository,
+    TapBrewRepository,
+    GetBrewTapInfo,
     GetAppVersion,
     SetLanguage,
     CheckForUpdates,
@@ -47,6 +50,7 @@ import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
 import UpdateDialog from "./components/UpdateDialog";
 import RestartDialog from "./components/RestartDialog";
+import TapInputDialog from "./components/TapInputDialog";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
@@ -88,12 +92,20 @@ const WailBrewApp = () => {
     const [showInstallConfirm, setShowInstallConfirm] = useState<boolean>(false);
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
     const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState<boolean>(false);
+    const [showUntapConfirm, setShowUntapConfirm] = useState<boolean>(false);
+    const [showTapInput, setShowTapInput] = useState<boolean>(false);
+    const [untapLogPackages, setUntapLogPackages] = useState<string[]>([]);
     const [updateLogs, setUpdateLogs] = useState<string | null>(null);
     const [isUpdateAllOperation, setIsUpdateAllOperation] = useState<boolean>(false);
     const [currentlyUpdatingPackage, setCurrentlyUpdatingPackage] = useState<string | null>(null);
     const [installLogs, setInstallLogs] = useState<string | null>(null);
     const [uninstallLogs, setUninstallLogs] = useState<string | null>(null);
+    const [untapLogs, setUntapLogs] = useState<string | null>(null);
+    const [tapLogs, setTapLogs] = useState<string | null>(null);
+    const [tappingRepository, setTappingRepository] = useState<string | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
+    const [repositoryInfoLogs, setRepositoryInfoLogs] = useState<string | null>(null);
+    const [showRepositoryInfo, setShowRepositoryInfo] = useState<boolean>(false);
     const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false);
     const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
@@ -926,6 +938,40 @@ const WailBrewApp = () => {
         await RemoveBrewPackage(selectedPackage.name);
     };
 
+    const handleUntapPackageClick = async (packageName: string) => {
+        // Close the log dialog
+        setUntapLogs(null);
+        setUntapLogPackages([]);
+        
+        // Navigate to the package in "installed" view
+        setSearchQuery("");
+        
+        // Try to find the package in installed packages first
+        let pkg = packages.find(p => p.name === packageName);
+        
+        // If not found in installed packages, check all packages
+        if (!pkg) {
+            pkg = allPackages.find(p => p.name === packageName);
+        }
+        
+        if (!pkg) {
+            // Create a minimal package entry if not found
+            pkg = {
+                name: packageName,
+                installedVersion: "",
+                isInstalled: false,
+            };
+        }
+        
+        // Switch to "installed" view to show installed packages
+        setView("installed");
+        
+        // Use setTimeout to ensure view renders and then select & scroll to package
+        setTimeout(async () => {
+            await handleSelect(pkg!);
+        }, 200);
+    };
+
     const handleUpdate = (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
         setShowUpdateConfirm(true);
@@ -1131,6 +1177,281 @@ const WailBrewApp = () => {
     const handleUninstallPackage = (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
         setShowConfirm(true);
+    };
+
+    const handleUntapRepository = (repo: RepositoryEntry) => {
+        setSelectedRepository(repo);
+        setShowUntapConfirm(true);
+    };
+
+    const handleUntapConfirmed = async () => {
+        if (!selectedRepository) return;
+        setShowUntapConfirm(false);
+        setUntapLogs(t('dialogs.untapping', { name: selectedRepository.name }));
+
+        // Use a ref to accumulate logs for error checking
+        const logsRef = { current: t('dialogs.untapping', { name: selectedRepository.name }) };
+
+        // Set up event listeners for live progress
+        const progressListener = EventsOn("repositoryUntapProgress", (progress: string) => {
+            setUntapLogs(prevLogs => {
+                const newLogs = prevLogs ? prevLogs + '\n' + progress : `${t('dialogs.untapLogs', { name: selectedRepository.name })}\n${progress}`;
+                logsRef.current = newLogs;
+                return newLogs;
+            });
+        });
+
+        const completeListener = EventsOn("repositoryUntapComplete", async (finalMessage: string) => {
+            // Get the final accumulated logs including the final message
+            const allLogs = logsRef.current + '\n' + finalMessage;
+            
+            // Check if untap failed due to installed packages
+            const isError = allLogs.includes("❌") || allLogs.includes("failed") || allLogs.includes("Error:");
+            const hasInstalledPackages = allLogs.includes("contains the following installed") || 
+                                        allLogs.includes("installed formulae or casks");
+            
+            if (isError && hasInstalledPackages) {
+                // Parse the error message to extract package names
+                const packages: string[] = [];
+                const lines = allLogs.split('\n');
+                let inPackageList = false;
+                
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    // Look for the error message that indicates installed packages
+                    if (trimmed.includes("contains the following installed")) {
+                        inPackageList = true;
+                        continue;
+                    }
+                    // Extract package names (they appear after the error message, usually indented or with warning icons)
+                    if (inPackageList && trimmed.length > 0) {
+                        // Remove emoji/icon prefixes and extract package name
+                        const cleanName = trimmed
+                            .replace(/^⚠️\s*/, '')
+                            .replace(/^▲\s*/, '')
+                            .replace(/^🗑️\s*/, '')
+                            .replace(/^❌\s*/, '')
+                            .trim();
+                        // Skip if it's still an error message line
+                        if (!cleanName.includes("Error:") && 
+                            !cleanName.includes("failed") && 
+                            cleanName.length > 0 && 
+                            !cleanName.includes("exit status") &&
+                            !cleanName.includes("Refusing to untap") &&
+                            !cleanName.includes("because it contains")) {
+                            packages.push(cleanName);
+                        }
+                    }
+                    // Stop if we hit the final error message
+                    if (trimmed.includes("failed:") || trimmed.includes("exit status")) {
+                        break;
+                    }
+                }
+                
+                if (packages.length > 0) {
+                    // Make packages clickable in the log dialog
+                    setUntapLogPackages(packages);
+                    // Keep the log dialog open so user can click on package links
+                    
+                    // Clean up event listeners
+                    progressListener();
+                    completeListener();
+                    return;
+                }
+            }
+            
+            // Update the repository list after successful untap
+            await handleRefreshPackages();
+            setUntapLogs(null);
+            setUntapLogPackages([]);
+            
+            // Clean up event listeners
+            progressListener();
+            completeListener();
+        });
+
+        // Start the untap process
+        await UntapBrewRepository(selectedRepository.name);
+    };
+
+    const handleTapRepository = () => {
+        setShowTapInput(true);
+    };
+
+    const handleShowRepositoryInfo = async (repo: RepositoryEntry) => {
+        setShowRepositoryInfo(true);
+        setRepositoryInfoLogs(t('dialogs.gettingInfo', { name: repo.name }));
+        
+        try {
+            const info = await GetBrewTapInfo(repo.name);
+            setRepositoryInfoLogs(info);
+        } catch (error) {
+            setRepositoryInfoLogs(t('dialogs.packageInfo') + `\nError: ${error}`);
+        }
+    };
+
+    const handleTapConfirmed = async (tapName: string) => {
+        setShowTapInput(false);
+        setTappingRepository(tapName);
+        setTapLogs(t('dialogs.tapping', { name: tapName }));
+
+        // Store current package lists before tapping
+        const [oldAllPackages, oldCasks] = await Promise.all([
+            GetAllBrewPackages(),
+            GetBrewCasks()
+        ]);
+        
+        const oldAllPackagesSet = new Set(oldAllPackages.map(([name]: string[]) => name));
+        const oldCasksSet = new Set(oldCasks.map(([name]: string[]) => name));
+
+        // Set up event listeners for live progress
+        const progressListener = EventsOn("repositoryTapProgress", (progress: string) => {
+            setTapLogs(prevLogs => {
+                if (!prevLogs) {
+                    return `${t('dialogs.tapLogs', { name: tapName })}\n${progress}`;
+                }
+                return prevLogs + '\n' + progress;
+            });
+        });
+
+        const completeListener = EventsOn("repositoryTapComplete", async (finalMessage: string) => {
+            // Check if tap was successful (not an error message)
+            const isSuccess = !finalMessage.includes("❌") && !finalMessage.includes("failed");
+            
+            if (isSuccess) {
+                // Get new package lists after tapping
+                const [newAllPackages, newCasks] = await Promise.all([
+                    GetAllBrewPackages(),
+                    GetBrewCasks()
+                ]);
+                
+                // Find new packages
+                const newFormulae: string[] = [];
+                const newCasksList: string[] = [];
+                
+                newAllPackages.forEach(([name]: string[]) => {
+                    if (!oldAllPackagesSet.has(name)) {
+                        newFormulae.push(name);
+                    }
+                });
+                
+                newCasks.forEach(([name]: string[]) => {
+                    if (!oldCasksSet.has(name)) {
+                        newCasksList.push(name);
+                    }
+                });
+                
+                const totalNew = newFormulae.length + newCasksList.length;
+                
+                // Show toast notification if new packages were discovered
+                if (totalNew > 0) {
+                    toast.dismiss('newPackagesDiscovered');
+                    
+                    const formulaeText = newFormulae.length > 0 
+                        ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
+                        : '';
+                    const casksText = newCasksList.length > 0
+                        ? `${newCasksList.length} ${t('toast.newCask', { count: newCasksList.length })}`
+                        : '';
+                    const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
+                    
+                    toast(
+                        (t_obj) => (
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                        {t('toast.newPackagesDiscovered', { count: totalNew, message })}
+                                    </div>
+                                    {(newFormulae.length > 0 || newCasksList.length > 0) && (
+                                        <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
+                                            {newFormulae.length > 0 && (
+                                                <div style={{ marginBottom: '0.25rem' }}>
+                                                    <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
+                                                    {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
+                                                </div>
+                                            )}
+                                            {newCasksList.length > 0 && (
+                                                <div>
+                                                    <strong>{t('toast.newCasksLabel')}</strong> {newCasksList.slice(0, 5).join(', ')}
+                                                    {newCasksList.length > 5 && ` ${t('toast.andMore', { count: newCasksList.length - 5 })}`}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setView("all");
+                                            toast.dismiss(t_obj.id);
+                                        }}
+                                        style={{
+                                            padding: '0.5rem 1rem',
+                                            background: 'rgba(34, 197, 94, 0.8)',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            color: '#fff',
+                                            cursor: 'pointer',
+                                            fontSize: '0.875rem',
+                                            fontWeight: 500,
+                                            transition: 'background 0.2s',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                        }}
+                                    >
+                                        {t('toast.viewAllPackages')}
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={() => toast.dismiss(t_obj.id)}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: 'rgba(255, 255, 255, 0.6)',
+                                        cursor: 'pointer',
+                                        padding: '0.25rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'color 0.2s',
+                                        flexShrink: 0,
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                    }}
+                                    title="Dismiss"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+                        ),
+                        {
+                            id: 'newPackagesDiscovered',
+                            icon: <Sparkles size={20} color="#22C55E" />,
+                            duration: 10000,
+                            position: 'bottom-center',
+                        }
+                    );
+                }
+            }
+            
+            // Update the repository list after tap completion
+            await handleRefreshPackages();
+            setTapLogs(null);
+            setTappingRepository(null);
+            
+            // Clean up event listeners
+            progressListener();
+            completeListener();
+        });
+
+        // Start the tap process
+        await TapBrewRepository(tapName);
     };
 
     const handleInstallPackage = (pkg: PackageEntry) => {
@@ -1583,6 +1904,11 @@ const WailBrewApp = () => {
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
+                            actions={
+                                <button className="doctor-button" onClick={handleTapRepository}>
+                                    {t('buttons.tap')}
+                                </button>
+                            }
                         />
                         {error && <div className="result error">{error}</div>}
                         <RepositoryTable
@@ -1590,6 +1916,8 @@ const WailBrewApp = () => {
                             selectedRepository={selectedRepository}
                             loading={loading}
                             onSelect={handleRepositorySelect}
+                            onUntap={handleUntapRepository}
+                            onShowInfo={handleShowRepositoryInfo}
                         />
                         <div className="info-footer-container">
                             <div className="package-info">
@@ -1741,6 +2069,14 @@ const WailBrewApp = () => {
                     onCancel={() => setShowUpdateSelectedConfirm(false)}
                     confirmLabel={t('buttons.yesUpdateSelected', { count: selectedPackages.size })}
                 />
+                <ConfirmDialog
+                    open={showUntapConfirm}
+                    message={t('dialogs.confirmUntap', { name: selectedRepository?.name })}
+                    onConfirm={handleUntapConfirmed}
+                    onCancel={() => setShowUntapConfirm(false)}
+                    confirmLabel={t('buttons.yesUntap')}
+                    destructive={true}
+                />
                 <LogDialog
                     open={updateLogs !== null}
                     title={getUpdateLogTitle()}
@@ -1778,6 +2114,33 @@ const WailBrewApp = () => {
                     }}
                 />
                 <LogDialog
+                    open={untapLogs !== null}
+                    title={selectedRepository ? t('dialogs.untapLogs', { name: selectedRepository.name }) : t('dialogs.untapLogs')}
+                    log={untapLogs}
+                    isRunning={false}
+                    clickablePackages={untapLogPackages}
+                    onPackageClick={handleUntapPackageClick}
+                    onClose={() => {
+                        setUntapLogs(null);
+                        setUntapLogPackages([]);
+                    }}
+                />
+                <LogDialog
+                    open={tapLogs !== null}
+                    title={tappingRepository ? t('dialogs.tapLogs', { name: tappingRepository }) : t('dialogs.tapLogs')}
+                    log={tapLogs}
+                    isRunning={false}
+                    onClose={() => {
+                        setTapLogs(null);
+                        setTappingRepository(null);
+                    }}
+                />
+                <TapInputDialog
+                    open={showTapInput}
+                    onConfirm={handleTapConfirmed}
+                    onCancel={() => setShowTapInput(false)}
+                />
+                <LogDialog
                     open={!!infoLogs}
                     title={t('dialogs.packageInfo', { name: infoPackage?.name })}
                     log={infoLogs}
@@ -1785,6 +2148,16 @@ const WailBrewApp = () => {
                         setInfoLogs(null);
                         setInfoPackage(null);
                     }}
+                />
+                <LogDialog
+                    open={showRepositoryInfo}
+                    title={t('dialogs.repositoryInfo', { name: selectedRepository?.name || '' })}
+                    log={repositoryInfoLogs}
+                    onClose={() => {
+                        setRepositoryInfoLogs(null);
+                        setShowRepositoryInfo(false);
+                    }}
+                    isRunning={false}
                 />
                 <LogDialog
                     open={showSessionLogs}

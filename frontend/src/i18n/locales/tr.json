@@ -55,7 +55,10 @@
     "ok": "Ok",
     "close": "Kapat",
     "updateHomebrew": "Homebrew'i güncelle",
-    "uninstallDeprecated": "Kullanımdan kaldırılan formül \"{{name}}\" kaldır"
+    "uninstallDeprecated": "Kullanımdan kaldırılan formül \"{{name}}\" kaldır",
+    "untap": "\"{{name}}\" deposunu kaldır",
+    "tap": "Depo ekle",
+    "yesUntap": "Evet, kaldır"
   },
   "multiSelect": {
     "selectedCount": "{{total}} içinden {{count}} seçildi"
@@ -115,11 +118,22 @@
     "confirmUpdate": "Gerçekten \"{{name}}\" paketini güncellemek istiyor musun?",
     "confirmUpdateAll": "Gerçekten tüm eskimiş paketleri güncellemek istiyor musun?",
     "confirmUpdateSelected": "Gerçekten {{count}} seçili paketi güncellemek istiyor musun?",
+    "confirmUntap": "Gerçekten \"{{name}}\" deposunu kaldırmak istiyor musun?",
     "updateLogs": "{{name}} için günlükleri güncelle",
     "updateAllLogs": "Tüm paketler için günlükleri güncelle",
     "updateSelectedLogs": "Seçili paketler için güncelleme günlükleri",
     "installLogs": "{{name} için günlükleri indir",
     "uninstallLogs": "{{name}} için günlükleri kaldır",
+    "untapLogs": "{{name}} için depo kaldırma günlükleri",
+    "untapping": "\"{{name}}\" deposu kaldırılıyor...\nLütfen bekle...",
+    "tapLogs": "{{name}} için depo ekleme günlükleri",
+    "tapping": "\"{{name}}\" deposu ekleniyor...\nLütfen bekle...",
+    "tapInputTitle": "Depo Ekle",
+    "tapInputPlaceholder": "kullanıcı/repo (örn: homebrew/cask)",
+    "tapInputHint": "Depo adını formatında girin: kullanıcı/repo",
+    "tapInputEmpty": "Lütfen bir depo adı girin",
+    "tapInputInvalid": "Geçersiz format. Depo adı şu formatta olmalıdır: kullanıcı/repo",
+    "repositoryInfo": "{{name}} için bilgi",
     "packageInfo": "{{name}} detayı",
     "sessionLogs": "Oturum günlükleri",
     "updating": "\"{{name}}\" güncelleniyor...\nLütfen bekle...",
@@ -216,7 +230,9 @@
     "installedStatus": "Yüklendi",
     "notInstalledStatus": "Yüklenmedi",
     "package": "paket",
-    "packages": "paket"
+    "packages": "paket",
+    "repository": "depo",
+    "repositories": "depolar"
   },
   "repository": {
     "noSelection": "Hiçbir depo seçilmedi",

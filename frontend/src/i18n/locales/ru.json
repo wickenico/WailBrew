@@ -55,7 +55,10 @@
     "ok": "ОК",
     "close": "Закрыть",
     "updateHomebrew": "Обновить Homebrew",
-    "uninstallDeprecated": "Удалить устаревший пакет \"{{name}}\""
+    "uninstallDeprecated": "Удалить устаревший пакет \"{{name}}\"",
+    "untap": "Отключить \"{{name}}\"",
+    "tap": "Подключить репозиторий",
+    "yesUntap": "Да, отключить"
   },
   "multiSelect": {
     "selectedCount": "{{count}} из {{total}} выбрано"
@@ -115,11 +118,22 @@
     "confirmUpdate": "Вы действительно хотите обновить \"{{name}}\"?",
     "confirmUpdateAll": "Вы действительно хотите обновить все устаревшие пакеты?",
     "confirmUpdateSelected": "Вы действительно хотите обновить {{count}} выбранных пакетов?",
+    "confirmUntap": "Вы действительно хотите отключить \"{{name}}\"?",
     "updateLogs": "Журнал обновления {{name}}",
     "updateAllLogs": "Журнал обновления всех пакетов",
     "updateSelectedLogs": "Журнал обновления выбранных пакетов",
     "installLogs": "Журнал установки {{name}}",
     "uninstallLogs": "Журнал удаления {{name}}",
+    "untapLogs": "Журнал отключения {{name}}",
+    "untapping": "Отключение \"{{name}}\"...\nПожалуйста, подождите...",
+    "tapLogs": "Журнал подключения {{name}}",
+    "tapping": "Подключение \"{{name}}\"...\nПожалуйста, подождите...",
+    "tapInputTitle": "Подключить репозиторий",
+    "tapInputPlaceholder": "пользователь/репо (например, homebrew/cask)",
+    "tapInputHint": "Введите имя репозитория в формате: пользователь/репо",
+    "tapInputEmpty": "Пожалуйста, введите имя репозитория",
+    "tapInputInvalid": "Неверный формат. Имя репозитория должно быть в формате: пользователь/репо",
+    "repositoryInfo": "Информация о {{name}}",
     "packageInfo": "Информация о {{name}}",
     "sessionLogs": "Журналы сеанса",
     "updating": "Обновление \"{{name}}\"...\nПожалуйста, подождите...",
@@ -216,7 +230,9 @@
     "installedStatus": "Установлено",
     "notInstalledStatus": "Не установлено",
     "package": "пакет",
-    "packages": "пакетов"
+    "packages": "пакетов",
+    "repository": "репозиторий",
+    "repositories": "репозиториев"
   },
   "repository": {
     "noSelection": "Репозиторий не выбран",

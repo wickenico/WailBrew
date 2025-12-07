@@ -30,6 +30,8 @@ export function GetBrewPackages():Promise<Array<any>>;
 
 export function GetBrewPath():Promise<string>;
 
+export function GetBrewTapInfo(arg1:string):Promise<string>;
+
 export function GetBrewTaps():Promise<Array<any>>;
 
 export function GetBrewUpdatablePackages():Promise<Array<any>>;
@@ -63,6 +65,10 @@ export function SetBrewPath(arg1:string):Promise<void>;
 export function SetLanguage(arg1:string):Promise<void>;
 
 export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
+
+export function TapBrewRepository(arg1:string):Promise<string>;
+
+export function UntapBrewRepository(arg1:string):Promise<string>;
 
 export function UpdateAllBrewPackages():Promise<string>;
 

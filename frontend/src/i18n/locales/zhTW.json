@@ -55,7 +55,10 @@
     "ok": "確定",
     "close": "關閉",
     "updateHomebrew": "更新 Homebrew",
-    "uninstallDeprecated": "解除安裝已棄用的套件 \"{{name}}\""
+    "uninstallDeprecated": "解除安裝已棄用的套件 \"{{name}}\"",
+    "untap": "取消連接 \"{{name}}\"",
+    "tap": "連接軟體庫",
+    "yesUntap": "是，取消連接"
   },
   "multiSelect": {
     "selectedCount": "已選 {{count}}/{{total}}"
@@ -115,11 +118,22 @@
     "confirmUpdate": "您確定要更新 \"{{name}}\" 嗎？",
     "confirmUpdateAll": "您確定要更新所有可更新的套件嗎？",
     "confirmUpdateSelected": "您確定要更新 {{count}} 個已選套件嗎？",
+    "confirmUntap": "您確定要取消連接 \"{{name}}\" 嗎？",
     "updateLogs": "{{name}} 的更新記錄",
     "updateAllLogs": "所有套件的更新記錄",
     "updateSelectedLogs": "已選套件的更新記錄",
     "installLogs": "{{name}} 的安裝記錄",
     "uninstallLogs": "{{name}} 的解除安裝記錄",
+    "untapLogs": "{{name}} 的取消連接記錄",
+    "untapping": "正在取消連接 \"{{name}}\"...\n請稍候...",
+    "tapLogs": "{{name}} 的連接記錄",
+    "tapping": "正在連接 \"{{name}}\"...\n請稍候...",
+    "tapInputTitle": "連接軟體庫",
+    "tapInputPlaceholder": "使用者/倉庫（例如：homebrew/cask）",
+    "tapInputHint": "請輸入軟體庫名稱，格式：使用者/倉庫",
+    "tapInputEmpty": "請輸入軟體庫名稱",
+    "tapInputInvalid": "格式無效。軟體庫名稱必須為格式：使用者/倉庫",
+    "repositoryInfo": "{{name}} 的資訊",
     "packageInfo": "{{name}} 的資訊",
     "sessionLogs": "工作階段記錄",
     "updating": "正在更新 \"{{name}}\"...\n請稍候...",
@@ -216,7 +230,9 @@
     "installedStatus": "已安裝",
     "notInstalledStatus": "未安裝",
     "package": "個套件",
-    "packages": "個套件"
+    "packages": "個套件",
+    "repository": "個軟體庫",
+    "repositories": "個軟體庫"
   },
   "repository": {
     "noSelection": "未選擇軟體庫",

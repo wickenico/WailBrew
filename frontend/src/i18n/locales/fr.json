@@ -55,7 +55,10 @@
     "ok": "Ok",
     "close": "Fermer",
     "updateHomebrew": "Mettre à jour Homebrew",
-    "uninstallDeprecated": "Désinstaller la formule obsolète \"{{name}}\""
+    "uninstallDeprecated": "Désinstaller la formule obsolète \"{{name}}\"",
+    "untap": "Détapper \"{{name}}\"",
+    "tap": "Tapper un dépôt",
+    "yesUntap": "Oui, détapper"
   },
   "multiSelect": {
     "selectedCount": "{{count}} sur {{total}} sélectionné(s)"
@@ -115,11 +118,22 @@
     "confirmUpdate": "Voulez-vous vraiment mettre à jour \"{{name}}\" ?",
     "confirmUpdateAll": "Voulez-vous vraiment mettre à jour tous les paquets obsolètes ?",
     "confirmUpdateSelected": "Voulez-vous vraiment mettre à jour {{count}} paquet(s) sélectionné(s) ?",
+    "confirmUntap": "Voulez-vous vraiment détapper \"{{name}}\" ?",
     "updateLogs": "Journaux de mise à jour pour {{name}}",
     "updateAllLogs": "Journaux de mise à jour pour tous les paquets",
     "updateSelectedLogs": "Journaux de mise à jour pour les paquets sélectionnés",
     "installLogs": "Journaux d'installation pour {{name}}",
     "uninstallLogs": "Journaux de désinstallation pour {{name}}",
+    "untapLogs": "Journaux de détappage pour {{name}}",
+    "untapping": "Détappage de \"{{name}}\"...\nVeuillez patienter...",
+    "tapLogs": "Journaux de tappage pour {{name}}",
+    "tapping": "Tappage de \"{{name}}\"...\nVeuillez patienter...",
+    "tapInputTitle": "Tapper un dépôt",
+    "tapInputPlaceholder": "utilisateur/repo (ex: homebrew/cask)",
+    "tapInputHint": "Entrez le nom du dépôt au format: utilisateur/repo",
+    "tapInputEmpty": "Veuillez entrer un nom de dépôt",
+    "tapInputInvalid": "Format invalide. Le nom du dépôt doit être au format: utilisateur/repo",
+    "repositoryInfo": "Informations pour {{name}}",
     "packageInfo": "Informations pour {{name}}",
     "sessionLogs": "Journaux de session",
     "updating": "Mise à jour de \"{{name}}\"...\nVeuillez patienter...",
@@ -216,7 +230,9 @@
     "installedStatus": "Installé",
     "notInstalledStatus": "Non installé",
     "package": "paquet",
-    "packages": "paquets"
+    "packages": "paquets",
+    "repository": "dépôt",
+    "repositories": "dépôts"
   },
   "repository": {
     "noSelection": "Aucun dépôt sélectionné",

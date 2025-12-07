@@ -58,6 +58,10 @@ export function GetBrewPath() {
   return window['go']['main']['App']['GetBrewPath']();
 }
 
+export function GetBrewTapInfo(arg1) {
+  return window['go']['main']['App']['GetBrewTapInfo'](arg1);
+}
+
 export function GetBrewTaps() {
   return window['go']['main']['App']['GetBrewTaps']();
 }
@@ -124,6 +128,14 @@ export function SetLanguage(arg1) {
 
 export function SetMirrorSource(arg1, arg2) {
   return window['go']['main']['App']['SetMirrorSource'](arg1, arg2);
+}
+
+export function TapBrewRepository(arg1) {
+  return window['go']['main']['App']['TapBrewRepository'](arg1);
+}
+
+export function UntapBrewRepository(arg1) {
+  return window['go']['main']['App']['UntapBrewRepository'](arg1);
 }
 
 export function UpdateAllBrewPackages() {

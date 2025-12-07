@@ -55,7 +55,10 @@
     "ok": "Ok",
     "close": "Fechar",
     "updateHomebrew": "Atualizar Homebrew",
-    "uninstallDeprecated": "Desinstalar fórmula descontinuada \"{{name}}\""
+    "uninstallDeprecated": "Desinstalar fórmula descontinuada \"{{name}}\"",
+    "untap": "Desconectar \"{{name}}\"",
+    "tap": "Conectar repositório",
+    "yesUntap": "Sim, desconectar"
   },
   "multiSelect": {
     "selectedCount": "{{count}} de {{total}} selecionado(s)"
@@ -115,11 +118,22 @@
     "confirmUpdate": "Você realmente deseja atualizar \"{{name}}\"?",
     "confirmUpdateAll": "Você realmente deseja atualizar todos os pacotes desatualizados?",
     "confirmUpdateSelected": "Você realmente deseja atualizar {{count}} pacote(s) selecionado(s)?",
+    "confirmUntap": "Você realmente deseja desconectar \"{{name}}\"?",
     "updateLogs": "Logs de atualização para {{name}}",
     "updateAllLogs": "Logs de atualização para todos os pacotes",
     "updateSelectedLogs": "Logs de atualização para pacotes selecionados",
     "installLogs": "Logs de instalação para {{name}}",
     "uninstallLogs": "Logs de desinstalação para {{name}}",
+    "untapLogs": "Logs de desconexão para {{name}}",
+    "untapping": "Desconectando \"{{name}}\"...\nPor favor, aguarde...",
+    "tapLogs": "Logs de conexão para {{name}}",
+    "tapping": "Conectando \"{{name}}\"...\nPor favor, aguarde...",
+    "tapInputTitle": "Conectar repositório",
+    "tapInputPlaceholder": "usuário/repo (ex: homebrew/cask)",
+    "tapInputHint": "Digite o nome do repositório no formato: usuário/repo",
+    "tapInputEmpty": "Por favor, digite um nome de repositório",
+    "tapInputInvalid": "Formato inválido. O nome do repositório deve estar no formato: usuário/repo",
+    "repositoryInfo": "Informações de {{name}}",
     "packageInfo": "Informações de {{name}}",
     "sessionLogs": "Logs de Sessão",
     "updating": "Atualizando \"{{name}}\"...\nPor favor, aguarde...",
@@ -216,7 +230,9 @@
     "installedStatus": "Instalado",
     "notInstalledStatus": "Não instalado",
     "package": "pacote",
-    "packages": "pacotes"
+    "packages": "pacotes",
+    "repository": "repositório",
+    "repositories": "repositórios"
   },
   "repository": {
     "noSelection": "Nenhum repositório selecionado",
