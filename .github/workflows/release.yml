@@ -44,8 +44,8 @@ jobs:
           fi
           echo "prev_tag=$PREV_TAG" >> "$GITHUB_OUTPUT"
           
-          # Generate release notes from git commits
-          RELEASE_NOTES=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse)
+          # Generate release notes from git commits (excluding version bump commits)
+          RELEASE_NOTES=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse --invert-grep -E --grep="[Bb]ump.*[0-9]+\.[0-9]+\.[0-9]+|^[Vv]ersion.*[0-9]+\.[0-9]+\.[0-9]+")
           
           # If no commits found, use a default message
           if [ -z "$RELEASE_NOTES" ]; then
