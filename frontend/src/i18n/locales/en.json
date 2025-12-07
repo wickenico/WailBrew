@@ -310,13 +310,32 @@
       "pathUpdated": "Brew path updated successfully!",
       "pathReset": "Path reset to current value.",
       "noChanges": "No changes to save.",
-      "pathDetected": "Auto-detected brew path: {{path}}"
+      "pathDetected": "Auto-detected brew path: {{path}}",
+      "mirrorSourceUpdated": "Mirror source updated successfully!",
+      "mirrorSourceReset": "Mirror source reset to current value."
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
       "emptyPath": "Please enter a valid brew path.",
       "invalidPath": "Invalid brew path. Please check that the path exists and is a valid brew executable.",
-      "autoDetectionFailed": "Could not auto-detect brew path. Please enter the path manually."
+      "autoDetectionFailed": "Could not auto-detect brew path. Please enter the path manually.",
+      "failedToSetMirrorSource": "Failed to set mirror source. Please check your configuration."
+    },
+    "mirrorSource": {
+      "title": "Homebrew Mirror Source",
+      "description": "Switch Homebrew mirror sources to improve download speeds in regions with network issues. This configures HOMEBREW_GIT_REMOTE and HOMEBREW_BOTTLE_DOMAIN environment variables.",
+      "selectMirror": "Select Mirror Source",
+      "custom": "Custom",
+      "customGitRemote": "Custom Git Remote URL",
+      "customBottleDomain": "Custom Bottle Domain URL",
+      "note": "Note: Changing the mirror source will affect all Homebrew operations. Restart the app or refresh packages after changing.",
+      "mirrors": {
+        "official": "Official (Default)",
+        "tsinghua": "Tsinghua University (China)",
+        "aliyun": "Alibaba Cloud (China)",
+        "ustc": "USTC (China)",
+        "tencent": "Tencent Cloud (China)"
+      }
     }
   }
 }

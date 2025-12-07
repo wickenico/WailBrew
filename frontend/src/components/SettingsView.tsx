@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { GetBrewPath, SetBrewPath } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -14,9 +14,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [saving, setSaving] = useState<boolean>(false);
     const [isBrewPathExpanded, setIsBrewPathExpanded] = useState<boolean>(false);
+    const [isMirrorSourceExpanded, setIsMirrorSourceExpanded] = useState<boolean>(false);
+    const [mirrorSource, setMirrorSource] = useState<string>("official");
+    const [customGitRemote, setCustomGitRemote] = useState<string>("");
+    const [customBottleDomain, setCustomBottleDomain] = useState<string>("");
+    const [savingMirror, setSavingMirror] = useState<boolean>(false);
 
     useEffect(() => {
         loadCurrentBrewPath();
+        loadCurrentMirrorSource();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -90,6 +96,119 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
 
         toast.error(t('settings.errors.autoDetectionFailed'));
+    };
+
+    const loadCurrentMirrorSource = async () => {
+        try {
+            const currentMirror = await GetMirrorSource();
+            if (currentMirror.gitRemote === "" && currentMirror.bottleDomain === "") {
+                setMirrorSource("official");
+                setCustomGitRemote("");
+                setCustomBottleDomain("");
+            } else {
+                // Check if it matches a known mirror
+                const knownMirrors = getKnownMirrors();
+                const foundMirror = knownMirrors.find(m => 
+                    m.gitRemote === currentMirror.gitRemote && 
+                    m.bottleDomain === currentMirror.bottleDomain
+                );
+                if (foundMirror) {
+                    setMirrorSource(foundMirror.id);
+                    setCustomGitRemote("");
+                    setCustomBottleDomain("");
+                } else {
+                    setMirrorSource("custom");
+                    setCustomGitRemote(currentMirror.gitRemote || "");
+                    setCustomBottleDomain(currentMirror.bottleDomain || "");
+                }
+            }
+        } catch (error) {
+            console.error("Failed to get mirror source:", error);
+        }
+    };
+
+    const getKnownMirrors = () => {
+        return [
+            {
+                id: "official",
+                name: t('settings.mirrorSource.mirrors.official'),
+                gitRemote: "",
+                bottleDomain: ""
+            },
+            {
+                id: "tsinghua",
+                name: t('settings.mirrorSource.mirrors.tsinghua'),
+                gitRemote: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git",
+                bottleDomain: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+            },
+            {
+                id: "aliyun",
+                name: t('settings.mirrorSource.mirrors.aliyun'),
+                gitRemote: "https://mirrors.aliyun.com/homebrew/brew.git",
+                bottleDomain: "https://mirrors.aliyun.com/homebrew/homebrew-bottles"
+            },
+            {
+                id: "ustc",
+                name: t('settings.mirrorSource.mirrors.ustc'),
+                gitRemote: "https://mirrors.ustc.edu.cn/brew.git",
+                bottleDomain: "https://mirrors.ustc.edu.cn/homebrew-bottles"
+            },
+            {
+                id: "tencent",
+                name: t('settings.mirrorSource.mirrors.tencent'),
+                gitRemote: "https://mirrors.cloud.tencent.com/homebrew/brew.git",
+                bottleDomain: "https://mirrors.cloud.tencent.com/homebrew/homebrew-bottles"
+            }
+        ];
+    };
+
+    const handleMirrorSourceChange = (sourceId: string) => {
+        setMirrorSource(sourceId);
+        if (sourceId === "custom") {
+            // Keep custom values
+        } else {
+            const mirrors = getKnownMirrors();
+            const selectedMirror = mirrors.find(m => m.id === sourceId);
+            if (selectedMirror) {
+                setCustomGitRemote(selectedMirror.gitRemote);
+                setCustomBottleDomain(selectedMirror.bottleDomain);
+            }
+        }
+    };
+
+    const handleSaveMirrorSource = async () => {
+        try {
+            setSavingMirror(true);
+            const mirrors = getKnownMirrors();
+            const selectedMirror = mirrors.find(m => m.id === mirrorSource);
+            
+            let gitRemote = "";
+            let bottleDomain = "";
+            
+            if (mirrorSource === "custom") {
+                gitRemote = customGitRemote.trim();
+                bottleDomain = customBottleDomain.trim();
+            } else if (selectedMirror) {
+                gitRemote = selectedMirror.gitRemote;
+                bottleDomain = selectedMirror.bottleDomain;
+            }
+
+            await SetMirrorSource(gitRemote, bottleDomain);
+            toast.success(t('settings.messages.mirrorSourceUpdated'));
+            
+            // Refresh packages after changing mirror source
+            onRefreshPackages();
+        } catch (error) {
+            console.error("Failed to set mirror source:", error);
+            toast.error(t('settings.errors.failedToSetMirrorSource'));
+        } finally {
+            setSavingMirror(false);
+        }
+    };
+
+    const handleResetMirrorSource = () => {
+        loadCurrentMirrorSource();
+        toast.success(t('settings.messages.mirrorSourceReset'));
     };
 
     if (loading) {
@@ -199,6 +318,123 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                     </div>
                                     <p className="settings-note">
                                         💡 {t('settings.brewPath.note')}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="settings-item">
+                            <button 
+                                className="settings-item-header"
+                                onClick={() => setIsMirrorSourceExpanded(!isMirrorSourceExpanded)}
+                                aria-expanded={isMirrorSourceExpanded}
+                                aria-controls="mirror-source-settings-content"
+                            >
+                                <div className="settings-item-info">
+                                    <h4 className="settings-item-title">
+                                        {t('settings.mirrorSource.title')}
+                                        <span className="beta-tag">BETA</span>
+                                    </h4>
+                                    <p className="settings-item-subtitle">
+                                        {(() => {
+                                            if (mirrorSource === "official") {
+                                                return t('settings.mirrorSource.mirrors.official');
+                                            }
+                                            if (mirrorSource === "custom") {
+                                                return t('settings.mirrorSource.custom');
+                                            }
+                                            return getKnownMirrors().find(m => m.id === mirrorSource)?.name || "";
+                                        })()}
+                                    </p>
+                                </div>
+                                <span className={`settings-item-icon ${isMirrorSourceExpanded ? 'expanded' : ''}`}>
+                                    ▶
+                                </span>
+                            </button>
+                            
+                            <div 
+                                id="mirror-source-settings-content"
+                                className={`settings-item-content ${isMirrorSourceExpanded ? 'expanded' : 'collapsed'}`}
+                            >
+                                <div className="settings-item-description">
+                                    {t('settings.mirrorSource.description')}
+                                </div>
+                                
+                                <div className="settings-field-group">
+                                    <div className="settings-field">
+                                        <label htmlFor="mirror-source" className="field-label">
+                                            {t('settings.mirrorSource.selectMirror')}
+                                        </label>
+                                        <select
+                                            id="mirror-source"
+                                            value={mirrorSource}
+                                            onChange={(e) => handleMirrorSourceChange(e.target.value)}
+                                            className="mirror-select"
+                                            disabled={savingMirror}
+                                        >
+                                            {getKnownMirrors().map(mirror => (
+                                                <option key={mirror.id} value={mirror.id}>
+                                                    {mirror.name}
+                                                </option>
+                                            ))}
+                                            <option value="custom">{t('settings.mirrorSource.custom')}</option>
+                                        </select>
+                                    </div>
+
+                                    {mirrorSource === "custom" && (
+                                        <>
+                                            <div className="settings-field">
+                                                <label htmlFor="custom-git-remote" className="field-label">
+                                                    {t('settings.mirrorSource.customGitRemote')}
+                                                </label>
+                                                <input
+                                                    id="custom-git-remote"
+                                                    type="text"
+                                                    value={customGitRemote}
+                                                    onChange={(e) => setCustomGitRemote(e.target.value)}
+                                                    className="path-input"
+                                                    placeholder="https://mirrors.example.com/git/homebrew/brew.git"
+                                                    disabled={savingMirror}
+                                                />
+                                            </div>
+                                            <div className="settings-field">
+                                                <label htmlFor="custom-bottle-domain" className="field-label">
+                                                    {t('settings.mirrorSource.customBottleDomain')}
+                                                </label>
+                                                <input
+                                                    id="custom-bottle-domain"
+                                                    type="text"
+                                                    value={customBottleDomain}
+                                                    onChange={(e) => setCustomBottleDomain(e.target.value)}
+                                                    className="path-input"
+                                                    placeholder="https://mirrors.example.com/homebrew-bottles"
+                                                    disabled={savingMirror}
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <div className="settings-actions">
+                                        <button
+                                            className="save-button"
+                                            onClick={handleSaveMirrorSource}
+                                            disabled={savingMirror}
+                                        >
+                                            {savingMirror ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                        </button>
+                                        <button
+                                            className="reset-button"
+                                            onClick={handleResetMirrorSource}
+                                            disabled={savingMirror}
+                                        >
+                                            {t('settings.buttons.reset')}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="settings-info-panel">
+                                    <p className="settings-note">
+                                        💡 {t('settings.mirrorSource.note')}
                                     </p>
                                 </div>
                             </div>

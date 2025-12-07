@@ -310,13 +310,32 @@
       "pathUpdated": "Brew yolu başarıyla güncellendi!",
       "pathReset": "Yolu güncel değerine sıfırla.",
       "noChanges": "Kaydedilecek bir değişiklik yok.",
-      "pathDetected": "Brew yolunu otomatik sapta: {{path}}"
+      "pathDetected": "Brew yolunu otomatik sapta: {{path}}",
+      "mirrorSourceUpdated": "Ayna kaynağı başarıyla güncellendi!",
+      "mirrorSourceReset": "Ayna kaynağı güncel değerine sıfırlandı."
     },
     "errors": {
       "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
       "emptyPath": "Lütfen geçerli bir brew yolu gir.",
       "invalidPath": "Geçersiz brew yolu. Lütfen yolun olduğunu ve yürütülebilir geçerli bir brew olduğunu denetle.",
-      "autoDetectionFailed": "Brew yolu otomatik saptanamadı. Lütfen yolu manuel gir."
+      "autoDetectionFailed": "Brew yolu otomatik saptanamadı. Lütfen yolu manuel gir.",
+      "failedToSetMirrorSource": "Ayna kaynağı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin."
+    },
+    "mirrorSource": {
+      "title": "Homebrew Ayna Kaynağı",
+      "description": "Ağ sorunları olan bölgelerde indirme hızlarını artırmak için Homebrew ayna kaynaklarını değiştirin. Bu, HOMEBREW_GIT_REMOTE ve HOMEBREW_BOTTLE_DOMAIN ortam değişkenlerini yapılandırır.",
+      "selectMirror": "Ayna Kaynağı Seç",
+      "custom": "Özel",
+      "customGitRemote": "Özel Git Uzak URL",
+      "customBottleDomain": "Özel Bottle Etki Alanı URL",
+      "note": "Not: Ayna kaynağını değiştirmek tüm Homebrew işlemlerini etkileyecektir. Değişiklikten sonra uygulamayı yeniden başlatın veya paketleri yenileyin.",
+      "mirrors": {
+        "official": "Resmi (Varsayılan)",
+        "tsinghua": "Tsinghua Üniversitesi (Çin)",
+        "aliyun": "Alibaba Cloud (Çin)",
+        "ustc": "USTC (Çin)",
+        "tencent": "Tencent Cloud (Çin)"
+      }
     }
   }
 }

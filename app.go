@@ -727,6 +727,8 @@ type App struct {
 	knownPackagesMutex sync.Mutex
 	sessionLogs        []string   // Session logs for debugging
 	sessionLogsMutex   sync.Mutex // Mutex for thread-safe log access
+	gitRemote          string     // HOMEBREW_GIT_REMOTE mirror source
+	bottleDomain       string     // HOMEBREW_BOTTLE_DOMAIN mirror source
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -801,6 +803,14 @@ func (a *App) getBrewEnv() []string {
 	// This enables GUI password prompts for sudo operations during brew upgrades
 	if a.askpassPath != "" {
 		env = append(env, fmt.Sprintf("SUDO_ASKPASS=%s", a.askpassPath))
+	}
+
+	// Add mirror source environment variables if configured
+	if a.gitRemote != "" {
+		env = append(env, fmt.Sprintf("HOMEBREW_GIT_REMOTE=%s", a.gitRemote))
+	}
+	if a.bottleDomain != "" {
+		env = append(env, fmt.Sprintf("HOMEBREW_BOTTLE_DOMAIN=%s", a.bottleDomain))
 	}
 
 	return env
@@ -2970,6 +2980,33 @@ func (a *App) SetBrewPath(path string) error {
 	}
 
 	a.brewPath = path
+	return nil
+}
+
+// GetMirrorSource returns the current mirror source configuration
+func (a *App) GetMirrorSource() map[string]string {
+	return map[string]string{
+		"gitRemote":    a.gitRemote,
+		"bottleDomain": a.bottleDomain,
+	}
+}
+
+// SetMirrorSource sets the Homebrew mirror source configuration
+func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
+	// Validate URLs if provided (empty string means use default)
+	if gitRemote != "" {
+		if !strings.HasPrefix(gitRemote, "http://") && !strings.HasPrefix(gitRemote, "https://") {
+			return fmt.Errorf("invalid git remote URL: must start with http:// or https://")
+		}
+	}
+	if bottleDomain != "" {
+		if !strings.HasPrefix(bottleDomain, "http://") && !strings.HasPrefix(bottleDomain, "https://") {
+			return fmt.Errorf("invalid bottle domain URL: must start with http:// or https://")
+		}
+	}
+
+	a.gitRemote = gitRemote
+	a.bottleDomain = bottleDomain
 	return nil
 }
 
