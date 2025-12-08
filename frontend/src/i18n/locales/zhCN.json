@@ -11,7 +11,9 @@
     "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
-    "settings": "软件设置"
+    "settings": "软件设置",
+    "refresh": "刷新",
+    "commandPalette": "命令面板"
   },
   "headers": {
     "installedFormulas": "已安装的 Formulae",

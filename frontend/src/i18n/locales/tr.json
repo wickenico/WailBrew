@@ -11,7 +11,9 @@
     "homebrew": "Homebrew",
     "doctor": "Doktor",
     "cleanup": "Temizlik",
-    "settings": "Ayarlar"
+    "settings": "Ayarlar",
+    "refresh": "Yenile",
+    "commandPalette": "Komut Paleti"
   },
   "headers": {
     "installedFormulas": "Yüklü Formüller",

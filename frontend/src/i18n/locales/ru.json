@@ -11,7 +11,9 @@
     "homebrew": "Homebrew",
     "doctor": "Диагностика",
     "cleanup": "Очистка",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "refresh": "Обновить",
+    "commandPalette": "Палитра команд"
   },
   "headers": {
     "installedFormulas": "Установленные пакеты",

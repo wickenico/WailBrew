@@ -11,7 +11,9 @@
     "homebrew": "Homebrew",
     "doctor": "Diagnostic",
     "cleanup": "Nettoyage",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "refresh": "Actualiser",
+    "commandPalette": "Palette de commandes"
   },
   "headers": {
     "installedFormulas": "Formules Installées",

@@ -11,7 +11,9 @@
     "homebrew": "Homebrew",
     "doctor": "診斷",
     "cleanup": "清理",
-    "settings": "設定"
+    "settings": "設定",
+    "refresh": "重新整理",
+    "commandPalette": "命令面板"
   },
   "headers": {
     "installedFormulas": "已安裝套件",
