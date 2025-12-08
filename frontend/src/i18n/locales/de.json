@@ -31,6 +31,13 @@
     "recentSearches": "Letzte Suchen",
     "removeFromHistory": "\"{{item}}\" aus Verlauf entfernen"
   },
+  "commandPalette": {
+    "placeholder": "Pakete, Casks, Repositories suchen oder zu Ansichten navigieren...",
+    "noResults": "Keine Ergebnisse gefunden",
+    "toSelect": "zum Auswählen",
+    "toNavigate": "zum Navigieren",
+    "toClose": "zum Schließen"
+  },
   "buttons": {
     "uninstall": "\"{{name}}\" deinstallieren",
     "install": "\"{{name}}\" installieren",

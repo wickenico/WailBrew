@@ -31,6 +31,13 @@
     "recentSearches": "Recent Searches",
     "removeFromHistory": "Remove \"{{item}}\" from history"
   },
+  "commandPalette": {
+    "placeholder": "Search packages, casks, repositories, or navigate to views...",
+    "noResults": "No results found",
+    "toSelect": "to select",
+    "toNavigate": "to navigate",
+    "toClose": "to close"
+  },
   "buttons": {
     "uninstall": "Uninstall \"{{name}}\"",
     "install": "Install \"{{name}}\"",

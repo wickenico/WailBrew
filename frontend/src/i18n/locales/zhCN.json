@@ -31,6 +31,13 @@
     "recentSearches": "最近搜索",
     "removeFromHistory": "从历史记录中删除\"{{item}}\""
   },
+  "commandPalette": {
+    "placeholder": "搜索包、casks、仓库或导航到视图...",
+    "noResults": "未找到结果",
+    "toSelect": "选择",
+    "toNavigate": "导航",
+    "toClose": "关闭"
+  },
   "buttons": {
     "uninstall": "卸载 \"{{name}}\"",
     "install": "安装 \"{{name}}\"",

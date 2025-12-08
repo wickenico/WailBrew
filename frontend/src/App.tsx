@@ -51,6 +51,7 @@ import AboutDialog from "./components/AboutDialog";
 import UpdateDialog from "./components/UpdateDialog";
 import RestartDialog from "./components/RestartDialog";
 import TapInputDialog from "./components/TapInputDialog";
+import CommandPalette from "./components/CommandPalette";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
@@ -106,6 +107,7 @@ const WailBrewApp = () => {
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [repositoryInfoLogs, setRepositoryInfoLogs] = useState<string | null>(null);
     const [showRepositoryInfo, setShowRepositoryInfo] = useState<boolean>(false);
+    const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
     const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false);
     const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
@@ -593,6 +595,22 @@ const WailBrewApp = () => {
         }
     };
 
+    // Global keyboard shortcut for command palette (Cmd+K / Ctrl+K)
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+                event.preventDefault();
+                setShowCommandPalette(prev => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
     useEffect(() => {
         const unlisten = EventsOn("setView", (data: string) => {
             setView(data as "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
@@ -612,6 +630,9 @@ const WailBrewApp = () => {
         });
         const unlistenWailbrewUpdated = EventsOn("wailbrewUpdated", () => {
             setShowRestart(true);
+        });
+        const unlistenCommandPalette = EventsOn("showCommandPalette", () => {
+            setShowCommandPalette(prev => !prev);
         });
         const unlistenSessionLogs = EventsOn("showSessionLogs", async () => {
             try {
@@ -735,6 +756,7 @@ const WailBrewApp = () => {
             unlistenAbout();
             unlistenUpdate();
             unlistenWailbrewUpdated();
+            unlistenCommandPalette();
             unlistenSessionLogs();
             unlistenNewPackages();
         };
@@ -2304,6 +2326,38 @@ const WailBrewApp = () => {
                 <RestartDialog
                     isOpen={showRestart}
                     onClose={() => setShowRestart(false)}
+                />
+                <CommandPalette
+                    open={showCommandPalette}
+                    onClose={() => setShowCommandPalette(false)}
+                    packages={allPackages}
+                    casks={casks}
+                    repositories={repositories}
+                    onSelectPackage={async (pkg) => {
+                        const fullPkg: PackageEntry = {
+                            name: pkg.name,
+                            installedVersion: pkg.installedVersion || '',
+                            latestVersion: pkg.latestVersion,
+                            size: pkg.size,
+                            desc: pkg.desc,
+                            homepage: pkg.homepage,
+                            dependencies: pkg.dependencies,
+                            conflicts: pkg.conflicts,
+                            isInstalled: pkg.isInstalled,
+                            warning: pkg.warning,
+                        };
+                        await handleSelect(fullPkg);
+                    }}
+                    onSelectRepository={(repo) => {
+                        const repoEntry = repositories.find(r => r.name === repo.name);
+                        if (repoEntry) {
+                            setSelectedRepository(repoEntry);
+                            setSelectedPackage(null);
+                        }
+                    }}
+                    onNavigateToView={(view) => {
+                        setView(view as "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
+                    }}
                 />
                 <Toaster
                     position="bottom-center"

@@ -62,17 +62,18 @@ type MenuTranslations struct {
 		Quit           string `json:"quit"`
 	} `json:"app"`
 	View struct {
-		Title        string `json:"title"`
-		Installed    string `json:"installed"`
-		Casks        string `json:"casks"`
-		Outdated     string `json:"outdated"`
-		All          string `json:"all"`
-		Leaves       string `json:"leaves"`
-		Repositories string `json:"repositories"`
-		Homebrew     string `json:"homebrew"`
-		Doctor       string `json:"doctor"`
-		Cleanup      string `json:"cleanup"`
-		Settings     string `json:"settings"`
+		Title          string `json:"title"`
+		Installed      string `json:"installed"`
+		Casks          string `json:"casks"`
+		Outdated       string `json:"outdated"`
+		All            string `json:"all"`
+		Leaves         string `json:"leaves"`
+		Repositories   string `json:"repositories"`
+		Homebrew       string `json:"homebrew"`
+		Doctor         string `json:"doctor"`
+		Cleanup        string `json:"cleanup"`
+		Settings       string `json:"settings"`
+		CommandPalette string `json:"commandPalette"`
 	} `json:"view"`
 	Tools struct {
 		Title           string `json:"title"`
@@ -118,29 +119,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Quit",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "View",
-				Installed:    "Installed Formulae",
-				Casks:        "Casks",
-				Outdated:     "Outdated Formulae",
-				All:          "All Formulae",
-				Leaves:       "Leaves",
-				Repositories: "Repositories",
-				Homebrew:     "Homebrew",
-				Doctor:       "Doctor",
-				Cleanup:      "Cleanup",
-				Settings:     "Settings",
+				Title:          "View",
+				Installed:      "Installed Formulae",
+				Casks:          "Casks",
+				Outdated:       "Outdated Formulae",
+				All:            "All Formulae",
+				Leaves:         "Leaves",
+				Repositories:   "Repositories",
+				Homebrew:       "Homebrew",
+				Doctor:         "Doctor",
+				Cleanup:        "Cleanup",
+				Settings:       "Settings",
+				CommandPalette: "Command Palette...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -193,29 +196,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Beenden",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "Ansicht",
-				Installed:    "Installierte Formeln",
-				Casks:        "Casks",
-				Outdated:     "Veraltete Formeln",
-				All:          "Alle Formeln",
-				Leaves:       "Blätter",
-				Repositories: "Repositories",
-				Homebrew:     "Homebrew",
-				Doctor:       "Doctor",
-				Cleanup:      "Cleanup",
-				Settings:     "Einstellungen",
+				Title:          "Ansicht",
+				Installed:      "Installierte Formeln",
+				Casks:          "Casks",
+				Outdated:       "Veraltete Formeln",
+				All:            "Alle Formeln",
+				Leaves:         "Blätter",
+				Repositories:   "Repositories",
+				Homebrew:       "Homebrew",
+				Doctor:         "Doctor",
+				Cleanup:        "Cleanup",
+				Settings:       "Einstellungen",
+				CommandPalette: "Befehls-Palette...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -268,29 +273,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Quitter",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "Affichage",
-				Installed:    "Formules Installées",
-				Casks:        "Casks",
-				Outdated:     "Formules Obsolètes",
-				All:          "Toutes les Formules",
-				Leaves:       "Feuilles",
-				Repositories: "Dépôts",
-				Homebrew:     "Homebrew",
-				Doctor:       "Diagnostic",
-				Cleanup:      "Nettoyage",
-				Settings:     "Paramètres",
+				Title:          "Affichage",
+				Installed:      "Formules Installées",
+				Casks:          "Casks",
+				Outdated:       "Formules Obsolètes",
+				All:            "Toutes les Formules",
+				Leaves:         "Feuilles",
+				Repositories:   "Dépôts",
+				Homebrew:       "Homebrew",
+				Doctor:         "Diagnostic",
+				Cleanup:        "Nettoyage",
+				Settings:       "Paramètres",
+				CommandPalette: "Palette de commandes...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -343,29 +350,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Çık",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "Görünüm",
-				Installed:    "Yüklenen Formüller",
-				Casks:        "Fıçılar",
-				Outdated:     "Eskimiş Formüller",
-				All:          "Tüm Formüller",
-				Leaves:       "Yapraklar",
-				Repositories: "Depolar",
-				Homebrew:     "Homebrew",
-				Doctor:       "Doktor",
-				Cleanup:      "Temizlik",
-				Settings:     "Ayarlar",
+				Title:          "Görünüm",
+				Installed:      "Yüklenen Formüller",
+				Casks:          "Fıçılar",
+				Outdated:       "Eskimiş Formüller",
+				All:            "Tüm Formüller",
+				Leaves:         "Yapraklar",
+				Repositories:   "Depolar",
+				Homebrew:       "Homebrew",
+				Doctor:         "Doktor",
+				Cleanup:        "Temizlik",
+				Settings:       "Ayarlar",
+				CommandPalette: "Komut Paleti...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -418,29 +427,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "退出",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "显示",
-				Installed:    "已安装的 Formulae",
-				Casks:        "Casks",
-				Outdated:     "可更新的 Formulae",
-				All:          "所有 Formulae",
-				Leaves:       "独立包",
-				Repositories: "软件源",
-				Homebrew:     "Homebrew",
-				Doctor:       "Doctor",
-				Cleanup:      "Cleanup",
-				Settings:     "软件设置",
+				Title:          "显示",
+				Installed:      "已安装的 Formulae",
+				Casks:          "Casks",
+				Outdated:       "可更新的 Formulae",
+				All:            "所有 Formulae",
+				Leaves:         "独立包",
+				Repositories:   "软件源",
+				Homebrew:       "Homebrew",
+				Doctor:         "Doctor",
+				Cleanup:        "Cleanup",
+				Settings:       "软件设置",
+				CommandPalette: "命令面板...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -493,29 +504,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Sair",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "Visualizar",
-				Installed:    "Fórmulas Instaladas",
-				Casks:        "Casks",
-				Outdated:     "Fórmulas Desatualizadas",
-				All:          "Todas as Fórmulas",
-				Leaves:       "Leaves",
-				Repositories: "Repositórios",
-				Homebrew:     "Homebrew",
-				Doctor:       "Diagnóstico",
-				Cleanup:      "Limpeza",
-				Settings:     "Configurações",
+				Title:          "Visualizar",
+				Installed:      "Fórmulas Instaladas",
+				Casks:          "Casks",
+				Outdated:       "Fórmulas Desatualizadas",
+				All:            "Todas as Fórmulas",
+				Leaves:         "Leaves",
+				Repositories:   "Repositórios",
+				Homebrew:       "Homebrew",
+				Doctor:         "Diagnóstico",
+				Cleanup:        "Limpeza",
+				Settings:       "Configurações",
+				CommandPalette: "Paleta de Comandos...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -568,29 +581,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Выход",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "Вид",
-				Installed:    "Установленные пакеты",
-				Casks:        "Приложения",
-				Outdated:     "Устаревшие пакеты",
-				All:          "Все пакеты",
-				Leaves:       "Листья",
-				Repositories: "Репозитории",
-				Homebrew:     "Homebrew",
-				Doctor:       "Диагностика",
-				Cleanup:      "Очистка",
-				Settings:     "Настройки",
+				Title:          "Вид",
+				Installed:      "Установленные пакеты",
+				Casks:          "Приложения",
+				Outdated:       "Устаревшие пакеты",
+				All:            "Все пакеты",
+				Leaves:         "Листья",
+				Repositories:   "Репозитории",
+				Homebrew:       "Homebrew",
+				Doctor:         "Диагностика",
+				Cleanup:        "Очистка",
+				Settings:       "Настройки",
+				CommandPalette: "Палитра команд...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -644,29 +659,31 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Quit:           "Quit",
 			},
 			View: struct {
-				Title        string `json:"title"`
-				Installed    string `json:"installed"`
-				Casks        string `json:"casks"`
-				Outdated     string `json:"outdated"`
-				All          string `json:"all"`
-				Leaves       string `json:"leaves"`
-				Repositories string `json:"repositories"`
-				Homebrew     string `json:"homebrew"`
-				Doctor       string `json:"doctor"`
-				Cleanup      string `json:"cleanup"`
-				Settings     string `json:"settings"`
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
 			}{
-				Title:        "View",
-				Installed:    "Installed Formulae",
-				Casks:        "Casks",
-				Outdated:     "Outdated Formulae",
-				All:          "All Formulae",
-				Leaves:       "Leaves",
-				Repositories: "Repositories",
-				Homebrew:     "Homebrew",
-				Doctor:       "Doctor",
-				Cleanup:      "Cleanup",
-				Settings:     "Settings",
+				Title:          "View",
+				Installed:      "Installed Formulae",
+				Casks:          "Casks",
+				Outdated:       "Outdated Formulae",
+				All:            "All Formulae",
+				Leaves:         "Leaves",
+				Repositories:   "Repositories",
+				Homebrew:       "Homebrew",
+				Doctor:         "Doctor",
+				Cleanup:        "Cleanup",
+				Settings:       "Settings",
+				CommandPalette: "Command Palette...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -1312,6 +1329,9 @@ func (a *App) menu() *menu.Menu {
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.View.Settings, keys.CmdOrCtrl(","), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "setView", "settings")
+	})
+	AppSubmenu.AddText(translations.View.CommandPalette, keys.CmdOrCtrl("k"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "showCommandPalette")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.App.CheckUpdates, nil, func(cd *menu.CallbackData) {

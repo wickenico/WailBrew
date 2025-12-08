@@ -31,6 +31,13 @@
     "recentSearches": "Son Aramalar",
     "removeFromHistory": "\"{{item}}\" geçmişten kaldır"
   },
+  "commandPalette": {
+    "placeholder": "Paketler, casks, depoları ara veya görünümlere git...",
+    "noResults": "Sonuç bulunamadı",
+    "toSelect": "seçmek için",
+    "toNavigate": "gezinmek için",
+    "toClose": "kapatmak için"
+  },
   "buttons": {
     "uninstall": "\"{{name}}\" kaldır",
     "install": "\"{{name}}\" indir",

@@ -31,6 +31,13 @@
     "recentSearches": "Недавние поиски",
     "removeFromHistory": "Удалить \"{{item}}\" из истории"
   },
+  "commandPalette": {
+    "placeholder": "Поиск пакетов, casks, репозиториев или переход к представлениям...",
+    "noResults": "Результаты не найдены",
+    "toSelect": "для выбора",
+    "toNavigate": "для навигации",
+    "toClose": "для закрытия"
+  },
   "buttons": {
     "uninstall": "Удалить \"{{name}}\"",
     "install": "Установить \"{{name}}\"",
