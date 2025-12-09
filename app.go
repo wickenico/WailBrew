@@ -74,6 +74,7 @@ type MenuTranslations struct {
 		Cleanup        string `json:"cleanup"`
 		Settings       string `json:"settings"`
 		CommandPalette string `json:"commandPalette"`
+		Shortcuts      string `json:"shortcuts"`
 	} `json:"view"`
 	Tools struct {
 		Title           string `json:"title"`
@@ -131,6 +132,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "View",
 				Installed:      "Installed Formulae",
@@ -144,6 +146,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Cleanup",
 				Settings:       "Settings",
 				CommandPalette: "Command Palette...",
+				Shortcuts:      "Keyboard Shortcuts...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -208,6 +211,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "Ansicht",
 				Installed:      "Installierte Formeln",
@@ -221,6 +225,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Cleanup",
 				Settings:       "Einstellungen",
 				CommandPalette: "Befehls-Palette...",
+				Shortcuts:      "Tastenkürzel...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -285,6 +290,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "Affichage",
 				Installed:      "Formules Installées",
@@ -298,6 +304,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Nettoyage",
 				Settings:       "Paramètres",
 				CommandPalette: "Palette de commandes...",
+				Shortcuts:      "Raccourcis clavier...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -362,6 +369,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "Görünüm",
 				Installed:      "Yüklenen Formüller",
@@ -375,6 +383,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Temizlik",
 				Settings:       "Ayarlar",
 				CommandPalette: "Komut Paleti...",
+				Shortcuts:      "Klavye Kısayolları...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -439,6 +448,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "显示",
 				Installed:      "已安装的 Formulae",
@@ -452,6 +462,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Cleanup",
 				Settings:       "软件设置",
 				CommandPalette: "命令面板...",
+				Shortcuts:      "键盘快捷键...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -516,6 +527,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "Visualizar",
 				Installed:      "Fórmulas Instaladas",
@@ -529,6 +541,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Limpeza",
 				Settings:       "Configurações",
 				CommandPalette: "Paleta de Comandos...",
+				Shortcuts:      "Atalhos de Teclado...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -593,6 +606,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "Вид",
 				Installed:      "Установленные пакеты",
@@ -606,6 +620,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Очистка",
 				Settings:       "Настройки",
 				CommandPalette: "Палитра команд...",
+				Shortcuts:      "Горячие клавиши...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -671,6 +686,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup        string `json:"cleanup"`
 				Settings       string `json:"settings"`
 				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
 			}{
 				Title:          "View",
 				Installed:      "Installed Formulae",
@@ -684,6 +700,7 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				Cleanup:        "Cleanup",
 				Settings:       "Settings",
 				CommandPalette: "Command Palette...",
+				Shortcuts:      "Keyboard Shortcuts...",
 			},
 			Tools: struct {
 				Title           string `json:"title"`
@@ -1332,6 +1349,9 @@ func (a *App) menu() *menu.Menu {
 	})
 	AppSubmenu.AddText(translations.View.CommandPalette, keys.CmdOrCtrl("k"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(a.ctx, "showCommandPalette")
+	})
+	AppSubmenu.AddText(translations.View.Shortcuts, keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
+		rt.EventsEmit(a.ctx, "showShortcuts")
 	})
 	AppSubmenu.AddSeparator()
 	AppSubmenu.AddText(translations.App.CheckUpdates, nil, func(cd *menu.CallbackData) {

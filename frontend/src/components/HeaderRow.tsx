@@ -176,7 +176,8 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             // Check for Cmd+S (Mac) or Ctrl+S (Windows/Linux)
-            if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+            // Explicitly ignore if Shift is pressed (Cmd+Shift+S is for shortcuts dialog)
+            if ((event.metaKey || event.ctrlKey) && !event.shiftKey && event.key === 's') {
                 event.preventDefault(); // Prevent browser's save dialog
                 searchInputRef.current?.focus();
                 if (searchHistory.length > 0) {

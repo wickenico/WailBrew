@@ -40,6 +40,50 @@
     "toNavigate": "gezinmek için",
     "toClose": "kapatmak için"
   },
+  "shortcuts": {
+    "title": "Klavye Kısayolları",
+    "menu": {
+      "title": "Menü",
+      "commandPalette": "Komut Paleti",
+      "shortcuts": "Klavye Kısayolları",
+      "settings": "Ayarlar",
+      "quit": "Çıkış"
+    },
+    "navigation": {
+      "title": "Gezinme",
+      "installed": "Yüklü Formüller",
+      "casks": "Casks",
+      "outdated": "Güncel Olmayan Formüller",
+      "all": "Tüm Formüller",
+      "leaves": "Leaves",
+      "repositories": "Depolar",
+      "homebrew": "Homebrew",
+      "doctor": "Doctor",
+      "cleanup": "Temizleme"
+    },
+    "table": {
+      "title": "Tablo",
+      "focus": "Tabloya odaklan",
+      "select": "Öğe seç",
+      "navigate": "Satırlarda gez",
+      "multiSelect": "Çoklu seçim modu",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "Eylemler",
+      "refresh": "Paketleri yenile",
+      "exportBrewfile": "Brewfile dışa aktar"
+    },
+    "dialogs": {
+      "title": "İletişim Kutuları",
+      "close": "İletişim kutusunu kapat",
+      "confirm": "Eylemi onayla",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
   "buttons": {
     "uninstall": "\"{{name}}\" kaldır",
     "install": "\"{{name}}\" indir",

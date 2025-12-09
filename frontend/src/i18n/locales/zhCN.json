@@ -40,6 +40,50 @@
     "toNavigate": "导航",
     "toClose": "关闭"
   },
+  "shortcuts": {
+    "title": "键盘快捷键",
+    "menu": {
+      "title": "菜单",
+      "commandPalette": "命令面板",
+      "shortcuts": "键盘快捷键",
+      "settings": "设置",
+      "quit": "退出"
+    },
+    "navigation": {
+      "title": "导航",
+      "installed": "已安装的公式",
+      "casks": "Casks",
+      "outdated": "过时的公式",
+      "all": "所有公式",
+      "leaves": "Leaves",
+      "repositories": "仓库",
+      "homebrew": "Homebrew",
+      "doctor": "Doctor",
+      "cleanup": "清理"
+    },
+    "table": {
+      "title": "表格",
+      "focus": "聚焦表格",
+      "select": "选择项目",
+      "navigate": "导航行",
+      "multiSelect": "多选模式",
+      "enter": "回车",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "操作",
+      "refresh": "刷新包",
+      "exportBrewfile": "导出 Brewfile"
+    },
+    "dialogs": {
+      "title": "对话框",
+      "close": "关闭对话框",
+      "confirm": "确认操作",
+      "escape": "Esc",
+      "enter": "回车"
+    }
+  },
   "buttons": {
     "uninstall": "卸载 \"{{name}}\"",
     "install": "安装 \"{{name}}\"",

@@ -40,6 +40,50 @@
     "toNavigate": "to navigate",
     "toClose": "to close"
   },
+  "shortcuts": {
+    "title": "Keyboard Shortcuts",
+    "menu": {
+      "title": "Menu",
+      "commandPalette": "Command Palette",
+      "shortcuts": "Keyboard Shortcuts",
+      "settings": "Settings",
+      "quit": "Quit"
+    },
+    "navigation": {
+      "title": "Navigation",
+      "installed": "Installed Formulae",
+      "casks": "Casks",
+      "outdated": "Outdated Formulae",
+      "all": "All Formulae",
+      "leaves": "Leaves",
+      "repositories": "Repositories",
+      "homebrew": "Homebrew",
+      "doctor": "Doctor",
+      "cleanup": "Cleanup"
+    },
+    "table": {
+      "title": "Table",
+      "focus": "Focus table",
+      "select": "Select item",
+      "navigate": "Navigate rows",
+      "multiSelect": "Multi-select mode",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "Actions",
+      "refresh": "Refresh packages",
+      "exportBrewfile": "Export Brewfile"
+    },
+    "dialogs": {
+      "title": "Dialogs",
+      "close": "Close dialog",
+      "confirm": "Confirm action",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
   "buttons": {
     "uninstall": "Uninstall \"{{name}}\"",
     "install": "Install \"{{name}}\"",

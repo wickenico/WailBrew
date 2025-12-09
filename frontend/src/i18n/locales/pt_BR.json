@@ -40,6 +40,50 @@
     "toNavigate": "para navegar",
     "toClose": "para fechar"
   },
+  "shortcuts": {
+    "title": "Atalhos de Teclado",
+    "menu": {
+      "title": "Menu",
+      "commandPalette": "Paleta de Comandos",
+      "shortcuts": "Atalhos de Teclado",
+      "settings": "Configurações",
+      "quit": "Sair"
+    },
+    "navigation": {
+      "title": "Navegação",
+      "installed": "Fórmulas Instaladas",
+      "casks": "Casks",
+      "outdated": "Fórmulas Desatualizadas",
+      "all": "Todas as Fórmulas",
+      "leaves": "Leaves",
+      "repositories": "Repositórios",
+      "homebrew": "Homebrew",
+      "doctor": "Doctor",
+      "cleanup": "Limpeza"
+    },
+    "table": {
+      "title": "Tabela",
+      "focus": "Focar tabela",
+      "select": "Selecionar item",
+      "navigate": "Navegar linhas",
+      "multiSelect": "Modo de seleção múltipla",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "Ações",
+      "refresh": "Atualizar pacotes",
+      "exportBrewfile": "Exportar Brewfile"
+    },
+    "dialogs": {
+      "title": "Diálogos",
+      "close": "Fechar diálogo",
+      "confirm": "Confirmar ação",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
   "buttons": {
     "uninstall": "Desinstalar \"{{name}}\"",
     "install": "Instalar \"{{name}}\"",

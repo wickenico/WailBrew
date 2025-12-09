@@ -54,6 +54,7 @@ import UpdateDialog from "./components/UpdateDialog";
 import RestartDialog from "./components/RestartDialog";
 import TapInputDialog from "./components/TapInputDialog";
 import CommandPalette from "./components/CommandPalette";
+import ShortcutsDialog from "./components/ShortcutsDialog";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
@@ -112,6 +113,7 @@ const WailBrewApp = () => {
     const [repositoryInfoLogs, setRepositoryInfoLogs] = useState<string | null>(null);
     const [showRepositoryInfo, setShowRepositoryInfo] = useState<boolean>(false);
     const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
+    const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
     const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false);
     const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
@@ -710,6 +712,11 @@ const WailBrewApp = () => {
                 event.preventDefault();
                 setShowCommandPalette(prev => !prev);
             }
+            // Check for Cmd+Shift+S (Mac) or Ctrl+Shift+S (Windows/Linux) - Shortcuts
+            if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === 'S') {
+                event.preventDefault();
+                setShowShortcuts(prev => !prev);
+            }
             // Check for Cmd+T (Mac) or Ctrl+T (Windows/Linux) - Focus table
             if ((event.metaKey || event.ctrlKey) && event.key === 't') {
                 // Don't trigger if user is typing in an input field
@@ -752,6 +759,9 @@ const WailBrewApp = () => {
         });
         const unlistenCommandPalette = EventsOn("showCommandPalette", () => {
             setShowCommandPalette(prev => !prev);
+        });
+        const unlistenShortcuts = EventsOn("showShortcuts", () => {
+            setShowShortcuts(prev => !prev);
         });
         const unlistenSessionLogs = EventsOn("showSessionLogs", async () => {
             try {
@@ -877,6 +887,7 @@ const WailBrewApp = () => {
             unlistenUpdate();
             unlistenWailbrewUpdated();
             unlistenCommandPalette();
+            unlistenShortcuts();
             unlistenSessionLogs();
             unlistenNewPackages();
         };
@@ -2411,6 +2422,10 @@ const WailBrewApp = () => {
                 <RestartDialog
                     isOpen={showRestart}
                     onClose={() => setShowRestart(false)}
+                />
+                <ShortcutsDialog
+                    open={showShortcuts}
+                    onClose={() => setShowShortcuts(false)}
                 />
                 <CommandPalette
                     open={showCommandPalette}

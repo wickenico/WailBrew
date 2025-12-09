@@ -40,6 +40,50 @@
     "toNavigate": "для навигации",
     "toClose": "для закрытия"
   },
+  "shortcuts": {
+    "title": "Горячие клавиши",
+    "menu": {
+      "title": "Меню",
+      "commandPalette": "Палитра команд",
+      "shortcuts": "Горячие клавиши",
+      "settings": "Настройки",
+      "quit": "Выход"
+    },
+    "navigation": {
+      "title": "Навигация",
+      "installed": "Установленные формулы",
+      "casks": "Casks",
+      "outdated": "Устаревшие формулы",
+      "all": "Все формулы",
+      "leaves": "Leaves",
+      "repositories": "Репозитории",
+      "homebrew": "Homebrew",
+      "doctor": "Doctor",
+      "cleanup": "Очистка"
+    },
+    "table": {
+      "title": "Таблица",
+      "focus": "Фокус на таблице",
+      "select": "Выбрать элемент",
+      "navigate": "Навигация по строкам",
+      "multiSelect": "Режим множественного выбора",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "Действия",
+      "refresh": "Обновить пакеты",
+      "exportBrewfile": "Экспортировать Brewfile"
+    },
+    "dialogs": {
+      "title": "Диалоги",
+      "close": "Закрыть диалог",
+      "confirm": "Подтвердить действие",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
   "buttons": {
     "uninstall": "Удалить \"{{name}}\"",
     "install": "Установить \"{{name}}\"",
