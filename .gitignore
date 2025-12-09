@@ -1,4 +1,5 @@
 build/bin
+build/windows/
 node_modules
 frontend/dist
 frontend/package.json.md5
