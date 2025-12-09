@@ -3249,57 +3249,54 @@ func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
 	return nil
 }
 
-// CheckForUpdates checks if a new version is available on GitHub
+// CheckForUpdates checks if wailbrew appears in brew outdated
 func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 	currentVersion := Version
 
-	// Fetch latest release from GitHub API
-	resp, err := http.Get("https://api.github.com/repos/wickenico/WailBrew/releases/latest")
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch release info: %w", err)
-	}
-	defer resp.Body.Close()
+	// Check if wailbrew is in the outdated packages list
+	updatablePackages := a.GetBrewUpdatablePackages()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GitHub API returned status: %d", resp.StatusCode)
+	// Check for errors in the response
+	if len(updatablePackages) == 1 && len(updatablePackages[0]) >= 2 && updatablePackages[0][0] == "Error" {
+		return nil, fmt.Errorf("failed to check for updates: %s", updatablePackages[0][1])
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response: %w", err)
-	}
-
-	var release GitHubRelease
-	if err := json.Unmarshal(body, &release); err != nil {
-		return nil, fmt.Errorf("failed to parse release info: %w", err)
-	}
-
-	// Find the macOS app asset
-	var downloadURL string
-	var fileSize int64
-	for _, asset := range release.Assets {
-		if strings.Contains(asset.Name, "wailbrew") && strings.Contains(asset.Name, ".zip") {
-			downloadURL = asset.BrowserDownloadURL
-			fileSize = asset.Size
+	var wailbrewUpdate []string
+	for _, pkg := range updatablePackages {
+		if len(pkg) >= 3 && strings.ToLower(pkg[0]) == "wailbrew" {
+			wailbrewUpdate = pkg
 			break
 		}
 	}
 
-	// Compare versions (simple string comparison for now)
-	latestVersion := strings.TrimPrefix(release.TagName, "v")
-	currentVersionClean := strings.TrimPrefix(currentVersion, "v")
-
-	updateInfo := &UpdateInfo{
-		Available:      latestVersion != currentVersionClean,
-		CurrentVersion: currentVersion,
-		LatestVersion:  latestVersion,
-		ReleaseNotes:   release.Body,
-		DownloadURL:    downloadURL,
-		FileSize:       fileSize,
-		PublishedAt:    release.PublishedAt,
+	// If wailbrew is not outdated, no update available
+	if len(wailbrewUpdate) == 0 {
+		return &UpdateInfo{
+			Available:      false,
+			CurrentVersion: currentVersion,
+			LatestVersion:  currentVersion,
+			ReleaseNotes:   "",
+			DownloadURL:    "",
+			FileSize:       0,
+			PublishedAt:    "",
+		}, nil
 	}
 
-	return updateInfo, nil
+	// wailbrew is outdated - get the latest version
+	// Format: [name, installedVersion, currentVersion, size, warning]
+	latestVersion := wailbrewUpdate[2] // CurrentVersion is at index 2
+	currentVersionClean := strings.TrimPrefix(currentVersion, "v")
+	latestVersionClean := strings.TrimPrefix(latestVersion, "v")
+
+	return &UpdateInfo{
+		Available:      latestVersionClean != currentVersionClean,
+		CurrentVersion: currentVersion,
+		LatestVersion:  latestVersionClean,
+		ReleaseNotes:   "",
+		DownloadURL:    "",
+		FileSize:       0,
+		PublishedAt:    "",
+	}, nil
 }
 
 // DownloadAndInstallUpdate downloads and installs the update

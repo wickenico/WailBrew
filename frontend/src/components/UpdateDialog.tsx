@@ -151,14 +151,18 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                         </div>
                       </div>
                       <div className="release-info">
-                        <div className="release-info-item">
-                          <div className="release-info-label">{t('updateDialog.published')}:</div>
-                          <div className="release-info-value">{formatDate(updateInfo.publishedAt)}</div>
-                        </div>
-                        <div className="release-info-item">
-                          <div className="release-info-label">{t('updateDialog.size')}:</div>
-                          <div className="release-info-value">{formatFileSize(updateInfo.fileSize)}</div>
-                        </div>
+                        {updateInfo.publishedAt && (
+                          <div className="release-info-item">
+                            <div className="release-info-label">{t('updateDialog.published')}:</div>
+                            <div className="release-info-value">{formatDate(updateInfo.publishedAt)}</div>
+                          </div>
+                        )}
+                        {updateInfo.fileSize > 0 && (
+                          <div className="release-info-item">
+                            <div className="release-info-label">{t('updateDialog.size')}:</div>
+                            <div className="release-info-value">{formatFileSize(updateInfo.fileSize)}</div>
+                          </div>
+                        )}
                         <div className="release-info-item">
                           <span 
                             className="clickable-link"
