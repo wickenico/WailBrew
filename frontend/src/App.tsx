@@ -81,6 +81,8 @@ const WailBrewApp = () => {
     const [casks, setCasks] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
     const [allPackages, setAllPackages] = useState<PackageEntry[]>([]);
+    const [allPackagesLoaded, setAllPackagesLoaded] = useState<boolean>(false);
+    const [loadingAllPackages, setLoadingAllPackages] = useState<boolean>(false);
     const [leavesPackages, setLeavesPackages] = useState<PackageEntry[]>([]);
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -178,13 +180,12 @@ const WailBrewApp = () => {
             }
         }, 100);
         
-        Promise.all([GetBrewPackages(), GetBrewCasks(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
-            .then(([installed, installedCasks, updatable, all, leaves, repos]) => {
+        Promise.all([GetBrewPackages(), GetBrewCasks(), GetBrewUpdatablePackages(), GetBrewLeaves(), GetBrewTaps()])
+            .then(([installed, installedCasks, updatable, leaves, repos]) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = installed || [];
                 const safeInstalledCasks = installedCasks || [];
                 const safeUpdatable = updatable || [];
-                const safeAll = all || [];
                 const safeLeaves = leaves || [];
                 const safeRepos = repos || [];
 
@@ -197,9 +198,6 @@ const WailBrewApp = () => {
                 }
                 if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
                     throw new Error(`${t('errors.failedUpdatablePackages')}: ${safeUpdatable[0][1]}`);
-                }
-                if (safeAll.length === 1 && safeAll[0][0] === "Error") {
-                    throw new Error(`${t('errors.failedAllPackages')}: ${safeAll[0][1]}`);
                 }
                 if (safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")) {
                     throw new Error(`${t('errors.failedLeaves')}: ${safeLeaves[0]}`);
@@ -228,14 +226,6 @@ const WailBrewApp = () => {
                     isInstalled: true,
                     warning: warning || undefined,
                 }));
-                const installedNames = new Set(installedFormatted.map(pkg => pkg.name));
-                const allFormatted = safeAll.map(([name, desc, size]) => ({
-                    name,
-                    installedVersion: "",
-                    size,
-                    isInstalled: installedNames.has(name),
-                }));
-
                 // Format leaves packages with their versions and sizes from installed packages
                 const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, { installedVersion: pkg.installedVersion, size: pkg.size }]));
                 const leavesFormatted = safeLeaves.map((name) => {
@@ -258,9 +248,9 @@ const WailBrewApp = () => {
                 setPackages(installedFormatted);
                 setCasks(casksFormatted);
                 setUpdatablePackages(updatableFormatted);
-                setAllPackages(allFormatted);
                 setLeavesPackages(leavesFormatted);
                 setRepositories(reposFormatted);
+                // Note: allPackages are loaded lazily when user switches to "all" view
                 
                 // Stop loading timer
                 if (loadingTimerInterval.current) {
@@ -414,6 +404,14 @@ const WailBrewApp = () => {
             cancelled = true;
         };
     }, [i18n.language, i18n.resolvedLanguage]);
+
+    // Load all packages when user switches to "all" view
+    useEffect(() => {
+        if (view === "all" && !allPackagesLoaded && !loadingAllPackages) {
+            loadAllPackages();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [view, allPackagesLoaded, loadingAllPackages]);
 
     // Background update checking function
     const performBackgroundUpdateCheck = async () => {
@@ -1641,6 +1639,40 @@ const WailBrewApp = () => {
         handleShowInfoLogs(pkg);
     };
 
+    // Function to load all packages (lazy loaded)
+    const loadAllPackages = async () => {
+        if (loadingAllPackages) return; // Prevent duplicate loads
+        
+        setLoadingAllPackages(true);
+        try {
+            const all = await GetAllBrewPackages();
+            const safeAll = all || [];
+            
+            if (safeAll.length === 1 && safeAll[0][0] === "Error") {
+                setError(`${t('errors.failedAllPackages')}: ${safeAll[0][1]}`);
+                setAllPackages([]);
+                setAllPackagesLoaded(false);
+            } else {
+                const installedNames = new Set(packages.map(pkg => pkg.name));
+                const formatted = safeAll.map(([name, desc, size]) => ({
+                    name,
+                    installedVersion: "",
+                    desc,
+                    size,
+                    isInstalled: installedNames.has(name),
+                }));
+                setAllPackages(formatted);
+                setAllPackagesLoaded(true);
+            }
+        } catch (err) {
+            console.error("Error loading all packages:", err);
+            setAllPackages([]);
+            setAllPackagesLoaded(false);
+        } finally {
+            setLoadingAllPackages(false);
+        }
+    };
+
     const handleRefreshPackages = async () => {
         setLoading(true);
         setError("");
@@ -1650,15 +1682,15 @@ const WailBrewApp = () => {
         setCasks([]);
         setUpdatablePackages([]);
         setAllPackages([]);
+        setAllPackagesLoaded(false);
         setLeavesPackages([]);
         setRepositories([]);
         
         try {
-            const [installed, caskList, updatable, all, leaves, repos] = await Promise.all([
+            const [installed, caskList, updatable, leaves, repos] = await Promise.all([
                 GetBrewPackages(),
                 GetBrewCasks(),
                 GetBrewUpdatablePackages(), 
-                GetAllBrewPackages(), 
                 GetBrewLeaves(), 
                 GetBrewTaps()
             ]);
@@ -1667,7 +1699,6 @@ const WailBrewApp = () => {
             const safeInstalled = installed || [];
             const safeInstalledCasks = caskList || [];
             const safeUpdatable = updatable || [];
-            const safeAll = all || [];
             const safeLeaves = leaves || [];
             const safeRepos = repos || [];
 
@@ -1754,19 +1785,7 @@ const WailBrewApp = () => {
                 setUpdatablePackages(formatted);
             }
 
-            if (safeAll.length === 1 && safeAll[0][0] === "Error") {
-                setAllPackages([]);
-            } else {
-                const installedMap = new Map(safeInstalled.map(([name]) => [name, true]));
-                const formatted = safeAll.map(([name, desc, size]) => ({
-                    name,
-                    installedVersion: t('common.notAvailable'),
-                    desc,
-                    size,
-                    isInstalled: installedMap.has(name),
-                }));
-                setAllPackages(formatted);
-            }
+            // Note: allPackages are loaded lazily when user switches to "all" view
 
             if (safeLeaves.length === 1 && safeLeaves[0] === "Error") {
                 setLeavesPackages([]);
@@ -1830,7 +1849,7 @@ const WailBrewApp = () => {
                 packagesCount={packages.length}
                 casksCount={casks.length}
                 updatableCount={updatablePackages.length}
-                allCount={allPackages.length}
+                allCount={allPackagesLoaded ? allPackages.length : -1}
                 leavesCount={leavesPackages.length}
                 repositoriesCount={repositories.length}
                 onClearSelection={clearSelection}
@@ -2035,6 +2054,16 @@ const WailBrewApp = () => {
                     <>
                         <HeaderRow
                             title={t('headers.allFormulas', { count: allPackages.length })}
+                            actions={
+                                <button
+                                    className="refresh-button"
+                                    onClick={loadAllPackages}
+                                    disabled={loadingAllPackages}
+                                    title={t('buttons.refresh')}
+                                >
+                                    <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
+                                </button>
+                            }
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
@@ -2044,7 +2073,7 @@ const WailBrewApp = () => {
                             ref={view === "all" ? packageTableRef : null}
                             packages={filteredPackages}
                             selectedPackage={selectedPackage}
-                            loading={loading}
+                            loading={loading || loadingAllPackages}
                             onSelect={handleSelect}
                             columns={columnsAll}
                             onShowInfo={handleShowInfoLogs}

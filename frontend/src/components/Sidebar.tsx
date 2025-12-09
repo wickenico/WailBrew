@@ -158,7 +158,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <li className={view === "all" ? "active" : ""} onClick={() => { setView("all"); onClearSelection(); }}>
                     <span className="sidebar-shortcut">{cmdKey}4</span>
                     <span>📚 {t('sidebar.all')}</span>
-                    <span className="badge">{allCount}</span>
+                    <span className="badge">{allCount === -1 ? "—" : allCount}</span>
                 </li>
                 <li className={view === "leaves" ? "active" : ""} onClick={() => { setView("leaves"); onClearSelection(); }}>
                     <span className="sidebar-shortcut">{cmdKey}5</span>
