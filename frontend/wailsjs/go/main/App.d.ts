@@ -44,6 +44,8 @@ export function GetCurrentLanguage():Promise<string>;
 
 export function GetDeprecatedFormulae(arg1:string):Promise<Array<string>>;
 
+export function GetHomebrewCaskVersion():Promise<string>;
+
 export function GetHomebrewVersion():Promise<string>;
 
 export function GetMirrorSource():Promise<Record<string, string>>;

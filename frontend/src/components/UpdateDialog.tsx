@@ -28,21 +28,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
       let errorMessage = 'Failed to check for updates';
       
       if (err instanceof Error) {
-        try {
-          // Try to parse the error message as JSON (GitHub API errors)
-          const errorData = JSON.parse(err.message);
-          if (errorData.message && errorData.message.includes('rate limit')) {
-            // It's a rate limit error
-            errorMessage = 'RATE_LIMIT_ERROR';
-          } else if (errorData.message) {
-            errorMessage = errorData.message;
-          } else {
-            errorMessage = err.message;
-          }
-        } catch {
-          // Not a JSON error, use the regular error message
-          errorMessage = err.message;
-        }
+        errorMessage = err.message;
       }
       
       setError(errorMessage);
@@ -117,16 +103,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
               <div className="error-icon">⚠️</div>
               <div>
                 <h3>{t('updateDialog.error')}</h3>
-                {error === 'RATE_LIMIT_ERROR' ? (
-                  <div>
-                    <p>{t('updateDialog.rateLimitError')}</p>
-                    <p style={{ marginTop: '0.5rem', fontSize: '0.9em', opacity: 0.8 }}>
-                      {t('updateDialog.rateLimitAdvice')}
-                    </p>
-                  </div>
-                ) : (
-                  <p>{error}</p>
-                )}
+                <p>{error}</p>
               </div>
             </div>
           )}
@@ -151,28 +128,10 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                         </div>
                       </div>
                       <div className="release-info">
-                        {updateInfo.publishedAt && (
-                          <div className="release-info-item">
-                            <div className="release-info-label">{t('updateDialog.published')}:</div>
-                            <div className="release-info-value">{formatDate(updateInfo.publishedAt)}</div>
-                          </div>
-                        )}
-                        {updateInfo.fileSize > 0 && (
-                          <div className="release-info-item">
-                            <div className="release-info-label">{t('updateDialog.size')}:</div>
-                            <div className="release-info-value">{formatFileSize(updateInfo.fileSize)}</div>
-                          </div>
-                        )}
                         <div className="release-info-item">
-                          <span 
-                            className="clickable-link"
-                            onClick={() => handleLinkClick(`https://github.com/wickenico/WailBrew/releases/tag/v${updateInfo.latestVersion}`)}
-                            onKeyDown={(e) => handleKeyDown(e, `https://github.com/wickenico/WailBrew/releases/tag/v${updateInfo.latestVersion}`)}
-                            role="button"
-                            tabIndex={0}
-                          >
-                            {t('updateDialog.viewReleaseNotes')}
-                          </span>
+                          <div className="release-info-label" style={{ fontStyle: 'italic', opacity: 0.8 }}>
+                            {t('updateDialog.availableViaHomebrew')}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -217,17 +176,6 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                     <p style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
                       {t('updateDialog.currentVersionIs', { version: updateInfo.currentVersion })}
                     </p>
-                    <div className="release-info-item" style={{ justifyContent: 'center', marginTop: '1rem' }}>
-                      <span 
-                        className="clickable-link"
-                        onClick={() => handleLinkClick('https://github.com/wickenico/WailBrew/releases/latest')}
-                        onKeyDown={(e) => handleKeyDown(e, 'https://github.com/wickenico/WailBrew/releases/latest')}
-                        role="button"
-                        tabIndex={0}
-                      >
-                        {t('updateDialog.viewReleaseNotes')}
-                      </span>
-                    </div>
                   </div>
                 </div>
               )}

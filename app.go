@@ -3286,28 +3286,90 @@ func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
 	return nil
 }
 
-// CheckForUpdates checks if wailbrew appears in brew outdated
-func (a *App) CheckForUpdates() (*UpdateInfo, error) {
-	currentVersion := Version
-
-	// Check if wailbrew is in the outdated packages list
-	updatablePackages := a.GetBrewUpdatablePackages()
-
-	// Check for errors in the response
-	if len(updatablePackages) == 1 && len(updatablePackages[0]) >= 2 && updatablePackages[0][0] == "Error" {
-		return nil, fmt.Errorf("failed to check for updates: %s", updatablePackages[0][1])
+// GetHomebrewCaskVersion gets the available version of wailbrew from Homebrew Cask
+func (a *App) GetHomebrewCaskVersion() (string, error) {
+	// Validate brew installation first
+	if err := a.validateBrewInstallation(); err != nil {
+		return "", fmt.Errorf("Homebrew validation failed: %v", err)
 	}
 
-	var wailbrewUpdate []string
-	for _, pkg := range updatablePackages {
-		if len(pkg) >= 3 && strings.ToLower(pkg[0]) == "wailbrew" {
-			wailbrewUpdate = pkg
-			break
+	// Run brew info --cask --json=v2 wailbrew
+	infoOutput, err := a.runBrewCommand("info", "--cask", "--json=v2", "wailbrew")
+	if err != nil {
+		return "", fmt.Errorf("failed to get Homebrew Cask info: %v", err)
+	}
+
+	// Parse JSON to get version
+	var caskInfo struct {
+		Casks []struct {
+			Token   string `json:"token"`
+			Version string `json:"version"`
+		} `json:"casks"`
+	}
+
+	if err := json.Unmarshal(infoOutput, &caskInfo); err != nil {
+		return "", fmt.Errorf("failed to parse Homebrew Cask JSON: %v", err)
+	}
+
+	if len(caskInfo.Casks) == 0 {
+		return "", fmt.Errorf("wailbrew cask not found in Homebrew")
+	}
+
+	version := caskInfo.Casks[0].Version
+	if version == "" {
+		return "", fmt.Errorf("version not found in Homebrew Cask info")
+	}
+
+	return version, nil
+}
+
+// compareVersions compares two version strings (e.g., "0.9.1" vs "0.9.2")
+// Returns true if version1 > version2
+func compareVersions(version1, version2 string) bool {
+	// Remove 'v' prefix if present
+	v1 := strings.TrimPrefix(strings.TrimSpace(version1), "v")
+	v2 := strings.TrimPrefix(strings.TrimSpace(version2), "v")
+
+	// Split versions by dots
+	parts1 := strings.Split(v1, ".")
+	parts2 := strings.Split(v2, ".")
+
+	// Compare each part
+	maxLen := len(parts1)
+	if len(parts2) > maxLen {
+		maxLen = len(parts2)
+	}
+
+	for i := 0; i < maxLen; i++ {
+		var part1, part2 int
+		if i < len(parts1) {
+			fmt.Sscanf(parts1[i], "%d", &part1)
+		}
+		if i < len(parts2) {
+			fmt.Sscanf(parts2[i], "%d", &part2)
+		}
+
+		if part1 > part2 {
+			return true
+		}
+		if part1 < part2 {
+			return false
 		}
 	}
 
-	// If wailbrew is not outdated, no update available
-	if len(wailbrewUpdate) == 0 {
+	// Versions are equal
+	return false
+}
+
+// CheckForUpdates checks if a newer version of wailbrew is available via Homebrew Cask
+func (a *App) CheckForUpdates() (*UpdateInfo, error) {
+	currentVersion := Version
+
+	// Get the version available in Homebrew Cask
+	homebrewCaskVersion, err := a.GetHomebrewCaskVersion()
+	if err != nil {
+		// If we can't get Homebrew version, don't show an update notification
+		// Log the error but return no update available
 		return &UpdateInfo{
 			Available:      false,
 			CurrentVersion: currentVersion,
@@ -3319,16 +3381,17 @@ func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 		}, nil
 	}
 
-	// wailbrew is outdated - get the latest version
-	// Format: [name, installedVersion, currentVersion, size, warning]
-	latestVersion := wailbrewUpdate[2] // CurrentVersion is at index 2
+	// Clean versions (remove 'v' prefix)
 	currentVersionClean := strings.TrimPrefix(currentVersion, "v")
-	latestVersionClean := strings.TrimPrefix(latestVersion, "v")
+	homebrewVersionClean := strings.TrimPrefix(homebrewCaskVersion, "v")
+
+	// Compare versions - only show update if Homebrew version is greater
+	isUpdateAvailable := compareVersions(homebrewVersionClean, currentVersionClean)
 
 	return &UpdateInfo{
-		Available:      latestVersionClean != currentVersionClean,
+		Available:      isUpdateAvailable,
 		CurrentVersion: currentVersion,
-		LatestVersion:  latestVersionClean,
+		LatestVersion:  homebrewVersionClean,
 		ReleaseNotes:   "",
 		DownloadURL:    "",
 		FileSize:       0,

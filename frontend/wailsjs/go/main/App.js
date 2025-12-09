@@ -86,6 +86,10 @@ export function GetDeprecatedFormulae(arg1) {
   return window['go']['main']['App']['GetDeprecatedFormulae'](arg1);
 }
 
+export function GetHomebrewCaskVersion() {
+  return window['go']['main']['App']['GetHomebrewCaskVersion']();
+}
+
 export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }
