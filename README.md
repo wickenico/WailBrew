@@ -23,7 +23,6 @@ Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/W
 📦 **Installation via Homebrew (recommended):**
 
 ```bash
-brew tap wickenico/wailbrew
 brew install --cask wailbrew
 ```
 
