@@ -29,6 +29,10 @@ interface PackageTableProps {
     selectedPackages?: Set<string>;
 }
 
+export interface PackageTableRef {
+    focus: () => void;
+}
+
 // Helper function to parse size strings for sorting (e.g., "10M", "2.5G", "1K")
 const parseSizeToBytes = (size?: string): number => {
     if (!size || size === "Unknown" || size === "") return 0;
@@ -50,7 +54,7 @@ const parseSizeToBytes = (size?: string): number => {
     return value * (multipliers[unit] || 1);
 };
 
-const PackageTable: React.FC<PackageTableProps> = ({
+const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
     packages,
     selectedPackage,
     loading,
@@ -62,11 +66,52 @@ const PackageTable: React.FC<PackageTableProps> = ({
     onInstall,
     multiSelectMode = false,
     selectedPackages = new Set(),
-}) => {
+}, ref) => {
     const { t } = useTranslation();
     const selectedRowRef = useRef<HTMLTableRowElement>(null);
+    const firstRowRef = useRef<HTMLTableRowElement>(null);
+    const tableContainerRef = useRef<HTMLDivElement>(null);
+    const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
+    const isKeyboardNavigating = useRef<boolean>(false);
     const [sortKey, setSortKey] = useState<string | null>('name'); // Default sort by name
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    const [focusedRowIndex, setFocusedRowIndex] = useState<number | null>(null);
+
+    // Expose focus method via ref
+    React.useImperativeHandle(ref, () => ({
+        focus: () => {
+            if (sortedPackages.length > 0) {
+                setFocusedRowIndex(0);
+                const firstRow = rowRefs.current.get(0);
+                if (firstRow) {
+                    firstRow.focus();
+                    firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+    } as any));
+
+    // Handle arrow key navigation
+    const handleArrowKeyNavigation = (currentIndex: number, direction: 'up' | 'down') => {
+        const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        
+        // Don't go beyond boundaries
+        if (newIndex < 0 || newIndex >= sortedPackages.length) {
+            return;
+        }
+
+        isKeyboardNavigating.current = true;
+        setFocusedRowIndex(newIndex);
+        const targetRow = rowRefs.current.get(newIndex);
+        if (targetRow) {
+            targetRow.focus();
+            targetRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        // Reset flag after a short delay to allow scroll to complete
+        setTimeout(() => {
+            isKeyboardNavigating.current = false;
+        }, 300);
+    };
 
     // Helper function to get column width based on key
     const getColumnWidth = (key: string): string => {
@@ -76,16 +121,6 @@ const PackageTable: React.FC<PackageTableProps> = ({
         return 'auto';
     };
 
-    // Scroll to selected row when selectedPackage changes
-    useEffect(() => {
-        if (selectedRowRef.current && selectedPackage) {
-            selectedRowRef.current.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            });
-        }
-    }, [selectedPackage]);
-    
     // Handle column header click for sorting
     const handleSort = (key: string, sortable: boolean = true) => {
         // Don't sort on non-sortable columns
@@ -133,6 +168,28 @@ const PackageTable: React.FC<PackageTableProps> = ({
             return sortDirection === 'asc' ? comparison : -comparison;
         });
     }, [packages, sortKey, sortDirection]);
+
+    // Scroll to selected row when selectedPackage changes (but not during keyboard navigation)
+    const prevSelectedPackageRef = useRef<PackageEntry | null>(null);
+    useEffect(() => {
+        // Only scroll if selectedPackage actually changed (not just sortedPackages)
+        const selectedPackageChanged = prevSelectedPackageRef.current?.name !== selectedPackage?.name;
+        
+        if (selectedPackage && sortedPackages.length > 0 && selectedPackageChanged && !isKeyboardNavigating.current) {
+            const selectedIndex = sortedPackages.findIndex(pkg => pkg.name === selectedPackage.name);
+            if (selectedIndex >= 0) {
+                setFocusedRowIndex(selectedIndex);
+                const selectedRow = rowRefs.current.get(selectedIndex);
+                if (selectedRow) {
+                    selectedRow.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                    });
+                }
+            }
+        }
+        prevSelectedPackageRef.current = selectedPackage;
+    }, [selectedPackage, sortedPackages]);
     
     const renderCellContent = (pkg: PackageEntry, col: { key: string; label: string }) => {
         if (col.key === "actions") {
@@ -219,7 +276,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
     };
     
     return (
-    <div className="table-container">
+    <div className="table-container" ref={tableContainerRef}>
         {loading && (
             <div className="table-loading-overlay">
                 <div className="spinner"></div>
@@ -286,14 +343,45 @@ const PackageTable: React.FC<PackageTableProps> = ({
                             ))}
                         </colgroup>
                         <tbody>
-                            {sortedPackages.map(pkg => {
+                            {sortedPackages.map((pkg, index) => {
                                 const isSelected = multiSelectMode ? selectedPackages.has(pkg.name) : selectedPackage?.name === pkg.name;
+                                const isFocused = focusedRowIndex === index;
                                 return (
                                     <tr
                                         key={pkg.name}
-                                        ref={!multiSelectMode && selectedPackage?.name === pkg.name ? selectedRowRef : null}
+                                        ref={(el) => {
+                                            if (el) {
+                                                rowRefs.current.set(index, el);
+                                                if (index === 0) {
+                                                    firstRowRef.current = el;
+                                                }
+                                                if (!multiSelectMode && selectedPackage?.name === pkg.name) {
+                                                    selectedRowRef.current = el;
+                                                }
+                                            } else {
+                                                rowRefs.current.delete(index);
+                                            }
+                                        }}
                                         className={isSelected ? "selected" : ""}
-                                        onClick={() => onSelect(pkg)}
+                                        onClick={() => {
+                                            setFocusedRowIndex(index);
+                                            onSelect(pkg);
+                                        }}
+                                        tabIndex={isFocused ? 0 : -1}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                setFocusedRowIndex(index);
+                                                onSelect(pkg);
+                                            } else if (e.key === 'ArrowDown') {
+                                                e.preventDefault();
+                                                handleArrowKeyNavigation(index, 'down');
+                                            } else if (e.key === 'ArrowUp') {
+                                                e.preventDefault();
+                                                handleArrowKeyNavigation(index, 'up');
+                                            }
+                                        }}
+                                        onFocus={() => setFocusedRowIndex(index)}
                                     >
                                         {multiSelectMode && (
                                             <td style={{ textAlign: 'center' }}>
@@ -319,7 +407,15 @@ const PackageTable: React.FC<PackageTableProps> = ({
                 </div>
                 <div className="table-footer">
                     <div className="table-footer-content">
-                        {packages.length} {packages.length === 1 ? t('table.package') : t('table.packages')}
+                        <span>{packages.length} {packages.length === 1 ? t('table.package') : t('table.packages')}</span>
+                        {packages.length > 0 && (
+                            <span className="table-footer-shortcut">
+                                {typeof navigator !== 'undefined' && 
+                                    (navigator.userAgent.includes('Mac') || navigator.userAgent.includes('macOS')) 
+                                    ? '⌘T' 
+                                    : 'Ctrl+T'}
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -329,6 +425,8 @@ const PackageTable: React.FC<PackageTableProps> = ({
         )}
     </div>
     );
-};
+});
+
+PackageTable.displayName = 'PackageTable';
 
 export default PackageTable; 

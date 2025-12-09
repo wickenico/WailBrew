@@ -1049,6 +1049,25 @@ html, body {
   text-align: center;
   letter-spacing: 0.3px;
   opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.table-footer-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.6;
+  letter-spacing: 0.5px;
 }
 
 .package-table {
@@ -1110,9 +1129,20 @@ html, body {
   cursor: pointer;
 }
 
+.package-table tbody tr:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: rgba(80, 180, 255, 0.12);
+}
+
 .package-table tbody tr.selected {
   background: var(--accent) !important;
   color: #fff;
+}
+
+.package-table tbody tr.selected:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: -2px;
 }
 
 .package-table tbody tr.selected td:first-child svg {

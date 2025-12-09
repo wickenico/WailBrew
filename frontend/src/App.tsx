@@ -601,13 +601,28 @@ const WailBrewApp = () => {
         }
     };
 
-    // Global keyboard shortcut for command palette (Cmd+K / Ctrl+K)
+    // Refs for PackageTable components to focus on Cmd+T
+    const packageTableRef = useRef<import('./components/PackageTable').PackageTableRef | null>(null);
+
+    // Global keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+            // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux) - Command Palette
             if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
                 event.preventDefault();
                 setShowCommandPalette(prev => !prev);
+            }
+            // Check for Cmd+T (Mac) or Ctrl+T (Windows/Linux) - Focus table
+            if ((event.metaKey || event.ctrlKey) && event.key === 't') {
+                // Don't trigger if user is typing in an input field
+                const target = event.target as HTMLElement;
+                if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+                    return;
+                }
+                event.preventDefault();
+                if (packageTableRef.current) {
+                    packageTableRef.current.focus();
+                }
             }
         };
 
@@ -1707,6 +1722,7 @@ const WailBrewApp = () => {
                         />
                         {error && <div className="result error">{error}</div>}
                         <PackageTable
+                            ref={view === "installed" ? packageTableRef : null}
                             packages={filteredPackages}
                             selectedPackage={selectedPackage}
                             loading={loading}
@@ -1750,6 +1766,7 @@ const WailBrewApp = () => {
                         />
                         {error && <div className="result error">{error}</div>}
                         <PackageTable
+                            ref={view === "casks" ? packageTableRef : null}
                             packages={filteredPackages}
                             selectedPackage={selectedPackage}
                             loading={loading}
@@ -1838,6 +1855,7 @@ const WailBrewApp = () => {
                         )}
                         {error && <div className="result error">{error}</div>}
                         <PackageTable
+                            ref={view === "updatable" ? packageTableRef : null}
                             packages={filteredPackages}
                             selectedPackage={selectedPackage}
                             loading={loading}
@@ -1874,6 +1892,7 @@ const WailBrewApp = () => {
                         />
                         {error && <div className="result error">{error}</div>}
                         <PackageTable
+                            ref={view === "all" ? packageTableRef : null}
                             packages={filteredPackages}
                             selectedPackage={selectedPackage}
                             loading={loading}
@@ -1907,6 +1926,7 @@ const WailBrewApp = () => {
                         />
                         {error && <div className="result error">{error}</div>}
                         <PackageTable
+                            ref={view === "leaves" ? packageTableRef : null}
                             packages={filteredPackages}
                             selectedPackage={selectedPackage}
                             loading={loading}
