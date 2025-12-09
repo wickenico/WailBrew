@@ -16,6 +16,8 @@ export function GetAllBrewPackages():Promise<Array<any>>;
 
 export function GetAppVersion():Promise<string>;
 
+export function GetBrewCaskSizes(arg1:Array<string>):Promise<Record<string, string>>;
+
 export function GetBrewCasks():Promise<Array<any>>;
 
 export function GetBrewCleanupDryRun():Promise<string>;
@@ -25,6 +27,8 @@ export function GetBrewLeaves():Promise<Array<string>>;
 export function GetBrewPackageInfo(arg1:string):Promise<string>;
 
 export function GetBrewPackageInfoAsJson(arg1:string):Promise<Record<string, any>>;
+
+export function GetBrewPackageSizes(arg1:Array<string>):Promise<Record<string, string>>;
 
 export function GetBrewPackages():Promise<Array<any>>;
 

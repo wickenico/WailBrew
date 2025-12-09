@@ -32,6 +32,8 @@ import {
     GetSessionLogs,
     GetBrewCleanupDryRun,
     GetDeprecatedFormulae,
+    GetBrewPackageSizes,
+    GetBrewCaskSizes,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -132,6 +134,12 @@ const WailBrewApp = () => {
     const lastSyncedLanguage = useRef<string>("en");
     const isInitialLoad = useRef<boolean>(true);
     
+    // Loading timer for development
+    const [loadingStartTime, setLoadingStartTime] = useState<number | null>(null);
+    const [loadingElapsedTime, setLoadingElapsedTime] = useState<number>(0);
+    const loadingTimerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+    const loadingStartTimeRef = useRef<number | null>(null);
+    
     // Background update checking state
     const [isBackgroundCheckRunning, setIsBackgroundCheckRunning] = useState<boolean>(false);
     const [timeUntilNextCheck, setTimeUntilNextCheck] = useState<number>(0);
@@ -157,6 +165,19 @@ const WailBrewApp = () => {
         });
 
         setLoading(true);
+        // Start loading timer
+        const startTime = Date.now();
+        loadingStartTimeRef.current = startTime;
+        setLoadingStartTime(startTime);
+        setLoadingElapsedTime(0);
+        
+        // Update timer every 100ms
+        loadingTimerInterval.current = setInterval(() => {
+            if (loadingStartTimeRef.current) {
+                setLoadingElapsedTime(Date.now() - loadingStartTimeRef.current);
+            }
+        }, 100);
+        
         Promise.all([GetBrewPackages(), GetBrewCasks(), GetBrewUpdatablePackages(), GetAllBrewPackages(), GetBrewLeaves(), GetBrewTaps()])
             .then(([installed, installedCasks, updatable, all, leaves, repos]) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
@@ -240,7 +261,24 @@ const WailBrewApp = () => {
                 setAllPackages(allFormatted);
                 setLeavesPackages(leavesFormatted);
                 setRepositories(reposFormatted);
+                
+                // Stop loading timer
+                if (loadingTimerInterval.current) {
+                    clearInterval(loadingTimerInterval.current);
+                    loadingTimerInterval.current = null;
+                }
+                if (loadingStartTimeRef.current) {
+                    const finalTime = Date.now() - loadingStartTimeRef.current;
+                    setLoadingElapsedTime(finalTime);
+                    loadingStartTimeRef.current = null;
+                }
+                
                 setLoading(false);
+                
+                // Keep timer visible for 5 seconds after loading completes
+                setTimeout(() => {
+                    setLoadingStartTime(null);
+                }, 5000);
                 
                 // Initialize last known outdated count
                 lastKnownOutdatedCount.current = updatableFormatted.length;
@@ -249,6 +287,48 @@ const WailBrewApp = () => {
                 setTimeout(() => {
                     isInitialLoad.current = false;
                 }, 3000);
+                
+                // Lazy load sizes in the background
+                if (installedFormatted.length > 0) {
+                    const packageNames = installedFormatted.map(pkg => pkg.name);
+                    GetBrewPackageSizes(packageNames)
+                        .then((sizes: Record<string, string>) => {
+                            setPackages(prevPackages => 
+                                prevPackages.map(pkg => ({
+                                    ...pkg,
+                                    size: sizes[pkg.name] || pkg.size || ""
+                                }))
+                            );
+                            // Update leaves packages if they include this package
+                            setLeavesPackages(prevLeaves =>
+                                prevLeaves.map(pkg => {
+                                    if (sizes[pkg.name]) {
+                                        return { ...pkg, size: sizes[pkg.name] };
+                                    }
+                                    return pkg;
+                                })
+                            );
+                        })
+                        .catch((err: unknown) => {
+                            console.error("Error loading package sizes:", err);
+                        });
+                }
+                
+                if (casksFormatted.length > 0) {
+                    const caskNames = casksFormatted.map(cask => cask.name);
+                    GetBrewCaskSizes(caskNames)
+                        .then((sizes: Record<string, string>) => {
+                            setCasks(prevCasks =>
+                                prevCasks.map(cask => ({
+                                    ...cask,
+                                    size: sizes[cask.name] || cask.size || ""
+                                }))
+                            );
+                        })
+                        .catch((err: unknown) => {
+                            console.error("Error loading cask sizes:", err);
+                        });
+                }
             })
             .catch((err) => {
                 console.error("Error loading packages:", err);
@@ -271,7 +351,24 @@ const WailBrewApp = () => {
                 }
                 
                 setError(errorMessage);
+                
+                // Stop loading timer on error
+                if (loadingTimerInterval.current) {
+                    clearInterval(loadingTimerInterval.current);
+                    loadingTimerInterval.current = null;
+                }
+                if (loadingStartTimeRef.current) {
+                    const finalTime = Date.now() - loadingStartTimeRef.current;
+                    setLoadingElapsedTime(finalTime);
+                    loadingStartTimeRef.current = null;
+                }
+                
                 setLoading(false);
+                
+                // Keep timer visible for 5 seconds after error
+                setTimeout(() => {
+                    setLoadingStartTime(null);
+                }, 5000);
             });
         
         // Check for app updates on startup
@@ -287,6 +384,9 @@ const WailBrewApp = () => {
             }
             if (timeUpdateInterval.current) {
                 clearInterval(timeUpdateInterval.current);
+            }
+            if (loadingTimerInterval.current) {
+                clearInterval(loadingTimerInterval.current);
             }
         };
     }, []);
@@ -1582,6 +1682,32 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
                 setPackages(formatted);
+                
+                // Lazy load package sizes in the background
+                if (formatted.length > 0) {
+                    const packageNames = formatted.map(pkg => pkg.name);
+                    GetBrewPackageSizes(packageNames)
+                        .then((sizes: Record<string, string>) => {
+                            setPackages(prevPackages => 
+                                prevPackages.map(pkg => ({
+                                    ...pkg,
+                                    size: sizes[pkg.name] || pkg.size || ""
+                                }))
+                            );
+                            // Update leaves packages if they include this package
+                            setLeavesPackages(prevLeaves =>
+                                prevLeaves.map(pkg => {
+                                    if (sizes[pkg.name]) {
+                                        return { ...pkg, size: sizes[pkg.name] };
+                                    }
+                                    return pkg;
+                                })
+                            );
+                        })
+                        .catch((err: unknown) => {
+                            console.error("Error loading package sizes:", err);
+                        });
+                }
             }
 
             let casksFormatted: PackageEntry[] = [];
@@ -1595,6 +1721,23 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
                 setCasks(casksFormatted);
+                
+                // Lazy load cask sizes in the background
+                if (casksFormatted.length > 0) {
+                    const caskNames = casksFormatted.map(cask => cask.name);
+                    GetBrewCaskSizes(caskNames)
+                        .then((sizes: Record<string, string>) => {
+                            setCasks(prevCasks =>
+                                prevCasks.map(cask => ({
+                                    ...cask,
+                                    size: sizes[cask.name] || cask.size || ""
+                                }))
+                            );
+                        })
+                        .catch((err: unknown) => {
+                            console.error("Error loading cask sizes:", err);
+                        });
+                }
             }
 
             if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
@@ -1702,6 +1845,12 @@ const WailBrewApp = () => {
                 onMouseDown={handleResizeStart}
             />
             <main className="content">
+                {/* Loading timer for development only */}
+                {import.meta.env.DEV && loadingStartTime !== null && (
+                    <div className="loading-timer">
+                        ⏱️ {loadingElapsedTime > 0 ? (loadingElapsedTime / 1000).toFixed(2) : '0.00'}s
+                    </div>
+                )}
                 {view === "installed" && (
                     <>
                         <HeaderRow

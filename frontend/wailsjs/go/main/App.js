@@ -30,6 +30,10 @@ export function GetAppVersion() {
   return window['go']['main']['App']['GetAppVersion']();
 }
 
+export function GetBrewCaskSizes(arg1) {
+  return window['go']['main']['App']['GetBrewCaskSizes'](arg1);
+}
+
 export function GetBrewCasks() {
   return window['go']['main']['App']['GetBrewCasks']();
 }
@@ -48,6 +52,10 @@ export function GetBrewPackageInfo(arg1) {
 
 export function GetBrewPackageInfoAsJson(arg1) {
   return window['go']['main']['App']['GetBrewPackageInfoAsJson'](arg1);
+}
+
+export function GetBrewPackageSizes(arg1) {
+  return window['go']['main']['App']['GetBrewPackageSizes'](arg1);
 }
 
 export function GetBrewPackages() {

@@ -1530,21 +1530,17 @@ func (a *App) GetBrewPackages() [][]string {
 		}
 	}
 
-	// Get size information using brew info --json
-	packageSizes := a.getPackageSizes(packageNames, false)
-
-	// Build result with name, version, and size
+	// Build result with name, version, and empty size (lazy loaded)
 	var packages [][]string
 	for _, name := range packageNames {
 		version := packageVersions[name]
-		size := packageSizes[name]
-		packages = append(packages, []string{name, version, size})
+		packages = append(packages, []string{name, version, ""})
 	}
 
 	return packages
 }
 
-// getPackageSizes fetches size information for packages
+// getPackageSizes fetches size information for packages with chunking support
 func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]string {
 	sizes := make(map[string]string)
 
@@ -1552,77 +1548,90 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 		return sizes
 	}
 
-	// Build brew info command
-	args := []string{"info", "--json=v2"}
-	if isCask {
-		args = append(args, "--cask")
-	}
-	args = append(args, packageNames...)
+	// Chunk size: process packages in batches to avoid command line length limits
+	// and improve reliability with large package lists
+	const chunkSize = 50
 
-	output, err := a.runBrewCommand(args...)
-	if err != nil {
-		// If batch fails, return empty sizes
-		for _, name := range packageNames {
-			sizes[name] = "Unknown"
+	for i := 0; i < len(packageNames); i += chunkSize {
+		end := i + chunkSize
+		if end > len(packageNames) {
+			end = len(packageNames)
 		}
-		return sizes
-	}
+		chunk := packageNames[i:end]
 
-	// Extract JSON portion from output (handling potential Homebrew warnings)
-	outputStr := strings.TrimSpace(string(output))
-	jsonOutput, warnings, err := extractJSONFromBrewOutput(outputStr)
-	if err != nil {
-		// If JSON extraction fails, return unknown sizes
-		for _, name := range packageNames {
-			sizes[name] = "Unknown"
+		// Build brew info command for this chunk
+		args := []string{"info", "--json=v2"}
+		if isCask {
+			args = append(args, "--cask")
 		}
-		return sizes
-	}
+		args = append(args, chunk...)
 
-	// Log warnings if any were detected
-	if warnings != "" {
-		a.appendSessionLog(fmt.Sprintf("Homebrew warnings in package sizes: %s", warnings))
-	}
-
-	// Parse JSON response
-	var brewInfo struct {
-		Formulae []struct {
-			Name      string `json:"name"`
-			Installed []struct {
-				InstalledOnDemand bool  `json:"installed_on_demand"`
-				UsedOptions       []any `json:"used_options"`
-				BuiltAsBottle     bool  `json:"built_as_bottle"`
-				Poured            bool  `json:"poured_from_bottle"`
-				Time              int64 `json:"time"`
-				RuntimeDeps       []any `json:"runtime_dependencies"`
-				InstalledAsDep    bool  `json:"installed_as_dependency"`
-				InstalledWithOpts []any `json:"installed_with_options"`
-			} `json:"installed"`
-		} `json:"formulae"`
-		Casks []struct {
-			Token     string `json:"token"`
-			Installed string `json:"installed"`
-		} `json:"casks"`
-	}
-
-	if err := json.Unmarshal([]byte(jsonOutput), &brewInfo); err != nil {
-		for _, name := range packageNames {
-			sizes[name] = "Unknown"
+		output, err := a.runBrewCommand(args...)
+		if err != nil {
+			// If chunk fails, mark these packages as unknown and continue
+			for _, name := range chunk {
+				sizes[name] = "Unknown"
+			}
+			continue
 		}
-		return sizes
-	}
 
-	// For formulae, calculate size from cellar
-	if !isCask {
-		for _, formula := range brewInfo.Formulae {
-			size := a.calculateFormulaSize(formula.Name)
-			sizes[formula.Name] = size
+		// Extract JSON portion from output (handling potential Homebrew warnings)
+		outputStr := strings.TrimSpace(string(output))
+		jsonOutput, warnings, err := extractJSONFromBrewOutput(outputStr)
+		if err != nil {
+			// If JSON extraction fails, mark chunk as unknown and continue
+			for _, name := range chunk {
+				sizes[name] = "Unknown"
+			}
+			continue
 		}
-	} else {
-		// For casks, calculate size from caskroom
-		for _, cask := range brewInfo.Casks {
-			size := a.calculateCaskSize(cask.Token)
-			sizes[cask.Token] = size
+
+		// Log warnings if any were detected
+		if warnings != "" {
+			a.appendSessionLog(fmt.Sprintf("Homebrew warnings in package sizes: %s", warnings))
+		}
+
+		// Parse JSON response
+		var brewInfo struct {
+			Formulae []struct {
+				Name      string `json:"name"`
+				Installed []struct {
+					InstalledOnDemand bool  `json:"installed_on_demand"`
+					UsedOptions       []any `json:"used_options"`
+					BuiltAsBottle     bool  `json:"built_as_bottle"`
+					Poured            bool  `json:"poured_from_bottle"`
+					Time              int64 `json:"time"`
+					RuntimeDeps       []any `json:"runtime_dependencies"`
+					InstalledAsDep    bool  `json:"installed_as_dependency"`
+					InstalledWithOpts []any `json:"installed_with_options"`
+				} `json:"installed"`
+			} `json:"formulae"`
+			Casks []struct {
+				Token     string `json:"token"`
+				Installed string `json:"installed"`
+			} `json:"casks"`
+		}
+
+		if err := json.Unmarshal([]byte(jsonOutput), &brewInfo); err != nil {
+			// If JSON parsing fails, mark chunk as unknown and continue
+			for _, name := range chunk {
+				sizes[name] = "Unknown"
+			}
+			continue
+		}
+
+		// For formulae, calculate size from cellar
+		if !isCask {
+			for _, formula := range brewInfo.Formulae {
+				size := a.calculateFormulaSize(formula.Name)
+				sizes[formula.Name] = size
+			}
+		} else {
+			// For casks, calculate size from caskroom
+			for _, cask := range brewInfo.Casks {
+				size := a.calculateCaskSize(cask.Token)
+				sizes[cask.Token] = size
+			}
 		}
 	}
 
@@ -1634,6 +1643,18 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 	}
 
 	return sizes
+}
+
+// GetBrewPackageSizes fetches size information for a list of package names
+// This is called separately after initial package load for lazy loading
+func (a *App) GetBrewPackageSizes(packageNames []string) map[string]string {
+	return a.getPackageSizes(packageNames, false)
+}
+
+// GetBrewCaskSizes fetches size information for a list of cask names
+// This is called separately after initial cask load for lazy loading
+func (a *App) GetBrewCaskSizes(caskNames []string) map[string]string {
+	return a.getPackageSizes(caskNames, true)
 }
 
 // calculateFormulaSize calculates the disk size of an installed formula
@@ -1780,17 +1801,13 @@ func (a *App) GetBrewCasks() [][]string {
 		}
 	}
 
-	// Get size information
-	caskSizes := a.getPackageSizes(caskNames, true)
-
-	// Build result array with name, version, and size
+	// Build result array with name, version, and empty size (lazy loaded)
 	for _, name := range caskNames {
 		version := versionMap[name]
 		if version == "" {
 			version = "Unknown"
 		}
-		size := caskSizes[name]
-		casks = append(casks, []string{name, version, size})
+		casks = append(casks, []string{name, version, ""})
 	}
 
 	return casks
