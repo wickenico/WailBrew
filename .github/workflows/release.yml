@@ -44,8 +44,19 @@ jobs:
           fi
           echo "prev_tag=$PREV_TAG" >> "$GITHUB_OUTPUT"
           
-          # Generate release notes from git commits (excluding version bump commits)
-          RELEASE_NOTES=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse --invert-grep -E --grep="[Bb]ump.*[0-9]+\.[0-9]+\.[0-9]+|^[Vv]ersion.*[0-9]+\.[0-9]+\.[0-9]+")
+          # Generate Dependabot updates section first
+          DEPENDABOT_RAW=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse --author="dependabot\[bot\]" --author="dependabot-preview\[bot\]" 2>/dev/null || echo "")
+          
+          # Format Dependabot section with header if there are updates
+          if [ -n "$DEPENDABOT_RAW" ]; then
+            DEPENDABOT_SECTION="## Dependencies"$'\n\n'"$DEPENDABOT_RAW"
+          else
+            DEPENDABOT_SECTION=""
+          fi
+          
+          # Generate release notes from git commits (excluding version bump commits and dependabot authors)
+          # Get all commits excluding version bumps, then filter out dependabot commits
+          RELEASE_NOTES=$(git log ${PREV_TAG}..HEAD --pretty=format:"%an|%s (%h)" --reverse --invert-grep -E --grep="[Bb]ump.*[0-9]+\.[0-9]+\.[0-9]+|^[Vv]ersion.*[0-9]+\.[0-9]+\.[0-9]+" | grep -vE "dependabot\[bot\]|dependabot-preview\[bot\]" | sed 's/^[^|]*|/- /' || echo "")
           
           # If no commits found, use a default message
           if [ -z "$RELEASE_NOTES" ]; then
@@ -57,6 +68,9 @@ jobs:
           
           echo "release_notes<<EOF" >> "$GITHUB_OUTPUT"
           echo "$RELEASE_NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "dependabot_section<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$DEPENDABOT_SECTION" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
           echo "changelog_link=$CHANGELOG_LINK" >> "$GITHUB_OUTPUT"
 
@@ -96,6 +110,8 @@ jobs:
             ${{ steps.meta.outputs.release_notes }}
             
             ${{ steps.meta.outputs.changelog_link }}
+            
+            ${{ steps.meta.outputs.dependabot_section }}
           files: releases/wailbrew-v${{ github.event.inputs.version }}.zip
           fail_on_unmatched_files: false
         env:
