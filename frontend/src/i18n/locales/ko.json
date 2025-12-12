@@ -1,0 +1,414 @@
+{
+  "sidebar": {
+    "formulas": "Formulae",
+    "tools": "도구",
+    "installed": "설치됨",
+    "casks": "Casks",
+    "outdated": "업데이트 필요",
+    "all": "Formulae",
+    "leaves": "Leaves",
+    "repositories": "Repositories",
+    "homebrew": "Homebrew",
+    "doctor": "Doctor",
+    "cleanup": "Cleanup",
+    "settings": "설정",
+    "refresh": "새로고침",
+    "commandPalette": "명령 팔레트"
+  },
+  "headers": {
+    "installedFormulas": "설치된 Formulae",
+    "installedCasks": "설치된 Casks",
+    "outdatedFormulas": "업데이트 필요한 Formulae",
+    "allFormulas": "Formulae",
+    "leaves": "Leaves",
+    "repositories": "Repositories",
+    "homebrew": "Homebrew",
+    "homebrewDoctor": "Homebrew Doctor",
+    "homebrewCleanup": "Homebrew Cleanup",
+    "deprecatedFormulae": "지원 중단된 Formulae"
+  },
+  "search": {
+    "placeholder": "검색...",
+    "clearSearch": "검색 지우기",
+    "recentSearches": "최근 검색",
+    "removeFromHistory": "\"{{item}}\" 기록에서 삭제"
+  },
+  "commandPalette": {
+    "placeholder": "패키지, Casks, Repositories 검색 또는 화면 이동...",
+    "noResults": "결과 없음",
+    "toSelect": "선택",
+    "toNavigate": "이동",
+    "toClose": "닫기"
+  },
+  "shortcuts": {
+    "title": "키보드 단축키",
+    "menu": {
+      "title": "메뉴",
+      "commandPalette": "명령 팔레트",
+      "shortcuts": "키보드 단축키",
+      "settings": "설정",
+      "quit": "종료"
+    },
+    "navigation": {
+      "title": "탐색",
+      "installed": "설치된 Formulae",
+      "casks": "Casks",
+      "outdated": "업데이트 필요한 Formulae",
+      "all": "모든 Formulae",
+      "leaves": "Leaves",
+      "repositories": "Repositories",
+      "homebrew": "Homebrew",
+      "doctor": "Doctor",
+      "cleanup": "Cleanup"
+    },
+    "table": {
+      "title": "테이블",
+      "focus": "테이블 포커스",
+      "select": "항목 선택",
+      "navigate": "행 이동",
+      "multiSelect": "다중 선택 모드",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "동작",
+      "refresh": "패키지 새로고침",
+      "exportBrewfile": "Brewfile 내보내기"
+    },
+    "dialogs": {
+      "title": "대화상자",
+      "close": "대화상자 닫기",
+      "confirm": "동작 확인",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
+  "buttons": {
+    "uninstall": "\"{{name}}\" 제거",
+    "install": "\"{{name}}\" 설치",
+    "update": "\"{{name}}\" 업데이트",
+    "tap": "Tap 추가",
+    "updateAll": "모두 업데이트",
+    "multiSelect": "다중 선택",
+    "exitMultiSelect": "다중 선택 종료",
+    "updateSelected": "{{count}}개 선택 항목 업데이트",
+    "selectAll": "모두 선택",
+    "deselectAll": "모두 선택 해제",
+    "showInfo": "\"{{name}}\" 정보 보기",
+    "clearLog": "로그 지우기",
+    "runDoctor": "Doctor 실행",
+    "runCleanup": "Cleanup 실행",
+    "checkEstimate": "예상 용량 확인",
+    "refresh": "패키지 새로고침",
+    "yes": "예",
+    "cancel": "취소",
+    "yesUninstall": "예, 제거합니다",
+    "yesInstall": "예, 설치합니다",
+    "yesUpdate": "예, 업데이트합니다",
+    "yesUpdateAll": "예, 모두 업데이트합니다",
+    "yesUpdateSelected": "예, {{count}}개 선택 항목을 업데이트합니다",
+    "yesUntap": "예, Untap합니다",
+    "yesUninstallAndUntap": "예, 제거 후 Untap합니다",
+    "ok": "확인",
+    "close": "닫기",
+    "updateHomebrew": "Homebrew 업데이트",
+    "uninstallDeprecated": "지원 중단된 Formula \"{{name}}\" 제거"
+  },
+  "multiSelect": {
+    "selectedCount": "{{total}}개 중 {{count}}개 선택됨"
+  },
+  "logDialog": {
+    "running": "실행 중...",
+    "completed": "완료"
+  },
+  "packageInfo": {
+    "loading": "(로딩 중…)",
+    "description": "설명",
+    "homepage": "홈페이지",
+    "version": "버전",
+    "status": "상태",
+    "dependencies": "Dependencies",
+    "conflicts": "충돌",
+    "installed": "설치됨",
+    "notInstalled": "설치 안 됨",
+    "noSelection": "선택된 패키지 없음",
+    "downloadStatistics": "다운로드 통계",
+    "last30Days": "최근 30일",
+    "last90Days": "최근 90일",
+    "last365Days": "최근 365일",
+    "loadingAnalytics": "통계 로딩 중..."
+  },
+  "tableColumns": {
+    "name": "이름",
+    "version": "설치된 버전",
+    "latestVersion": "최신 버전",
+    "size": "크기",
+    "status": "상태",
+    "actions": "동작"
+  },
+  "footers": {
+    "installedFormulas": "시스템에 이미 설치된 Formulae입니다.",
+    "installedCasks": "시스템에 이미 설치된 Casks(GUI 애플리케이션)입니다.",
+    "outdatedFormulas": "업데이트 가능한 Formulae가 있습니다.",
+    "allFormulas": "사용 가능한 모든 Homebrew Formulae입니다. 녹색 강조는 설치된 Formulae를 나타냅니다.",
+    "leaves": "Leaves는 다른 설치된 Formulae의 Dependencies로 필요하지 않은 Formulae입니다.",
+    "repositories": "Repositories(Taps)는 Formulae의 소스입니다. 기본 Repository 외에 추가 패키지를 포함합니다.",
+    "homebrew": "Homebrew 자체를 관리하고 업데이트합니다. 설치된 버전을 확인하고 새 버전이 있으면 Homebrew 코어를 업데이트합니다.",
+    "doctor": "Doctor는 가장 일반적인 오류 원인을 감지할 수 있는 Homebrew 기능입니다.",
+    "cleanup": "Cleanup은 오래된 다운로드와 캐시 파일을 제거하여 디스크 공간을 확보합니다."
+  },
+  "homebrew": {
+    "currentVersion": "현재 버전",
+    "upToDate": "최신 버전",
+    "updateAvailable": "업데이트 가능: v{{version}}"
+  },
+  "cleanup": {
+    "estimatedSpace": "예상 확보 공간: {{size}}",
+    "spaceToFree": "{{size}} 확보 가능"
+  },
+  "dialogs": {
+    "confirmUninstall": "정말로 \"{{name}}\"을(를) 제거하시겠습니까?",
+    "confirmInstall": "정말로 \"{{name}}\"을(를) 설치하시겠습니까?",
+    "confirmUpdate": "정말로 \"{{name}}\"을(를) 업데이트하시겠습니까?",
+    "confirmUpdateAll": "정말로 모든 오래된 패키지를 업데이트하시겠습니까?",
+    "confirmUpdateSelected": "정말로 {{count}}개 선택된 패키지를 업데이트하시겠습니까?",
+    "confirmUntap": "정말로 \"{{name}}\"을(를) Untap하시겠습니까?",
+    "updateLogs": "{{name}} 업데이트 로그",
+    "updateAllLogs": "전체 패키지 업데이트 로그",
+    "updateSelectedLogs": "선택된 패키지 업데이트 로그",
+    "installLogs": "{{name}} 설치 로그",
+    "uninstallLogs": "{{name}} 제거 로그",
+    "untapLogs": "{{name}} Untap 로그",
+    "untapping": "\"{{name}}\" Untap 중...\n잠시 기다려 주세요...",
+    "tapLogs": "{{name}} Tap 로그",
+    "tapping": "\"{{name}}\" Tap 중...\n잠시 기다려 주세요...",
+    "tapInputTitle": "Tap 추가",
+    "tapInputPlaceholder": "user/repo (예: homebrew/cask)",
+    "tapInputHint": "Tap 이름을 user/repo 형식으로 입력하세요",
+    "tapInputEmpty": "Tap 이름을 입력해 주세요",
+    "tapInputInvalid": "잘못된 형식입니다. Tap 이름은 user/repo 형식이어야 합니다",
+    "repositoryInfo": "{{name}} 정보",
+    "confirmUntapUninstall": "\"{{name}}\"에 {{count}}개의 설치된 패키지가 있어 Untap할 수 없습니다: {{packages}}\n\n먼저 제거한 후 Untap하시겠습니까?",
+    "uninstallingPackagesBeforeUntap": "\"{{name}}\" Untap 전 {{count}}개 패키지 제거 중...\n잠시 기다려 주세요...",
+    "uninstallingPackage": "{{name}} 제거 중 ({{current}}/{{total}})...",
+    "retryingUntap": "\"{{name}}\" Untap 재시도 중...\n잠시 기다려 주세요...",
+    "packageInfo": "{{name}} 정보",
+    "sessionLogs": "세션 로그",
+    "updating": "\"{{name}}\" 업데이트 중...\n잠시 기다려 주세요...",
+    "installing": "\"{{name}}\" 설치 중...\n잠시 기다려 주세요...",
+    "uninstalling": "\"{{name}}\" 제거 중...\n잠시 기다려 주세요...",
+    "updatingAll": "모든 오래된 패키지 업데이트 중...\n잠시 기다려 주세요...",
+    "updatingSelected": "{{count}}개 선택된 패키지 업데이트 중...\n잠시 기다려 주세요...",
+    "gettingInfo": "\"{{name}}\" 정보 가져오는 중...\n잠시 기다려 주세요...",
+    "runningHomebrewUpdate": "Homebrew 업데이트 중...\n잠시 기다려 주세요...",
+    "homebrewUpdateLogs": "Homebrew 업데이트 로그",
+    "runningDoctor": "brew doctor 실행 중…\n잠시 기다려 주세요...",
+    "runningCleanup": "brew cleanup 실행 중…\n잠시 기다려 주세요...",
+    "noHomebrewOutput": "아직 출력이 없습니다. \"Homebrew 업데이트\"를 클릭하세요.",
+    "installSuccess": "\"{{name}}\" 설치 완료!",
+    "installFailed": "\"{{name}}\" 설치 실패: {{error}}",
+    "noDoctorOutput": "아직 출력이 없습니다. \"Doctor 실행\"을 클릭하세요.",
+    "noCleanupOutput": "아직 출력이 없습니다. \"Cleanup 실행\"을 클릭하세요."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Formulae 로딩 오류!",
+    "failedInstalledPackages": "설치된 패키지를 가져오지 못했습니다",
+    "failedInstalledCasks": "설치된 Casks를 가져오지 못했습니다",
+    "failedUpdatablePackages": "업데이트 가능한 패키지를 가져오지 못했습니다",
+    "failedAllPackages": "전체 패키지를 가져오지 못했습니다",
+    "failedLeaves": "Leaves를 가져오지 못했습니다",
+    "failedRepositories": "Repositories를 가져오지 못했습니다"
+  },
+  "about": {
+    "title": "정보",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – macOS를 위한 미니멀 Homebrew GUI",
+    "createdBy": "제작: Nico Wickersheim",
+    "developedWith": "{{wails}}와 React로 개발",
+    "description": "WailBrew는 패키지를 쉽게 관리, 설치 및 업데이트할 수 있는 Homebrew용 현대적인 그래픽 사용자 인터페이스입니다.",
+    "links": "링크:",
+    "wailbrewWebsite": "WailBrew 웹사이트",
+    "githubRepo": "GitHub 저장소",
+    "reportBug": "버그 신고",
+    "homebrewWebsite": "Homebrew 웹사이트",
+    "acknowledgments": "감사의 말:",
+    "acknowledgmentText": "Bruno Philipe의 {{cakebrew}}에서 영감을 받았습니다.\\n원본 Homebrew GUI의 훌륭한 작업에 감사드립니다!",
+    "translationTitle": "번역:",
+    "translationThanks": "번역에 기여해 주신 모든 분들께 감사드립니다!",
+    "improveTranslations": "→ 번역 개선에 참여하기",
+    "copyright": "Copyright © 2025 Nico Wickersheim. All rights reserved."
+  },
+  "language": {
+    "switchLanguage": "언어 변경",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe",
+    "simplified_chinese": "简体中文",
+    "traditional_chinese": "繁體中文",
+    "brazilian_portuguese": "Português do Brasil",
+    "russian": "Русский",
+    "korean": "한국어"
+  },
+  "menu": {
+    "app": {
+      "about": "WailBrew 정보",
+      "checkUpdates": "업데이트 확인...",
+      "visitWebsite": "웹사이트 방문",
+      "visitGitHub": "GitHub 저장소 방문",
+      "quit": "종료"
+    },
+    "view": {
+      "title": "보기",
+      "installed": "설치된 Formulae",
+      "outdated": "업데이트 필요한 Formulae",
+      "all": "모든 Formulae",
+      "leaves": "Leaves",
+      "repositories": "Repositories",
+      "doctor": "Doctor",
+      "cleanup": "Cleanup",
+      "settings": "설정"
+    },
+    "tools": {
+      "title": "도구",
+      "exportBrewfile": "Brewfile 내보내기...",
+      "exportSuccess": "Brewfile 내보내기 성공!",
+      "exportFailed": "Brewfile 내보내기 실패"
+    },
+    "help": {
+      "title": "도움말",
+      "wailbrewHelp": "WailBrew 도움말",
+      "helpTitle": "도움말",
+      "helpMessage": "현재 도움말 페이지가 없습니다."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Formulae 로딩 중…",
+    "loadingRepositories": "Repositories 로딩 중…",
+    "noResults": "일치하는 결과가 없습니다.",
+    "installedStatus": "설치됨",
+    "notInstalledStatus": "설치 안 됨",
+    "package": "패키지",
+    "packages": "패키지"
+  },
+  "repository": {
+    "noSelection": "선택된 Repository 없음",
+    "status": "상태",
+    "description": "설명",
+    "defaultDescription": "Homebrew Tap Repository",
+    "active": "활성"
+  },
+  "common": {
+    "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "업데이트 확인",
+    "checking": "Homebrew를 통해 업데이트 확인 중...",
+    "error": "업데이트 확인 오류",
+    "available": "Homebrew를 통해 업데이트 가능!",
+    "currentVersion": "현재 버전",
+    "newVersion": "새 버전",
+    "published": "게시일",
+    "size": "크기",
+    "changes": "변경 사항",
+    "viewReleaseNotes": "릴리스 노트 보기",
+    "availableViaHomebrew": "Homebrew Cask를 통해 새 버전을 사용할 수 있습니다",
+    "manualUpdate": "수동 업데이트",
+    "instruction": "WailBrew를 업데이트하려면 터미널에서 다음 명령을 실행하세요:",
+    "copyCommand": "명령어 클립보드에 복사",
+    "copied": "명령어가 클립보드에 복사되었습니다!",
+    "upToDate": "최신 버전입니다!",
+    "currentVersionIs": "버전 {{version}}이(가) Homebrew를 통해 제공되는 현재 버전입니다.",
+    "tryAgain": "다시 시도",
+    "gotIt": "확인",
+    "downloadAndInstall": "다운로드 및 설치",
+    "installing": "설치 중...",
+    "updateInstalled": "업데이트 설치 완료!",
+    "restartMessage": "업데이트가 성공적으로 설치되었습니다. 새 버전을 사용하려면 WailBrew를 다시 시작하세요.",
+    "restartNow": "지금 다시 시작"
+  },
+  "restartDialog": {
+    "title": "다시 시작 필요",
+    "message": "WailBrew가 업데이트되었습니다!",
+    "description": "WailBrew가 성공적으로 업데이트되었습니다. 새 버전을 사용하려면 애플리케이션을 다시 시작하세요.",
+    "restartNow": "지금 다시 시작",
+    "later": "나중에"
+  },
+  "toast": {
+    "updateAvailable": "업데이트 가능!",
+    "versionReady": "v{{version}} 준비됨",
+    "upToDate": "최신 버전을 실행 중입니다!",
+    "newOutdatedPackages_one": "{{count}}개의 새 업데이트 필요 패키지 발견",
+    "newOutdatedPackages_other": "{{count}}개의 새 업데이트 필요 패키지 발견",
+    "viewOutdated": "업데이트 필요 보기",
+    "newPackagesDiscovered": "🎉 새 패키지 발견! {{message}}",
+    "viewAllPackages": "전체 패키지 보기",
+    "newFormulaeLabel": "새 Formulae:",
+    "newCasksLabel": "새 Casks:",
+    "andMore": "+{{count}}개 더",
+    "newFormula_one": "새 Formula",
+    "newFormula_other": "새 Formulae",
+    "newCask_one": "새 Cask",
+    "newCask_other": "새 Casks",
+    "and": " 및 "
+  },
+  "backgroundCheck": {
+    "checkingNow": "지금 업데이트 확인 중...",
+    "nextCheckIn": "다음 확인: {{minutes}}분 {{seconds}}초 후",
+    "nextCheckInSeconds": "다음 확인: {{seconds}}초 후"
+  },
+  "settings": {
+    "title": "설정",
+    "loading": "설정 로딩 중...",
+    "footer": "Homebrew 경험을 커스터마이즈하기 위해 WailBrew 설정을 구성하세요.",
+    "categories": {
+      "general": "일반"
+    },
+    "brewPath": {
+      "title": "Homebrew 경로 설정",
+      "description": "Homebrew 설치 경로를 지정하세요. WailBrew는 이 경로를 사용하여 모든 Homebrew 명령을 실행합니다.",
+      "currentPath": "Homebrew 경로",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "brew 경로 자동 감지",
+      "currentlyUsing": "현재 사용 중:",
+      "note": "참고: brew 경로를 변경하면 새 Homebrew 설치를 반영하기 위해 모든 패키지 데이터가 새로고침됩니다."
+    },
+    "buttons": {
+      "save": "변경 사항 저장",
+      "saving": "저장 중...",
+      "reset": "초기화"
+    },
+    "messages": {
+      "pathUpdated": "Brew 경로가 성공적으로 업데이트되었습니다!",
+      "pathReset": "경로가 현재 값으로 초기화되었습니다.",
+      "noChanges": "저장할 변경 사항이 없습니다.",
+      "pathDetected": "자동 감지된 brew 경로: {{path}}",
+      "mirrorSourceUpdated": "미러 소스가 성공적으로 업데이트되었습니다!",
+      "mirrorSourceReset": "미러 소스가 현재 값으로 초기화되었습니다."
+    },
+    "errors": {
+      "failedToGetPath": "현재 brew 경로를 가져오지 못했습니다.",
+      "emptyPath": "유효한 brew 경로를 입력해 주세요.",
+      "invalidPath": "잘못된 brew 경로입니다. 경로가 존재하고 유효한 brew 실행 파일인지 확인하세요.",
+      "autoDetectionFailed": "brew 경로를 자동 감지할 수 없습니다. 수동으로 경로를 입력해 주세요.",
+      "failedToSetMirrorSource": "미러 소스 설정에 실패했습니다. 설정을 확인해 주세요."
+    },
+    "mirrorSource": {
+      "title": "Homebrew 미러 소스",
+      "description": "네트워크 문제가 있는 지역에서 다운로드 속도를 개선하기 위해 Homebrew 미러 소스를 전환합니다. HOMEBREW_GIT_REMOTE 및 HOMEBREW_BOTTLE_DOMAIN 환경 변수를 설정합니다.",
+      "selectMirror": "미러 소스 선택",
+      "custom": "사용자 지정",
+      "customGitRemote": "사용자 지정 Git Remote URL",
+      "customBottleDomain": "사용자 지정 Bottle Domain URL",
+      "note": "참고: 미러 소스를 변경하면 모든 Homebrew 작업에 영향을 미칩니다. 변경 후 앱을 다시 시작하거나 패키지를 새로고침하세요.",
+      "mirrors": {
+        "official": "공식 (기본값)",
+        "tsinghua": "칭화대학교 (중국)",
+        "aliyun": "알리바바 클라우드 (중국)",
+        "ustc": "USTC (중국)",
+        "tencent": "텐센트 클라우드 (중국)"
+      }
+    }
+  }
+}
