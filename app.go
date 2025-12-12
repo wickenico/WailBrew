@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strings"
@@ -21,6 +22,9 @@ import (
 )
 
 var Version = "0.dev"
+
+// Application data directory name (stored in user's home directory)
+const appDataDir = ".wailbrew"
 
 // Standard PATH and locale for brew commands
 const brewEnvPath = "PATH=/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin"
@@ -845,6 +849,60 @@ type NewPackagesInfo struct {
 	NewCasks    []string `json:"newCasks"`
 }
 
+// Config represents the application configuration stored in ~/.wailbrew/config.json
+type Config struct {
+	GitRemote    string `json:"gitRemote"`
+	BottleDomain string `json:"bottleDomain"`
+}
+
+// getConfigPath returns the path to the config file
+func getConfigPath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(homeDir, appDataDir, "config.json"), nil
+}
+
+// Load loads the configuration from ~/.wailbrew/config.json
+func (c *Config) Load() error {
+	configPath, err := getConfigPath()
+	if err != nil {
+		return err
+	}
+
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil // No config file yet, use defaults
+		}
+		return err
+	}
+
+	return json.Unmarshal(data, c)
+}
+
+// Save saves the configuration to ~/.wailbrew/config.json
+func (c *Config) Save() error {
+	configPath, err := getConfigPath()
+	if err != nil {
+		return err
+	}
+
+	// Create directory if it doesn't exist
+	configDir := filepath.Dir(configPath)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return err
+	}
+
+	data, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(configPath, data, 0644)
+}
+
 // App struct
 type App struct {
 	ctx                context.Context
@@ -857,8 +915,7 @@ type App struct {
 	knownPackagesMutex sync.Mutex
 	sessionLogs        []string   // Session logs for debugging
 	sessionLogsMutex   sync.Mutex // Mutex for thread-safe log access
-	gitRemote          string     // HOMEBREW_GIT_REMOTE mirror source
-	bottleDomain       string     // HOMEBREW_BOTTLE_DOMAIN mirror source
+	config             *Config    // Application configuration
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -893,6 +950,7 @@ func NewApp() *App {
 		currentLanguage: "en",
 		knownPackages:   make(map[string]bool),
 		sessionLogs:     make([]string, 0),
+		config:          &Config{},
 	}
 }
 
@@ -936,11 +994,11 @@ func (a *App) getBrewEnv() []string {
 	}
 
 	// Add mirror source environment variables if configured
-	if a.gitRemote != "" {
-		env = append(env, fmt.Sprintf("HOMEBREW_GIT_REMOTE=%s", a.gitRemote))
+	if a.config.GitRemote != "" {
+		env = append(env, fmt.Sprintf("HOMEBREW_GIT_REMOTE=%s", a.config.GitRemote))
 	}
-	if a.bottleDomain != "" {
-		env = append(env, fmt.Sprintf("HOMEBREW_BOTTLE_DOMAIN=%s", a.bottleDomain))
+	if a.config.BottleDomain != "" {
+		env = append(env, fmt.Sprintf("HOMEBREW_BOTTLE_DOMAIN=%s", a.config.BottleDomain))
 	}
 
 	return env
@@ -1005,6 +1063,11 @@ func (a *App) validateBrewInstallation() error {
 // startup saves the application context and sets up the askpass helper
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+
+	// Load config from file
+	if err := a.config.Load(); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+	}
 
 	// Set up the askpass helper for GUI sudo prompts
 	if err := a.setupAskpassHelper(); err != nil {
@@ -3372,8 +3435,8 @@ func (a *App) SetBrewPath(path string) error {
 // GetMirrorSource returns the current mirror source configuration
 func (a *App) GetMirrorSource() map[string]string {
 	return map[string]string{
-		"gitRemote":    a.gitRemote,
-		"bottleDomain": a.bottleDomain,
+		"gitRemote":    a.config.GitRemote,
+		"bottleDomain": a.config.BottleDomain,
 	}
 }
 
@@ -3391,8 +3454,13 @@ func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
 		}
 	}
 
-	a.gitRemote = gitRemote
-	a.bottleDomain = bottleDomain
+	a.config.GitRemote = gitRemote
+	a.config.BottleDomain = bottleDomain
+
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
 	return nil
 }
 
