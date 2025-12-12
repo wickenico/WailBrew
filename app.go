@@ -651,6 +651,85 @@ func (a *App) getMenuTranslations() MenuTranslations {
 				HelpMessage:  "В настоящее время страница справки недоступна.",
 			},
 		}
+	case "ko":
+		translations = MenuTranslations{
+			App: struct {
+				About          string `json:"about"`
+				CheckUpdates   string `json:"checkUpdates"`
+				VisitWebsite   string `json:"visitWebsite"`
+				VisitGitHub    string `json:"visitGitHub"`
+				ReportBug      string `json:"reportBug"`
+				VisitSubreddit string `json:"visitSubreddit"`
+				SponsorProject string `json:"sponsorProject"`
+				Quit           string `json:"quit"`
+			}{
+				About:          "WailBrew 정보",
+				CheckUpdates:   "업데이트 확인...",
+				VisitWebsite:   "웹사이트 방문",
+				VisitGitHub:    "GitHub 저장소 방문",
+				ReportBug:      "버그 신고",
+				VisitSubreddit: "Subreddit 방문",
+				SponsorProject: "프로젝트 후원",
+				Quit:           "종료",
+			},
+			View: struct {
+				Title          string `json:"title"`
+				Installed      string `json:"installed"`
+				Casks          string `json:"casks"`
+				Outdated       string `json:"outdated"`
+				All            string `json:"all"`
+				Leaves         string `json:"leaves"`
+				Repositories   string `json:"repositories"`
+				Homebrew       string `json:"homebrew"`
+				Doctor         string `json:"doctor"`
+				Cleanup        string `json:"cleanup"`
+				Settings       string `json:"settings"`
+				CommandPalette string `json:"commandPalette"`
+				Shortcuts      string `json:"shortcuts"`
+			}{
+				Title:          "보기",
+				Installed:      "설치된 Formulae",
+				Casks:          "Casks",
+				Outdated:       "업데이트 필요한 Formulae",
+				All:            "모든 Formulae",
+				Leaves:         "Leaves",
+				Repositories:   "Repositories",
+				Homebrew:       "Homebrew",
+				Doctor:         "Doctor",
+				Cleanup:        "Cleanup",
+				Settings:       "설정",
+				CommandPalette: "명령 팔레트...",
+				Shortcuts:      "키보드 단축키...",
+			},
+			Tools: struct {
+				Title           string `json:"title"`
+				ExportBrewfile  string `json:"exportBrewfile"`
+				ExportSuccess   string `json:"exportSuccess"`
+				ExportFailed    string `json:"exportFailed"`
+				ExportMessage   string `json:"exportMessage"`
+				ViewSessionLogs string `json:"viewSessionLogs"`
+				RefreshPackages string `json:"refreshPackages"`
+			}{
+				Title:           "도구",
+				ExportBrewfile:  "Brewfile 내보내기...",
+				ExportSuccess:   "내보내기 성공",
+				ExportFailed:    "내보내기 실패",
+				ExportMessage:   "Brewfile이 성공적으로 내보내졌습니다:\n%s",
+				ViewSessionLogs: "세션 로그 보기...",
+				RefreshPackages: "패키지 새로고침",
+			},
+			Help: struct {
+				Title        string `json:"title"`
+				WailbrewHelp string `json:"wailbrewHelp"`
+				HelpTitle    string `json:"helpTitle"`
+				HelpMessage  string `json:"helpMessage"`
+			}{
+				Title:        "도움말",
+				WailbrewHelp: "WailBrew 도움말",
+				HelpTitle:    "도움말",
+				HelpMessage:  "현재 도움말 페이지가 없습니다.",
+			},
+		}
 	default:
 		// Default to English
 		translations = MenuTranslations{
@@ -1290,6 +1369,37 @@ func (a *App) getBackendMessage(key string, params map[string]string) string {
 			"tapSuccess":                "✅ Tap для '{{name}}' успешно завершён!",
 			"tapFailed":                 "❌ Не удалось выполнить tap для '{{name}}': {{error}}",
 			"errorStartingTap":          "❌ Ошибка запуска tap: {{error}}",
+		}
+	case "ko":
+		messages = map[string]string{
+			"updateStart":               "🔄 '{{name}}' 업데이트 시작...",
+			"updateSuccess":             "✅ '{{name}}' 업데이트 완료!",
+			"updateFailed":              "❌ '{{name}}' 업데이트 실패: {{error}}",
+			"updateAllStart":            "🔄 전체 패키지 업데이트 시작...",
+			"updateAllSuccess":          "✅ 전체 패키지 업데이트 완료!",
+			"updateAllFailed":           "❌ 전체 패키지 업데이트 실패: {{error}}",
+			"updateRetryingWithForce":   "🔄 '{{name}}' --force로 재시도 중 (앱이 사용 중일 수 있음)...",
+			"updateRetryingFailedCasks": "🔄 {{count}}개 실패한 캐스크 --force로 재시도 중...",
+			"installStart":              "🔄 '{{name}}' 설치 시작...",
+			"installSuccess":            "✅ '{{name}}' 설치 완료!",
+			"installFailed":             "❌ '{{name}}' 설치 실패: {{error}}",
+			"uninstallStart":            "🔄 '{{name}}' 제거 시작...",
+			"uninstallSuccess":          "✅ '{{name}}' 제거 완료!",
+			"uninstallFailed":           "❌ '{{name}}' 제거 실패: {{error}}",
+			"errorCreatingPipe":         "❌ 출력 파이프 생성 오류: {{error}}",
+			"errorCreatingErrorPipe":    "❌ 에러 파이프 생성 오류: {{error}}",
+			"errorStartingUpdate":       "❌ 업데이트 시작 오류: {{error}}",
+			"errorStartingUpdateAll":    "❌ 전체 업데이트 시작 오류: {{error}}",
+			"errorStartingInstall":      "❌ 설치 시작 오류: {{error}}",
+			"errorStartingUninstall":    "❌ 제거 시작 오류: {{error}}",
+			"untapStart":                "🔄 '{{name}}' 저장소 제거 시작...",
+			"untapSuccess":              "✅ '{{name}}' 저장소 제거 완료!",
+			"untapFailed":               "❌ '{{name}}' 저장소 제거 실패: {{error}}",
+			"errorStartingUntap":        "❌ 저장소 제거 시작 오류: {{error}}",
+			"tapStart":                  "🔄 '{{name}}' 저장소 추가 시작...",
+			"tapSuccess":                "✅ '{{name}}' 저장소 추가 완료!",
+			"tapFailed":                 "❌ '{{name}}' 저장소 추가 실패: {{error}}",
+			"errorStartingTap":          "❌ 저장소 추가 시작 오류: {{error}}",
 		}
 	default:
 		// Default to English
