@@ -2219,8 +2219,8 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	}
 
 	// Use brew outdated with JSON output for accurate detection
-	// --greedy flag also includes auto-updating casks
-	output, err := a.runBrewCommand("outdated", "--json=v2", "--greedy")
+	// --greedy-auto-updates flag includes auto-updating casks that can actually be upgraded
+	output, err := a.runBrewCommand("outdated", "--json=v2", "--greedy-auto-updates")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to check for updates: %v", err)}}
 	}
@@ -2972,8 +2972,9 @@ func (a *App) UpdateAllBrewPackages() string {
 	startMessage := a.getBackendMessage("updateAllStart", map[string]string{})
 	rt.EventsEmit(a.ctx, "packageUpdateProgress", startMessage)
 
-	// Use --greedy flag to also update casks (including auto-updating ones)
-	cmd := exec.Command(a.brewPath, "upgrade", "--greedy")
+	// Use --greedy-auto-updates flag to update casks that can actually be upgraded
+	// (excludes casks with version "latest" that self-update)
+	cmd := exec.Command(a.brewPath, "upgrade", "--greedy-auto-updates")
 	cmd.Env = append(os.Environ(), a.getBrewEnv()...)
 
 	// Create pipes for real-time output
