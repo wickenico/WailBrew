@@ -3,6 +3,9 @@ VERSION := $(shell ./get-version.js)
 
 .PHONY: build dev clean
 
+i:
+	cd frontend && pnpm install
+
 # Default target
 build:
 	@echo "Building WailBrew version: $(VERSION)"
