@@ -903,6 +903,50 @@ func (c *Config) Save() error {
 	return os.WriteFile(configPath, data, 0644)
 }
 
+// Cache struct for in-memory caching (may be persisted later)
+type Cache struct {
+	PackageInfo map[string]map[string]interface{} `json:"packageInfo"` // package name -> info
+	mutex       sync.RWMutex                      `json:"-"`
+}
+
+// NewCache creates a new Cache instance
+func NewCache() *Cache {
+	return &Cache{
+		PackageInfo: make(map[string]map[string]interface{}),
+	}
+}
+
+// GetPackageInfo retrieves cached package info
+func (c *Cache) GetPackageInfo(name string) (map[string]interface{}, bool) {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	info, ok := c.PackageInfo[name]
+	return info, ok
+}
+
+// SetPackageInfo stores package info in cache
+func (c *Cache) SetPackageInfo(name string, info map[string]interface{}) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.PackageInfo[name] = info
+}
+
+// SetPackageInfoBatch stores multiple package infos in cache
+func (c *Cache) SetPackageInfoBatch(infos map[string]map[string]interface{}) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	for name, info := range infos {
+		c.PackageInfo[name] = info
+	}
+}
+
+// ClearPackageInfo clears all cached package info
+func (c *Cache) ClearPackageInfo() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.PackageInfo = make(map[string]map[string]interface{})
+}
+
 // App struct
 type App struct {
 	ctx                  context.Context
@@ -916,6 +960,7 @@ type App struct {
 	sessionLogs          []string   // Session logs for debugging
 	sessionLogsMutex     sync.Mutex // Mutex for thread-safe log access
 	config               *Config    // Application configuration
+	cache                *Cache     // In-memory cache for package info
 	brewValidated        bool       // Whether brew installation has been validated at startup
 	brewValidationError  error      // Error from brew validation (if any)
 }
@@ -953,6 +998,7 @@ func NewApp() *App {
 		knownPackages:   make(map[string]bool),
 		sessionLogs:     make([]string, 0),
 		config:          &Config{},
+		cache:           NewCache(),
 	}
 }
 
@@ -1708,7 +1754,12 @@ func (a *App) GetAllBrewPackages() [][]string {
 }
 
 // GetBrewPackages retrieves the list of installed Homebrew packages with size information
-func (a *App) GetBrewPackages() [][]string {
+func (a *App) GetBrewPackages(refresh bool) [][]string {
+	// Clear cache if refresh requested
+	if refresh {
+		a.cache.ClearPackageInfo()
+	}
+
 	// Check cached brew validation from startup
 	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
@@ -1755,24 +1806,32 @@ func (a *App) GetBrewPackages() [][]string {
 	return packages
 }
 
-// getPackageSizes fetches size information for packages with chunking support
-func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]string {
-	sizes := make(map[string]string)
-
+// LoadPackageInfo loads package info in batch and caches the results
+func (a *App) LoadPackageInfo(packageNames []string, isCask bool) error {
 	if len(packageNames) == 0 {
-		return sizes
+		return nil
 	}
 
-	// Chunk size: process packages in batches to avoid command line length limits
-	// and improve reliability with large package lists
+	// Filter out packages already in cache
+	var uncachedNames []string
+	for _, name := range packageNames {
+		if _, ok := a.cache.GetPackageInfo(name); !ok {
+			uncachedNames = append(uncachedNames, name)
+		}
+	}
+
+	if len(uncachedNames) == 0 {
+		return nil // All packages already cached
+	}
+
 	const chunkSize = 50
 
-	for i := 0; i < len(packageNames); i += chunkSize {
+	for i := 0; i < len(uncachedNames); i += chunkSize {
 		end := i + chunkSize
-		if end > len(packageNames) {
-			end = len(packageNames)
+		if end > len(uncachedNames) {
+			end = len(uncachedNames)
 		}
-		chunk := packageNames[i:end]
+		chunk := uncachedNames[i:end]
 
 		// Build brew info command for this chunk
 		args := []string{"info", "--json=v2"}
@@ -1783,78 +1842,68 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 
 		output, err := a.runBrewCommand(args...)
 		if err != nil {
-			// If chunk fails, mark these packages as unknown and continue
-			for _, name := range chunk {
-				sizes[name] = "Unknown"
-			}
-			continue
+			continue // Skip failed chunks
 		}
 
-		// Extract JSON portion from output (handling potential Homebrew warnings)
+		// Extract JSON portion from output
 		outputStr := strings.TrimSpace(string(output))
-		jsonOutput, warnings, err := extractJSONFromBrewOutput(outputStr)
+		jsonOutput, _, err := extractJSONFromBrewOutput(outputStr)
 		if err != nil {
-			// If JSON extraction fails, mark chunk as unknown and continue
-			for _, name := range chunk {
-				sizes[name] = "Unknown"
-			}
 			continue
 		}
 
-		// Log warnings if any were detected
-		if warnings != "" {
-			a.appendSessionLog(fmt.Sprintf("Homebrew warnings in package sizes: %s", warnings))
+		// Parse and cache the full package info
+		var fullInfo struct {
+			Formulae []map[string]interface{} `json:"formulae"`
+			Casks    []map[string]interface{} `json:"casks"`
 		}
-
-		// Parse JSON response
-		var brewInfo struct {
-			Formulae []struct {
-				Name      string `json:"name"`
-				Installed []struct {
-					InstalledOnDemand bool  `json:"installed_on_demand"`
-					UsedOptions       []any `json:"used_options"`
-					BuiltAsBottle     bool  `json:"built_as_bottle"`
-					Poured            bool  `json:"poured_from_bottle"`
-					Time              int64 `json:"time"`
-					RuntimeDeps       []any `json:"runtime_dependencies"`
-					InstalledAsDep    bool  `json:"installed_as_dependency"`
-					InstalledWithOpts []any `json:"installed_with_options"`
-				} `json:"installed"`
-			} `json:"formulae"`
-			Casks []struct {
-				Token     string `json:"token"`
-				Installed string `json:"installed"`
-			} `json:"casks"`
-		}
-
-		if err := json.Unmarshal([]byte(jsonOutput), &brewInfo); err != nil {
-			// If JSON parsing fails, mark chunk as unknown and continue
-			for _, name := range chunk {
-				sizes[name] = "Unknown"
-			}
+		if err := json.Unmarshal([]byte(jsonOutput), &fullInfo); err != nil {
 			continue
 		}
 
-		// For formulae, calculate size from cellar
-		if !isCask {
-			for _, formula := range brewInfo.Formulae {
-				size := a.calculateFormulaSize(formula.Name)
-				sizes[formula.Name] = size
+		// Cache formulae info
+		for _, formula := range fullInfo.Formulae {
+			if name, ok := formula["name"].(string); ok {
+				a.cache.SetPackageInfo(name, formula)
 			}
-		} else {
-			// For casks, calculate size from caskroom
-			for _, cask := range brewInfo.Casks {
-				size := a.calculateCaskSize(cask.Token)
-				sizes[cask.Token] = size
+		}
+		// Cache cask info
+		for _, cask := range fullInfo.Casks {
+			if token, ok := cask["token"].(string); ok {
+				a.cache.SetPackageInfo(token, cask)
 			}
 		}
 	}
 
-	// Fill in any missing sizes
+	return nil
+}
+
+// RefreshPackageInfo clears cache and reloads package info
+func (a *App) RefreshPackageInfo(packageNames []string, isCask bool) error {
+	a.cache.ClearPackageInfo()
+	return a.LoadPackageInfo(packageNames, isCask)
+}
+
+// getPackageSizes fetches size information for packages
+func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]string {
+	sizes := make(map[string]string)
+
+	if len(packageNames) == 0 {
+		return sizes
+	}
+
+	// Load package info into cache first (this does the brew info call)
+	a.LoadPackageInfo(packageNames, isCask)
+
+	// Calculate sizes from filesystem
 	for _, name := range packageNames {
-		if _, exists := sizes[name]; !exists {
-			sizes[name] = "Unknown"
+		var size string
+		if isCask {
+			size = a.calculateCaskSize(name)
+		} else {
+			size = a.calculateFormulaSize(name)
 		}
+		sizes[name] = size
 	}
 
 	return sizes
@@ -1929,7 +1978,12 @@ func (a *App) calculateCaskSize(caskName string) string {
 }
 
 // GetBrewCasks retrieves the list of installed Homebrew casks
-func (a *App) GetBrewCasks() [][]string {
+func (a *App) GetBrewCasks(refresh bool) [][]string {
+	// Clear cache if refresh requested
+	if refresh {
+		a.cache.ClearPackageInfo()
+	}
+
 	// Check cached brew validation from startup
 	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
@@ -1961,66 +2015,17 @@ func (a *App) GetBrewCasks() [][]string {
 	}
 
 	var casks [][]string
-	versionMap := make(map[string]string)
 
-	// Try to get all cask info at once first
-	args := []string{"info", "--cask", "--json=v2"}
-	args = append(args, caskNames...)
+	// Load cask info into cache
+	a.LoadPackageInfo(caskNames, true)
 
-	infoOutput, err := a.runBrewCommand(args...)
-	if err == nil {
-		// Parse JSON to get versions
-		var caskInfo struct {
-			Casks []struct {
-				Token   string `json:"token"`
-				Version string `json:"version"`
-			} `json:"casks"`
-		}
-
-		if err := json.Unmarshal(infoOutput, &caskInfo); err == nil {
-			// Create a map for easy lookup
-			for _, cask := range caskInfo.Casks {
-				version := cask.Version
-				if version == "" {
-					version = "Unknown"
-				}
-				versionMap[cask.Token] = version
-			}
-		}
-	}
-
-	// If batch fetch fails, try individually
-	if len(versionMap) == 0 {
-		for _, caskName := range caskNames {
-			infoOutput, err := a.runBrewCommand("info", "--cask", "--json=v2", caskName)
-			if err != nil {
-				versionMap[caskName] = "Unknown"
-				continue
-			}
-
-			var caskInfo struct {
-				Casks []struct {
-					Version string `json:"version"`
-				} `json:"casks"`
-			}
-
-			if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
-				version := caskInfo.Casks[0].Version
-				if version == "" {
-					version = "Unknown"
-				}
-				versionMap[caskName] = version
-			} else {
-				versionMap[caskName] = "Unknown"
-			}
-		}
-	}
-
-	// Build result array with name, version, and empty size (lazy loaded)
+	// Build result array with name, version from cache, and empty size (lazy loaded)
 	for _, name := range caskNames {
-		version := versionMap[name]
-		if version == "" {
-			version = "Unknown"
+		version := "Unknown"
+		if cached, ok := a.cache.GetPackageInfo(name); ok {
+			if v, ok := cached["version"].(string); ok && v != "" {
+				version = v
+			}
 		}
 		casks = append(casks, []string{name, version, ""})
 	}
@@ -2693,27 +2698,24 @@ func (a *App) InstallBrewPackage(packageName string) string {
 
 // isPackageCask checks if a package is a cask
 func (a *App) isPackageCask(packageName string) bool {
-	output, err := a.runBrewCommand("info", "--json=v2", packageName)
-	if err != nil {
+	// Check cache first
+	if cached, ok := a.cache.GetPackageInfo(packageName); ok {
+		// Casks have "token" field, formulae have "name" field
+		if _, hasTok := cached["token"]; hasTok {
+			return true
+		}
 		return false
 	}
 
-	outputStr := strings.TrimSpace(string(output))
-	jsonOutput, _, err := extractJSONFromBrewOutput(outputStr)
-	if err != nil {
+	// If not in cache, use GetBrewPackageInfoAsJson which handles caching
+	info := a.GetBrewPackageInfoAsJson(packageName)
+	if _, hasErr := info["error"]; hasErr {
 		return false
 	}
 
-	var result struct {
-		Formulae []map[string]interface{} `json:"formulae"`
-		Casks    []map[string]interface{} `json:"casks"`
-	}
-	if err := json.Unmarshal([]byte(jsonOutput), &result); err != nil {
-		return false
-	}
-
-	// If found in casks but not in formulae, it's a cask
-	return len(result.Casks) > 0 && len(result.Formulae) == 0
+	// Casks have "token" field
+	_, hasTok := info["token"]
+	return hasTok
 }
 
 // isAppAlreadyExistsError checks if the error is the "app already exists" error
@@ -3092,6 +3094,11 @@ func (a *App) UpdateAllBrewPackages() string {
 }
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
+	// Check cache first
+	if cached, ok := a.cache.GetPackageInfo(packageName); ok {
+		return cached
+	}
+
 	// Try as formula first
 	output, err := a.runBrewCommand("info", "--json=v2", packageName)
 	if err != nil {
@@ -3126,7 +3133,9 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 
 	// Check formulae first
 	if len(result.Formulae) > 0 {
-		return result.Formulae[0]
+		info := result.Formulae[0]
+		a.cache.SetPackageInfo(packageName, info)
+		return info
 	}
 
 	// Check casks if not found in formulae
@@ -3159,6 +3168,7 @@ func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{
 		}
 		caskInfo["dependencies"] = dependencies
 
+		a.cache.SetPackageInfo(packageName, caskInfo)
 		return caskInfo
 	}
 

@@ -182,7 +182,7 @@ const WailBrewApp = () => {
             }
         }, 100);
         
-        Promise.all([GetBrewPackages(), GetBrewCasks(), GetBrewUpdatablePackages(), GetBrewLeaves(), GetBrewTaps()])
+        Promise.all([GetBrewPackages(false), GetBrewCasks(false), GetBrewUpdatablePackages(), GetBrewLeaves(), GetBrewTaps()])
             .then(([installed, installedCasks, updatable, leaves, repos]) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = installed || [];
@@ -1454,7 +1454,7 @@ const WailBrewApp = () => {
         // Store current package lists before tapping
         const [oldAllPackages, oldCasks] = await Promise.all([
             GetAllBrewPackages(),
-            GetBrewCasks()
+            GetBrewCasks(false)
         ]);
         
         const oldAllPackagesSet = new Set(oldAllPackages.map(([name]: string[]) => name));
@@ -1478,7 +1478,7 @@ const WailBrewApp = () => {
                 // Get new package lists after tapping
                 const [newAllPackages, newCasks] = await Promise.all([
                     GetAllBrewPackages(),
-                    GetBrewCasks()
+                    GetBrewCasks(false)
                 ]);
                 
                 // Find new packages
@@ -1699,10 +1699,10 @@ const WailBrewApp = () => {
         
         try {
             const [installed, caskList, updatable, leaves, repos] = await Promise.all([
-                GetBrewPackages(),
-                GetBrewCasks(),
-                GetBrewUpdatablePackages(), 
-                GetBrewLeaves(), 
+                GetBrewPackages(true),
+                GetBrewCasks(true),
+                GetBrewUpdatablePackages(),
+                GetBrewLeaves(),
                 GetBrewTaps()
             ]);
             

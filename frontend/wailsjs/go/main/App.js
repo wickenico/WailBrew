@@ -34,8 +34,8 @@ export function GetBrewCaskSizes(arg1) {
   return window['go']['main']['App']['GetBrewCaskSizes'](arg1);
 }
 
-export function GetBrewCasks() {
-  return window['go']['main']['App']['GetBrewCasks']();
+export function GetBrewCasks(arg1) {
+  return window['go']['main']['App']['GetBrewCasks'](arg1);
 }
 
 export function GetBrewCleanupDryRun() {
@@ -58,8 +58,8 @@ export function GetBrewPackageSizes(arg1) {
   return window['go']['main']['App']['GetBrewPackageSizes'](arg1);
 }
 
-export function GetBrewPackages() {
-  return window['go']['main']['App']['GetBrewPackages']();
+export function GetBrewPackages(arg1) {
+  return window['go']['main']['App']['GetBrewPackages'](arg1);
 }
 
 export function GetBrewPath() {
@@ -106,12 +106,20 @@ export function InstallBrewPackage(arg1) {
   return window['go']['main']['App']['InstallBrewPackage'](arg1);
 }
 
+export function LoadPackageInfo(arg1, arg2) {
+  return window['go']['main']['App']['LoadPackageInfo'](arg1, arg2);
+}
+
 export function OpenURL(arg1) {
   return window['go']['main']['App']['OpenURL'](arg1);
 }
 
 export function ParseNewPackagesFromUpdateOutput(arg1) {
   return window['go']['main']['App']['ParseNewPackagesFromUpdateOutput'](arg1);
+}
+
+export function RefreshPackageInfo(arg1, arg2) {
+  return window['go']['main']['App']['RefreshPackageInfo'](arg1, arg2);
 }
 
 export function RemoveBrewPackage(arg1) {
