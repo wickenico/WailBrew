@@ -3096,6 +3096,7 @@ func (a *App) UpdateAllBrewPackages() string {
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
 	// Check cache first
 	if cached, ok := a.cache.GetPackageInfo(packageName); ok {
+		a.appendSessionLog(fmt.Sprintf("Cache hit: brew info --json=v2 %s", packageName))
 		return cached
 	}
 
