@@ -58,8 +58,8 @@ export function GetBrewPackageSizes(arg1) {
   return window['go']['main']['App']['GetBrewPackageSizes'](arg1);
 }
 
-export function GetBrewPackages(arg1) {
-  return window['go']['main']['App']['GetBrewPackages'](arg1);
+export function GetBrewPackages() {
+  return window['go']['main']['App']['GetBrewPackages']();
 }
 
 export function GetBrewPath() {

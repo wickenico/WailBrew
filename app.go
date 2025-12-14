@@ -947,6 +947,58 @@ func (c *Cache) ClearPackageInfo() {
 	c.PackageInfo = make(map[string]map[string]interface{})
 }
 
+// getCachePath returns the path to the cache file
+func getCachePath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(homeDir, appDataDir, "cache.json"), nil
+}
+
+// Load loads the cache from ~/.wailbrew/cache.json
+func (c *Cache) Load() error {
+	cachePath, err := getCachePath()
+	if err != nil {
+		return err
+	}
+
+	data, err := os.ReadFile(cachePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil // No cache file yet, not an error
+		}
+		return err
+	}
+
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	return json.Unmarshal(data, c)
+}
+
+// Save saves the cache to ~/.wailbrew/cache.json
+func (c *Cache) Save() error {
+	cachePath, err := getCachePath()
+	if err != nil {
+		return err
+	}
+
+	// Ensure directory exists
+	cacheDir := filepath.Dir(cachePath)
+	if err := os.MkdirAll(cacheDir, 0755); err != nil {
+		return err
+	}
+
+	c.mutex.RLock()
+	data, err := json.MarshalIndent(c, "", "  ")
+	c.mutex.RUnlock()
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(cachePath, data, 0644)
+}
+
 // App struct
 type App struct {
 	ctx                  context.Context
@@ -1128,6 +1180,13 @@ func (a *App) startup(ctx context.Context) {
 		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
 	}
 
+	// Load cache from file
+	if err := a.cache.Load(); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to load cache: %v\n", err)
+	} else {
+		a.appendSessionLog(fmt.Sprintf("Cache loaded: %d packages", len(a.cache.PackageInfo)))
+	}
+
 	// Validate brew installation once at startup
 	if err := a.validateBrewInstallation(); err != nil {
 		a.brewValidationError = err
@@ -1146,6 +1205,13 @@ func (a *App) startup(ctx context.Context) {
 
 // shutdown cleans up resources when the application exits
 func (a *App) shutdown(ctx context.Context) {
+	// Save cache to file
+	if err := a.cache.Save(); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to save cache: %v\n", err)
+	} else {
+		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages", len(a.cache.PackageInfo)))
+	}
+
 	a.cleanupAskpassHelper()
 	a.clearSessionLogs()
 }
@@ -1754,12 +1820,7 @@ func (a *App) GetAllBrewPackages() [][]string {
 }
 
 // GetBrewPackages retrieves the list of installed Homebrew packages with size information
-func (a *App) GetBrewPackages(refresh bool) [][]string {
-	// Clear cache if refresh requested
-	if refresh {
-		a.cache.ClearPackageInfo()
-	}
-
+func (a *App) GetBrewPackages() [][]string {
 	// Check cached brew validation from startup
 	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
@@ -1881,7 +1942,18 @@ func (a *App) LoadPackageInfo(packageNames []string, isCask bool) error {
 // RefreshPackageInfo clears cache and reloads package info
 func (a *App) RefreshPackageInfo(packageNames []string, isCask bool) error {
 	a.cache.ClearPackageInfo()
-	return a.LoadPackageInfo(packageNames, isCask)
+	if err := a.LoadPackageInfo(packageNames, isCask); err != nil {
+		return err
+	}
+
+	// Save cache to file after refresh
+	if err := a.cache.Save(); err != nil {
+		a.appendSessionLog(fmt.Sprintf("Warning: failed to save cache: %v", err))
+	} else {
+		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages", len(a.cache.PackageInfo)))
+	}
+
+	return nil
 }
 
 // getPackageSizes fetches size information for packages
@@ -1979,11 +2051,6 @@ func (a *App) calculateCaskSize(caskName string) string {
 
 // GetBrewCasks retrieves the list of installed Homebrew casks
 func (a *App) GetBrewCasks(refresh bool) [][]string {
-	// Clear cache if refresh requested
-	if refresh {
-		a.cache.ClearPackageInfo()
-	}
-
 	// Check cached brew validation from startup
 	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
@@ -2017,7 +2084,11 @@ func (a *App) GetBrewCasks(refresh bool) [][]string {
 	var casks [][]string
 
 	// Load cask info into cache
-	a.LoadPackageInfo(caskNames, true)
+	if refresh {
+		a.RefreshPackageInfo(caskNames, true) // Clear + Load + Save
+	} else {
+		a.LoadPackageInfo(caskNames, true) // Load only uncached
+	}
 
 	// Build result array with name, version from cache, and empty size (lazy loaded)
 	for _, name := range caskNames {

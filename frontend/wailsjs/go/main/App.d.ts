@@ -30,7 +30,7 @@ export function GetBrewPackageInfoAsJson(arg1:string):Promise<Record<string, any
 
 export function GetBrewPackageSizes(arg1:Array<string>):Promise<Record<string, string>>;
 
-export function GetBrewPackages(arg1:boolean):Promise<Array<any>>;
+export function GetBrewPackages():Promise<Array<any>>;
 
 export function GetBrewPath():Promise<string>;
 

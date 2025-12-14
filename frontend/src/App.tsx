@@ -182,7 +182,7 @@ const WailBrewApp = () => {
             }
         }, 100);
         
-        Promise.all([GetBrewPackages(false), GetBrewCasks(false), GetBrewUpdatablePackages(), GetBrewLeaves(), GetBrewTaps()])
+        Promise.all([GetBrewPackages(), GetBrewCasks(false), GetBrewUpdatablePackages(), GetBrewLeaves(), GetBrewTaps()])
             .then(([installed, installedCasks, updatable, leaves, repos]) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = installed || [];
@@ -1699,7 +1699,7 @@ const WailBrewApp = () => {
         
         try {
             const [installed, caskList, updatable, leaves, repos] = await Promise.all([
-                GetBrewPackages(true),
+                GetBrewPackages(),
                 GetBrewCasks(true),
                 GetBrewUpdatablePackages(),
                 GetBrewLeaves(),
