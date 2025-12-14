@@ -905,14 +905,24 @@ func (c *Config) Save() error {
 
 // Cache struct for in-memory caching (may be persisted later)
 type Cache struct {
-	PackageInfo map[string]map[string]interface{} `json:"packageInfo"` // package name -> info
-	mutex       sync.RWMutex                      `json:"-"`
+	PackageInfo     map[string]map[string]interface{} `json:"packageInfo"`     // package name -> info
+	PackageSizes    map[string]string                 `json:"packageSizes"`    // package name -> size
+	OutdatedList    [][]string                        `json:"outdatedList"`    // cached outdated packages
+	OutdatedTime    time.Time                         `json:"outdatedTime"`    // when outdated was last fetched
+	AllFormulae     []string                          `json:"allFormulae"`     // cached list of all formulae
+	AllCasks        []string                          `json:"allCasks"`        // cached list of all casks
+	AllPackagesTime time.Time                         `json:"allPackagesTime"` // when all packages were last fetched
+	mutex           sync.RWMutex                      `json:"-"`
 }
 
 // NewCache creates a new Cache instance
 func NewCache() *Cache {
 	return &Cache{
-		PackageInfo: make(map[string]map[string]interface{}),
+		PackageInfo:  make(map[string]map[string]interface{}),
+		PackageSizes: make(map[string]string),
+		OutdatedList: nil,
+		AllFormulae:  nil,
+		AllCasks:     nil,
 	}
 }
 
@@ -945,6 +955,28 @@ func (c *Cache) ClearPackageInfo() {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.PackageInfo = make(map[string]map[string]interface{})
+}
+
+// GetPackageSize retrieves cached package size
+func (c *Cache) GetPackageSize(name string) (string, bool) {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	size, ok := c.PackageSizes[name]
+	return size, ok
+}
+
+// SetPackageSize stores package size in cache
+func (c *Cache) SetPackageSize(name string, size string) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.PackageSizes[name] = size
+}
+
+// ClearPackageSizes clears all cached package sizes
+func (c *Cache) ClearPackageSizes() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.PackageSizes = make(map[string]string)
 }
 
 // getCachePath returns the path to the cache file
@@ -1001,20 +1033,20 @@ func (c *Cache) Save() error {
 
 // App struct
 type App struct {
-	ctx                  context.Context
-	brewPath             string
-	askpassPath          string
-	currentLanguage      string
-	updateMutex          sync.Mutex
-	lastUpdateTime       time.Time
-	knownPackages        map[string]bool // Track all known packages to detect new ones
-	knownPackagesMutex   sync.Mutex
-	sessionLogs          []string   // Session logs for debugging
-	sessionLogsMutex     sync.Mutex // Mutex for thread-safe log access
-	config               *Config    // Application configuration
-	cache                *Cache     // In-memory cache for package info
-	brewValidated        bool       // Whether brew installation has been validated at startup
-	brewValidationError  error      // Error from brew validation (if any)
+	ctx                 context.Context
+	brewPath            string
+	askpassPath         string
+	currentLanguage     string
+	updateMutex         sync.Mutex
+	lastUpdateTime      time.Time
+	knownPackages       map[string]bool // Track all known packages to detect new ones
+	knownPackagesMutex  sync.Mutex
+	sessionLogs         []string   // Session logs for debugging
+	sessionLogsMutex    sync.Mutex // Mutex for thread-safe log access
+	config              *Config    // Application configuration
+	cache               *Cache     // In-memory cache for package info
+	brewValidated       bool       // Whether brew installation has been validated at startup
+	brewValidationError error      // Error from brew validation (if any)
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -1184,7 +1216,7 @@ func (a *App) startup(ctx context.Context) {
 	if err := a.cache.Load(); err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to load cache: %v\n", err)
 	} else {
-		a.appendSessionLog(fmt.Sprintf("Cache loaded: %d packages", len(a.cache.PackageInfo)))
+		a.appendSessionLog(fmt.Sprintf("Cache loaded: %d packages, %d sizes", len(a.cache.PackageInfo), len(a.cache.PackageSizes)))
 	}
 
 	// Validate brew installation once at startup
@@ -1209,7 +1241,7 @@ func (a *App) shutdown(ctx context.Context) {
 	if err := a.cache.Save(); err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to save cache: %v\n", err)
 	} else {
-		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages", len(a.cache.PackageInfo)))
+		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages, %d sizes", len(a.cache.PackageInfo), len(a.cache.PackageSizes)))
 	}
 
 	a.cleanupAskpassHelper()
@@ -1770,6 +1802,22 @@ func (a *App) menu() *menu.Menu {
 }
 
 func (a *App) GetAllBrewPackages() [][]string {
+	// Check cache first - brew formulae list changes infrequently (cache for 1 hour)
+	a.cache.mutex.RLock()
+	if a.cache.AllFormulae != nil && time.Since(a.cache.AllPackagesTime) < 1*time.Hour {
+		formulae := a.cache.AllFormulae
+		a.cache.mutex.RUnlock()
+		a.appendSessionLog(fmt.Sprintf("Cache hit: brew formulae (%d packages)", len(formulae)))
+
+		// Convert to result format
+		var results [][]string
+		for _, line := range formulae {
+			results = append(results, []string{line, "", ""})
+		}
+		return results
+	}
+	a.cache.mutex.RUnlock()
+
 	output, err := a.runBrewCommand("formulae")
 	if err != nil {
 		// On error, return a helpful message instead of crashing
@@ -1783,6 +1831,7 @@ func (a *App) GetAllBrewPackages() [][]string {
 
 	lines := strings.Split(outputStr, "\n")
 	var results [][]string
+	var formulaeList []string
 
 	// Initialize known packages on first call
 	a.knownPackagesMutex.Lock()
@@ -1798,12 +1847,18 @@ func (a *App) GetAllBrewPackages() [][]string {
 		caskOutput, err := a.runBrewCommand("casks")
 		if err == nil {
 			caskLines := strings.Split(strings.TrimSpace(string(caskOutput)), "\n")
+			var casksList []string
 			for _, line := range caskLines {
 				line = strings.TrimSpace(line)
 				if line != "" {
 					a.knownPackages["cask:"+line] = true
+					casksList = append(casksList, line)
 				}
 			}
+			// Cache casks list too
+			a.cache.mutex.Lock()
+			a.cache.AllCasks = casksList
+			a.cache.mutex.Unlock()
 		}
 	}
 	a.knownPackagesMutex.Unlock()
@@ -1813,8 +1868,15 @@ func (a *App) GetAllBrewPackages() [][]string {
 		if line != "" {
 			// For all packages (not installed), we don't have version or size yet
 			results = append(results, []string{line, "", ""})
+			formulaeList = append(formulaeList, line)
 		}
 	}
+
+	// Cache the formulae list
+	a.cache.mutex.Lock()
+	a.cache.AllFormulae = formulaeList
+	a.cache.AllPackagesTime = time.Now()
+	a.cache.mutex.Unlock()
 
 	return results
 }
@@ -1942,6 +2004,14 @@ func (a *App) LoadPackageInfo(packageNames []string, isCask bool) error {
 // RefreshPackageInfo clears cache and reloads package info
 func (a *App) RefreshPackageInfo(packageNames []string, isCask bool) error {
 	a.cache.ClearPackageInfo()
+	a.cache.ClearPackageSizes()
+
+	// Also clear outdated cache to force refresh
+	a.cache.mutex.Lock()
+	a.cache.OutdatedList = nil
+	a.cache.OutdatedTime = time.Time{}
+	a.cache.mutex.Unlock()
+
 	if err := a.LoadPackageInfo(packageNames, isCask); err != nil {
 		return err
 	}
@@ -1950,7 +2020,7 @@ func (a *App) RefreshPackageInfo(packageNames []string, isCask bool) error {
 	if err := a.cache.Save(); err != nil {
 		a.appendSessionLog(fmt.Sprintf("Warning: failed to save cache: %v", err))
 	} else {
-		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages", len(a.cache.PackageInfo)))
+		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages, %d sizes", len(a.cache.PackageInfo), len(a.cache.PackageSizes)))
 	}
 
 	return nil
@@ -1967,8 +2037,15 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 	// Load package info into cache first (this does the brew info call)
 	a.LoadPackageInfo(packageNames, isCask)
 
-	// Calculate sizes from filesystem
+	// Calculate sizes from filesystem (check cache first)
 	for _, name := range packageNames {
+		// Check if size is already cached
+		if cachedSize, ok := a.cache.GetPackageSize(name); ok {
+			sizes[name] = cachedSize
+			continue
+		}
+
+		// Calculate size and cache it
 		var size string
 		if isCask {
 			size = a.calculateCaskSize(name)
@@ -1976,6 +2053,7 @@ func (a *App) getPackageSizes(packageNames []string, isCask bool) map[string]str
 			size = a.calculateFormulaSize(name)
 		}
 		sizes[name] = size
+		a.cache.SetPackageSize(name, size)
 	}
 
 	return sizes
@@ -2205,21 +2283,57 @@ func (a *App) ParseNewPackagesFromUpdateOutput(output string) *NewPackagesInfo {
 
 // CheckForNewPackages checks for new packages and returns information about newly discovered ones
 func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
-	// Get current list of all packages
-	allFormulae, err := a.runBrewCommand("formulae")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get formulae list: %w", err)
-	}
+	// Try to use cached lists first
+	var formulaeLines, caskLines []string
 
-	allCasks, err := a.runBrewCommand("casks")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get casks list: %w", err)
+	a.cache.mutex.RLock()
+	usedCache := false
+	if a.cache.AllFormulae != nil && a.cache.AllCasks != nil && time.Since(a.cache.AllPackagesTime) < 1*time.Hour {
+		formulaeLines = a.cache.AllFormulae
+		caskLines = a.cache.AllCasks
+		usedCache = true
+	}
+	a.cache.mutex.RUnlock()
+
+	if !usedCache {
+		// Get current list of all packages
+		allFormulae, err := a.runBrewCommand("formulae")
+		if err != nil {
+			return nil, fmt.Errorf("failed to get formulae list: %w", err)
+		}
+
+		allCasks, err := a.runBrewCommand("casks")
+		if err != nil {
+			return nil, fmt.Errorf("failed to get casks list: %w", err)
+		}
+
+		formulaeLines = strings.Split(strings.TrimSpace(string(allFormulae)), "\n")
+		caskLines = strings.Split(strings.TrimSpace(string(allCasks)), "\n")
+
+		// Cache these lists
+		var formulaeList, casksList []string
+		for _, line := range formulaeLines {
+			name := strings.TrimSpace(line)
+			if name != "" {
+				formulaeList = append(formulaeList, name)
+			}
+		}
+		for _, line := range caskLines {
+			name := strings.TrimSpace(line)
+			if name != "" {
+				casksList = append(casksList, name)
+			}
+		}
+		a.cache.mutex.Lock()
+		a.cache.AllFormulae = formulaeList
+		a.cache.AllCasks = casksList
+		a.cache.AllPackagesTime = time.Now()
+		a.cache.mutex.Unlock()
 	}
 
 	// Parse current packages
 	currentPackages := make(map[string]bool)
 
-	formulaeLines := strings.Split(strings.TrimSpace(string(allFormulae)), "\n")
 	for _, line := range formulaeLines {
 		name := strings.TrimSpace(line)
 		if name != "" {
@@ -2227,7 +2341,6 @@ func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
 		}
 	}
 
-	caskLines := strings.Split(strings.TrimSpace(string(allCasks)), "\n")
 	for _, line := range caskLines {
 		name := strings.TrimSpace(line)
 		if name != "" {
@@ -2276,6 +2389,17 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
+	// Check cache first - return cached result if less than 5 minutes old
+	a.cache.mutex.RLock()
+	if a.cache.OutdatedList != nil && time.Since(a.cache.OutdatedTime) < 5*time.Minute {
+		cachedResult := a.cache.OutdatedList
+		a.cache.mutex.RUnlock()
+		a.appendSessionLog("Cache hit: brew outdated (skipping brew update)")
+		return cachedResult
+	}
+	a.cache.mutex.RUnlock()
+
+	// Skip brew update at startup - only run if cache is stale
 	// Update the formula database first to get latest information
 	// Ignore errors from update - we'll still try to get outdated packages
 	updateOutput, err := a.UpdateBrewDatabaseWithOutput()
@@ -2435,6 +2559,12 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 			updatablePackages[i][3] = "Unknown"
 		}
 	}
+
+	// Cache the result
+	a.cache.mutex.Lock()
+	a.cache.OutdatedList = updatablePackages
+	a.cache.OutdatedTime = time.Now()
+	a.cache.mutex.Unlock()
 
 	return updatablePackages
 }
