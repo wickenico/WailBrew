@@ -66,6 +66,7 @@ If you wish to contribute by translating WailBrew to your language, feel free to
 - <a href="https://alternativeto.net/software/wailbrew/about/" target="_blank" rel="noopener noreferrer">AlternativeTo</a>
 - <a href="https://www.ifun.de/wailbrew-einfache-grafische-oberflaeche-fuer-homebrew-266778/" target="_blank" rel="noopener noreferrer">iFun</a>
 - <a href="https://medium.com/macoclock/10-super-niche-mac-apps-that-completely-transformed-my-mac-ee0671c693bc" target="_blank" rel="noopener noreferrer">Medium</a>
+- <a href="https://www.sir-apfelot.de/5-app-empfehlungen-im-november-2025-67869/" target="_blank" rel="noopener noreferrer">Sir Apfelot</a>
 
 ## 🛠️ Contributing
 
