@@ -50,6 +50,8 @@ export function GetHomebrewVersion():Promise<string>;
 
 export function GetMirrorSource():Promise<Record<string, string>>;
 
+export function GetOutdatedFlag():Promise<string>;
+
 export function GetSessionLogs():Promise<string>;
 
 export function InstallBrewPackage(arg1:string):Promise<string>;
@@ -71,6 +73,8 @@ export function SetBrewPath(arg1:string):Promise<void>;
 export function SetLanguage(arg1:string):Promise<void>;
 
 export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
+
+export function SetOutdatedFlag(arg1:string):Promise<void>;
 
 export function TapBrewRepository(arg1:string):Promise<string>;
 

@@ -384,14 +384,17 @@
       "noChanges": "Kaydedilecek bir değişiklik yok.",
       "pathDetected": "Brew yolunu otomatik sapta: {{path}}",
       "mirrorSourceUpdated": "Ayna kaynağı başarıyla güncellendi!",
-      "mirrorSourceReset": "Ayna kaynağı güncel değerine sıfırlandı."
+      "mirrorSourceReset": "Ayna kaynağı güncel değerine sıfırlandı.",
+      "outdatedFlagUpdated": "Eski paket algılama ayarı başarıyla güncellendi!",
+      "outdatedFlagReset": "Eski paket algılama ayarı güncel değerine sıfırlandı."
     },
     "errors": {
       "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
       "emptyPath": "Lütfen geçerli bir brew yolu gir.",
       "invalidPath": "Geçersiz brew yolu. Lütfen yolun olduğunu ve yürütülebilir geçerli bir brew olduğunu denetle.",
       "autoDetectionFailed": "Brew yolu otomatik saptanamadı. Lütfen yolu manuel gir.",
-      "failedToSetMirrorSource": "Ayna kaynağı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin."
+      "failedToSetMirrorSource": "Ayna kaynağı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin.",
+      "failedToSetOutdatedFlag": "Eski paket algılama ayarı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin."
     },
     "mirrorSource": {
       "title": "Homebrew Ayna Kaynağı",
@@ -407,6 +410,22 @@
         "aliyun": "Alibaba Cloud (Çin)",
         "ustc": "USTC (Çin)",
         "tencent": "Tencent Cloud (Çin)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "Eski Paket Algılama",
+      "description": "WailBrew'un eski paketleri nasıl algılayacağını yapılandırın. Bu ayar, 'brew outdated' komutuyla hangi bayrakların kullanılacağını kontrol eder.",
+      "selectFlag": "Eski Paket Algılama Modu",
+      "note": "Not: Bu ayarı değiştirmek, yeni algılama modunu yansıtmak için eski paket listesini yenileyecektir.",
+      "options": {
+        "none": "Standart (Bayrak yok)",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy (Otomatik güncellemeler)"
+      },
+      "descriptions": {
+        "none": "Yalnızca daha yeni sürümleri mevcut olan paketleri gösterir. Bu, Homebrew'un varsayılan davranışıdır.",
+        "greedy": "Ayrıca mevcut bir sürümü olan ancak otomatik güncelleme olarak işaretlenmiş casks'leri de içerir. Tüm mevcut güncellemeleri görmek için yararlıdır.",
+        "greedyAutoUpdates": "Gerçekten yükseltilebilecek otomatik güncelleyen casks'leri içerir. Bu en kapsamlı algılama modudur."
       }
     }
   }

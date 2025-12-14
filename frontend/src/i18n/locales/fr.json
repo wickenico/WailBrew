@@ -384,14 +384,17 @@
       "noChanges": "Aucune modification à enregistrer.",
       "pathDetected": "Chemin brew détecté automatiquement : {{path}}",
       "mirrorSourceUpdated": "Source miroir mise à jour avec succès !",
-      "mirrorSourceReset": "Source miroir réinitialisée à la valeur actuelle."
+      "mirrorSourceReset": "Source miroir réinitialisée à la valeur actuelle.",
+      "outdatedFlagUpdated": "Paramètre de détection des packages obsolètes mis à jour avec succès !",
+      "outdatedFlagReset": "Paramètre de détection des packages obsolètes réinitialisé à la valeur actuelle."
     },
     "errors": {
       "failedToGetPath": "Échec de la récupération du chemin brew actuel.",
       "emptyPath": "Veuillez entrer un chemin brew valide.",
       "invalidPath": "Chemin brew invalide. Veuillez vérifier que le chemin existe et est un exécutable brew valide.",
       "autoDetectionFailed": "Impossible de détecter automatiquement le chemin brew. Veuillez entrer le chemin manuellement.",
-      "failedToSetMirrorSource": "Échec de la configuration de la source miroir. Veuillez vérifier votre configuration."
+      "failedToSetMirrorSource": "Échec de la configuration de la source miroir. Veuillez vérifier votre configuration.",
+      "failedToSetOutdatedFlag": "Échec de la configuration du paramètre de détection des packages obsolètes. Veuillez vérifier votre configuration."
     },
     "mirrorSource": {
       "title": "Source miroir Homebrew",
@@ -407,6 +410,22 @@
         "aliyun": "Alibaba Cloud (Chine)",
         "ustc": "USTC (Chine)",
         "tencent": "Tencent Cloud (Chine)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "Détection des packages obsolètes",
+      "description": "Configurez la façon dont WailBrew détecte les packages obsolètes. Ce paramètre contrôle les drapeaux utilisés avec la commande 'brew outdated'.",
+      "selectFlag": "Mode de détection des packages obsolètes",
+      "note": "Note : Changer ce paramètre actualisera la liste des packages obsolètes pour refléter le nouveau mode de détection.",
+      "options": {
+        "none": "Standard (Aucun drapeau)",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy (Mises à jour automatiques)"
+      },
+      "descriptions": {
+        "none": "Affiche uniquement les packages qui ont des versions plus récentes disponibles. C'est le comportement par défaut de Homebrew.",
+        "greedy": "Inclut également les casks qui ont une version disponible mais sont marqués comme se mettant à jour automatiquement. Utile pour voir toutes les mises à jour disponibles.",
+        "greedyAutoUpdates": "Inclut les casks qui se mettent à jour automatiquement et qui peuvent réellement être mis à niveau. C'est le mode de détection le plus complet."
       }
     }
   }

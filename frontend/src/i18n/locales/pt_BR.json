@@ -384,14 +384,17 @@
       "noChanges": "Nenhuma alteração para salvar.",
       "pathDetected": "Caminho do brew detectado automaticamente: {{path}}",
       "mirrorSourceUpdated": "Fonte de espelho atualizada com sucesso!",
-      "mirrorSourceReset": "Fonte de espelho redefinida para o valor atual."
+      "mirrorSourceReset": "Fonte de espelho redefinida para o valor atual.",
+      "outdatedFlagUpdated": "Configuração de detecção de pacotes desatualizados atualizada com sucesso!",
+      "outdatedFlagReset": "Configuração de detecção de pacotes desatualizados redefinida para o valor atual."
     },
     "errors": {
       "failedToGetPath": "Falha ao obter o caminho atual do brew.",
       "emptyPath": "Por favor, insira um caminho válido para o brew.",
       "invalidPath": "Caminho do brew inválido. Verifique se o caminho existe e é um executável válido do brew.",
       "autoDetectionFailed": "Não foi possível detectar o caminho do brew automaticamente. Por favor, insira o caminho manualmente.",
-      "failedToSetMirrorSource": "Falha ao definir a fonte de espelho. Verifique sua configuração."
+      "failedToSetMirrorSource": "Falha ao definir a fonte de espelho. Verifique sua configuração.",
+      "failedToSetOutdatedFlag": "Falha ao definir a configuração de detecção de pacotes desatualizados. Verifique sua configuração."
     },
     "mirrorSource": {
       "title": "Fonte de Espelho Homebrew",
@@ -407,6 +410,22 @@
         "aliyun": "Alibaba Cloud (China)",
         "ustc": "USTC (China)",
         "tencent": "Tencent Cloud (China)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "Detecção de Pacotes Desatualizados",
+      "description": "Configure como o WailBrew detecta pacotes desatualizados. Esta configuração controla quais flags são usadas com o comando 'brew outdated'.",
+      "selectFlag": "Modo de Detecção de Pacotes Desatualizados",
+      "note": "Nota: Alterar esta configuração atualizará a lista de pacotes desatualizados para refletir o novo modo de detecção.",
+      "options": {
+        "none": "Padrão (Sem flags)",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy (Atualizações automáticas)"
+      },
+      "descriptions": {
+        "none": "Mostra apenas pacotes que têm versões mais recentes disponíveis. Este é o comportamento padrão do Homebrew.",
+        "greedy": "Também inclui casks que têm uma versão disponível, mas estão marcados como atualização automática. Útil para ver todas as atualizações disponíveis.",
+        "greedyAutoUpdates": "Inclui casks de atualização automática que podem realmente ser atualizados. Este é o modo de detecção mais abrangente."
       }
     }
   }

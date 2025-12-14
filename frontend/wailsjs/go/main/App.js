@@ -98,6 +98,10 @@ export function GetMirrorSource() {
   return window['go']['main']['App']['GetMirrorSource']();
 }
 
+export function GetOutdatedFlag() {
+  return window['go']['main']['App']['GetOutdatedFlag']();
+}
+
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
 }
@@ -140,6 +144,10 @@ export function SetLanguage(arg1) {
 
 export function SetMirrorSource(arg1, arg2) {
   return window['go']['main']['App']['SetMirrorSource'](arg1, arg2);
+}
+
+export function SetOutdatedFlag(arg1) {
+  return window['go']['main']['App']['SetOutdatedFlag'](arg1);
 }
 
 export function TapBrewRepository(arg1) {

@@ -384,14 +384,17 @@
       "noChanges": "沒有要儲存的變更。",
       "pathDetected": "自動偵測的 brew 路徑：{{path}}",
       "mirrorSourceUpdated": "鏡像源更新成功！",
-      "mirrorSourceReset": "鏡像源已重設為目前值。"
+      "mirrorSourceReset": "鏡像源已重設為目前值。",
+      "outdatedFlagUpdated": "過時套件偵測設定更新成功！",
+      "outdatedFlagReset": "過時套件偵測設定已重設為目前值。"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
       "emptyPath": "請輸入有效的 brew 路徑。",
       "invalidPath": "無效的 brew 路徑。請檢查路徑是否存在且為有效的 brew 執行檔。",
       "autoDetectionFailed": "無法自動偵測 brew 路徑。請手動輸入路徑。",
-      "failedToSetMirrorSource": "設定鏡像源失敗。請檢查您的設定。"
+      "failedToSetMirrorSource": "設定鏡像源失敗。請檢查您的設定。",
+      "failedToSetOutdatedFlag": "設定過時套件偵測失敗。請檢查您的設定。"
     },
     "mirrorSource": {
       "title": "Homebrew 鏡像源",
@@ -407,6 +410,22 @@
         "aliyun": "阿里雲（中國）",
         "ustc": "中科大（中國）",
         "tencent": "騰訊雲（中國）"
+      }
+    },
+    "outdatedFlag": {
+      "title": "過時套件偵測",
+      "description": "設定 WailBrew 如何偵測過時的套件。此設定控制與 'brew outdated' 指令一起使用的旗標。",
+      "selectFlag": "過時套件偵測模式",
+      "note": "注意：變更此設定將重新整理過時套件清單以反映新的偵測模式。",
+      "options": {
+        "none": "標準（無旗標）",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy（自動更新）"
+      },
+      "descriptions": {
+        "none": "僅顯示有較新版本可用的套件。這是 Homebrew 的預設行為。",
+        "greedy": "還包括有可用版本但標記為自動更新的 casks。有助於查看所有可用的更新。",
+        "greedyAutoUpdates": "包括可以實際升級的自動更新 casks。這是最全面的偵測模式。"
       }
     }
   }

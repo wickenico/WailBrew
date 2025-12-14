@@ -853,6 +853,7 @@ type NewPackagesInfo struct {
 type Config struct {
 	GitRemote    string `json:"gitRemote"`
 	BottleDomain string `json:"bottleDomain"`
+	OutdatedFlag string `json:"outdatedFlag"` // "none", "greedy", or "greedy-auto-updates"
 }
 
 // getConfigPath returns the path to the config file
@@ -2219,8 +2220,16 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	}
 
 	// Use brew outdated with JSON output for accurate detection
-	// --greedy-auto-updates flag includes auto-updating casks that can actually be upgraded
-	output, err := a.runBrewCommand("outdated", "--json=v2", "--greedy-auto-updates")
+	// Use the configured outdated flag setting
+	outdatedFlag := a.GetOutdatedFlag()
+	args := []string{"outdated", "--json=v2"}
+	if outdatedFlag == "greedy" {
+		args = append(args, "--greedy")
+	} else if outdatedFlag == "greedy-auto-updates" {
+		args = append(args, "--greedy-auto-updates")
+	}
+	// If outdatedFlag is "none", no additional flag is added
+	output, err := a.runBrewCommand(args...)
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to check for updates: %v", err)}}
 	}
@@ -3457,6 +3466,37 @@ func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
 
 	a.config.GitRemote = gitRemote
 	a.config.BottleDomain = bottleDomain
+
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	return nil
+}
+
+// GetOutdatedFlag returns the current outdated flag setting
+func (a *App) GetOutdatedFlag() string {
+	flag := a.config.OutdatedFlag
+	// Default to "greedy-auto-updates" if not set (for backward compatibility)
+	if flag == "" {
+		return "greedy-auto-updates"
+	}
+	return flag
+}
+
+// SetOutdatedFlag sets the outdated flag configuration
+func (a *App) SetOutdatedFlag(flag string) error {
+	// Validate flag value
+	validFlags := map[string]bool{
+		"none":                true,
+		"greedy":              true,
+		"greedy-auto-updates": true,
+	}
+	if !validFlags[flag] {
+		return fmt.Errorf("invalid outdated flag: must be 'none', 'greedy', or 'greedy-auto-updates'")
+	}
+
+	a.config.OutdatedFlag = flag
 
 	if err := a.config.Save(); err != nil {
 		return fmt.Errorf("failed to save config: %v", err)

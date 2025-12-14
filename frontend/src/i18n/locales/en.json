@@ -385,14 +385,17 @@
       "noChanges": "No changes to save.",
       "pathDetected": "Auto-detected brew path: {{path}}",
       "mirrorSourceUpdated": "Mirror source updated successfully!",
-      "mirrorSourceReset": "Mirror source reset to current value."
+      "mirrorSourceReset": "Mirror source reset to current value.",
+      "outdatedFlagUpdated": "Outdated flag setting updated successfully!",
+      "outdatedFlagReset": "Outdated flag reset to current value."
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
       "emptyPath": "Please enter a valid brew path.",
       "invalidPath": "Invalid brew path. Please check that the path exists and is a valid brew executable.",
       "autoDetectionFailed": "Could not auto-detect brew path. Please enter the path manually.",
-      "failedToSetMirrorSource": "Failed to set mirror source. Please check your configuration."
+      "failedToSetMirrorSource": "Failed to set mirror source. Please check your configuration.",
+      "failedToSetOutdatedFlag": "Failed to set outdated flag. Please check your configuration."
     },
     "mirrorSource": {
       "title": "Homebrew Mirror Source",
@@ -408,6 +411,22 @@
         "aliyun": "Alibaba Cloud (China)",
         "ustc": "USTC (China)",
         "tencent": "Tencent Cloud (China)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "Outdated Packages Detection",
+      "description": "Configure how WailBrew detects outdated packages. This setting controls which flags are used with the 'brew outdated' command.",
+      "selectFlag": "Outdated Detection Mode",
+      "note": "Note: Changing this setting will refresh the outdated packages list to reflect the new detection mode.",
+      "options": {
+        "none": "Standard (No flags)",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy (Auto-updates)"
+      },
+      "descriptions": {
+        "none": "Shows only packages that have newer versions available. This is the default Homebrew behavior.",
+        "greedy": "Also includes casks that have a version available but are marked as auto-updating. Useful for seeing all available updates.",
+        "greedyAutoUpdates": "Includes auto-updating casks that can actually be upgraded. This is the most comprehensive detection mode."
       }
     }
   }

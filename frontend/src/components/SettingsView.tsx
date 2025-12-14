@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -15,14 +15,19 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [saving, setSaving] = useState<boolean>(false);
     const [isBrewPathExpanded, setIsBrewPathExpanded] = useState<boolean>(false);
     const [isMirrorSourceExpanded, setIsMirrorSourceExpanded] = useState<boolean>(false);
+    const [isOutdatedFlagExpanded, setIsOutdatedFlagExpanded] = useState<boolean>(false);
     const [mirrorSource, setMirrorSource] = useState<string>("official");
     const [customGitRemote, setCustomGitRemote] = useState<string>("");
     const [customBottleDomain, setCustomBottleDomain] = useState<string>("");
     const [savingMirror, setSavingMirror] = useState<boolean>(false);
+    const [outdatedFlag, setOutdatedFlag] = useState<string>("greedy-auto-updates");
+    const [newOutdatedFlag, setNewOutdatedFlag] = useState<string>("greedy-auto-updates");
+    const [savingOutdatedFlag, setSavingOutdatedFlag] = useState<boolean>(false);
 
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
+        loadCurrentOutdatedFlag();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -209,6 +214,58 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const handleResetMirrorSource = () => {
         loadCurrentMirrorSource();
         toast.success(t('settings.messages.mirrorSourceReset'));
+    };
+
+    const loadCurrentOutdatedFlag = async () => {
+        try {
+            const currentFlag = await GetOutdatedFlag();
+            setOutdatedFlag(currentFlag);
+            setNewOutdatedFlag(currentFlag);
+        } catch (error) {
+            console.error("Failed to get outdated flag:", error);
+        }
+    };
+
+    const handleSaveOutdatedFlag = async () => {
+        if (newOutdatedFlag === outdatedFlag) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+
+        try {
+            setSavingOutdatedFlag(true);
+            await SetOutdatedFlag(newOutdatedFlag);
+            setOutdatedFlag(newOutdatedFlag);
+            toast.success(t('settings.messages.outdatedFlagUpdated'));
+            
+            // Refresh packages after changing outdated flag
+            onRefreshPackages();
+        } catch (error) {
+            console.error("Failed to set outdated flag:", error);
+            toast.error(t('settings.errors.failedToSetOutdatedFlag'));
+            // Reset to current flag on error
+            setNewOutdatedFlag(outdatedFlag);
+        } finally {
+            setSavingOutdatedFlag(false);
+        }
+    };
+
+    const handleResetOutdatedFlag = () => {
+        setNewOutdatedFlag(outdatedFlag);
+        toast.success(t('settings.messages.outdatedFlagReset'));
+    };
+
+    const getOutdatedFlagLabel = (flag: string) => {
+        switch (flag) {
+            case "none":
+                return t('settings.outdatedFlag.options.none');
+            case "greedy":
+                return t('settings.outdatedFlag.options.greedy');
+            case "greedy-auto-updates":
+                return t('settings.outdatedFlag.options.greedyAutoUpdates');
+            default:
+                return flag;
+        }
     };
 
     if (loading) {
@@ -435,6 +492,89 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 <div className="settings-info-panel">
                                     <p className="settings-note">
                                         💡 {t('settings.mirrorSource.note')}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="settings-item">
+                            <button 
+                                className="settings-item-header"
+                                onClick={() => setIsOutdatedFlagExpanded(!isOutdatedFlagExpanded)}
+                                aria-expanded={isOutdatedFlagExpanded}
+                                aria-controls="outdated-flag-settings-content"
+                            >
+                                <div className="settings-item-info">
+                                    <h4 className="settings-item-title">
+                                        {t('settings.outdatedFlag.title')}
+                                    </h4>
+                                    <p className="settings-item-subtitle">
+                                        {getOutdatedFlagLabel(outdatedFlag)}
+                                    </p>
+                                </div>
+                                <span className={`settings-item-icon ${isOutdatedFlagExpanded ? 'expanded' : ''}`}>
+                                    ▶
+                                </span>
+                            </button>
+                            
+                            <div 
+                                id="outdated-flag-settings-content"
+                                className={`settings-item-content ${isOutdatedFlagExpanded ? 'expanded' : 'collapsed'}`}
+                            >
+                                <div className="settings-item-description">
+                                    {t('settings.outdatedFlag.description')}
+                                </div>
+                                
+                                <div className="settings-field-group">
+                                    <div className="settings-field">
+                                        <label htmlFor="outdated-flag" className="field-label">
+                                            {t('settings.outdatedFlag.selectFlag')}
+                                        </label>
+                                        <select
+                                            id="outdated-flag"
+                                            value={newOutdatedFlag}
+                                            onChange={(e) => setNewOutdatedFlag(e.target.value)}
+                                            className="mirror-select"
+                                            disabled={savingOutdatedFlag}
+                                        >
+                                            <option value="none">{t('settings.outdatedFlag.options.none')}</option>
+                                            <option value="greedy">{t('settings.outdatedFlag.options.greedy')}</option>
+                                            <option value="greedy-auto-updates">{t('settings.outdatedFlag.options.greedyAutoUpdates')}</option>
+                                        </select>
+                                        <div className="settings-option-description">
+                                            {newOutdatedFlag === "none" && (
+                                                <p>{t('settings.outdatedFlag.descriptions.none')}</p>
+                                            )}
+                                            {newOutdatedFlag === "greedy" && (
+                                                <p>{t('settings.outdatedFlag.descriptions.greedy')}</p>
+                                            )}
+                                            {newOutdatedFlag === "greedy-auto-updates" && (
+                                                <p>{t('settings.outdatedFlag.descriptions.greedyAutoUpdates')}</p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="settings-actions">
+                                        <button
+                                            className="save-button"
+                                            onClick={handleSaveOutdatedFlag}
+                                            disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
+                                        >
+                                            {savingOutdatedFlag ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                        </button>
+                                        <button
+                                            className="reset-button"
+                                            onClick={handleResetOutdatedFlag}
+                                            disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
+                                        >
+                                            {t('settings.buttons.reset')}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="settings-info-panel">
+                                    <p className="settings-note">
+                                        💡 {t('settings.outdatedFlag.note')}
                                     </p>
                                 </div>
                             </div>

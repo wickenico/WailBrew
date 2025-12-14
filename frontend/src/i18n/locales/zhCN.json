@@ -384,14 +384,17 @@
       "noChanges": "没有需要保存的更改。",
       "pathDetected": "自动检测到的 brew 路径：{{path}}",
       "mirrorSourceUpdated": "镜像源更新成功！",
-      "mirrorSourceReset": "镜像源重置为当前值。"
+      "mirrorSourceReset": "镜像源重置为当前值。",
+      "outdatedFlagUpdated": "过时包检测设置更新成功！",
+      "outdatedFlagReset": "过时包检测设置重置为当前值。"
     },
     "errors": {
       "failedToGetPath": "无法获取当前 brew 的路径。",
       "emptyPath": "请输入有效的 brew 路径。",
       "invalidPath": "brew 路径无效。请检查该路径是否存在，以及是否为有效的 brew 可执行文件。",
       "autoDetectionFailed": "无法自动检测 brew 路径。请手动输入路径。",
-      "failedToSetMirrorSource": "设置镜像源失败。请检查您的配置。"
+      "failedToSetMirrorSource": "设置镜像源失败。请检查您的配置。",
+      "failedToSetOutdatedFlag": "设置过时包检测失败。请检查您的配置。"
     },
     "mirrorSource": {
       "title": "Homebrew 镜像源",
@@ -407,6 +410,22 @@
         "aliyun": "阿里云（中国）",
         "ustc": "中科大（中国）",
         "tencent": "腾讯云（中国）"
+      }
+    },
+    "outdatedFlag": {
+      "title": "过时包检测",
+      "description": "配置 WailBrew 如何检测过时的包。此设置控制与 'brew outdated' 命令一起使用的标志。",
+      "selectFlag": "过时包检测模式",
+      "note": "注意：更改此设置将刷新过时包列表以反映新的检测模式。",
+      "options": {
+        "none": "标准（无标志）",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy（自动更新）"
+      },
+      "descriptions": {
+        "none": "仅显示有更新版本可用的包。这是 Homebrew 的默认行为。",
+        "greedy": "还包括有可用版本但标记为自动更新的 casks。有助于查看所有可用的更新。",
+        "greedyAutoUpdates": "包括可以实际升级的自动更新 casks。这是最全面的检测模式。"
       }
     }
   }

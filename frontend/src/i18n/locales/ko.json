@@ -385,14 +385,17 @@
       "noChanges": "저장할 변경 사항이 없습니다.",
       "pathDetected": "자동 감지된 brew 경로: {{path}}",
       "mirrorSourceUpdated": "미러 소스가 성공적으로 업데이트되었습니다!",
-      "mirrorSourceReset": "미러 소스가 현재 값으로 초기화되었습니다."
+      "mirrorSourceReset": "미러 소스가 현재 값으로 초기화되었습니다.",
+      "outdatedFlagUpdated": "오래된 패키지 감지 설정이 성공적으로 업데이트되었습니다!",
+      "outdatedFlagReset": "오래된 패키지 감지 설정이 현재 값으로 초기화되었습니다."
     },
     "errors": {
       "failedToGetPath": "현재 brew 경로를 가져오지 못했습니다.",
       "emptyPath": "유효한 brew 경로를 입력해 주세요.",
       "invalidPath": "잘못된 brew 경로입니다. 경로가 존재하고 유효한 brew 실행 파일인지 확인하세요.",
       "autoDetectionFailed": "brew 경로를 자동 감지할 수 없습니다. 수동으로 경로를 입력해 주세요.",
-      "failedToSetMirrorSource": "미러 소스 설정에 실패했습니다. 설정을 확인해 주세요."
+      "failedToSetMirrorSource": "미러 소스 설정에 실패했습니다. 설정을 확인해 주세요.",
+      "failedToSetOutdatedFlag": "오래된 패키지 감지 설정에 실패했습니다. 설정을 확인해 주세요."
     },
     "mirrorSource": {
       "title": "Homebrew 미러 소스",
@@ -408,6 +411,22 @@
         "aliyun": "알리바바 클라우드 (중국)",
         "ustc": "USTC (중국)",
         "tencent": "텐센트 클라우드 (중국)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "오래된 패키지 감지",
+      "description": "WailBrew가 오래된 패키지를 감지하는 방법을 구성합니다. 이 설정은 'brew outdated' 명령과 함께 사용되는 플래그를 제어합니다.",
+      "selectFlag": "오래된 패키지 감지 모드",
+      "note": "참고: 이 설정을 변경하면 새로운 감지 모드를 반영하도록 오래된 패키지 목록이 새로고침됩니다.",
+      "options": {
+        "none": "표준 (플래그 없음)",
+        "greedy": "Greedy",
+        "greedyAutoUpdates": "Greedy (자동 업데이트)"
+      },
+      "descriptions": {
+        "none": "새 버전을 사용할 수 있는 패키지만 표시합니다. 이것은 Homebrew의 기본 동작입니다.",
+        "greedy": "사용 가능한 버전이 있지만 자동 업데이트로 표시된 캐스크도 포함합니다. 사용 가능한 모든 업데이트를 보는 데 유용합니다.",
+        "greedyAutoUpdates": "실제로 업그레이드할 수 있는 자동 업데이트 캐스크를 포함합니다. 이것은 가장 포괄적인 감지 모드입니다."
       }
     }
   }
