@@ -905,17 +905,19 @@ func (c *Config) Save() error {
 
 // App struct
 type App struct {
-	ctx                context.Context
-	brewPath           string
-	askpassPath        string
-	currentLanguage    string
-	updateMutex        sync.Mutex
-	lastUpdateTime     time.Time
-	knownPackages      map[string]bool // Track all known packages to detect new ones
-	knownPackagesMutex sync.Mutex
-	sessionLogs        []string   // Session logs for debugging
-	sessionLogsMutex   sync.Mutex // Mutex for thread-safe log access
-	config             *Config    // Application configuration
+	ctx                  context.Context
+	brewPath             string
+	askpassPath          string
+	currentLanguage      string
+	updateMutex          sync.Mutex
+	lastUpdateTime       time.Time
+	knownPackages        map[string]bool // Track all known packages to detect new ones
+	knownPackagesMutex   sync.Mutex
+	sessionLogs          []string   // Session logs for debugging
+	sessionLogsMutex     sync.Mutex // Mutex for thread-safe log access
+	config               *Config    // Application configuration
+	brewValidated        bool       // Whether brew installation has been validated at startup
+	brewValidationError  error      // Error from brew validation (if any)
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -1060,6 +1062,17 @@ func (a *App) validateBrewInstallation() error {
 	return nil
 }
 
+// checkBrewValidation returns the cached brew validation result from startup
+func (a *App) checkBrewValidation() error {
+	if !a.brewValidated {
+		if a.brewValidationError != nil {
+			return a.brewValidationError
+		}
+		return fmt.Errorf("brew installation not validated")
+	}
+	return nil
+}
+
 // startup saves the application context and sets up the askpass helper
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
@@ -1067,6 +1080,15 @@ func (a *App) startup(ctx context.Context) {
 	// Load config from file
 	if err := a.config.Load(); err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+	}
+
+	// Validate brew installation once at startup
+	if err := a.validateBrewInstallation(); err != nil {
+		a.brewValidationError = err
+		a.brewValidated = false
+		fmt.Fprintf(os.Stderr, "Warning: brew validation failed: %v\n", err)
+	} else {
+		a.brewValidated = true
 	}
 
 	// Set up the askpass helper for GUI sudo prompts
@@ -1687,8 +1709,8 @@ func (a *App) GetAllBrewPackages() [][]string {
 
 // GetBrewPackages retrieves the list of installed Homebrew packages with size information
 func (a *App) GetBrewPackages() [][]string {
-	// Validate brew installation first
-	if err := a.validateBrewInstallation(); err != nil {
+	// Check cached brew validation from startup
+	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
@@ -1908,8 +1930,8 @@ func (a *App) calculateCaskSize(caskName string) string {
 
 // GetBrewCasks retrieves the list of installed Homebrew casks
 func (a *App) GetBrewCasks() [][]string {
-	// Validate brew installation first
-	if err := a.validateBrewInstallation(); err != nil {
+	// Check cached brew validation from startup
+	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
@@ -2173,8 +2195,8 @@ func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
 
 // GetBrewUpdatablePackages checks which packages have updates available using brew outdated
 func (a *App) GetBrewUpdatablePackages() [][]string {
-	// Validate brew installation first
-	if err := a.validateBrewInstallation(); err != nil {
+	// Check cached brew validation from startup
+	if err := a.checkBrewValidation(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
@@ -2841,8 +2863,8 @@ func (a *App) runUpdateCommand(packageName string, useForce bool) (finalMessage 
 
 // UpdateSelectedBrewPackages upgrades specific packages with live progress updates
 func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
-	// Validate brew installation first
-	if err := a.validateBrewInstallation(); err != nil {
+	// Check cached brew validation from startup
+	if err := a.checkBrewValidation(); err != nil {
 		return fmt.Sprintf("❌ Homebrew validation failed: %v", err)
 	}
 
@@ -3467,8 +3489,8 @@ func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
 
 // GetHomebrewCaskVersion gets the available version of wailbrew from Homebrew Cask
 func (a *App) GetHomebrewCaskVersion() (string, error) {
-	// Validate brew installation first
-	if err := a.validateBrewInstallation(); err != nil {
+	// Check cached brew validation from startup
+	if err := a.checkBrewValidation(); err != nil {
 		return "", fmt.Errorf("Homebrew validation failed: %v", err)
 	}
 
