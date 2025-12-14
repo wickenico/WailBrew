@@ -979,6 +979,13 @@ func (c *Cache) ClearPackageSizes() {
 	c.PackageSizes = make(map[string]string)
 }
 
+// GetCacheSizes returns the sizes of cached data (thread-safe)
+func (c *Cache) GetCacheSizes() (packageCount, sizeCount int) {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	return len(c.PackageInfo), len(c.PackageSizes)
+}
+
 // getCachePath returns the path to the cache file
 func getCachePath() (string, error) {
 	homeDir, err := os.UserHomeDir()
@@ -1216,7 +1223,8 @@ func (a *App) startup(ctx context.Context) {
 	if err := a.cache.Load(); err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to load cache: %v\n", err)
 	} else {
-		a.appendSessionLog(fmt.Sprintf("Cache loaded: %d packages, %d sizes", len(a.cache.PackageInfo), len(a.cache.PackageSizes)))
+		pkgCount, sizeCount := a.cache.GetCacheSizes()
+		a.appendSessionLog(fmt.Sprintf("Cache loaded: %d packages, %d sizes", pkgCount, sizeCount))
 	}
 
 	// Validate brew installation once at startup
@@ -1241,7 +1249,8 @@ func (a *App) shutdown(ctx context.Context) {
 	if err := a.cache.Save(); err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to save cache: %v\n", err)
 	} else {
-		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages, %d sizes", len(a.cache.PackageInfo), len(a.cache.PackageSizes)))
+		pkgCount, sizeCount := a.cache.GetCacheSizes()
+		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages, %d sizes", pkgCount, sizeCount))
 	}
 
 	a.cleanupAskpassHelper()
@@ -2020,7 +2029,8 @@ func (a *App) RefreshPackageInfo(packageNames []string, isCask bool) error {
 	if err := a.cache.Save(); err != nil {
 		a.appendSessionLog(fmt.Sprintf("Warning: failed to save cache: %v", err))
 	} else {
-		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages, %d sizes", len(a.cache.PackageInfo), len(a.cache.PackageSizes)))
+		pkgCount, sizeCount := a.cache.GetCacheSizes()
+		a.appendSessionLog(fmt.Sprintf("Cache saved: %d packages, %d sizes", pkgCount, sizeCount))
 	}
 
 	return nil
