@@ -386,7 +386,9 @@
       "mirrorSourceUpdated": "Spiegelquelle erfolgreich aktualisiert!",
       "mirrorSourceReset": "Spiegelquelle auf aktuellen Wert zurückgesetzt.",
       "outdatedFlagUpdated": "Einstellung für veraltete Pakete erfolgreich aktualisiert!",
-      "outdatedFlagReset": "Einstellung für veraltete Pakete auf aktuellen Wert zurückgesetzt."
+      "outdatedFlagReset": "Einstellung für veraltete Pakete auf aktuellen Wert zurückgesetzt.",
+      "caskAppDirUpdated": "Einstellung für Cask-Anwendungsverzeichnis erfolgreich aktualisiert!",
+      "caskAppDirReset": "Einstellung für Cask-Anwendungsverzeichnis auf aktuellen Wert zurückgesetzt."
     },
     "errors": {
       "failedToGetPath": "Aktueller Brew-Pfad konnte nicht abgerufen werden.",
@@ -394,7 +396,9 @@
       "invalidPath": "Ungültiger Brew-Pfad. Bitte überprüfen Sie, dass der Pfad existiert und eine gültige Brew-Ausführungsdatei ist.",
       "autoDetectionFailed": "Brew-Pfad konnte nicht automatisch erkannt werden. Bitte geben Sie den Pfad manuell ein.",
       "failedToSetMirrorSource": "Spiegelquelle konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
-      "failedToSetOutdatedFlag": "Einstellung für veraltete Pakete konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration."
+      "failedToSetOutdatedFlag": "Einstellung für veraltete Pakete konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
+      "failedToSetCaskAppDir": "Einstellung für Cask-Anwendungsverzeichnis konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
+      "failedToSelectDirectory": "Verzeichnisauswahl fehlgeschlagen."
     },
     "mirrorSource": {
       "title": "Homebrew Spiegelquelle",
@@ -427,6 +431,18 @@
         "greedy": "Schließt auch Casks ein, die eine verfügbare Version haben, aber als automatisch aktualisierend markiert sind. Nützlich, um alle verfügbaren Updates zu sehen.",
         "greedyAutoUpdates": "Schließt automatisch aktualisierende Casks ein, die tatsächlich aktualisiert werden können. Dies ist der umfassendste Erkennungsmodus."
       }
+    },
+    "caskAppDir": {
+      "title": "Cask-Anwendungsverzeichnis",
+      "description": "Konfigurieren Sie das Verzeichnis, in dem Homebrew Cask-Anwendungen installiert werden. Dies setzt die Umgebungsvariable HOMEBREW_CASK_OPTS mit der Option --appdir.",
+      "currentDir": "Anwendungsverzeichnis",
+      "placeholder": "/Applications/3rd-party",
+      "default": "Standard (/Applications)",
+      "currentlyUsing": "Aktuell verwendet:",
+      "hint": "Klicken Sie auf das Ordnersymbol, um ein Verzeichnis auszuwählen. Leer lassen, um das Standardverzeichnis /Applications zu verwenden.",
+      "selectDirectory": "Verzeichnis auswählen",
+      "newDirectory": "Neues Verzeichnis",
+      "note": "Hinweis: Das Ändern dieser Einstellung wirkt sich darauf aus, wo neue Cask-Installationen und -Aktualisierungen platziert werden. Bestehende Installationen werden nicht automatisch verschoben."
     }
   }
 }

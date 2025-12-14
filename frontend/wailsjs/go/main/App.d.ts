@@ -40,6 +40,8 @@ export function GetBrewTaps():Promise<Array<any>>;
 
 export function GetBrewUpdatablePackages():Promise<Array<any>>;
 
+export function GetCaskAppDir():Promise<string>;
+
 export function GetCurrentLanguage():Promise<string>;
 
 export function GetDeprecatedFormulae(arg1:string):Promise<Array<string>>;
@@ -68,7 +70,11 @@ export function RunBrewCleanup():Promise<string>;
 
 export function RunBrewDoctor():Promise<string>;
 
+export function SelectCaskAppDir():Promise<string>;
+
 export function SetBrewPath(arg1:string):Promise<void>;
+
+export function SetCaskAppDir(arg1:string):Promise<void>;
 
 export function SetLanguage(arg1:string):Promise<void>;
 

@@ -386,7 +386,9 @@
       "mirrorSourceUpdated": "鏡像源更新成功！",
       "mirrorSourceReset": "鏡像源已重設為目前值。",
       "outdatedFlagUpdated": "過時套件偵測設定更新成功！",
-      "outdatedFlagReset": "過時套件偵測設定已重設為目前值。"
+      "outdatedFlagReset": "過時套件偵測設定已重設為目前值。",
+      "caskAppDirUpdated": "Cask 應用程式目錄設定更新成功！",
+      "caskAppDirReset": "Cask 應用程式目錄設定已重設為目前值。"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
@@ -394,7 +396,9 @@
       "invalidPath": "無效的 brew 路徑。請檢查路徑是否存在且為有效的 brew 執行檔。",
       "autoDetectionFailed": "無法自動偵測 brew 路徑。請手動輸入路徑。",
       "failedToSetMirrorSource": "設定鏡像源失敗。請檢查您的設定。",
-      "failedToSetOutdatedFlag": "設定過時套件偵測失敗。請檢查您的設定。"
+      "failedToSetOutdatedFlag": "設定過時套件偵測失敗。請檢查您的設定。",
+      "failedToSetCaskAppDir": "設定 Cask 應用程式目錄失敗。請檢查您的設定。",
+      "failedToSelectDirectory": "選擇目錄失敗。"
     },
     "mirrorSource": {
       "title": "Homebrew 鏡像源",
@@ -427,6 +431,18 @@
         "greedy": "還包括有可用版本但標記為自動更新的 casks。有助於查看所有可用的更新。",
         "greedyAutoUpdates": "包括可以實際升級的自動更新 casks。這是最全面的偵測模式。"
       }
+    },
+    "caskAppDir": {
+      "title": "Cask 應用程式目錄",
+      "description": "設定 Homebrew Cask 應用程式的安裝目錄。這將使用 --appdir 選項設定 HOMEBREW_CASK_OPTS 環境變數。",
+      "currentDir": "應用程式目錄",
+      "placeholder": "/Applications/3rd-party",
+      "default": "預設 (/Applications)",
+      "currentlyUsing": "目前使用：",
+      "hint": "點擊資料夾圖示選擇目錄。留空以使用預設的 /Applications 目錄。",
+      "selectDirectory": "選擇目錄",
+      "newDirectory": "新目錄",
+      "note": "注意：變更此設定將影響新 cask 安裝和升級的放置位置。現有安裝不會自動移動。"
     }
   }
 }

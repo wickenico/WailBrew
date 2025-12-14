@@ -78,6 +78,10 @@ export function GetBrewUpdatablePackages() {
   return window['go']['main']['App']['GetBrewUpdatablePackages']();
 }
 
+export function GetCaskAppDir() {
+  return window['go']['main']['App']['GetCaskAppDir']();
+}
+
 export function GetCurrentLanguage() {
   return window['go']['main']['App']['GetCurrentLanguage']();
 }
@@ -134,8 +138,16 @@ export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
 }
 
+export function SelectCaskAppDir() {
+  return window['go']['main']['App']['SelectCaskAppDir']();
+}
+
 export function SetBrewPath(arg1) {
   return window['go']['main']['App']['SetBrewPath'](arg1);
+}
+
+export function SetCaskAppDir(arg1) {
+  return window['go']['main']['App']['SetCaskAppDir'](arg1);
 }
 
 export function SetLanguage(arg1) {

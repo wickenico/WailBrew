@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -16,6 +16,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [isBrewPathExpanded, setIsBrewPathExpanded] = useState<boolean>(false);
     const [isMirrorSourceExpanded, setIsMirrorSourceExpanded] = useState<boolean>(false);
     const [isOutdatedFlagExpanded, setIsOutdatedFlagExpanded] = useState<boolean>(false);
+    const [isCaskAppDirExpanded, setIsCaskAppDirExpanded] = useState<boolean>(false);
     const [mirrorSource, setMirrorSource] = useState<string>("official");
     const [customGitRemote, setCustomGitRemote] = useState<string>("");
     const [customBottleDomain, setCustomBottleDomain] = useState<string>("");
@@ -23,11 +24,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [outdatedFlag, setOutdatedFlag] = useState<string>("greedy-auto-updates");
     const [newOutdatedFlag, setNewOutdatedFlag] = useState<string>("greedy-auto-updates");
     const [savingOutdatedFlag, setSavingOutdatedFlag] = useState<boolean>(false);
+    const [caskAppDir, setCaskAppDir] = useState<string>("");
+    const [newCaskAppDir, setNewCaskAppDir] = useState<string>("");
+    const [savingCaskAppDir, setSavingCaskAppDir] = useState<boolean>(false);
 
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
         loadCurrentOutdatedFlag();
+        loadCurrentCaskAppDir();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -265,6 +270,60 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 return t('settings.outdatedFlag.options.greedyAutoUpdates');
             default:
                 return flag;
+        }
+    };
+
+    const loadCurrentCaskAppDir = async () => {
+        try {
+            const currentDir = await GetCaskAppDir();
+            setCaskAppDir(currentDir);
+            setNewCaskAppDir(currentDir);
+        } catch (error) {
+            console.error("Failed to get cask app directory:", error);
+            setCaskAppDir("");
+            setNewCaskAppDir("");
+        }
+    };
+
+    const handleSaveCaskAppDir = async () => {
+        const trimmedDir = newCaskAppDir.trim();
+        if (trimmedDir === caskAppDir) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+
+        try {
+            setSavingCaskAppDir(true);
+            await SetCaskAppDir(trimmedDir);
+            setCaskAppDir(trimmedDir);
+            setNewCaskAppDir(trimmedDir);
+            toast.success(t('settings.messages.caskAppDirUpdated'));
+            
+            // Refresh packages after changing cask app directory
+            onRefreshPackages();
+        } catch (error) {
+            console.error("Failed to set cask app directory:", error);
+            toast.error(t('settings.errors.failedToSetCaskAppDir'));
+            // Reset to current directory on error
+            setNewCaskAppDir(caskAppDir);
+        } finally {
+            setSavingCaskAppDir(false);
+        }
+    };
+
+    const handleResetCaskAppDir = () => {
+        setNewCaskAppDir(caskAppDir);
+    };
+
+    const handleSelectCaskAppDir = async () => {
+        try {
+            const selectedDir = await SelectCaskAppDir();
+            if (selectedDir) {
+                setNewCaskAppDir(selectedDir);
+            }
+        } catch (error) {
+            console.error("Failed to select directory:", error);
+            toast.error(t('settings.errors.failedToSelectDirectory'));
         }
     };
 
@@ -575,6 +634,97 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 <div className="settings-info-panel">
                                     <p className="settings-note">
                                         💡 {t('settings.outdatedFlag.note')}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="settings-item">
+                            <button 
+                                className="settings-item-header"
+                                onClick={() => setIsCaskAppDirExpanded(!isCaskAppDirExpanded)}
+                                aria-expanded={isCaskAppDirExpanded}
+                                aria-controls="cask-app-dir-settings-content"
+                            >
+                                <div className="settings-item-info">
+                                    <h4 className="settings-item-title">
+                                        {t('settings.caskAppDir.title')}
+                                    </h4>
+                                    <p className="settings-item-subtitle">
+                                        {caskAppDir || t('settings.caskAppDir.default')}
+                                    </p>
+                                </div>
+                                <span className={`settings-item-icon ${isCaskAppDirExpanded ? 'expanded' : ''}`}>
+                                    ▶
+                                </span>
+                            </button>
+                            
+                            <div 
+                                id="cask-app-dir-settings-content"
+                                className={`settings-item-content ${isCaskAppDirExpanded ? 'expanded' : 'collapsed'}`}
+                            >
+                                <div className="settings-item-description">
+                                    {t('settings.caskAppDir.description')}
+                                </div>
+                                
+                                <div className="settings-field-group">
+                                    <div className="settings-field">
+                                        <label htmlFor="cask-app-dir" className="field-label">
+                                            {t('settings.caskAppDir.currentDir')}
+                                        </label>
+                                        <div className="path-input-container">
+                                            <input
+                                                id="cask-app-dir"
+                                                type="text"
+                                                value={caskAppDir || t('settings.caskAppDir.default')}
+                                                className="path-input"
+                                                readOnly
+                                                disabled={savingCaskAppDir}
+                                            />
+                                            <button
+                                                className="detect-button"
+                                                onClick={handleSelectCaskAppDir}
+                                                disabled={savingCaskAppDir}
+                                                title={t('settings.caskAppDir.selectDirectory')}
+                                            >
+                                                📁
+                                            </button>
+                                        </div>
+                                        <div className="settings-option-description">
+                                            <p>{t('settings.caskAppDir.hint')}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="settings-actions">
+                                        <button
+                                            className="save-button"
+                                            onClick={handleSaveCaskAppDir}
+                                            disabled={savingCaskAppDir || newCaskAppDir.trim() === caskAppDir}
+                                        >
+                                            {savingCaskAppDir ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                        </button>
+                                        <button
+                                            className="reset-button"
+                                            onClick={handleResetCaskAppDir}
+                                            disabled={savingCaskAppDir || newCaskAppDir === caskAppDir}
+                                        >
+                                            {t('settings.buttons.reset')}
+                                        </button>
+                                    </div>
+                                    {newCaskAppDir !== caskAppDir && (
+                                        <div className="settings-preview-info">
+                                            <p>📝 {t('settings.caskAppDir.newDirectory')}: <code>{newCaskAppDir || t('settings.caskAppDir.default')}</code></p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="settings-info-panel">
+                                    <div className="current-path-info">
+                                        <span className="info-label">{t('settings.caskAppDir.currentlyUsing')}</span>
+                                        <code className="current-path">{caskAppDir || t('settings.caskAppDir.default')}</code>
+                                    </div>
+                                    <p className="settings-note">
+                                        💡 {t('settings.caskAppDir.note')}
                                     </p>
                                 </div>
                             </div>

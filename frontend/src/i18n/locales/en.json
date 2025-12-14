@@ -387,7 +387,9 @@
       "mirrorSourceUpdated": "Mirror source updated successfully!",
       "mirrorSourceReset": "Mirror source reset to current value.",
       "outdatedFlagUpdated": "Outdated flag setting updated successfully!",
-      "outdatedFlagReset": "Outdated flag reset to current value."
+      "outdatedFlagReset": "Outdated flag reset to current value.",
+      "caskAppDirUpdated": "Cask app directory setting updated successfully!",
+      "caskAppDirReset": "Cask app directory reset to current value."
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
@@ -395,7 +397,9 @@
       "invalidPath": "Invalid brew path. Please check that the path exists and is a valid brew executable.",
       "autoDetectionFailed": "Could not auto-detect brew path. Please enter the path manually.",
       "failedToSetMirrorSource": "Failed to set mirror source. Please check your configuration.",
-      "failedToSetOutdatedFlag": "Failed to set outdated flag. Please check your configuration."
+      "failedToSetOutdatedFlag": "Failed to set outdated flag. Please check your configuration.",
+      "failedToSetCaskAppDir": "Failed to set cask app directory. Please check your configuration.",
+      "failedToSelectDirectory": "Failed to select directory."
     },
     "mirrorSource": {
       "title": "Homebrew Mirror Source",
@@ -428,6 +432,18 @@
         "greedy": "Also includes casks that have a version available but are marked as auto-updating. Useful for seeing all available updates.",
         "greedyAutoUpdates": "Includes auto-updating casks that can actually be upgraded. This is the most comprehensive detection mode."
       }
+    },
+    "caskAppDir": {
+      "title": "Cask Application Directory",
+      "description": "Configure the directory where Homebrew Cask applications are installed. This sets the HOMEBREW_CASK_OPTS environment variable with --appdir option.",
+      "currentDir": "Application Directory",
+      "placeholder": "/Applications/3rd-party",
+      "default": "Default (/Applications)",
+      "currentlyUsing": "Currently using:",
+      "hint": "Click the folder icon to select a directory. Leave empty to use the default /Applications directory.",
+      "selectDirectory": "Select directory",
+      "newDirectory": "New directory",
+      "note": "Note: Changing this setting will affect where new cask installations and upgrades are placed. Existing installations are not moved automatically."
     }
   }
 }

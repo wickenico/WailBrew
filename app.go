@@ -854,6 +854,7 @@ type Config struct {
 	GitRemote    string `json:"gitRemote"`
 	BottleDomain string `json:"bottleDomain"`
 	OutdatedFlag string `json:"outdatedFlag"` // "none", "greedy", or "greedy-auto-updates"
+	CaskAppDir   string `json:"caskAppDir"`   // Custom directory for cask applications (e.g., "/Applications/3rd-party")
 }
 
 // getConfigPath returns the path to the config file
@@ -1000,6 +1001,12 @@ func (a *App) getBrewEnv() []string {
 	}
 	if a.config.BottleDomain != "" {
 		env = append(env, fmt.Sprintf("HOMEBREW_BOTTLE_DOMAIN=%s", a.config.BottleDomain))
+	}
+
+	// Add HOMEBREW_CASK_OPTS if cask app directory is configured
+	// Config value takes precedence over environment variable
+	if a.config.CaskAppDir != "" {
+		env = append(env, fmt.Sprintf("HOMEBREW_CASK_OPTS=--appdir=%s", a.config.CaskAppDir))
 	}
 
 	return env
@@ -3503,6 +3510,74 @@ func (a *App) SetOutdatedFlag(flag string) error {
 	}
 
 	return nil
+}
+
+// GetCaskAppDir returns the current cask app directory setting
+// If not set in config, tries to parse from HOMEBREW_CASK_OPTS environment variable
+func (a *App) GetCaskAppDir() string {
+	if a.config.CaskAppDir != "" {
+		return a.config.CaskAppDir
+	}
+
+	// Try to parse from environment variable
+	caskOpts := os.Getenv("HOMEBREW_CASK_OPTS")
+	if caskOpts != "" {
+		// Look for --appdir=path pattern
+		re := regexp.MustCompile(`--appdir=([^\s]+)`)
+		matches := re.FindStringSubmatch(caskOpts)
+		if len(matches) > 1 {
+			return matches[1]
+		}
+	}
+
+	return ""
+}
+
+// SetCaskAppDir sets the cask app directory configuration
+func (a *App) SetCaskAppDir(appDir string) error {
+	// Validate path if provided (empty string means use default)
+	if appDir != "" {
+		// Basic validation: should be an absolute path
+		if !filepath.IsAbs(appDir) {
+			return fmt.Errorf("cask app directory must be an absolute path")
+		}
+		// Remove trailing slash if present
+		appDir = strings.TrimSuffix(appDir, "/")
+	}
+
+	a.config.CaskAppDir = appDir
+
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	return nil
+}
+
+// SelectCaskAppDir opens a directory picker dialog and returns the selected directory
+func (a *App) SelectCaskAppDir() (string, error) {
+	if a.ctx == nil {
+		return "", fmt.Errorf("application context not available")
+	}
+
+	// Get current directory to use as default
+	defaultDir := a.GetCaskAppDir()
+	if defaultDir == "" {
+		defaultDir = "/Applications"
+	}
+
+	// Open directory picker dialog
+	selectedDir, err := rt.OpenDirectoryDialog(a.ctx, rt.OpenDialogOptions{
+		Title:                "Select Cask Application Directory",
+		DefaultDirectory:     defaultDir,
+		CanCreateDirectories: true,
+	})
+
+	if err != nil {
+		return "", fmt.Errorf("failed to open directory dialog: %w", err)
+	}
+
+	return selectedDir, nil
 }
 
 // GetHomebrewCaskVersion gets the available version of wailbrew from Homebrew Cask

@@ -386,7 +386,9 @@
       "mirrorSourceUpdated": "镜像源更新成功！",
       "mirrorSourceReset": "镜像源重置为当前值。",
       "outdatedFlagUpdated": "过时包检测设置更新成功！",
-      "outdatedFlagReset": "过时包检测设置重置为当前值。"
+      "outdatedFlagReset": "过时包检测设置重置为当前值。",
+      "caskAppDirUpdated": "Cask 应用程序目录设置更新成功！",
+      "caskAppDirReset": "Cask 应用程序目录设置重置为当前值。"
     },
     "errors": {
       "failedToGetPath": "无法获取当前 brew 的路径。",
@@ -394,7 +396,9 @@
       "invalidPath": "brew 路径无效。请检查该路径是否存在，以及是否为有效的 brew 可执行文件。",
       "autoDetectionFailed": "无法自动检测 brew 路径。请手动输入路径。",
       "failedToSetMirrorSource": "设置镜像源失败。请检查您的配置。",
-      "failedToSetOutdatedFlag": "设置过时包检测失败。请检查您的配置。"
+      "failedToSetOutdatedFlag": "设置过时包检测失败。请检查您的配置。",
+      "failedToSetCaskAppDir": "设置 Cask 应用程序目录失败。请检查您的配置。",
+      "failedToSelectDirectory": "选择目录失败。"
     },
     "mirrorSource": {
       "title": "Homebrew 镜像源",
@@ -427,6 +431,18 @@
         "greedy": "还包括有可用版本但标记为自动更新的 casks。有助于查看所有可用的更新。",
         "greedyAutoUpdates": "包括可以实际升级的自动更新 casks。这是最全面的检测模式。"
       }
+    },
+    "caskAppDir": {
+      "title": "Cask 应用程序目录",
+      "description": "配置 Homebrew Cask 应用程序的安装目录。这将使用 --appdir 选项设置 HOMEBREW_CASK_OPTS 环境变量。",
+      "currentDir": "应用程序目录",
+      "placeholder": "/Applications/3rd-party",
+      "default": "默认 (/Applications)",
+      "currentlyUsing": "当前使用：",
+      "hint": "点击文件夹图标选择目录。留空以使用默认的 /Applications 目录。",
+      "selectDirectory": "选择目录",
+      "newDirectory": "新目录",
+      "note": "注意：更改此设置将影响新 cask 安装和升级的放置位置。现有安装不会自动移动。"
     }
   }
 }

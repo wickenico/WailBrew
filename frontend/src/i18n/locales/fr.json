@@ -386,7 +386,9 @@
       "mirrorSourceUpdated": "Source miroir mise à jour avec succès !",
       "mirrorSourceReset": "Source miroir réinitialisée à la valeur actuelle.",
       "outdatedFlagUpdated": "Paramètre de détection des packages obsolètes mis à jour avec succès !",
-      "outdatedFlagReset": "Paramètre de détection des packages obsolètes réinitialisé à la valeur actuelle."
+      "outdatedFlagReset": "Paramètre de détection des packages obsolètes réinitialisé à la valeur actuelle.",
+      "caskAppDirUpdated": "Paramètre du répertoire d'applications Cask mis à jour avec succès !",
+      "caskAppDirReset": "Paramètre du répertoire d'applications Cask réinitialisé à la valeur actuelle."
     },
     "errors": {
       "failedToGetPath": "Échec de la récupération du chemin brew actuel.",
@@ -394,7 +396,9 @@
       "invalidPath": "Chemin brew invalide. Veuillez vérifier que le chemin existe et est un exécutable brew valide.",
       "autoDetectionFailed": "Impossible de détecter automatiquement le chemin brew. Veuillez entrer le chemin manuellement.",
       "failedToSetMirrorSource": "Échec de la configuration de la source miroir. Veuillez vérifier votre configuration.",
-      "failedToSetOutdatedFlag": "Échec de la configuration du paramètre de détection des packages obsolètes. Veuillez vérifier votre configuration."
+      "failedToSetOutdatedFlag": "Échec de la configuration du paramètre de détection des packages obsolètes. Veuillez vérifier votre configuration.",
+      "failedToSetCaskAppDir": "Échec de la configuration du répertoire d'applications Cask. Veuillez vérifier votre configuration.",
+      "failedToSelectDirectory": "Échec de la sélection du répertoire."
     },
     "mirrorSource": {
       "title": "Source miroir Homebrew",
@@ -427,6 +431,18 @@
         "greedy": "Inclut également les casks qui ont une version disponible mais sont marqués comme se mettant à jour automatiquement. Utile pour voir toutes les mises à jour disponibles.",
         "greedyAutoUpdates": "Inclut les casks qui se mettent à jour automatiquement et qui peuvent réellement être mis à niveau. C'est le mode de détection le plus complet."
       }
+    },
+    "caskAppDir": {
+      "title": "Répertoire d'applications Cask",
+      "description": "Configurez le répertoire où les applications Homebrew Cask sont installées. Ceci définit la variable d'environnement HOMEBREW_CASK_OPTS avec l'option --appdir.",
+      "currentDir": "Répertoire d'applications",
+      "placeholder": "/Applications/3rd-party",
+      "default": "Par défaut (/Applications)",
+      "currentlyUsing": "Actuellement utilisé :",
+      "hint": "Cliquez sur l'icône de dossier pour sélectionner un répertoire. Laisser vide pour utiliser le répertoire par défaut /Applications.",
+      "selectDirectory": "Sélectionner un répertoire",
+      "newDirectory": "Nouveau répertoire",
+      "note": "Note : Changer ce paramètre affectera l'emplacement des nouvelles installations et mises à jour de casks. Les installations existantes ne sont pas déplacées automatiquement."
     }
   }
 }
