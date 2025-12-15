@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "i18next": "^25.7.2",
+    "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "lucide-react": "^0.561.0",
     "react": "19.2.3",
