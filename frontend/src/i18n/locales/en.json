@@ -257,24 +257,34 @@
       "checkUpdates": "Check for Updates...",
       "visitWebsite": "Visit Website",
       "visitGitHub": "Visit GitHub Repo",
+      "reportBug": "Report Bug",
+      "visitSubreddit": "Visit Subreddit",
+      "sponsorProject": "Sponsor Project",
       "quit": "Quit"
     },
     "view": {
       "title": "View",
       "installed": "Installed Formulae",
+      "casks": "Casks",
       "outdated": "Outdated Formulae",
       "all": "All Formulae",
       "leaves": "Leaves",
       "repositories": "Repositories",
+      "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "settings": "Settings"
+      "settings": "Settings",
+      "commandPalette": "Command Palette...",
+      "shortcuts": "Keyboard Shortcuts..."
     },
     "tools": {
       "title": "Tools",
+      "refreshPackages": "Refresh Packages",
       "exportBrewfile": "Export Brewfile...",
-      "exportSuccess": "Brewfile exported successfully!",
-      "exportFailed": "Failed to export Brewfile"
+      "exportSuccess": "Export Successful",
+      "exportFailed": "Export Failed",
+      "exportMessage": "Brewfile exported successfully to:\n%s",
+      "viewSessionLogs": "View Session Logs..."
     },
     "help": {
       "title": "Help",
@@ -444,6 +454,50 @@
       "selectDirectory": "Select directory",
       "newDirectory": "New directory",
       "note": "Note: Changing this setting will affect where new cask installations and upgrades are placed. Existing installations are not moved automatically."
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 Starting update for '{{name}}'...",
+      "success": "✅ Update for '{{name}}' completed successfully!",
+      "failed": "❌ Update for '{{name}}' failed: {{error}}",
+      "retryingWithForce": "🔄 Retrying update for '{{name}}' with --force (app may be in use)...",
+      "retryingFailedCasks": "🔄 Retrying {{count}} failed cask(s) with --force..."
+    },
+    "updateAll": {
+      "start": "🔄 Starting update for all packages...",
+      "success": "✅ Update for all packages completed successfully!",
+      "failed": "❌ Update for all packages failed: {{error}}"
+    },
+    "install": {
+      "start": "🔄 Starting installation for '{{name}}'...",
+      "success": "✅ Installation for '{{name}}' completed successfully!",
+      "failed": "❌ Installation for '{{name}}' failed: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 Starting uninstallation for '{{name}}'...",
+      "success": "✅ Uninstallation for '{{name}}' completed successfully!",
+      "failed": "❌ Uninstallation for '{{name}}' failed: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 Starting tap for '{{name}}'...",
+      "success": "✅ Tap for '{{name}}' completed successfully!",
+      "failed": "❌ Tap for '{{name}}' failed: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 Starting untap for '{{name}}'...",
+      "success": "✅ Untap for '{{name}}' completed successfully!",
+      "failed": "❌ Untap for '{{name}}' failed: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Error creating output pipe: {{error}}",
+      "creatingErrorPipe": "❌ Error creating error pipe: {{error}}",
+      "startingUpdate": "❌ Error starting update: {{error}}",
+      "startingUpdateAll": "❌ Error starting update all: {{error}}",
+      "startingInstall": "❌ Error starting installation: {{error}}",
+      "startingUninstall": "❌ Error starting uninstallation: {{error}}",
+      "startingTap": "❌ Error starting tap: {{error}}",
+      "startingUntap": "❌ Error starting untap: {{error}}"
     }
   }
 }

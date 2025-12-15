@@ -253,24 +253,34 @@
       "checkUpdates": "Vérifier les mises à jour...",
       "visitWebsite": "Visiter le site Web",
       "visitGitHub": "Visiter le dépôt GitHub",
+      "reportBug": "Signaler un bug",
+      "visitSubreddit": "Visiter le Subreddit",
+      "sponsorProject": "Parrainer le projet",
       "quit": "Quitter"
     },
     "view": {
       "title": "Affichage",
       "installed": "Formules Installées",
+      "casks": "Casks",
       "outdated": "Formules Obsolètes",
       "all": "Toutes les Formules",
       "leaves": "Feuilles",
       "repositories": "Dépôts",
+      "homebrew": "Homebrew",
       "doctor": "Diagnostic",
       "cleanup": "Nettoyage",
-      "settings": "Paramètres"
+      "settings": "Paramètres",
+      "commandPalette": "Palette de commandes...",
+      "shortcuts": "Raccourcis clavier..."
     },
     "tools": {
       "title": "Outils",
+      "refreshPackages": "Actualiser les paquets",
       "exportBrewfile": "Exporter Brewfile...",
-      "exportSuccess": "Brewfile exporté avec succès !",
-      "exportFailed": "Échec de l'exportation du Brewfile"
+      "exportSuccess": "Exportation réussie",
+      "exportFailed": "Échec de l'exportation",
+      "exportMessage": "Brewfile exporté avec succès vers :\n%s",
+      "viewSessionLogs": "Afficher les journaux de session..."
     },
     "help": {
       "title": "Aide",
@@ -443,6 +453,50 @@
       "selectDirectory": "Sélectionner un répertoire",
       "newDirectory": "Nouveau répertoire",
       "note": "Note : Changer ce paramètre affectera l'emplacement des nouvelles installations et mises à jour de casks. Les installations existantes ne sont pas déplacées automatiquement."
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 Démarrage de la mise à jour pour '{{name}}'...",
+      "success": "✅ Mise à jour pour '{{name}}' terminée avec succès !",
+      "failed": "❌ Échec de la mise à jour pour '{{name}}' : {{error}}",
+      "retryingWithForce": "🔄 Nouvelle tentative de mise à jour pour '{{name}}' avec --force (l'application peut être en cours d'utilisation)...",
+      "retryingFailedCasks": "🔄 Nouvelle tentative pour {{count}} cask(s) échoué(s) avec --force..."
+    },
+    "updateAll": {
+      "start": "🔄 Démarrage de la mise à jour pour tous les paquets...",
+      "success": "✅ Mise à jour pour tous les paquets terminée avec succès !",
+      "failed": "❌ Échec de la mise à jour pour tous les paquets : {{error}}"
+    },
+    "install": {
+      "start": "🔄 Démarrage de l'installation pour '{{name}}'...",
+      "success": "✅ Installation pour '{{name}}' terminée avec succès !",
+      "failed": "❌ Échec de l'installation pour '{{name}}' : {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 Démarrage de la désinstallation pour '{{name}}'...",
+      "success": "✅ Désinstallation pour '{{name}}' terminée avec succès !",
+      "failed": "❌ Échec de la désinstallation pour '{{name}}' : {{error}}"
+    },
+    "tap": {
+      "start": "🔄 Démarrage du tap pour '{{name}}'...",
+      "success": "✅ Tap pour '{{name}}' terminé avec succès !",
+      "failed": "❌ Échec du tap pour '{{name}}' : {{error}}"
+    },
+    "untap": {
+      "start": "🔄 Démarrage de l'untap pour '{{name}}'...",
+      "success": "✅ Untap pour '{{name}}' terminé avec succès !",
+      "failed": "❌ Échec de l'untap pour '{{name}}' : {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Erreur lors de la création du tuyau de sortie : {{error}}",
+      "creatingErrorPipe": "❌ Erreur lors de la création du tuyau d'erreur : {{error}}",
+      "startingUpdate": "❌ Erreur lors du démarrage de la mise à jour : {{error}}",
+      "startingUpdateAll": "❌ Erreur lors du démarrage de la mise à jour de tous : {{error}}",
+      "startingInstall": "❌ Erreur lors du démarrage de l'installation : {{error}}",
+      "startingUninstall": "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
+      "startingTap": "❌ Erreur lors du démarrage du tap : {{error}}",
+      "startingUntap": "❌ Erreur lors du démarrage de l'untap : {{error}}"
     }
   }
 }

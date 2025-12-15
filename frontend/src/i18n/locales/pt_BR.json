@@ -253,24 +253,34 @@
       "checkUpdates": "Verificar Atualizações...",
       "visitWebsite": "Visitar Site",
       "visitGitHub": "Visitar Repositório no GitHub",
+      "reportBug": "Reportar Bug",
+      "visitSubreddit": "Visitar Subreddit",
+      "sponsorProject": "Patrocinar Projeto",
       "quit": "Sair"
     },
     "view": {
       "title": "Visualizar",
       "installed": "Fórmulas Instaladas",
+      "casks": "Casks",
       "outdated": "Fórmulas Desatualizadas",
       "all": "Todas as Fórmulas",
       "leaves": "Leaves",
       "repositories": "Repositórios",
+      "homebrew": "Homebrew",
       "doctor": "Diagnóstico",
       "cleanup": "Limpeza",
-      "settings": "Configurações"
+      "settings": "Configurações",
+      "commandPalette": "Paleta de Comandos...",
+      "shortcuts": "Atalhos de Teclado..."
     },
     "tools": {
       "title": "Ferramentas",
+      "refreshPackages": "Atualizar Pacotes",
       "exportBrewfile": "Exportar Brewfile...",
-      "exportSuccess": "Brewfile exportado com sucesso!",
-      "exportFailed": "Falha ao exportar o Brewfile"
+      "exportSuccess": "Exportação Bem-sucedida",
+      "exportFailed": "Falha na Exportação",
+      "exportMessage": "Brewfile exportado com sucesso para:\n%s",
+      "viewSessionLogs": "Visualizar Logs de Sessão..."
     },
     "help": {
       "title": "Ajuda",
@@ -443,6 +453,50 @@
       "selectDirectory": "Selecionar diretório",
       "newDirectory": "Novo diretório",
       "note": "Nota: Alterar esta configuração afetará onde novas instalações e atualizações de casks são colocadas. Instalações existentes não são movidas automaticamente."
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 Iniciando atualização para '{{name}}'...",
+      "success": "✅ Atualização para '{{name}}' concluída com sucesso!",
+      "failed": "❌ Atualização para '{{name}}' falhou: {{error}}",
+      "retryingWithForce": "🔄 Tentando novamente atualização para '{{name}}' com --force (aplicativo pode estar em uso)...",
+      "retryingFailedCasks": "🔄 Tentando novamente {{count}} cask(s) falhado(s) com --force..."
+    },
+    "updateAll": {
+      "start": "🔄 Iniciando atualização para todos os pacotes...",
+      "success": "✅ Atualização para todos os pacotes concluída com sucesso!",
+      "failed": "❌ Atualização para todos os pacotes falhou: {{error}}"
+    },
+    "install": {
+      "start": "🔄 Iniciando instalação para '{{name}}'...",
+      "success": "✅ Instalação para '{{name}}' concluída com sucesso!",
+      "failed": "❌ Instalação para '{{name}}' falhou: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 Iniciando desinstalação para '{{name}}'...",
+      "success": "✅ Desinstalação para '{{name}}' concluída com sucesso!",
+      "failed": "❌ Desinstalação para '{{name}}' falhou: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 Iniciando tap para '{{name}}'...",
+      "success": "✅ Tap para '{{name}}' concluído com sucesso!",
+      "failed": "❌ Tap para '{{name}}' falhou: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 Iniciando untap para '{{name}}'...",
+      "success": "✅ Untap para '{{name}}' concluído com sucesso!",
+      "failed": "❌ Untap para '{{name}}' falhou: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Erro ao criar pipe de saída: {{error}}",
+      "creatingErrorPipe": "❌ Erro ao criar pipe de erro: {{error}}",
+      "startingUpdate": "❌ Erro ao iniciar atualização: {{error}}",
+      "startingUpdateAll": "❌ Erro ao iniciar atualização de todos: {{error}}",
+      "startingInstall": "❌ Erro ao iniciar instalação: {{error}}",
+      "startingUninstall": "❌ Erro ao iniciar desinstalação: {{error}}",
+      "startingTap": "❌ Erro ao iniciar tap: {{error}}",
+      "startingUntap": "❌ Erro ao iniciar untap: {{error}}"
     }
   }
 }

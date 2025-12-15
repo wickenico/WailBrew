@@ -253,24 +253,34 @@
       "checkUpdates": "Güncellemeleri denetle...",
       "visitWebsite": "Siteyi Ziyaret Et",
       "visitGitHub": "GitHub Deposunu Ziyaret et",
+      "reportBug": "Hata Bildir",
+      "visitSubreddit": "Subreddit'i Ziyaret Et",
+      "sponsorProject": "Projeyi Destekle",
       "quit": "Çıkış"
     },
     "view": {
       "title": "Görünüm",
       "installed": "Yüklü Formüller",
+      "casks": "Casks",
       "outdated": "Eskimiş Formüller",
       "all": "Tüm Formüller",
       "leaves": "Yapraklar",
       "repositories": "Depolar",
+      "homebrew": "Homebrew",
       "doctor": "Doktor",
       "cleanup": "Temizlik",
-      "settings": "Ayarlar"
+      "settings": "Ayarlar",
+      "commandPalette": "Komut Paleti...",
+      "shortcuts": "Klavye Kısayolları..."
     },
     "tools": {
       "title": "Araçlar",
+      "refreshPackages": "Paketleri Yenile",
       "exportBrewfile": "Brewfile Dışa Aktar...",
-      "exportSuccess": "Brewfile başarıyla dışa aktarıldı!",
-      "exportFailed": "Brewfile dışa aktarılamadı"
+      "exportSuccess": "Dışa Aktarma Başarılı",
+      "exportFailed": "Dışa Aktarma Başarısız",
+      "exportMessage": "Brewfile başarıyla dışa aktarıldı:\n%s",
+      "viewSessionLogs": "Oturum Günlüklerini Görüntüle..."
     },
     "help": {
       "title": "Yardım",
@@ -443,6 +453,50 @@
       "selectDirectory": "Dizin seç",
       "newDirectory": "Yeni dizin",
       "note": "Not: Bu ayarı değiştirmek, yeni cask kurulumlarının ve güncellemelerinin yerleştirildiği yeri etkileyecektir. Mevcut kurulumlar otomatik olarak taşınmaz."
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 '{{name}}' için güncelleme başlatılıyor...",
+      "success": "✅ '{{name}}' için güncelleme başarıyla tamamlandı!",
+      "failed": "❌ '{{name}}' için güncelleme başarısız: {{error}}",
+      "retryingWithForce": "🔄 '{{name}}' için güncelleme --force ile yeniden deneniyor (uygulama kullanımda olabilir)...",
+      "retryingFailedCasks": "🔄 {{count}} başarısız cask --force ile yeniden deneniyor..."
+    },
+    "updateAll": {
+      "start": "🔄 Tüm paketler için güncelleme başlatılıyor...",
+      "success": "✅ Tüm paketler için güncelleme başarıyla tamamlandı!",
+      "failed": "❌ Tüm paketler için güncelleme başarısız: {{error}}"
+    },
+    "install": {
+      "start": "🔄 '{{name}}' için kurulum başlatılıyor...",
+      "success": "✅ '{{name}}' için kurulum başarıyla tamamlandı!",
+      "failed": "❌ '{{name}}' için kurulum başarısız: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 '{{name}}' için kaldırma başlatılıyor...",
+      "success": "✅ '{{name}}' için kaldırma başarıyla tamamlandı!",
+      "failed": "❌ '{{name}}' için kaldırma başarısız: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 '{{name}}' için tap başlatılıyor...",
+      "success": "✅ '{{name}}' için tap başarıyla tamamlandı!",
+      "failed": "❌ '{{name}}' için tap başarısız: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 '{{name}}' için untap başlatılıyor...",
+      "success": "✅ '{{name}}' için untap başarıyla tamamlandı!",
+      "failed": "❌ '{{name}}' için untap başarısız: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Çıktı borusu oluşturulurken hata: {{error}}",
+      "creatingErrorPipe": "❌ Hata borusu oluşturulurken hata: {{error}}",
+      "startingUpdate": "❌ Güncelleme başlatılırken hata: {{error}}",
+      "startingUpdateAll": "❌ Tümünü güncelleme başlatılırken hata: {{error}}",
+      "startingInstall": "❌ Kurulum başlatılırken hata: {{error}}",
+      "startingUninstall": "❌ Kaldırma başlatılırken hata: {{error}}",
+      "startingTap": "❌ Tap başlatılırken hata: {{error}}",
+      "startingUntap": "❌ Untap başlatılırken hata: {{error}}"
     }
   }
 }
