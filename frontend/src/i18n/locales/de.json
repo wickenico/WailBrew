@@ -253,24 +253,34 @@
       "checkUpdates": "Auf Aktualisierungen prüfen...",
       "visitWebsite": "Website besuchen",
       "visitGitHub": "GitHub Repo besuchen",
+      "reportBug": "Fehler melden",
+      "visitSubreddit": "Subreddit besuchen",
+      "sponsorProject": "Projekt sponsern",
       "quit": "Beenden"
     },
     "view": {
       "title": "Ansicht",
       "installed": "Installierte Formeln",
+      "casks": "Casks",
       "outdated": "Veraltete Formeln",
       "all": "Alle Formeln",
       "leaves": "Blätter",
       "repositories": "Repositories",
+      "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "commandPalette": "Befehls-Palette...",
+      "shortcuts": "Tastenkürzel..."
     },
     "tools": {
       "title": "Werkzeuge",
+      "refreshPackages": "Pakete aktualisieren",
       "exportBrewfile": "Brewfile exportieren...",
-      "exportSuccess": "Brewfile erfolgreich exportiert!",
-      "exportFailed": "Brewfile konnte nicht exportiert werden"
+      "exportSuccess": "Export erfolgreich",
+      "exportFailed": "Export fehlgeschlagen",
+      "exportMessage": "Brewfile erfolgreich exportiert nach:\n%s",
+      "viewSessionLogs": "Sitzungsprotokolle anzeigen..."
     },
     "help": {
       "title": "Hilfe",
@@ -443,6 +453,50 @@
       "selectDirectory": "Verzeichnis auswählen",
       "newDirectory": "Neues Verzeichnis",
       "note": "Hinweis: Das Ändern dieser Einstellung wirkt sich darauf aus, wo neue Cask-Installationen und -Aktualisierungen platziert werden. Bestehende Installationen werden nicht automatisch verschoben."
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 Starte Aktualisierung für '{{name}}'...",
+      "success": "✅ Aktualisierung für '{{name}}' erfolgreich abgeschlossen!",
+      "failed": "❌ Aktualisierung für '{{name}}' fehlgeschlagen: {{error}}",
+      "retryingWithForce": "🔄 Wiederhole Aktualisierung für '{{name}}' mit --force (App könnte in Verwendung sein)...",
+      "retryingFailedCasks": "🔄 Wiederhole {{count}} fehlgeschlagene(n) Cask(s) mit --force..."
+    },
+    "updateAll": {
+      "start": "🔄 Starte Aktualisierung für alle Pakete...",
+      "success": "✅ Aktualisierung für alle Pakete erfolgreich abgeschlossen!",
+      "failed": "❌ Aktualisierung für alle Pakete fehlgeschlagen: {{error}}"
+    },
+    "install": {
+      "start": "🔄 Starte Installation für '{{name}}'...",
+      "success": "✅ Installation für '{{name}}' erfolgreich abgeschlossen!",
+      "failed": "❌ Installation für '{{name}}' fehlgeschlagen: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 Starte Deinstallation für '{{name}}'...",
+      "success": "✅ Deinstallation für '{{name}}' erfolgreich abgeschlossen!",
+      "failed": "❌ Deinstallation für '{{name}}' fehlgeschlagen: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 Starte Tap für '{{name}}'...",
+      "success": "✅ Tap für '{{name}}' erfolgreich abgeschlossen!",
+      "failed": "❌ Tap für '{{name}}' fehlgeschlagen: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 Starte Untap für '{{name}}'...",
+      "success": "✅ Untap für '{{name}}' erfolgreich abgeschlossen!",
+      "failed": "❌ Untap für '{{name}}' fehlgeschlagen: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Fehler beim Erstellen der Ausgabe-Pipe: {{error}}",
+      "creatingErrorPipe": "❌ Fehler beim Erstellen der Fehler-Pipe: {{error}}",
+      "startingUpdate": "❌ Fehler beim Starten der Aktualisierung: {{error}}",
+      "startingUpdateAll": "❌ Fehler beim Starten der Aktualisierung aller: {{error}}",
+      "startingInstall": "❌ Fehler beim Starten der Installation: {{error}}",
+      "startingUninstall": "❌ Fehler beim Starten der Deinstallation: {{error}}",
+      "startingTap": "❌ Fehler beim Starten des Taps: {{error}}",
+      "startingUntap": "❌ Fehler beim Starten des Untaps: {{error}}"
     }
   }
 }

@@ -253,24 +253,34 @@
       "checkUpdates": "檢查更新...",
       "visitWebsite": "造訪網站",
       "visitGitHub": "造訪 GitHub 程式庫",
+      "reportBug": "回報錯誤",
+      "visitSubreddit": "造訪 Subreddit",
+      "sponsorProject": "贊助專案",
       "quit": "結束"
     },
     "view": {
       "title": "檢視",
       "installed": "已安裝套件",
+      "casks": "Casks",
       "outdated": "可更新套件",
       "all": "全部套件",
       "leaves": "獨立套件",
       "repositories": "軟體庫",
+      "homebrew": "Homebrew",
       "doctor": "診斷",
       "cleanup": "清理",
-      "settings": "設定"
+      "settings": "設定",
+      "commandPalette": "指令面板...",
+      "shortcuts": "鍵盤快捷鍵..."
     },
     "tools": {
       "title": "工具",
+      "refreshPackages": "重新整理套件",
       "exportBrewfile": "匯出 Brewfile...",
-      "exportSuccess": "Brewfile 匯出成功！",
-      "exportFailed": "匯出 Brewfile 失敗"
+      "exportSuccess": "匯出成功",
+      "exportFailed": "匯出失敗",
+      "exportMessage": "Brewfile 已成功匯出至：\n%s",
+      "viewSessionLogs": "檢視工作階段記錄..."
     },
     "help": {
       "title": "說明",
@@ -443,6 +453,50 @@
       "selectDirectory": "選擇目錄",
       "newDirectory": "新目錄",
       "note": "注意：變更此設定將影響新 cask 安裝和升級的放置位置。現有安裝不會自動移動。"
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 正在為 '{{name}}' 開始更新...",
+      "success": "✅ '{{name}}' 的更新已成功完成！",
+      "failed": "❌ '{{name}}' 的更新失敗：{{error}}",
+      "retryingWithForce": "🔄 正在使用 --force 重試 '{{name}}' 的更新（應用程式可能正在使用中）...",
+      "retryingFailedCasks": "🔄 正在使用 --force 重試 {{count}} 個失敗的 cask..."
+    },
+    "updateAll": {
+      "start": "🔄 正在為所有套件開始更新...",
+      "success": "✅ 所有套件的更新已成功完成！",
+      "failed": "❌ 所有套件的更新失敗：{{error}}"
+    },
+    "install": {
+      "start": "🔄 正在為 '{{name}}' 開始安裝...",
+      "success": "✅ '{{name}}' 的安裝已成功完成！",
+      "failed": "❌ '{{name}}' 的安裝失敗：{{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 正在為 '{{name}}' 開始解除安裝...",
+      "success": "✅ '{{name}}' 的解除安裝已成功完成！",
+      "failed": "❌ '{{name}}' 的解除安裝失敗：{{error}}"
+    },
+    "tap": {
+      "start": "🔄 正在為 '{{name}}' 開始 tap...",
+      "success": "✅ '{{name}}' 的 tap 已成功完成！",
+      "failed": "❌ '{{name}}' 的 tap 失敗：{{error}}"
+    },
+    "untap": {
+      "start": "🔄 正在為 '{{name}}' 開始 untap...",
+      "success": "✅ '{{name}}' 的 untap 已成功完成！",
+      "failed": "❌ '{{name}}' 的 untap 失敗：{{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ 建立輸出管道時發生錯誤：{{error}}",
+      "creatingErrorPipe": "❌ 建立錯誤管道時發生錯誤：{{error}}",
+      "startingUpdate": "❌ 啟動更新時發生錯誤：{{error}}",
+      "startingUpdateAll": "❌ 啟動全部更新時發生錯誤：{{error}}",
+      "startingInstall": "❌ 啟動安裝時發生錯誤：{{error}}",
+      "startingUninstall": "❌ 啟動解除安裝時發生錯誤：{{error}}",
+      "startingTap": "❌ 啟動 tap 時發生錯誤：{{error}}",
+      "startingUntap": "❌ 啟動 untap 時發生錯誤：{{error}}"
     }
   }
 }

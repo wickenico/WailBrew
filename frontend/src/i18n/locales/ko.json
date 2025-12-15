@@ -257,24 +257,34 @@
       "checkUpdates": "업데이트 확인...",
       "visitWebsite": "웹사이트 방문",
       "visitGitHub": "GitHub 저장소 방문",
+      "reportBug": "버그 신고",
+      "visitSubreddit": "Subreddit 방문",
+      "sponsorProject": "프로젝트 후원",
       "quit": "종료"
     },
     "view": {
       "title": "보기",
       "installed": "설치된 Formulae",
+      "casks": "Casks",
       "outdated": "업데이트 필요한 Formulae",
       "all": "모든 Formulae",
       "leaves": "Leaves",
       "repositories": "Repositories",
+      "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "settings": "설정"
+      "settings": "설정",
+      "commandPalette": "명령 팔레트...",
+      "shortcuts": "키보드 단축키..."
     },
     "tools": {
       "title": "도구",
+      "refreshPackages": "패키지 새로고침",
       "exportBrewfile": "Brewfile 내보내기...",
-      "exportSuccess": "Brewfile 내보내기 성공!",
-      "exportFailed": "Brewfile 내보내기 실패"
+      "exportSuccess": "내보내기 성공",
+      "exportFailed": "내보내기 실패",
+      "exportMessage": "Brewfile이 다음 위치로 성공적으로 내보내졌습니다:\n%s",
+      "viewSessionLogs": "세션 로그 보기..."
     },
     "help": {
       "title": "도움말",
@@ -444,6 +454,50 @@
       "selectDirectory": "디렉토리 선택",
       "newDirectory": "새 디렉토리",
       "note": "참고: 이 설정을 변경하면 새로운 캐스크 설치 및 업그레이드가 배치되는 위치에 영향을 미칩니다. 기존 설치물은 자동으로 이동되지 않습니다."
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 '{{name}}' 업데이트 시작 중...",
+      "success": "✅ '{{name}}' 업데이트가 성공적으로 완료되었습니다!",
+      "failed": "❌ '{{name}}' 업데이트 실패: {{error}}",
+      "retryingWithForce": "🔄 '{{name}}' 업데이트를 --force로 재시도 중 (앱이 사용 중일 수 있음)...",
+      "retryingFailedCasks": "🔄 {{count}}개의 실패한 cask를 --force로 재시도 중..."
+    },
+    "updateAll": {
+      "start": "🔄 모든 패키지 업데이트 시작 중...",
+      "success": "✅ 모든 패키지 업데이트가 성공적으로 완료되었습니다!",
+      "failed": "❌ 모든 패키지 업데이트 실패: {{error}}"
+    },
+    "install": {
+      "start": "🔄 '{{name}}' 설치 시작 중...",
+      "success": "✅ '{{name}}' 설치가 성공적으로 완료되었습니다!",
+      "failed": "❌ '{{name}}' 설치 실패: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 '{{name}}' 제거 시작 중...",
+      "success": "✅ '{{name}}' 제거가 성공적으로 완료되었습니다!",
+      "failed": "❌ '{{name}}' 제거 실패: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 '{{name}}' tap 시작 중...",
+      "success": "✅ '{{name}}' tap이 성공적으로 완료되었습니다!",
+      "failed": "❌ '{{name}}' tap 실패: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 '{{name}}' untap 시작 중...",
+      "success": "✅ '{{name}}' untap이 성공적으로 완료되었습니다!",
+      "failed": "❌ '{{name}}' untap 실패: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ 출력 파이프 생성 오류: {{error}}",
+      "creatingErrorPipe": "❌ 오류 파이프 생성 오류: {{error}}",
+      "startingUpdate": "❌ 업데이트 시작 오류: {{error}}",
+      "startingUpdateAll": "❌ 전체 업데이트 시작 오류: {{error}}",
+      "startingInstall": "❌ 설치 시작 오류: {{error}}",
+      "startingUninstall": "❌ 제거 시작 오류: {{error}}",
+      "startingTap": "❌ tap 시작 오류: {{error}}",
+      "startingUntap": "❌ untap 시작 오류: {{error}}"
     }
   }
 }

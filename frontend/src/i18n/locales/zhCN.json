@@ -253,24 +253,34 @@
       "checkUpdates": "检查更新...",
       "visitWebsite": "访问 WailBrew 主页",
       "visitGitHub": "访问 GitHub 仓库",
+      "reportBug": "报告错误",
+      "visitSubreddit": "访问 Subreddit",
+      "sponsorProject": "赞助项目",
       "quit": "退出"
     },
     "view": {
       "title": "显示",
       "installed": "已安装 Formulae",
+      "casks": "Casks",
       "outdated": "可更新 Formulae",
       "all": "所有 Formulae",
       "leaves": "独立包",
       "repositories": "软件源",
+      "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "settings": "软件设置"
+      "settings": "软件设置",
+      "commandPalette": "命令面板...",
+      "shortcuts": "键盘快捷键..."
     },
     "tools": {
       "title": "工具",
+      "refreshPackages": "刷新包",
       "exportBrewfile": "导出 Brewfile...",
-      "exportSuccess": "Brewfile 导出成功！",
-      "exportFailed": "导出 Brewfile 失败"
+      "exportSuccess": "导出成功",
+      "exportFailed": "导出失败",
+      "exportMessage": "Brewfile 已成功导出到：\n%s",
+      "viewSessionLogs": "查看会话日志..."
     },
     "help": {
       "title": "帮助",
@@ -443,6 +453,50 @@
       "selectDirectory": "选择目录",
       "newDirectory": "新目录",
       "note": "注意：更改此设置将影响新 cask 安装和升级的放置位置。现有安装不会自动移动。"
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 正在为 '{{name}}' 开始更新...",
+      "success": "✅ '{{name}}' 的更新已成功完成！",
+      "failed": "❌ '{{name}}' 的更新失败：{{error}}",
+      "retryingWithForce": "🔄 正在使用 --force 重试 '{{name}}' 的更新（应用可能正在使用中）...",
+      "retryingFailedCasks": "🔄 正在使用 --force 重试 {{count}} 个失败的 cask..."
+    },
+    "updateAll": {
+      "start": "🔄 正在为所有包开始更新...",
+      "success": "✅ 所有包的更新已成功完成！",
+      "failed": "❌ 所有包的更新失败：{{error}}"
+    },
+    "install": {
+      "start": "🔄 正在为 '{{name}}' 开始安装...",
+      "success": "✅ '{{name}}' 的安装已成功完成！",
+      "failed": "❌ '{{name}}' 的安装失败：{{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 正在为 '{{name}}' 开始卸载...",
+      "success": "✅ '{{name}}' 的卸载已成功完成！",
+      "failed": "❌ '{{name}}' 的卸载失败：{{error}}"
+    },
+    "tap": {
+      "start": "🔄 正在为 '{{name}}' 开始 tap...",
+      "success": "✅ '{{name}}' 的 tap 已成功完成！",
+      "failed": "❌ '{{name}}' 的 tap 失败：{{error}}"
+    },
+    "untap": {
+      "start": "🔄 正在为 '{{name}}' 开始 untap...",
+      "success": "✅ '{{name}}' 的 untap 已成功完成！",
+      "failed": "❌ '{{name}}' 的 untap 失败：{{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ 创建输出管道时出错：{{error}}",
+      "creatingErrorPipe": "❌ 创建错误管道时出错：{{error}}",
+      "startingUpdate": "❌ 启动更新时出错：{{error}}",
+      "startingUpdateAll": "❌ 启动全部更新时出错：{{error}}",
+      "startingInstall": "❌ 启动安装时出错：{{error}}",
+      "startingUninstall": "❌ 启动卸载时出错：{{error}}",
+      "startingTap": "❌ 启动 tap 时出错：{{error}}",
+      "startingUntap": "❌ 启动 untap 时出错：{{error}}"
     }
   }
 }

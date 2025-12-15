@@ -14,5 +14,8 @@
   "info": {
     "productName": "WailBrew",
     "productVersion": "0.9.4"
+  },
+  "assets": {
+    "include": ["frontend/src/i18n/locales/*.json"]
   }
 }
