@@ -18,7 +18,7 @@ export function GetAppVersion():Promise<string>;
 
 export function GetBrewCaskSizes(arg1:Array<string>):Promise<Record<string, string>>;
 
-export function GetBrewCasks():Promise<Array<any>>;
+export function GetBrewCasks(arg1:boolean):Promise<Array<any>>;
 
 export function GetBrewCleanupDryRun():Promise<string>;
 
@@ -58,9 +58,13 @@ export function GetSessionLogs():Promise<string>;
 
 export function InstallBrewPackage(arg1:string):Promise<string>;
 
+export function LoadPackageInfo(arg1:Array<string>,arg2:boolean):Promise<void>;
+
 export function OpenURL(arg1:string):Promise<void>;
 
 export function ParseNewPackagesFromUpdateOutput(arg1:string):Promise<main.NewPackagesInfo>;
+
+export function RefreshPackageInfo(arg1:Array<string>,arg2:boolean):Promise<void>;
 
 export function RemoveBrewPackage(arg1:string):Promise<string>;
 
