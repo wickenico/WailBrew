@@ -1,4 +1,4 @@
-export namespace main {
+export namespace brew {
 	
 	export class NewPackagesInfo {
 	    newFormulae: string[];
@@ -14,6 +14,11 @@ export namespace main {
 	        this.newCasks = source["newCasks"];
 	    }
 	}
+
+}
+
+export namespace main {
+	
 	export class UpdateInfo {
 	    available: boolean;
 	    currentVersion: string;
