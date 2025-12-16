@@ -82,6 +82,10 @@ export function GetCaskAppDir() {
   return window['go']['main']['App']['GetCaskAppDir']();
 }
 
+export function GetContext() {
+  return window['go']['main']['App']['GetContext']();
+}
+
 export function GetCurrentLanguage() {
   return window['go']['main']['App']['GetCurrentLanguage']();
 }
@@ -108,6 +112,10 @@ export function GetOutdatedFlag() {
 
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
+}
+
+export function GetTranslation(arg1, arg2) {
+  return window['go']['main']['App']['GetTranslation'](arg1, arg2);
 }
 
 export function InstallBrewPackage(arg1) {

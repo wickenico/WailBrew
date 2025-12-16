@@ -24,11 +24,6 @@ import (
 	"WailBrew/i18n"
 )
 
-// Initialize i18n FS from main package's i18n.go
-func init() {
-	i18n.FS = i18nFS
-}
-
 var Version = "0.dev"
 
 // Standard PATH and locale for brew commands
@@ -38,16 +33,12 @@ const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
 const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 
 // wailsEventEmitter implements brew.EventEmitter for Wails
-// It stores the exact context from Wails lifecycle hooks
 type wailsEventEmitter struct {
 	ctx context.Context
 }
 
 func (e *wailsEventEmitter) Emit(event string, data string) {
-	// Use the stored context directly - it's the exact context from startup()
-	if e.ctx != nil {
-		rt.EventsEmit(e.ctx, event, data)
-	}
+	rt.EventsEmit(e.ctx, event, data)
 }
 
 // GitHubRelease represents a GitHub release
@@ -82,16 +73,16 @@ type Config = config.Config
 
 // App struct - minimal orchestrator
 type App struct {
-	ctx               context.Context
-	brewPath          string
-	currentLanguage   string
-	config            *config.Config
-	askpassManager    *system.Manager
+	ctx             context.Context
+	brewPath        string
+	currentLanguage string
+	config          *config.Config
+	askpassManager  *system.Manager
 	sessionLogManager *logging.Manager
-	brewExecutor      *brew.Executor
-	brewService       brew.Service
-	i18nManager       *i18n.Manager
-	eventEmitter      *wailsEventEmitter
+	brewExecutor    *brew.Executor
+	brewService     brew.Service
+	i18nManager     *i18n.Manager
+	eventEmitter    *wailsEventEmitter
 }
 
 // detectBrewPath automatically detects the brew binary path
@@ -180,8 +171,6 @@ func (a *App) getBrewEnv() []string {
 
 // startup saves the application context and sets up services
 func (a *App) startup(ctx context.Context) {
-	// Store the exact context from Wails lifecycle hook
-	// This context must be used for all EventsEmit calls
 	a.ctx = ctx
 
 	// Load config from file
@@ -206,8 +195,7 @@ func (a *App) startup(ctx context.Context) {
 		}
 	}
 
-	// Create event emitter with the exact context from lifecycle hook
-	// Wails requires this exact context instance for EventsEmit to work
+	// Create event emitter
 	a.eventEmitter = &wailsEventEmitter{ctx: ctx}
 
 	// Initialize brew service with all dependencies
@@ -289,7 +277,9 @@ func (a *App) GetSessionLogs() string {
 	return ""
 }
 
+// ============================================================================
 // BREW OPERATIONS - Delegation to brew.Service
+// ============================================================================
 
 func (a *App) GetAllBrewPackages() [][]string {
 	return a.brewService.GetAllBrewPackages()
@@ -340,36 +330,6 @@ func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
 }
 
 func (a *App) GetBrewUpdatablePackages() [][]string {
-	// Update the formula database first to get latest information
-	updateOutput, err := a.brewService.UpdateBrewDatabaseWithOutput()
-	var newPackages *NewPackagesInfo
-	var shouldEmitEvent bool
-
-	if err == nil && updateOutput != "" {
-		// Try to detect new packages from update output
-		newPackages = a.brewService.ParseNewPackagesFromUpdateOutput(updateOutput)
-		if len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0 {
-			shouldEmitEvent = true
-		}
-	} else {
-		// Fallback: try to detect new packages by comparing current list
-		detectedPackages, err := a.brewService.CheckForNewPackages()
-		if err == nil && (len(detectedPackages.NewFormulae) > 0 || len(detectedPackages.NewCasks) > 0) {
-			newPackages = detectedPackages
-			shouldEmitEvent = true
-		}
-	}
-
-	// Emit event only once if new packages were discovered
-	if shouldEmitEvent && newPackages != nil && a.ctx != nil {
-		eventData := map[string]interface{}{
-			"newFormulae": newPackages.NewFormulae,
-			"newCasks":    newPackages.NewCasks,
-		}
-		jsonData, _ := json.Marshal(eventData)
-		rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
-	}
-
 	return a.brewService.GetBrewUpdatablePackages()
 }
 
@@ -445,7 +405,9 @@ func (a *App) ExportBrewfile(filePath string) error {
 	return a.brewService.ExportBrewfile(filePath)
 }
 
+// ============================================================================
 // CONFIG OPERATIONS - Simple delegation to config
+// ============================================================================
 
 func (a *App) GetMirrorSource() map[string]string {
 	return map[string]string{
@@ -592,7 +554,9 @@ func (a *App) GetAppVersion() string {
 	return Version
 }
 
+// ============================================================================
 // UPDATE OPERATIONS - App-specific, not brew domain logic
+// ============================================================================
 
 func compareVersions(version1, version2 string) bool {
 	v1 := strings.TrimPrefix(strings.TrimSpace(version1), "v")
@@ -748,3 +712,4 @@ func (a *App) RestartApp() error {
 
 	return nil
 }
+
