@@ -14,6 +14,10 @@ export function CheckHomebrewUpdate() {
   return window['go']['main']['App']['CheckHomebrewUpdate']();
 }
 
+export function ClearBrewCache() {
+  return window['go']['main']['App']['ClearBrewCache']();
+}
+
 export function DownloadAndInstallUpdate(arg1) {
   return window['go']['main']['App']['DownloadAndInstallUpdate'](arg1);
 }
@@ -78,6 +82,10 @@ export function GetBrewUpdatablePackages() {
   return window['go']['main']['App']['GetBrewUpdatablePackages']();
 }
 
+export function GetBrewUpdatablePackagesWithUpdate() {
+  return window['go']['main']['App']['GetBrewUpdatablePackagesWithUpdate']();
+}
+
 export function GetCaskAppDir() {
   return window['go']['main']['App']['GetCaskAppDir']();
 }
@@ -112,6 +120,14 @@ export function GetOutdatedFlag() {
 
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
+}
+
+export function GetStartupData() {
+  return window['go']['main']['App']['GetStartupData']();
+}
+
+export function GetStartupDataWithUpdate() {
+  return window['go']['main']['App']['GetStartupDataWithUpdate']();
 }
 
 export function GetTranslation(arg1, arg2) {

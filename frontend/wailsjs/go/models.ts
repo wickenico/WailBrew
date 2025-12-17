@@ -14,6 +14,26 @@ export namespace brew {
 	        this.newCasks = source["newCasks"];
 	    }
 	}
+	export class StartupData {
+	    packages: string[][];
+	    casks: string[][];
+	    updatable: string[][];
+	    leaves: string[];
+	    taps: string[][];
+	
+	    static createFrom(source: any = {}) {
+	        return new StartupData(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.packages = source["packages"];
+	        this.casks = source["casks"];
+	        this.updatable = source["updatable"];
+	        this.leaves = source["leaves"];
+	        this.taps = source["taps"];
+	    }
+	}
 
 }
 
