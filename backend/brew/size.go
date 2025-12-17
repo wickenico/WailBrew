@@ -3,6 +3,7 @@ package brew
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -133,7 +134,10 @@ func (s *SizeService) CalculateFormulaSize(formulaName string) string {
 	// Get formula path in cellar
 	cellarPath := ""
 	if runtime.GOOS == "darwin" {
-		if runtime.GOARCH == "arm64" {
+		// Check for Workbrew first (enterprise users)
+		if _, err := os.Stat("/opt/workbrew/Cellar"); err == nil {
+			cellarPath = fmt.Sprintf("/opt/workbrew/Cellar/%s", formulaName)
+		} else if runtime.GOARCH == "arm64" {
 			cellarPath = fmt.Sprintf("/opt/homebrew/Cellar/%s", formulaName)
 		} else {
 			cellarPath = fmt.Sprintf("/usr/local/Cellar/%s", formulaName)
@@ -161,7 +165,10 @@ func (s *SizeService) CalculateCaskSize(caskName string) string {
 	// Get cask path in caskroom
 	caskroomPath := ""
 	if runtime.GOOS == "darwin" {
-		if runtime.GOARCH == "arm64" {
+		// Check for Workbrew first (enterprise users)
+		if _, err := os.Stat("/opt/workbrew/Caskroom"); err == nil {
+			caskroomPath = fmt.Sprintf("/opt/workbrew/Caskroom/%s", caskName)
+		} else if runtime.GOARCH == "arm64" {
 			caskroomPath = fmt.Sprintf("/opt/homebrew/Caskroom/%s", caskName)
 		} else {
 			caskroomPath = fmt.Sprintf("/usr/local/Caskroom/%s", caskName)

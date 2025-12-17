@@ -446,7 +446,10 @@ func (s *serviceImpl) CheckHomebrewUpdate() (map[string]interface{}, error) {
 	// Check Homebrew's git repository status
 	brewDir := ""
 	if runtime.GOOS == "darwin" {
-		if runtime.GOARCH == "arm64" {
+		// Check for Workbrew first (enterprise users)
+		if _, err := os.Stat("/opt/workbrew"); err == nil {
+			brewDir = "/opt/workbrew"
+		} else if runtime.GOARCH == "arm64" {
 			brewDir = "/opt/homebrew"
 		} else {
 			brewDir = "/usr/local"

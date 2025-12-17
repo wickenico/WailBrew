@@ -31,8 +31,8 @@ func init() {
 
 var Version = "0.dev"
 
-// Standard PATH and locale for brew commands
-const brewEnvPath = "PATH=/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin"
+// Standard PATH and locale for brew commands (includes Workbrew paths for enterprise users)
+const brewEnvPath = "PATH=/opt/workbrew/sbin:/opt/workbrew/bin:/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin"
 const brewEnvLang = "LANG=en_US.UTF-8"
 const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
 const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
@@ -97,6 +97,7 @@ type App struct {
 // detectBrewPath automatically detects the brew binary path
 func detectBrewPath() string {
 	paths := []string{
+		"/opt/workbrew/bin/brew", // Workbrew (check first for enterprise users)
 		"/opt/homebrew/bin/brew",
 		"/usr/local/bin/brew",
 		"/home/linuxbrew/.linuxbrew/bin/brew",
