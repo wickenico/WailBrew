@@ -346,18 +346,28 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	var newPackages *NewPackagesInfo
 	var shouldEmitEvent bool
 
+	// Maximum number of "new" packages to consider as a legitimate update
+	// If more than this, it's likely a fresh database sync (first run) rather than actual new packages
+	const maxReasonableNewPackages = 100
+
 	if err == nil && updateOutput != "" {
 		// Try to detect new packages from update output
 		newPackages = a.brewService.ParseNewPackagesFromUpdateOutput(updateOutput)
-		if len(newPackages.NewFormulae) > 0 || len(newPackages.NewCasks) > 0 {
+		totalNew := len(newPackages.NewFormulae) + len(newPackages.NewCasks)
+		// Only emit event if there are new packages AND it's not an unreasonably large number
+		// (which would indicate a fresh database sync rather than actual new packages)
+		if totalNew > 0 && totalNew <= maxReasonableNewPackages {
 			shouldEmitEvent = true
 		}
 	} else {
 		// Fallback: try to detect new packages by comparing current list
 		detectedPackages, err := a.brewService.CheckForNewPackages()
-		if err == nil && (len(detectedPackages.NewFormulae) > 0 || len(detectedPackages.NewCasks) > 0) {
-			newPackages = detectedPackages
-			shouldEmitEvent = true
+		if err == nil {
+			totalNew := len(detectedPackages.NewFormulae) + len(detectedPackages.NewCasks)
+			if totalNew > 0 && totalNew <= maxReasonableNewPackages {
+				newPackages = detectedPackages
+				shouldEmitEvent = true
+			}
 		}
 	}
 
