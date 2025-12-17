@@ -8,6 +8,7 @@ import {
     GetBrewPackages,
     GetBrewCasks,
     GetBrewUpdatablePackages,
+    GetBrewUpdatablePackagesWithUpdate,
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
     RemoveBrewPackage,
@@ -34,6 +35,8 @@ import {
     GetDeprecatedFormulae,
     GetBrewPackageSizes,
     GetBrewCaskSizes,
+    GetStartupData,
+    ClearBrewCache,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
 
@@ -182,14 +185,16 @@ const WailBrewApp = () => {
             }
         }, 100);
         
-        Promise.all([GetBrewPackages(), GetBrewCasks(), GetBrewUpdatablePackages(), GetBrewLeaves(), GetBrewTaps()])
-            .then(([installed, installedCasks, updatable, leaves, repos]) => {
+        // Use single optimized startup call instead of multiple parallel calls
+        // This drastically reduces duplicate brew command executions
+        GetStartupData()
+            .then((startupData) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
-                const safeInstalled = installed || [];
-                const safeInstalledCasks = installedCasks || [];
-                const safeUpdatable = updatable || [];
-                const safeLeaves = leaves || [];
-                const safeRepos = repos || [];
+                const safeInstalled = startupData.packages || [];
+                const safeInstalledCasks = startupData.casks || [];
+                const safeUpdatable = startupData.updatable || [];
+                const safeLeaves = startupData.leaves || [];
+                const safeRepos = startupData.taps || [];
 
                 // Check for errors in the responses
                 if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
@@ -421,7 +426,8 @@ const WailBrewApp = () => {
         
         setIsBackgroundCheckRunning(true);
         try {
-            const updatable = await GetBrewUpdatablePackages();
+            // Use the "with update" version to ensure fresh data for background checks
+            const updatable = await GetBrewUpdatablePackagesWithUpdate();
             
             // Check for errors
             if (updatable.length === 1 && updatable[0][0] === "Error") {
@@ -1151,7 +1157,8 @@ const WailBrewApp = () => {
         });
 
         const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
-            // Update the package list after successful update
+            // Clear cache and update the package list after successful update
+            await ClearBrewCache();
             const updated = await GetBrewUpdatablePackages();
             const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
                 name,
@@ -1698,20 +1705,18 @@ const WailBrewApp = () => {
         setRepositories([]);
         
         try {
-            const [installed, caskList, updatable, leaves, repos] = await Promise.all([
-                GetBrewPackages(),
-                GetBrewCasks(),
-                GetBrewUpdatablePackages(), 
-                GetBrewLeaves(), 
-                GetBrewTaps()
-            ]);
+            // Clear cache to ensure fresh data on manual refresh
+            await ClearBrewCache();
+            
+            // Use single optimized startup call instead of multiple parallel calls
+            const startupData = await GetStartupData();
             
             // Process the data same as in useEffect
-            const safeInstalled = installed || [];
-            const safeInstalledCasks = caskList || [];
-            const safeUpdatable = updatable || [];
-            const safeLeaves = leaves || [];
-            const safeRepos = repos || [];
+            const safeInstalled = startupData.packages || [];
+            const safeInstalledCasks = startupData.casks || [];
+            const safeUpdatable = startupData.updatable || [];
+            const safeLeaves = startupData.leaves || [];
+            const safeRepos = startupData.taps || [];
 
             if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
                 setError(safeInstalled[0][1]);

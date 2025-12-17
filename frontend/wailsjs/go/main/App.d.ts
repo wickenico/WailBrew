@@ -10,6 +10,8 @@ export function CheckForUpdates():Promise<main.UpdateInfo>;
 
 export function CheckHomebrewUpdate():Promise<Record<string, any>>;
 
+export function ClearBrewCache():Promise<void>;
+
 export function DownloadAndInstallUpdate(arg1:string):Promise<void>;
 
 export function ExportBrewfile(arg1:string):Promise<void>;
@@ -42,6 +44,8 @@ export function GetBrewTaps():Promise<Array<any>>;
 
 export function GetBrewUpdatablePackages():Promise<Array<any>>;
 
+export function GetBrewUpdatablePackagesWithUpdate():Promise<Array<any>>;
+
 export function GetCaskAppDir():Promise<string>;
 
 export function GetContext():Promise<context.Context>;
@@ -59,6 +63,10 @@ export function GetMirrorSource():Promise<Record<string, string>>;
 export function GetOutdatedFlag():Promise<string>;
 
 export function GetSessionLogs():Promise<string>;
+
+export function GetStartupData():Promise<brew.StartupData>;
+
+export function GetStartupDataWithUpdate():Promise<brew.StartupData>;
 
 export function GetTranslation(arg1:string,arg2:Record<string, string>):Promise<string>;
 

@@ -292,6 +292,25 @@ func (a *App) GetSessionLogs() string {
 
 // BREW OPERATIONS - Delegation to brew.Service
 
+// StartupData is the type returned by GetStartupData
+type StartupData = brew.StartupData
+
+// GetStartupData returns all initial data needed for app startup in a single call
+// This is optimized to minimize duplicate brew command executions
+func (a *App) GetStartupData() *StartupData {
+	return a.brewService.GetStartupData()
+}
+
+// GetStartupDataWithUpdate returns startup data after updating the database
+func (a *App) GetStartupDataWithUpdate() (*StartupData, string, error) {
+	return a.brewService.GetStartupDataWithUpdate()
+}
+
+// ClearBrewCache clears the brew command cache (useful after install/remove operations)
+func (a *App) ClearBrewCache() {
+	a.brewService.ClearCache()
+}
+
 func (a *App) GetAllBrewPackages() [][]string {
 	return a.brewService.GetAllBrewPackages()
 }
@@ -341,6 +360,14 @@ func (a *App) CheckForNewPackages() (*NewPackagesInfo, error) {
 }
 
 func (a *App) GetBrewUpdatablePackages() [][]string {
+	// Note: Database update is now handled separately via GetStartupDataWithUpdate
+	// or UpdateBrewDatabase to avoid redundant calls during startup
+	return a.brewService.GetBrewUpdatablePackages()
+}
+
+// GetBrewUpdatablePackagesWithUpdate updates the database first, then gets updatable packages
+// Use this for manual refresh when you want to ensure fresh data
+func (a *App) GetBrewUpdatablePackagesWithUpdate() [][]string {
 	// Update the formula database first to get latest information
 	updateOutput, err := a.brewService.UpdateBrewDatabaseWithOutput()
 	var newPackages *NewPackagesInfo

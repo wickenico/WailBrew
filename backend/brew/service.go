@@ -14,6 +14,10 @@ import (
 
 // Service provides a high-level interface for brew operations
 type Service interface {
+	// Startup - optimized data loading for app initialization
+	GetStartupData() *StartupData
+	GetStartupDataWithUpdate() (*StartupData, string, error)
+
 	// Package listing
 	GetAllBrewPackages() [][]string
 	GetBrewPackages() [][]string
@@ -63,6 +67,9 @@ type Service interface {
 	UpdateHomebrew(ctx context.Context) string
 	GetHomebrewCaskVersion() (string, error)
 	ExportBrewfile(filePath string) error
+
+	// Cache management
+	ClearCache()
 }
 
 // NewPackagesInfo contains information about newly discovered packages
@@ -91,6 +98,7 @@ type serviceImpl struct {
 	outdatedService *OutdatedService
 	actionsService  *ActionsService
 	tapService      *TapService
+	startupService  *StartupService
 }
 
 // NewService creates a new brew service
@@ -149,6 +157,9 @@ func NewService(
 	// Create tap service
 	tapService := NewTapService(brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter)
 
+	// Create startup service for optimized initial data loading
+	startupService := NewStartupService(listService, outdatedService, databaseService)
+
 	return &serviceImpl{
 		executor:        executor,
 		getBrewEnvFunc:  getBrewEnvFunc,
@@ -166,7 +177,22 @@ func NewService(
 		outdatedService: outdatedService,
 		actionsService:  actionsService,
 		tapService:      tapService,
+		startupService:  startupService,
 	}
+}
+
+// Startup methods
+func (s *serviceImpl) GetStartupData() *StartupData {
+	return s.startupService.GetStartupData()
+}
+
+func (s *serviceImpl) GetStartupDataWithUpdate() (*StartupData, string, error) {
+	return s.startupService.GetStartupDataWithUpdate()
+}
+
+// Cache management
+func (s *serviceImpl) ClearCache() {
+	s.executor.ClearCache()
 }
 
 // Package listing methods
