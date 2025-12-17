@@ -120,7 +120,11 @@
   },
   "logDialog": {
     "running": "실행 중...",
-    "completed": "완료"
+    "completed": "완료",
+    "copy": "복사",
+    "copyToClipboard": "로그를 클립보드에 복사",
+    "copiedToClipboard": "로그가 클립보드에 복사되었습니다!",
+    "copyFailed": "로그 복사 실패"
   },
   "packageInfo": {
     "loading": "(로딩 중…)",

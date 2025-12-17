@@ -120,7 +120,11 @@
   },
   "logDialog": {
     "running": "Executando...",
-    "completed": "Concluído"
+    "completed": "Concluído",
+    "copy": "Copiar",
+    "copyToClipboard": "Copiar logs para a área de transferência",
+    "copiedToClipboard": "Logs copiados para a área de transferência!",
+    "copyFailed": "Falha ao copiar logs"
   },
   "packageInfo": {
     "loading": "(Carregando…)",

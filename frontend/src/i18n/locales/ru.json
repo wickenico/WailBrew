@@ -120,7 +120,11 @@
   },
   "logDialog": {
     "running": "Выполняется...",
-    "completed": "Завершено"
+    "completed": "Завершено",
+    "copy": "Копировать",
+    "copyToClipboard": "Копировать логи в буфер обмена",
+    "copiedToClipboard": "Логи скопированы в буфер обмена!",
+    "copyFailed": "Не удалось скопировать логи"
   },
   "packageInfo": {
     "loading": "(Загрузка…)",

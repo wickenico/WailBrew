@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { Copy } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface LogDialogProps {
     open: boolean;
@@ -119,13 +121,31 @@ const LogDialog: React.FC<LogDialogProps> = ({
         );
     };
 
+    const handleCopyLogs = async () => {
+        if (!log) return;
+        
+        try {
+            await navigator.clipboard.writeText(log);
+            toast.success(t('logDialog.copiedToClipboard'), {
+                duration: 2000,
+                position: 'bottom-center',
+            });
+        } catch (err) {
+            console.error('Failed to copy logs:', err);
+            toast.error(t('logDialog.copyFailed'), {
+                duration: 2000,
+                position: 'bottom-center',
+            });
+        }
+    };
+
     if (!open) return null;
     
     return (
         <div className="confirm-overlay">
             <div className="confirm-box log-dialog-box">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                    <p style={{ margin: 0 }}><strong>{title}</strong></p>
+                    <p style={{ margin: 0, flex: 1 }}><strong>{title}</strong></p>
                     {isRunning && (
                         <div style={{ 
                             display: 'flex', 
@@ -168,7 +188,38 @@ const LogDialog: React.FC<LogDialogProps> = ({
                     )}
                 </div>
                 {renderLogContent()}
-                <div className="confirm-actions">
+                <div className="confirm-actions" style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                    {log && (
+                        <button 
+                            onClick={handleCopyLogs}
+                            className="copy-logs-button"
+                            style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '6px',
+                                background: 'rgba(255, 255, 255, 0.08)',
+                                border: '1px solid rgba(255, 255, 255, 0.15)',
+                                color: 'var(--text-secondary)',
+                                transition: 'all 0.2s ease',
+                            }}
+                            title={t('logDialog.copyToClipboard')}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(80, 180, 255, 0.15)';
+                                e.currentTarget.style.borderColor = 'rgba(80, 180, 255, 0.3)';
+                                e.currentTarget.style.color = 'var(--accent)';
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                                e.currentTarget.style.color = 'var(--text-secondary)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                            }}
+                        >
+                            <Copy size={16} />
+                            {t('logDialog.copy')}
+                        </button>
+                    )}
                     <button onClick={onClose}>{t('buttons.ok')}</button>
                 </div>
             </div>

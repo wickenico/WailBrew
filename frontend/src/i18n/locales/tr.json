@@ -120,7 +120,11 @@
   },
   "logDialog": {
     "running": "Çalışıyor...",
-    "completed": "Tamamlandı"
+    "completed": "Tamamlandı",
+    "copy": "Kopyala",
+    "copyToClipboard": "Günlükleri panoya kopyala",
+    "copiedToClipboard": "Günlükler panoya kopyalandı!",
+    "copyFailed": "Günlükler kopyalanamadı"
   },
   "packageInfo": {
     "loading": "(Yükleniyor...)",

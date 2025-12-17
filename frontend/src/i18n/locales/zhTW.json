@@ -120,7 +120,11 @@
   },
   "logDialog": {
     "running": "執行中...",
-    "completed": "已完成"
+    "completed": "已完成",
+    "copy": "複製",
+    "copyToClipboard": "複製日誌到剪貼簿",
+    "copiedToClipboard": "日誌已複製到剪貼簿！",
+    "copyFailed": "複製日誌失敗"
   },
   "packageInfo": {
     "loading": "(載入中…)",
