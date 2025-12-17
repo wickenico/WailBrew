@@ -374,6 +374,7 @@
   },
   "settings": {
     "title": "Settings",
+    "subtitle": "Configure your Homebrew experience",
     "loading": "Loading settings...",
     "footer": "Configure WailBrew settings to customize your Homebrew experience.",
     "categories": {

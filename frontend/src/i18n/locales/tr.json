@@ -373,6 +373,7 @@
   },
   "settings": {
     "title": "Ayarlar",
+    "subtitle": "Homebrew deneyiminizi yapılandırın",
     "loading": "Ayarlar yükleniyor...",
     "footer": "WailBrew ayarlarını Homebrew tecrübeni özelleştirmek için ayarla.",
     "categories": {

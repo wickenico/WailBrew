@@ -373,6 +373,7 @@
   },
   "settings": {
     "title": "Paramètres",
+    "subtitle": "Configurez votre expérience Homebrew",
     "loading": "Chargement des paramètres...",
     "footer": "Configurez les paramètres de WailBrew pour personnaliser votre expérience Homebrew.",
     "categories": {

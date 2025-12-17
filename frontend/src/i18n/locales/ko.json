@@ -374,6 +374,7 @@
   },
   "settings": {
     "title": "설정",
+    "subtitle": "Homebrew 환경을 구성하세요",
     "loading": "설정 로딩 중...",
     "footer": "Homebrew 경험을 커스터마이즈하기 위해 WailBrew 설정을 구성하세요.",
     "categories": {

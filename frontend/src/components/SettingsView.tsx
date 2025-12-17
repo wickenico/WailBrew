@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { 
+    Settings, 
+    Terminal, 
+    Globe, 
+    RefreshCw, 
+    FolderOpen,
+    ChevronRight,
+    Search,
+    Check,
+    RotateCcw,
+    Loader2,
+    Info,
+    Sparkles
+} from "lucide-react";
 import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
@@ -65,13 +79,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetBrewPath(newBrewPath.trim());
             setBrewPath(newBrewPath.trim());
             toast.success(t('settings.messages.pathUpdated'));
-            
-            // Refresh packages after changing brew path
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set brew path:", error);
             toast.error(t('settings.errors.invalidPath'));
-            // Reset to current path on error
             setNewBrewPath(brewPath);
         } finally {
             setSaving(false);
@@ -84,11 +95,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     };
 
     const handleDetectPath = async () => {
-        // Common brew paths for different Mac architectures
         const commonPaths = [
-            "/opt/homebrew/bin/brew",              // M1 Macs (Apple Silicon)
-            "/usr/local/bin/brew",                 // Intel Macs
-            "/home/linuxbrew/.linuxbrew/bin/brew", // Linux (if supported)
+            "/opt/workbrew/bin/brew",
+            "/opt/homebrew/bin/brew",
+            "/usr/local/bin/brew",
+            "/home/linuxbrew/.linuxbrew/bin/brew",
         ];
 
         for (const path of commonPaths) {
@@ -100,7 +111,6 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 onRefreshPackages();
                 return;
             } catch (error) {
-                // Continue to next path if this one fails
                 console.log(`Failed to set path ${path}:`, error);
             }
         }
@@ -116,7 +126,6 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 setCustomGitRemote("");
                 setCustomBottleDomain("");
             } else {
-                // Check if it matches a known mirror
                 const knownMirrors = getKnownMirrors();
                 const foundMirror = knownMirrors.find(m => 
                     m.gitRemote === currentMirror.gitRemote && 
@@ -174,9 +183,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleMirrorSourceChange = (sourceId: string) => {
         setMirrorSource(sourceId);
-        if (sourceId === "custom") {
-            // Keep custom values
-        } else {
+        if (sourceId !== "custom") {
             const mirrors = getKnownMirrors();
             const selectedMirror = mirrors.find(m => m.id === sourceId);
             if (selectedMirror) {
@@ -205,8 +212,6 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
             await SetMirrorSource(gitRemote, bottleDomain);
             toast.success(t('settings.messages.mirrorSourceUpdated'));
-            
-            // Refresh packages after changing mirror source
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set mirror source:", error);
@@ -242,13 +247,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetOutdatedFlag(newOutdatedFlag);
             setOutdatedFlag(newOutdatedFlag);
             toast.success(t('settings.messages.outdatedFlagUpdated'));
-            
-            // Refresh packages after changing outdated flag
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set outdated flag:", error);
             toast.error(t('settings.errors.failedToSetOutdatedFlag'));
-            // Reset to current flag on error
             setNewOutdatedFlag(outdatedFlag);
         } finally {
             setSavingOutdatedFlag(false);
@@ -298,13 +300,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             setCaskAppDir(trimmedDir);
             setNewCaskAppDir(trimmedDir);
             toast.success(t('settings.messages.caskAppDirUpdated'));
-            
-            // Refresh packages after changing cask app directory
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set cask app directory:", error);
             toast.error(t('settings.errors.failedToSetCaskAppDir'));
-            // Reset to current directory on error
             setNewCaskAppDir(caskAppDir);
         } finally {
             setSavingCaskAppDir(false);
@@ -327,407 +326,347 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const getMirrorDisplayName = () => {
+        if (mirrorSource === "official") {
+            return t('settings.mirrorSource.mirrors.official');
+        }
+        if (mirrorSource === "custom") {
+            return t('settings.mirrorSource.custom');
+        }
+        return getKnownMirrors().find(m => m.id === mirrorSource)?.name || "";
+    };
+
     if (loading) {
         return (
-            <div className="settings-container">
-                <div className="header-row">
-                    <div className="header-title">
-                        <h3>{t('settings.title')}</h3>
+            <div className="settings-view-modern">
+                <div className="settings-header-modern">
+                    <div className="settings-header-icon">
+                        <Settings size={28} />
+                    </div>
+                    <div className="settings-header-text">
+                        <h2>{t('settings.title')}</h2>
+                        <p>{t('settings.loading')}</p>
                     </div>
                 </div>
-                <div className="settings-content">
-                    <div className="loading-message">{t('settings.loading')}</div>
+                <div className="settings-loading">
+                    <Loader2 className="spin" size={32} />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="settings-container">
-            <div className="header-row">
-                <div className="header-title">
-                    <h3>{t('settings.title')}</h3>
+        <div className="settings-view-modern">
+            <div className="settings-header-modern">
+                <div className="settings-header-icon">
+                    <Settings size={28} />
+                </div>
+                <div className="settings-header-text">
+                    <h2>{t('settings.title')}</h2>
+                    <p>{t('settings.subtitle') || 'Configure your Homebrew experience'}</p>
                 </div>
             </div>
-            
-            <div className="settings-content">
-                <div className="settings-category">
-                    <div className="settings-category-header-static">
-                        <h3 className="category-title-static">
-                            {t('settings.categories.general')}
-                        </h3>
-                    </div>
+
+            <div className="settings-cards-container">
+                {/* Brew Path Card */}
+                <div className={`settings-card ${isBrewPathExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsBrewPathExpanded(!isBrewPathExpanded)}
+                        aria-expanded={isBrewPathExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <Terminal size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.brewPath.title')}</h3>
+                            <span className="settings-card-value">{brewPath}</span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isBrewPathExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
                     
-                    <div className="settings-items-list">
-                        <div className="settings-item">
-                            <button 
-                                className="settings-item-header"
-                                onClick={() => setIsBrewPathExpanded(!isBrewPathExpanded)}
-                                aria-expanded={isBrewPathExpanded}
-                                aria-controls="brew-path-settings-content"
-                            >
-                                <div className="settings-item-info">
-                                    <h4 className="settings-item-title">{t('settings.brewPath.title')}</h4>
-                                    <p className="settings-item-subtitle">{brewPath}</p>
-                                </div>
-                                <span className={`settings-item-icon ${isBrewPathExpanded ? 'expanded' : ''}`}>
-                                    ▶
-                                </span>
-                            </button>
-                            
-                            <div 
-                                id="brew-path-settings-content"
-                                className={`settings-item-content ${isBrewPathExpanded ? 'expanded' : 'collapsed'}`}
-                            >
-                                <div className="settings-item-description">
-                                    {t('settings.brewPath.description')}
-                                </div>
-                                
-                                <div className="settings-field-group">
-                                    <div className="settings-field">
-                                        <label htmlFor="brew-path" className="field-label">
-                                            {t('settings.brewPath.currentPath')}
-                                        </label>
-                                        <div className="path-input-container">
-                                            <input
-                                                id="brew-path"
-                                                type="text"
-                                                value={newBrewPath}
-                                                onChange={(e) => setNewBrewPath(e.target.value)}
-                                                className="path-input"
-                                                placeholder={t('settings.brewPath.placeholder')}
-                                                disabled={saving}
-                                            />
-                                            <button
-                                                className="detect-button"
-                                                onClick={handleDetectPath}
-                                                disabled={saving}
-                                                title={t('settings.brewPath.autoDetect')}
-                                            >
-                                                🔍
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="settings-actions">
-                                        <button
-                                            className="save-button"
-                                            onClick={handleSave}
-                                            disabled={saving || newBrewPath.trim() === ""}
-                                        >
-                                            {saving ? t('settings.buttons.saving') : t('settings.buttons.save')}
-                                        </button>
-                                        <button
-                                            className="reset-button"
-                                            onClick={handleReset}
-                                            disabled={saving || newBrewPath === brewPath}
-                                        >
-                                            {t('settings.buttons.reset')}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="settings-info-panel">
-                                    <div className="current-path-info">
-                                        <span className="info-label">{t('settings.brewPath.currentlyUsing')}</span>
-                                        <code className="current-path">{brewPath}</code>
-                                    </div>
-                                    <p className="settings-note">
-                                        💡 {t('settings.brewPath.note')}
-                                    </p>
-                                </div>
+                    <div className={`settings-card-content ${isBrewPathExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.brewPath.description')}
+                        </p>
+                        
+                        <div className="settings-input-group">
+                            <label>{t('settings.brewPath.currentPath')}</label>
+                            <div className="settings-input-row">
+                                <input
+                                    type="text"
+                                    value={newBrewPath}
+                                    onChange={(e) => setNewBrewPath(e.target.value)}
+                                    placeholder={t('settings.brewPath.placeholder')}
+                                    disabled={saving}
+                                />
+                                <button
+                                    className="settings-icon-btn"
+                                    onClick={handleDetectPath}
+                                    disabled={saving}
+                                    title={t('settings.brewPath.autoDetect')}
+                                >
+                                    <Search size={18} />
+                                </button>
                             </div>
                         </div>
 
-                        <div className="settings-item">
-                            <button 
-                                className="settings-item-header"
-                                onClick={() => setIsMirrorSourceExpanded(!isMirrorSourceExpanded)}
-                                aria-expanded={isMirrorSourceExpanded}
-                                aria-controls="mirror-source-settings-content"
+                        <div className="settings-info-box">
+                            <Info size={16} />
+                            <span>{t('settings.brewPath.note')}</span>
+                        </div>
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleReset}
+                                disabled={saving || newBrewPath === brewPath}
                             >
-                                <div className="settings-item-info">
-                                    <h4 className="settings-item-title">
-                                        {t('settings.mirrorSource.title')}
-                                        <span className="beta-tag">BETA</span>
-                                    </h4>
-                                    <p className="settings-item-subtitle">
-                                        {(() => {
-                                            if (mirrorSource === "official") {
-                                                return t('settings.mirrorSource.mirrors.official');
-                                            }
-                                            if (mirrorSource === "custom") {
-                                                return t('settings.mirrorSource.custom');
-                                            }
-                                            return getKnownMirrors().find(m => m.id === mirrorSource)?.name || "";
-                                        })()}
-                                    </p>
-                                </div>
-                                <span className={`settings-item-icon ${isMirrorSourceExpanded ? 'expanded' : ''}`}>
-                                    ▶
-                                </span>
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
                             </button>
-                            
-                            <div 
-                                id="mirror-source-settings-content"
-                                className={`settings-item-content ${isMirrorSourceExpanded ? 'expanded' : 'collapsed'}`}
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSave}
+                                disabled={saving || newBrewPath.trim() === ""}
                             >
-                                <div className="settings-item-description">
-                                    {t('settings.mirrorSource.description')}
-                                </div>
-                                
-                                <div className="settings-field-group">
-                                    <div className="settings-field">
-                                        <label htmlFor="mirror-source" className="field-label">
-                                            {t('settings.mirrorSource.selectMirror')}
-                                        </label>
-                                        <select
-                                            id="mirror-source"
-                                            value={mirrorSource}
-                                            onChange={(e) => handleMirrorSourceChange(e.target.value)}
-                                            className="mirror-select"
-                                            disabled={savingMirror}
-                                        >
-                                            {getKnownMirrors().map(mirror => (
-                                                <option key={mirror.id} value={mirror.id}>
-                                                    {mirror.name}
-                                                </option>
-                                            ))}
-                                            <option value="custom">{t('settings.mirrorSource.custom')}</option>
-                                        </select>
-                                    </div>
+                                {saving ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {saving ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-                                    {mirrorSource === "custom" && (
-                                        <>
-                                            <div className="settings-field">
-                                                <label htmlFor="custom-git-remote" className="field-label">
-                                                    {t('settings.mirrorSource.customGitRemote')}
-                                                </label>
-                                                <input
-                                                    id="custom-git-remote"
-                                                    type="text"
-                                                    value={customGitRemote}
-                                                    onChange={(e) => setCustomGitRemote(e.target.value)}
-                                                    className="path-input"
-                                                    placeholder="https://mirrors.example.com/git/homebrew/brew.git"
-                                                    disabled={savingMirror}
-                                                />
-                                            </div>
-                                            <div className="settings-field">
-                                                <label htmlFor="custom-bottle-domain" className="field-label">
-                                                    {t('settings.mirrorSource.customBottleDomain')}
-                                                </label>
-                                                <input
-                                                    id="custom-bottle-domain"
-                                                    type="text"
-                                                    value={customBottleDomain}
-                                                    onChange={(e) => setCustomBottleDomain(e.target.value)}
-                                                    className="path-input"
-                                                    placeholder="https://mirrors.example.com/homebrew-bottles"
-                                                    disabled={savingMirror}
-                                                />
-                                            </div>
-                                        </>
-                                    )}
+                {/* Mirror Source Card */}
+                <div className={`settings-card ${isMirrorSourceExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsMirrorSourceExpanded(!isMirrorSourceExpanded)}
+                        aria-expanded={isMirrorSourceExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <Globe size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>
+                                {t('settings.mirrorSource.title')}
+                                <span className="settings-badge">BETA</span>
+                            </h3>
+                            <span className="settings-card-value">{getMirrorDisplayName()}</span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isMirrorSourceExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+                    
+                    <div className={`settings-card-content ${isMirrorSourceExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.mirrorSource.description')}
+                        </p>
+                        
+                        <div className="settings-input-group">
+                            <label>{t('settings.mirrorSource.selectMirror')}</label>
+                            <select
+                                value={mirrorSource}
+                                onChange={(e) => handleMirrorSourceChange(e.target.value)}
+                                disabled={savingMirror}
+                            >
+                                {getKnownMirrors().map(mirror => (
+                                    <option key={mirror.id} value={mirror.id}>
+                                        {mirror.name}
+                                    </option>
+                                ))}
+                                <option value="custom">{t('settings.mirrorSource.custom')}</option>
+                            </select>
+                        </div>
 
-                                    <div className="settings-actions">
-                                        <button
-                                            className="save-button"
-                                            onClick={handleSaveMirrorSource}
-                                            disabled={savingMirror}
-                                        >
-                                            {savingMirror ? t('settings.buttons.saving') : t('settings.buttons.save')}
-                                        </button>
-                                        <button
-                                            className="reset-button"
-                                            onClick={handleResetMirrorSource}
-                                            disabled={savingMirror}
-                                        >
-                                            {t('settings.buttons.reset')}
-                                        </button>
-                                    </div>
+                        {mirrorSource === "custom" && (
+                            <div className="settings-custom-fields">
+                                <div className="settings-input-group">
+                                    <label>{t('settings.mirrorSource.customGitRemote')}</label>
+                                    <input
+                                        type="text"
+                                        value={customGitRemote}
+                                        onChange={(e) => setCustomGitRemote(e.target.value)}
+                                        placeholder="https://mirrors.example.com/git/homebrew/brew.git"
+                                        disabled={savingMirror}
+                                    />
                                 </div>
+                                <div className="settings-input-group">
+                                    <label>{t('settings.mirrorSource.customBottleDomain')}</label>
+                                    <input
+                                        type="text"
+                                        value={customBottleDomain}
+                                        onChange={(e) => setCustomBottleDomain(e.target.value)}
+                                        placeholder="https://mirrors.example.com/homebrew-bottles"
+                                        disabled={savingMirror}
+                                    />
+                                </div>
+                            </div>
+                        )}
 
-                                <div className="settings-info-panel">
-                                    <p className="settings-note">
-                                        💡 {t('settings.mirrorSource.note')}
-                                    </p>
-                                </div>
+                        <div className="settings-info-box">
+                            <Info size={16} />
+                            <span>{t('settings.mirrorSource.note')}</span>
+                        </div>
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetMirrorSource}
+                                disabled={savingMirror}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveMirrorSource}
+                                disabled={savingMirror}
+                            >
+                                {savingMirror ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingMirror ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Outdated Detection Card */}
+                <div className={`settings-card ${isOutdatedFlagExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsOutdatedFlagExpanded(!isOutdatedFlagExpanded)}
+                        aria-expanded={isOutdatedFlagExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <RefreshCw size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.outdatedFlag.title')}</h3>
+                            <span className="settings-card-value">{getOutdatedFlagLabel(outdatedFlag)}</span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isOutdatedFlagExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+                    
+                    <div className={`settings-card-content ${isOutdatedFlagExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.outdatedFlag.description')}
+                        </p>
+                        
+                        <div className="settings-input-group">
+                            <label>{t('settings.outdatedFlag.selectFlag')}</label>
+                            <select
+                                value={newOutdatedFlag}
+                                onChange={(e) => setNewOutdatedFlag(e.target.value)}
+                                disabled={savingOutdatedFlag}
+                            >
+                                <option value="none">{t('settings.outdatedFlag.options.none')}</option>
+                                <option value="greedy">{t('settings.outdatedFlag.options.greedy')}</option>
+                                <option value="greedy-auto-updates">{t('settings.outdatedFlag.options.greedyAutoUpdates')}</option>
+                            </select>
+                        </div>
+
+                        <div className="settings-option-hint">
+                            {newOutdatedFlag === "none" && t('settings.outdatedFlag.descriptions.none')}
+                            {newOutdatedFlag === "greedy" && t('settings.outdatedFlag.descriptions.greedy')}
+                            {newOutdatedFlag === "greedy-auto-updates" && t('settings.outdatedFlag.descriptions.greedyAutoUpdates')}
+                        </div>
+
+                        <div className="settings-info-box">
+                            <Info size={16} />
+                            <span>{t('settings.outdatedFlag.note')}</span>
+                        </div>
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetOutdatedFlag}
+                                disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveOutdatedFlag}
+                                disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
+                            >
+                                {savingOutdatedFlag ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingOutdatedFlag ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Cask App Directory Card */}
+                <div className={`settings-card ${isCaskAppDirExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsCaskAppDirExpanded(!isCaskAppDirExpanded)}
+                        aria-expanded={isCaskAppDirExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <FolderOpen size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.caskAppDir.title')}</h3>
+                            <span className="settings-card-value">{caskAppDir || t('settings.caskAppDir.default')}</span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isCaskAppDirExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+                    
+                    <div className={`settings-card-content ${isCaskAppDirExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.caskAppDir.description')}
+                        </p>
+                        
+                        <div className="settings-input-group">
+                            <label>{t('settings.caskAppDir.currentDir')}</label>
+                            <div className="settings-input-row">
+                                <input
+                                    type="text"
+                                    value={newCaskAppDir || t('settings.caskAppDir.default')}
+                                    readOnly
+                                    disabled={savingCaskAppDir}
+                                />
+                                <button
+                                    className="settings-icon-btn"
+                                    onClick={handleSelectCaskAppDir}
+                                    disabled={savingCaskAppDir}
+                                    title={t('settings.caskAppDir.selectDirectory')}
+                                >
+                                    <FolderOpen size={18} />
+                                </button>
                             </div>
                         </div>
 
-                        <div className="settings-item">
-                            <button 
-                                className="settings-item-header"
-                                onClick={() => setIsOutdatedFlagExpanded(!isOutdatedFlagExpanded)}
-                                aria-expanded={isOutdatedFlagExpanded}
-                                aria-controls="outdated-flag-settings-content"
-                            >
-                                <div className="settings-item-info">
-                                    <h4 className="settings-item-title">
-                                        {t('settings.outdatedFlag.title')}
-                                    </h4>
-                                    <p className="settings-item-subtitle">
-                                        {getOutdatedFlagLabel(outdatedFlag)}
-                                    </p>
-                                </div>
-                                <span className={`settings-item-icon ${isOutdatedFlagExpanded ? 'expanded' : ''}`}>
-                                    ▶
-                                </span>
-                            </button>
-                            
-                            <div 
-                                id="outdated-flag-settings-content"
-                                className={`settings-item-content ${isOutdatedFlagExpanded ? 'expanded' : 'collapsed'}`}
-                            >
-                                <div className="settings-item-description">
-                                    {t('settings.outdatedFlag.description')}
-                                </div>
-                                
-                                <div className="settings-field-group">
-                                    <div className="settings-field">
-                                        <label htmlFor="outdated-flag" className="field-label">
-                                            {t('settings.outdatedFlag.selectFlag')}
-                                        </label>
-                                        <select
-                                            id="outdated-flag"
-                                            value={newOutdatedFlag}
-                                            onChange={(e) => setNewOutdatedFlag(e.target.value)}
-                                            className="mirror-select"
-                                            disabled={savingOutdatedFlag}
-                                        >
-                                            <option value="none">{t('settings.outdatedFlag.options.none')}</option>
-                                            <option value="greedy">{t('settings.outdatedFlag.options.greedy')}</option>
-                                            <option value="greedy-auto-updates">{t('settings.outdatedFlag.options.greedyAutoUpdates')}</option>
-                                        </select>
-                                        <div className="settings-option-description">
-                                            {newOutdatedFlag === "none" && (
-                                                <p>{t('settings.outdatedFlag.descriptions.none')}</p>
-                                            )}
-                                            {newOutdatedFlag === "greedy" && (
-                                                <p>{t('settings.outdatedFlag.descriptions.greedy')}</p>
-                                            )}
-                                            {newOutdatedFlag === "greedy-auto-updates" && (
-                                                <p>{t('settings.outdatedFlag.descriptions.greedyAutoUpdates')}</p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="settings-actions">
-                                        <button
-                                            className="save-button"
-                                            onClick={handleSaveOutdatedFlag}
-                                            disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
-                                        >
-                                            {savingOutdatedFlag ? t('settings.buttons.saving') : t('settings.buttons.save')}
-                                        </button>
-                                        <button
-                                            className="reset-button"
-                                            onClick={handleResetOutdatedFlag}
-                                            disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
-                                        >
-                                            {t('settings.buttons.reset')}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="settings-info-panel">
-                                    <p className="settings-note">
-                                        💡 {t('settings.outdatedFlag.note')}
-                                    </p>
-                                </div>
+                        {newCaskAppDir !== caskAppDir && (
+                            <div className="settings-preview-box">
+                                <Sparkles size={16} />
+                                <span>{t('settings.caskAppDir.newDirectory')}: <code>{newCaskAppDir || t('settings.caskAppDir.default')}</code></span>
                             </div>
+                        )}
+
+                        <div className="settings-info-box">
+                            <Info size={16} />
+                            <span>{t('settings.caskAppDir.note')}</span>
                         </div>
 
-                        <div className="settings-item">
-                            <button 
-                                className="settings-item-header"
-                                onClick={() => setIsCaskAppDirExpanded(!isCaskAppDirExpanded)}
-                                aria-expanded={isCaskAppDirExpanded}
-                                aria-controls="cask-app-dir-settings-content"
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetCaskAppDir}
+                                disabled={savingCaskAppDir || newCaskAppDir === caskAppDir}
                             >
-                                <div className="settings-item-info">
-                                    <h4 className="settings-item-title">
-                                        {t('settings.caskAppDir.title')}
-                                    </h4>
-                                    <p className="settings-item-subtitle">
-                                        {caskAppDir || t('settings.caskAppDir.default')}
-                                    </p>
-                                </div>
-                                <span className={`settings-item-icon ${isCaskAppDirExpanded ? 'expanded' : ''}`}>
-                                    ▶
-                                </span>
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
                             </button>
-                            
-                            <div 
-                                id="cask-app-dir-settings-content"
-                                className={`settings-item-content ${isCaskAppDirExpanded ? 'expanded' : 'collapsed'}`}
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveCaskAppDir}
+                                disabled={savingCaskAppDir || newCaskAppDir.trim() === caskAppDir}
                             >
-                                <div className="settings-item-description">
-                                    {t('settings.caskAppDir.description')}
-                                </div>
-                                
-                                <div className="settings-field-group">
-                                    <div className="settings-field">
-                                        <label htmlFor="cask-app-dir" className="field-label">
-                                            {t('settings.caskAppDir.currentDir')}
-                                        </label>
-                                        <div className="path-input-container">
-                                            <input
-                                                id="cask-app-dir"
-                                                type="text"
-                                                value={caskAppDir || t('settings.caskAppDir.default')}
-                                                className="path-input"
-                                                readOnly
-                                                disabled={savingCaskAppDir}
-                                            />
-                                            <button
-                                                className="detect-button"
-                                                onClick={handleSelectCaskAppDir}
-                                                disabled={savingCaskAppDir}
-                                                title={t('settings.caskAppDir.selectDirectory')}
-                                            >
-                                                📁
-                                            </button>
-                                        </div>
-                                        <div className="settings-option-description">
-                                            <p>{t('settings.caskAppDir.hint')}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="settings-actions">
-                                        <button
-                                            className="save-button"
-                                            onClick={handleSaveCaskAppDir}
-                                            disabled={savingCaskAppDir || newCaskAppDir.trim() === caskAppDir}
-                                        >
-                                            {savingCaskAppDir ? t('settings.buttons.saving') : t('settings.buttons.save')}
-                                        </button>
-                                        <button
-                                            className="reset-button"
-                                            onClick={handleResetCaskAppDir}
-                                            disabled={savingCaskAppDir || newCaskAppDir === caskAppDir}
-                                        >
-                                            {t('settings.buttons.reset')}
-                                        </button>
-                                    </div>
-                                    {newCaskAppDir !== caskAppDir && (
-                                        <div className="settings-preview-info">
-                                            <p>📝 {t('settings.caskAppDir.newDirectory')}: <code>{newCaskAppDir || t('settings.caskAppDir.default')}</code></p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="settings-info-panel">
-                                    <div className="current-path-info">
-                                        <span className="info-label">{t('settings.caskAppDir.currentlyUsing')}</span>
-                                        <code className="current-path">{caskAppDir || t('settings.caskAppDir.default')}</code>
-                                    </div>
-                                    <p className="settings-note">
-                                        💡 {t('settings.caskAppDir.note')}
-                                    </p>
-                                </div>
-                            </div>
+                                {savingCaskAppDir ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingCaskAppDir ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
                         </div>
                     </div>
                 </div>

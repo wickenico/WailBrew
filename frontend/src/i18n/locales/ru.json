@@ -373,6 +373,7 @@
   },
   "settings": {
     "title": "Настройки",
+    "subtitle": "Настройте свой Homebrew",
     "loading": "Загрузка настроек...",
     "footer": "Настройте параметры WailBrew для персонализации работы с Homebrew.",
     "categories": {

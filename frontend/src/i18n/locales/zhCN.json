@@ -373,6 +373,7 @@
   },
   "settings": {
     "title": "软件设置",
+    "subtitle": "配置您的 Homebrew 体验",
     "loading": "正在加载设置...",
     "footer": "配置 WailBrew 设置以定制您的 Homebrew 体验。",
     "categories": {
