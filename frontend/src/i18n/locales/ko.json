@@ -304,7 +304,9 @@
     "installedStatus": "설치됨",
     "notInstalledStatus": "설치 안 됨",
     "package": "패키지",
-    "packages": "패키지"
+    "packages": "패키지",
+    "repository": "저장소",
+    "repositories": "저장소"
   },
   "repository": {
     "noSelection": "선택된 Repository 없음",

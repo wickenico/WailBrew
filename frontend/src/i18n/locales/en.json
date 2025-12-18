@@ -304,7 +304,9 @@
     "installedStatus": "Installed",
     "notInstalledStatus": "Not installed",
     "package": "package",
-    "packages": "packages"
+    "packages": "packages",
+    "repository": "repository",
+    "repositories": "repositories"
   },
   "repository": {
     "noSelection": "No repository selected",
