@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -370,43 +369,49 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 func (a *App) GetBrewUpdatablePackagesWithUpdate() [][]string {
 	// Update the formula database first to get latest information
 	updateOutput, err := a.brewService.UpdateBrewDatabaseWithOutput()
-	var newPackages *NewPackagesInfo
-	var shouldEmitEvent bool
+	// DISABLED: New packages detection and toast notification disabled
+	// Detection logic commented out to avoid unnecessary work
+	/*
+		var newPackages *NewPackagesInfo
+		var shouldEmitEvent bool
 
-	// Maximum number of "new" packages to consider as a legitimate update
-	// If more than this, it's likely a fresh database sync (first run) rather than actual new packages
-	const maxReasonableNewPackages = 100
+		// Maximum number of "new" packages to consider as a legitimate update
+		// If more than this, it's likely a fresh database sync (first run) rather than actual new packages
+		const maxReasonableNewPackages = 100
 
-	if err == nil && updateOutput != "" {
-		// Try to detect new packages from update output
-		newPackages = a.brewService.ParseNewPackagesFromUpdateOutput(updateOutput)
-		totalNew := len(newPackages.NewFormulae) + len(newPackages.NewCasks)
-		// Only emit event if there are new packages AND it's not an unreasonably large number
-		// (which would indicate a fresh database sync rather than actual new packages)
-		if totalNew > 0 && totalNew <= maxReasonableNewPackages {
-			shouldEmitEvent = true
-		}
-	} else {
-		// Fallback: try to detect new packages by comparing current list
-		detectedPackages, err := a.brewService.CheckForNewPackages()
-		if err == nil {
-			totalNew := len(detectedPackages.NewFormulae) + len(detectedPackages.NewCasks)
+		if err == nil && updateOutput != "" {
+			// Try to detect new packages from update output
+			newPackages = a.brewService.ParseNewPackagesFromUpdateOutput(updateOutput)
+			totalNew := len(newPackages.NewFormulae) + len(newPackages.NewCasks)
+			// Only emit event if there are new packages AND it's not an unreasonably large number
+			// (which would indicate a fresh database sync rather than actual new packages)
 			if totalNew > 0 && totalNew <= maxReasonableNewPackages {
-				newPackages = detectedPackages
 				shouldEmitEvent = true
 			}
+		} else {
+			// Fallback: try to detect new packages by comparing current list
+			detectedPackages, err := a.brewService.CheckForNewPackages()
+			if err == nil {
+				totalNew := len(detectedPackages.NewFormulae) + len(detectedPackages.NewCasks)
+				if totalNew > 0 && totalNew <= maxReasonableNewPackages {
+					newPackages = detectedPackages
+					shouldEmitEvent = true
+				}
+			}
 		}
-	}
 
-	// Emit event only once if new packages were discovered
-	if shouldEmitEvent && newPackages != nil && a.ctx != nil {
-		eventData := map[string]interface{}{
-			"newFormulae": newPackages.NewFormulae,
-			"newCasks":    newPackages.NewCasks,
+		// Emit event only once if new packages were discovered
+		if shouldEmitEvent && newPackages != nil && a.ctx != nil {
+			eventData := map[string]interface{}{
+				"newFormulae": newPackages.NewFormulae,
+				"newCasks":    newPackages.NewCasks,
+			}
+			jsonData, _ := json.Marshal(eventData)
+			rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
 		}
-		jsonData, _ := json.Marshal(eventData)
-		rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
-	}
+	*/
+	_ = updateOutput // Suppress unused variable warning
+	_ = err          // Suppress unused variable warning
 
 	return a.brewService.GetBrewUpdatablePackages()
 }
