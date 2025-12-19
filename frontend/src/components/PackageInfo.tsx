@@ -23,7 +23,7 @@ interface PackageInfoProps {
 }
 
 interface AnalyticsData {
-    install_on_request: {
+    install: {
         "30d": { [key: string]: number };
         "90d": { [key: string]: number };
         "365d": { [key: string]: number };
@@ -74,7 +74,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
 
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.analytics?.install_on_request) {
+                    if (data.analytics?.install) {
                         setAnalytics(data.analytics);
                     } else {
                         setAnalytics(null);
@@ -98,8 +98,8 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     };
 
     const getInstallCount = (period: "30d" | "90d" | "365d"): number => {
-        if (!analytics?.install_on_request?.[period]) return 0;
-        const periodData = analytics.install_on_request[period];
+        if (!analytics?.install?.[period]) return 0;
+        const periodData = analytics.install[period];
         const mainPackage = Object.keys(periodData).find(key => !key.includes('--HEAD'));
         return mainPackage ? periodData[mainPackage] : 0;
     };
