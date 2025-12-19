@@ -640,6 +640,16 @@ func (a *App) GetMacOSVersion() (string, error) {
 	return system.GetMacOSVersion()
 }
 
+// GetMacOSReleaseName returns the macOS release name (e.g., "Sonoma", "Sequoia")
+func (a *App) GetMacOSReleaseName() (string, error) {
+	return system.GetMacOSReleaseName()
+}
+
+// GetSystemArchitecture returns the system architecture
+func (a *App) GetSystemArchitecture() string {
+	return system.GetSystemArchitecture()
+}
+
 // UPDATE OPERATIONS - App-specific, not brew domain logic
 
 func compareVersions(version1, version2 string) bool {

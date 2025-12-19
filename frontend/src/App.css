@@ -3458,6 +3458,15 @@ html, body {
   font-weight: 500;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-header-version-details {
+  font-size: 12px;
+  opacity: 0.6;
 }
 
 .settings-loading {

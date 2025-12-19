@@ -58,6 +58,8 @@ export function GetHomebrewCaskVersion():Promise<string>;
 
 export function GetHomebrewVersion():Promise<string>;
 
+export function GetMacOSReleaseName():Promise<string>;
+
 export function GetMacOSVersion():Promise<string>;
 
 export function GetMirrorSource():Promise<Record<string, string>>;
@@ -69,6 +71,8 @@ export function GetSessionLogs():Promise<string>;
 export function GetStartupData():Promise<brew.StartupData>;
 
 export function GetStartupDataWithUpdate():Promise<brew.StartupData>;
+
+export function GetSystemArchitecture():Promise<string>;
 
 export function GetTranslation(arg1:string,arg2:Record<string, string>):Promise<string>;
 

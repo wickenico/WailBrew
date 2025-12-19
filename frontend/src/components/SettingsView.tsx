@@ -14,7 +14,7 @@ import {
     Info,
     Sparkles
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetMacOSVersion } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -42,13 +42,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [newCaskAppDir, setNewCaskAppDir] = useState<string>("");
     const [savingCaskAppDir, setSavingCaskAppDir] = useState<boolean>(false);
     const [macOSVersion, setMacOSVersion] = useState<string>("");
+    const [macOSReleaseName, setMacOSReleaseName] = useState<string>("");
+    const [systemArchitecture, setSystemArchitecture] = useState<string>("");
 
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
         loadCurrentOutdatedFlag();
         loadCurrentCaskAppDir();
-        loadMacOSVersion();
+        loadSystemInfo();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -328,12 +330,18 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
-    const loadMacOSVersion = async () => {
+    const loadSystemInfo = async () => {
         try {
-            const version = await GetMacOSVersion();
+            const [version, releaseName, architecture] = await Promise.all([
+                GetMacOSVersion().catch(() => ""),
+                GetMacOSReleaseName().catch(() => ""),
+                GetSystemArchitecture().catch(() => "")
+            ]);
             setMacOSVersion(version);
+            setMacOSReleaseName(releaseName);
+            setSystemArchitecture(architecture);
         } catch (error) {
-            console.error("Failed to get macOS version:", error);
+            console.error("Failed to get system info:", error);
         }
     };
 
@@ -360,9 +368,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <p>{t('settings.loading')}</p>
                         </div>
                     </div>
-                    {macOSVersion && (
+                    {(macOSVersion || macOSReleaseName || systemArchitecture) && (
                         <div className="settings-header-version">
-                            macOS {macOSVersion}
+                            {macOSVersion && <div>macOS {macOSVersion}</div>}
+                            {(macOSReleaseName || systemArchitecture) && (
+                                <div className="settings-header-version-details">
+                                    {macOSReleaseName && <span>{macOSReleaseName}</span>}
+                                    {macOSReleaseName && systemArchitecture && <span> • </span>}
+                                    {systemArchitecture && <span>{systemArchitecture}</span>}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -385,9 +400,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                         <p>{t('settings.subtitle') || 'Configure your Homebrew experience'}</p>
                     </div>
                 </div>
-                {macOSVersion && (
+                {(macOSVersion || macOSReleaseName || systemArchitecture) && (
                     <div className="settings-header-version">
-                        macOS {macOSVersion}
+                        {macOSVersion && <div>macOS {macOSVersion}</div>}
+                        {(macOSReleaseName || systemArchitecture) && (
+                            <div className="settings-header-version-details">
+                                {macOSReleaseName && <span>{macOSReleaseName}</span>}
+                                {macOSReleaseName && systemArchitecture && <span> • </span>}
+                                {systemArchitecture && <span>{systemArchitecture}</span>}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

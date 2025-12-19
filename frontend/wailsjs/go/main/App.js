@@ -110,6 +110,10 @@ export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }
 
+export function GetMacOSReleaseName() {
+  return window['go']['main']['App']['GetMacOSReleaseName']();
+}
+
 export function GetMacOSVersion() {
   return window['go']['main']['App']['GetMacOSVersion']();
 }
@@ -132,6 +136,10 @@ export function GetStartupData() {
 
 export function GetStartupDataWithUpdate() {
   return window['go']['main']['App']['GetStartupDataWithUpdate']();
+}
+
+export function GetSystemArchitecture() {
+  return window['go']['main']['App']['GetSystemArchitecture']();
 }
 
 export function GetTranslation(arg1, arg2) {
