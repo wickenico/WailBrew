@@ -10,6 +10,7 @@ const appDataDir = ".wailbrew"
 
 // Config holds application configuration
 type Config struct {
+	BrewPath     string `json:"brewPath"` // Homebrew binary path (e.g., "/opt/homebrew/bin/brew")
 	GitRemote    string `json:"gitRemote"`
 	BottleDomain string `json:"bottleDomain"`
 	OutdatedFlag string `json:"outdatedFlag"` // "none", "greedy", or "greedy-auto-updates"

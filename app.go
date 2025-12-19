@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"time"
 
@@ -93,26 +94,64 @@ type App struct {
 	eventEmitter      *wailsEventEmitter
 }
 
-// detectBrewPath automatically detects the brew binary path
-func detectBrewPath() string {
-	paths := []string{
-		"/opt/workbrew/bin/brew", // Workbrew (check first for enterprise users)
-		"/opt/homebrew/bin/brew",
-		"/usr/local/bin/brew",
-		"/home/linuxbrew/.linuxbrew/bin/brew",
+// detectBrewPathByArchitecture detects the brew binary path based on system architecture
+// Returns the default path for the architecture, prioritizing architecture-specific paths
+func detectBrewPathByArchitecture() string {
+	// Check for workbrew first (enterprise users)
+	if _, err := os.Stat("/opt/workbrew/bin/brew"); err == nil {
+		return "/opt/workbrew/bin/brew"
 	}
 
-	for _, path := range paths {
-		if _, err := os.Stat(path); err == nil {
-			return path
+	// Detect architecture-specific default paths
+	switch runtime.GOARCH {
+	case "arm64":
+		// Apple Silicon Macs
+		if _, err := os.Stat("/opt/homebrew/bin/brew"); err == nil {
+			return "/opt/homebrew/bin/brew"
+		}
+	case "amd64", "386":
+		// Intel Macs or Linux
+		if runtime.GOOS == "darwin" {
+			// Intel Macs
+			if _, err := os.Stat("/usr/local/bin/brew"); err == nil {
+				return "/usr/local/bin/brew"
+			}
+		} else if runtime.GOOS == "linux" {
+			// Linux
+			if _, err := os.Stat("/home/linuxbrew/.linuxbrew/bin/brew"); err == nil {
+				return "/home/linuxbrew/.linuxbrew/bin/brew"
+			}
 		}
 	}
 
+	// Fallback: try to find brew in PATH
 	if path, err := exec.LookPath("brew"); err == nil {
 		return path
 	}
 
-	return "/opt/homebrew/bin/brew"
+	// Final fallback: return architecture-specific default
+	return getArchitectureDefaultPath()
+}
+
+// getArchitectureDefaultPath returns the default brew path for the current architecture
+// This is used as a fallback when no brew installation is found
+func getArchitectureDefaultPath() string {
+	switch runtime.GOARCH {
+	case "arm64":
+		return "/opt/homebrew/bin/brew"
+	case "amd64", "386":
+		if runtime.GOOS == "darwin" {
+			return "/usr/local/bin/brew"
+		}
+		return "/home/linuxbrew/.linuxbrew/bin/brew"
+	default:
+		return "/opt/homebrew/bin/brew"
+	}
+}
+
+// detectBrewPath automatically detects the brew binary path (legacy function for compatibility)
+func detectBrewPath() string {
+	return detectBrewPathByArchitecture()
 }
 
 // NewApp creates a new App application struct
@@ -187,6 +226,40 @@ func (a *App) startup(ctx context.Context) {
 	// Load config from file
 	if err := a.config.Load(); err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+	}
+
+	// Auto-detect and set brew path if not explicitly configured
+	if a.config.BrewPath == "" {
+		// User hasn't set a path in config, use the path detected in NewApp()
+		// This preserves workbrew and any custom paths that were found
+		// Only save if the detected path actually exists (validates the detection)
+		if a.brewPath != "" {
+			if _, err := os.Stat(a.brewPath); err == nil {
+				// Valid path detected, save it to config
+				a.config.BrewPath = a.brewPath
+				if err := a.config.Save(); err != nil {
+					fmt.Fprintf(os.Stderr, "Warning: failed to save auto-detected brew path: %v\n", err)
+				}
+			} else {
+				// Detected path doesn't exist, fall back to architecture default
+				archDefaultPath := getArchitectureDefaultPath()
+				if _, err := os.Stat(archDefaultPath); err == nil {
+					a.config.BrewPath = archDefaultPath
+					a.brewPath = archDefaultPath
+					if err := a.config.Save(); err != nil {
+						fmt.Fprintf(os.Stderr, "Warning: failed to save architecture default brew path: %v\n", err)
+					}
+				}
+			}
+		}
+	} else {
+		// User has explicitly set a path in config, use it and validate it
+		if _, err := os.Stat(a.config.BrewPath); err == nil {
+			a.brewPath = a.config.BrewPath
+		} else {
+			// Config path doesn't exist, fall back to detected path
+			fmt.Fprintf(os.Stderr, "Warning: configured brew path %s does not exist, using detected path %s\n", a.config.BrewPath, a.brewPath)
+		}
 	}
 
 	// Update brew executor with full environment
@@ -614,6 +687,10 @@ func (a *App) SelectCaskAppDir() (string, error) {
 }
 
 func (a *App) GetBrewPath() string {
+	// Return from config if set, otherwise return current brewPath
+	if a.config.BrewPath != "" {
+		return a.config.BrewPath
+	}
 	return a.brewPath
 }
 
@@ -627,7 +704,20 @@ func (a *App) SetBrewPath(path string) error {
 		return fmt.Errorf("invalid brew executable: %s", path)
 	}
 
+	// Update both config and runtime path
+	a.config.BrewPath = path
 	a.brewPath = path
+
+	// Save to config file
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save brew path to config: %w", err)
+	}
+
+	// Update brew executor with new path
+	if a.brewExecutor != nil {
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+	}
+
 	return nil
 }
 
