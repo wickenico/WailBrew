@@ -110,6 +110,10 @@ export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }
 
+export function GetMacOSVersion() {
+  return window['go']['main']['App']['GetMacOSVersion']();
+}
+
 export function GetMirrorSource() {
   return window['go']['main']['App']['GetMirrorSource']();
 }

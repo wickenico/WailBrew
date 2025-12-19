@@ -58,6 +58,8 @@ export function GetHomebrewCaskVersion():Promise<string>;
 
 export function GetHomebrewVersion():Promise<string>;
 
+export function GetMacOSVersion():Promise<string>;
+
 export function GetMirrorSource():Promise<Record<string, string>>;
 
 export function GetOutdatedFlag():Promise<string>;

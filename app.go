@@ -635,6 +635,11 @@ func (a *App) GetAppVersion() string {
 	return Version
 }
 
+// GetMacOSVersion returns the macOS version
+func (a *App) GetMacOSVersion() (string, error) {
+	return system.GetMacOSVersion()
+}
+
 // UPDATE OPERATIONS - App-specific, not brew domain logic
 
 func compareVersions(version1, version2 string) bool {

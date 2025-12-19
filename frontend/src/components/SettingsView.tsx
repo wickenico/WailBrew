@@ -14,7 +14,7 @@ import {
     Info,
     Sparkles
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetMacOSVersion } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -41,12 +41,14 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [caskAppDir, setCaskAppDir] = useState<string>("");
     const [newCaskAppDir, setNewCaskAppDir] = useState<string>("");
     const [savingCaskAppDir, setSavingCaskAppDir] = useState<boolean>(false);
+    const [macOSVersion, setMacOSVersion] = useState<string>("");
 
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
         loadCurrentOutdatedFlag();
         loadCurrentCaskAppDir();
+        loadMacOSVersion();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -326,6 +328,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const loadMacOSVersion = async () => {
+        try {
+            const version = await GetMacOSVersion();
+            setMacOSVersion(version);
+        } catch (error) {
+            console.error("Failed to get macOS version:", error);
+        }
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t('settings.mirrorSource.mirrors.official');
@@ -340,13 +351,20 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         return (
             <div className="settings-view-modern">
                 <div className="settings-header-modern">
-                    <div className="settings-header-icon">
-                        <Settings size={28} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div className="settings-header-icon">
+                            <Settings size={28} />
+                        </div>
+                        <div className="settings-header-text">
+                            <h2>{t('settings.title')}</h2>
+                            <p>{t('settings.loading')}</p>
+                        </div>
                     </div>
-                    <div className="settings-header-text">
-                        <h2>{t('settings.title')}</h2>
-                        <p>{t('settings.loading')}</p>
-                    </div>
+                    {macOSVersion && (
+                        <div className="settings-header-version">
+                            macOS {macOSVersion}
+                        </div>
+                    )}
                 </div>
                 <div className="settings-loading">
                     <Loader2 className="spin" size={32} />
@@ -358,13 +376,20 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     return (
         <div className="settings-view-modern">
             <div className="settings-header-modern">
-                <div className="settings-header-icon">
-                    <Settings size={28} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div className="settings-header-icon">
+                        <Settings size={28} />
+                    </div>
+                    <div className="settings-header-text">
+                        <h2>{t('settings.title')}</h2>
+                        <p>{t('settings.subtitle') || 'Configure your Homebrew experience'}</p>
+                    </div>
                 </div>
-                <div className="settings-header-text">
-                    <h2>{t('settings.title')}</h2>
-                    <p>{t('settings.subtitle') || 'Configure your Homebrew experience'}</p>
-                </div>
+                {macOSVersion && (
+                    <div className="settings-header-version">
+                        macOS {macOSVersion}
+                    </div>
+                )}
             </div>
 
             <div className="settings-cards-container">
