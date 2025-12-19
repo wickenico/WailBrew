@@ -581,81 +581,133 @@ const WailBrewApp = () => {
                     const upgradeCommand = 'brew update\nbrew upgrade --cask wailbrew';
                     
                     toast(
-                        (t_obj) => (
-                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
-                                    <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
-                                        {t('toast.versionReady', { version: updateInfo.latestVersion })}
-                                    </div>
-                                    <div 
-                                        role="button"
-                                        tabIndex={0}
-                                        style={{ 
-                                            display: 'flex', 
-                                            alignItems: 'center', 
-                                            gap: '0.5rem',
-                                            marginTop: '0.5rem',
-                                            padding: '0.4rem 0.6rem',
-                                            background: 'rgba(0, 0, 0, 0.3)',
-                                            borderRadius: '6px',
-                                            fontSize: '0.8rem',
-                                            fontFamily: 'monospace',
-                                            cursor: 'pointer',
-                                            transition: 'background 0.2s',
-                                            outline: 'none',
-                                        }}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            navigator.clipboard.writeText(upgradeCommand);
-                                            toast.success('Copied to clipboard!', { duration: 2000 });
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
+                        (t_obj) => {
+                            const handleNavigateToOutdated = () => {
+                                // Navigate to outdated view
+                                setView("updatable");
+                                
+                                // Find wailbrew package in updatable packages
+                                const wailbrewPackage = updatablePackages.find(pkg => pkg.name.toLowerCase() === "wailbrew");
+                                
+                                if (wailbrewPackage) {
+                                    // Select the wailbrew package
+                                    handleSelect(wailbrewPackage);
+                                }
+                                
+                                // Dismiss the toast
+                                toast.dismiss(t_obj.id);
+                            };
+                            
+                            return (
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
+                                        <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
+                                            {t('toast.versionReady', { version: updateInfo.latestVersion })}
+                                        </div>
+                                        <div 
+                                            role="button"
+                                            tabIndex={0}
+                                            style={{ 
+                                                display: 'flex', 
+                                                alignItems: 'center', 
+                                                gap: '0.5rem',
+                                                marginTop: '0.5rem',
+                                                padding: '0.4rem 0.6rem',
+                                                background: 'rgba(0, 0, 0, 0.3)',
+                                                borderRadius: '6px',
+                                                fontSize: '0.8rem',
+                                                fontFamily: 'monospace',
+                                                cursor: 'pointer',
+                                                transition: 'background 0.2s',
+                                                outline: 'none',
+                                            }}
+                                            onClick={(e) => {
                                                 e.stopPropagation();
                                                 navigator.clipboard.writeText(upgradeCommand);
                                                 toast.success('Copied to clipboard!', { duration: 2000 });
-                                            }
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    navigator.clipboard.writeText(upgradeCommand);
+                                                    toast.success('Copied to clipboard!', { duration: 2000 });
+                                                }
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                            }}
+                                            title="Click to copy"
+                                        >
+                                            <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
+                                            <Copy size={16} style={{ opacity: 0.7 }} />
+                                        </div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleNavigateToOutdated();
+                                            }}
+                                            style={{
+                                                marginTop: '0.75rem',
+                                                padding: '0.5rem 1rem',
+                                                background: 'rgba(80, 180, 255, 0.2)',
+                                                border: '1px solid rgba(80, 180, 255, 0.4)',
+                                                borderRadius: '6px',
+                                                color: 'var(--accent)',
+                                                cursor: 'pointer',
+                                                fontSize: '0.85rem',
+                                                fontWeight: 500,
+                                                transition: 'all 0.2s',
+                                                width: '100%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                gap: '0.5rem',
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.background = 'rgba(80, 180, 255, 0.3)';
+                                                e.currentTarget.style.borderColor = 'rgba(80, 180, 255, 0.6)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.background = 'rgba(80, 180, 255, 0.2)';
+                                                e.currentTarget.style.borderColor = 'rgba(80, 180, 255, 0.4)';
+                                            }}
+                                        >
+                                            <RefreshCw size={16} />
+                                            {t('toast.viewOutdated')}
+                                        </button>
+                                    </div>
+                                    <button
+                                        onClick={() => toast.dismiss(t_obj.id)}
+                                        style={{
+                                            background: 'transparent',
+                                            border: 'none',
+                                            color: 'rgba(255, 255, 255, 0.6)',
+                                            cursor: 'pointer',
+                                            padding: '0.25rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            transition: 'color 0.2s',
+                                            flexShrink: 0,
                                         }}
                                         onMouseEnter={(e) => {
-                                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                            e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
                                         }}
-                                        title="Click to copy"
+                                        title="Dismiss"
                                     >
-                                        <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
-                                        <Copy size={16} style={{ opacity: 0.7 }} />
-                                    </div>
+                                        <X size={18} />
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => toast.dismiss(t_obj.id)}
-                                    style={{
-                                        background: 'transparent',
-                                        border: 'none',
-                                        color: 'rgba(255, 255, 255, 0.6)',
-                                        cursor: 'pointer',
-                                        padding: '0.25rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'color 0.2s',
-                                        flexShrink: 0,
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
-                                    }}
-                                    title="Dismiss"
-                                >
-                                    <X size={18} />
-                                </button>
-                            </div>
-                        ),
+                            );
+                        },
                         {
                             icon: <Sparkles size={20} color="#FFD700" />,
                             duration: 6000,
