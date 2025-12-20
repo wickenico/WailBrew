@@ -43,6 +43,12 @@ func (s *DatabaseService) UpdateBrewDatabase() error {
 	// the update command if there's a persistent issue
 	s.lastUpdateTime = time.Now()
 
+	// Clear cache after database update so outdated checks get fresh data
+	// This ensures that brew outdated commands see the newly updated database
+	if err == nil {
+		s.executor.ClearCache()
+	}
+
 	return err
 }
 
@@ -63,6 +69,12 @@ func (s *DatabaseService) UpdateBrewDatabaseWithOutput() (string, error) {
 	// Update the timestamp even if there was an error, to avoid hammering
 	// the update command if there's a persistent issue
 	s.lastUpdateTime = time.Now()
+
+	// Clear cache after database update so outdated checks get fresh data
+	// This ensures that brew outdated commands see the newly updated database
+	if err == nil {
+		s.executor.ClearCache()
+	}
 
 	return string(output), err
 }
