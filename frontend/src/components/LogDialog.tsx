@@ -38,24 +38,13 @@ const LogDialog: React.FC<LogDialogProps> = ({
 
         // If no clickable packages, render as plain text
         if (clickablePackages.length === 0 || !onPackageClick) {
-            return <pre className="log-output" ref={logRef as any}>{log}</pre>;
+            return <div className="log-output" ref={logRef as any}>{log}</div>;
         }
 
         // Split log into lines and process each line
         const lines = log.split('\n');
         return (
-            <div className="log-output" ref={logRef} style={{ 
-                whiteSpace: 'pre-wrap',
-                fontFamily: 'monospace',
-                fontSize: '13px',
-                lineHeight: '1.5',
-                maxHeight: '400px',
-                overflowY: 'auto',
-                padding: '10px',
-                backgroundColor: '#1e293b',
-                borderRadius: '4px',
-                color: '#fff'
-            }}>
+            <div className="log-output" ref={logRef}>
                 {lines.map((line, lineIndex) => {
                     let lastIndex = 0;
                     const elements: React.ReactNode[] = [];
@@ -144,20 +133,11 @@ const LogDialog: React.FC<LogDialogProps> = ({
     return (
         <div className="confirm-overlay">
             <div className="confirm-box log-dialog-box">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                    <p style={{ margin: 0, flex: 1 }}><strong>{title}</strong></p>
+                {/* Title and badge - left aligned with badge beside */}
+                <div className="log-dialog-header">
+                    <p style={{ margin: 0 }}><strong>{title}</strong></p>
                     {isRunning && (
-                        <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '8px',
-                            padding: '4px 12px',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            border: '1px solid rgba(76, 175, 80, 0.3)',
-                            borderRadius: '12px',
-                            fontSize: '13px',
-                            color: '#4CAF50'
-                        }}>
+                        <div className="log-dialog-badge running">
                             <span className="spinner" style={{
                                 display: 'inline-block',
                                 width: '12px',
@@ -171,55 +151,30 @@ const LogDialog: React.FC<LogDialogProps> = ({
                         </div>
                     )}
                     {!isRunning && log && (
-                        <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '8px',
-                            padding: '4px 12px',
-                            backgroundColor: 'rgba(33, 150, 243, 0.1)',
-                            border: '1px solid rgba(33, 150, 243, 0.3)',
-                            borderRadius: '12px',
-                            fontSize: '13px',
-                            color: '#2196F3'
-                        }}>
+                        <div className="log-dialog-badge completed">
                             <span>✓</span>
                             <span>{t('logDialog.completed')}</span>
                         </div>
                     )}
                 </div>
-                {renderLogContent()}
-                <div className="confirm-actions" style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                
+                {/* Log content with copy button in bottom right */}
+                <div className="log-content-wrapper">
+                    {renderLogContent()}
                     {log && (
                         <button 
                             onClick={handleCopyLogs}
-                            className="copy-logs-button"
-                            style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '6px',
-                                background: 'rgba(255, 255, 255, 0.08)',
-                                border: '1px solid rgba(255, 255, 255, 0.15)',
-                                color: 'var(--text-secondary)',
-                                transition: 'all 0.2s ease',
-                            }}
+                            className="log-copy-button"
                             title={t('logDialog.copyToClipboard')}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(80, 180, 255, 0.15)';
-                                e.currentTarget.style.borderColor = 'rgba(80, 180, 255, 0.3)';
-                                e.currentTarget.style.color = 'var(--accent)';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                                e.currentTarget.style.color = 'var(--text-secondary)';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                            }}
                         >
                             <Copy size={16} />
                             {t('logDialog.copy')}
                         </button>
                     )}
+                </div>
+                
+                {/* OK button centered */}
+                <div className="confirm-actions log-dialog-actions">
                     <button onClick={onClose}>{t('buttons.ok')}</button>
                 </div>
             </div>

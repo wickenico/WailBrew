@@ -1884,6 +1884,7 @@ html, body {
   background: rgba(30,34,40,0.85);
   border: 1px solid var(--glass-border-strong);
   padding: 20px 24px;
+  padding-bottom: 50px; /* Extra padding for copy button */
   color: var(--text-secondary);
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
   font-size: 13px;
@@ -1896,8 +1897,10 @@ html, body {
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  margin: 16px 0;
+  margin: 0;
   scroll-behavior: smooth;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .log-output::-webkit-scrollbar {
@@ -1934,13 +1937,81 @@ html, body {
   -webkit-backdrop-filter: blur(20px);
   border: 1.5px solid var(--glass-border-strong);
   box-shadow: var(--glass-shadow-strong);
+  display: flex;
+  flex-direction: column;
 }
 
-.log-dialog-box p {
-  margin: 0 0 8px 0;
+.log-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.log-dialog-header p {
+  margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: var(--text-main);
+}
+
+.log-dialog-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.log-dialog-badge.running {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+}
+
+.log-dialog-badge.completed {
+  background-color: rgba(33, 150, 243, 0.1);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  color: #2196F3;
+}
+
+.log-content-wrapper {
+  position: relative;
+  flex: 1;
+  margin-bottom: 12px;
+}
+
+.log-copy-button {
+  position: absolute;
+  bottom: 12px;
+  right: 28px; /* Add spacing from scrollbar (14px scrollbar width + 14px margin) */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.log-copy-button:hover {
+  background: rgba(80, 180, 255, 0.15);
+  border-color: rgba(80, 180, 255, 0.3);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.log-dialog-actions {
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 
 /* About Dialog Styles */
