@@ -70,6 +70,7 @@ If you wish to contribute by translating WailBrew to your language, feel free to
 - <a href="https://www.howtogeek.com/best-free-mac-utilities-that-actually-make-a-difference/" target="_blank" rel="noopener noreferrer">How to Geek</a>
 - <a href="https://mac-utils.com/wailbrew/" target="_blank" rel="noopener noreferrer">Mac Utils</a>
 - <a href="https://brandonvisca.com/wailbrew-interface-graphique-homebrew/" target="_blank" rel="noopener noreferrer">Brandon Visca</a>
+- <a href="https://www.apfeltalk.de/magazin/news/dieser-neue-texteditor-koennte-nano-auf-linux-und-macos-abloesen/" target="_blank" rel="noopener noreferrer">Apfeltalk</a>
 
 ## 🛠️ Contributing
 
