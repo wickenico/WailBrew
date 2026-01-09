@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { BarChart3, Calendar, ExternalLink, TrendingUp } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ExternalLink, TrendingUp, Calendar, BarChart3 } from "lucide-react";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageEntry {
@@ -35,7 +35,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const [isHomepageHovered, setIsHomepageHovered] = useState(false);
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loadingAnalytics, setLoadingAnalytics] = useState(false);
-    
+
     const name = packageEntry?.name || t('common.notAvailable');
     const desc = packageEntry?.desc || t('common.notAvailable');
     const homepage = packageEntry?.homepage || t('common.notAvailable');
@@ -43,7 +43,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const status = packageEntry ? (packageEntry.isInstalled ? t('packageInfo.installed') : t('packageInfo.notInstalled')) : t('common.notAvailable');
     const dependencies = packageEntry?.dependencies || [];
     const conflicts = packageEntry?.conflicts?.length ? packageEntry.conflicts.join(", ") : t('common.notAvailable');
-    
+
     const isValidUrl = (url: string) => {
         return url && url !== t('common.notAvailable') && (url.startsWith('http://') || url.startsWith('https://'));
     };
@@ -66,7 +66,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             try {
                 // Try formula first, then cask if formula fails
                 let response = await fetch(`https://formulae.brew.sh/api/formula/${packageEntry.name}.json`);
-                
+
                 if (!response.ok) {
                     // Try cask API
                     response = await fetch(`https://formulae.brew.sh/api/cask/${packageEntry.name}.json`);
@@ -119,30 +119,12 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                     {isValidUrl(homepage) ? (
                         <span
                             onClick={handleHomepageClick}
-                            style={{
-                                color: '#4a9eff',
-                                textDecoration: 'underline',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.color = '#6bb3ff';
-                                e.currentTarget.style.textDecoration = 'none';
-                                setIsHomepageHovered(true);
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.color = '#4a9eff';
-                                e.currentTarget.style.textDecoration = 'underline';
-                                setIsHomepageHovered(false);
-                            }}
+                            className="text-link"
                             title={homepage}
                         >
                             {homepage}
                             {isHomepageHovered && (
-                                <ExternalLink size={14} style={{ color: '#4fc3f7' }} />
+                                <ExternalLink size={14} className="link-icon" />
                             )}
                         </span>
                     ) : (
@@ -162,20 +144,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                                 {onSelectDependency ? (
                                     <span
                                         onClick={() => onSelectDependency(dep)}
-                                        style={{
-                                            color: '#4a9eff',
-                                            textDecoration: 'underline',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.2s ease',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.color = '#6bb3ff';
-                                            e.currentTarget.style.textDecoration = 'none';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.color = '#4a9eff';
-                                            e.currentTarget.style.textDecoration = 'underline';
-                                        }}
+                                        className="text-link"
                                         title={`Click to view ${dep}`}
                                     >
                                         {dep}
