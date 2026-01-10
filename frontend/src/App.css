@@ -4188,3 +4188,142 @@ body {
   --warning: #e65100;
   --error-color: #d32f2f;
 }
+
+/* Light mode contrast improvements for Settings, Shortcuts, and Update views */
+[data-theme='light'] .shortcuts-dialog-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .shortcuts-dialog-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .shortcuts-section-title {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .shortcut-item {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .shortcut-item:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .shortcut-key {
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='light'] .settings-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .settings-card:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.02) 100%);
+}
+
+[data-theme='light'] .settings-card-header:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .settings-card-icon {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .settings-card-content.show {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .settings-input-group input,
+[data-theme='light'] .settings-input-group select {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .settings-input-group input:focus,
+[data-theme='light'] .settings-input-group select:focus {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(2, 136, 209, 0.5);
+  box-shadow: 0 0 0 3px rgba(2, 136, 209, 0.1);
+}
+
+[data-theme='light'] .version-comparison {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .release-info {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .release-notes-content {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .settings-header-modern {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .settings-category-header-static {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .settings-item-header:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .settings-item-header:focus {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .settings-section-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .command-palette-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .doctor-log {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .doctor-log::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .doctor-log::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(2, 136, 209, 0.8) 100%);
+  border: 3px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .doctor-log::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  box-shadow: 0 0 12px rgba(2, 136, 209, 0.4);
+}
+
+[data-theme='light'] .keyboard-hint {
+  color: var(--text-main);
+}
+
+[data-theme='light'] .keyboard-hint-shortcut {
+  color: var(--text-main);
+  opacity: 1;
+}
