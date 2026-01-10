@@ -2157,7 +2157,22 @@ body {
 }
 
 [data-theme='light'] .sidebar {
-  border-right: 1px solid var(--glass-border-strong) !important;
+  border-right-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme='light'] .table-body-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .table-body-scroll::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border: 3px solid rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .table-body-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 12px rgba(2, 136, 209, 0.4);
 }
 
 /* About Dialog Styles */
@@ -4317,6 +4332,56 @@ body {
 [data-theme='light'] .doctor-log::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
   box-shadow: 0 0 12px rgba(2, 136, 209, 0.4);
+}
+
+[data-theme='light'] .analytics-stat:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(2, 136, 209, 0.25);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='light'] .analytics-stat:hover .stat-icon {
+  background: linear-gradient(135deg, rgba(2, 136, 209, 0.15) 0%, rgba(2, 136, 209, 0.1) 100%);
+  border-color: rgba(2, 136, 209, 0.3);
+}
+
+[data-theme='light'] .analytics-stat:hover::before {
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(2, 136, 209, 0.8) 100%);
+}
+
+.background-check-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: rgba(30, 34, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: normal;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: var(--text-main);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme='light'] .background-check-tooltip {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .sidebar-shortcut {
+  opacity: 0.6;
+  color: var(--text-main);
+  font-weight: 600;
 }
 
 [data-theme='light'] .keyboard-hint {

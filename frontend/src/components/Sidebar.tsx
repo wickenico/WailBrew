@@ -113,26 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                             />
                         )}
                         {showTooltip && formatTimeUntilNextCheck && (
-                            <div
-                                className="background-check-tooltip"
-                                style={{
-                                    position: "absolute",
-                                    top: "100%",
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
-                                    marginTop: "8px",
-                                    padding: "4px 8px",
-                                    background: "rgba(30, 34, 40, 0.95)",
-                                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                                    borderRadius: "4px",
-                                    fontSize: "11px",
-                                    fontWeight: "normal",
-                                    whiteSpace: "nowrap",
-                                    zIndex: 1000,
-                                    pointerEvents: "none",
-                                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-                                }}
-                            >
+                            <div className="background-check-tooltip">
                                 {formatTimeUntilNextCheck(timeUntilNextCheck)}
                             </div>
                         )}
