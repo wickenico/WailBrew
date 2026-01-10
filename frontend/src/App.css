@@ -32,8 +32,11 @@
   /* UI Elements */
   --hover-bg: rgba(255, 255, 255, 0.08);
   --active-bg: rgba(80, 180, 255, 0.16);
+  --badge-bg: rgba(255, 255, 255, 0.08);
+  --keyboard-shortcut-bg: rgba(0, 0, 0, 0.15);
+  --keyboard-shortcut-border: rgba(255, 255, 255, 0.08);
   /* Table & List */
-  --table-header-bg: #21252b;
+  --table-header-bg: rgba(40, 45, 52, 1);
   --table-row-selected: rgba(80, 180, 255, 0.16);
   --table-row-hover: rgba(255, 255, 255, 0.04);
 
@@ -187,7 +190,7 @@ body {
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background: rgba(150, 150, 150, 0.1);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 6px;
   margin: 4px 0;
 }
@@ -637,6 +640,7 @@ body {
 }
 
 .search-container:focus-within {
+  background: rgba(255, 255, 255, 0.12);
   border-color: var(--accent);
 }
 
@@ -3485,7 +3489,7 @@ body {
 }
 
 .analytics-header svg {
-  color: var(--icon-color);
+  color: #4fc3f7;
   stroke-width: 2.5;
   width: 12px;
   height: 12px;
@@ -3571,7 +3575,7 @@ body {
 }
 
 .stat-icon svg {
-  color: var(--icon-color);
+  color: #4fc3f7;
   stroke-width: 2.5;
   width: 11px;
   height: 11px;
