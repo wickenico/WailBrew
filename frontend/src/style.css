@@ -5,22 +5,25 @@
     src: local(""), url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
-    background: #181b20;
-    color: #f3f6fa;
+    background: var(--bg-main);
+    color: var(--text-main);
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
     box-sizing: border-box;
 }
 
 .glass {
     background: rgba(30, 34, 40, 0.72);
-    border: 1.5px solid rgba(255,255,255,0.08);
-    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.32);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.32);
     border-radius: 18px;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);

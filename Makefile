@@ -1,6 +1,9 @@
 # Get version from package.json
 VERSION := $(shell ./get-version.js)
 
+GOPATH ?= $(shell go env GOPATH)
+WAILS := $(shell command -v wails 2> /dev/null || echo $(GOPATH)/bin/wails)
+
 .PHONY: build dev clean
 
 i:
@@ -9,14 +12,14 @@ i:
 # Default target
 build:
 	@echo "Building WailBrew version: $(VERSION)"
-	wails build -ldflags "-X main.Version=$(VERSION)"
+	$(WAILS) build -ldflags "-X main.Version=$(VERSION)"
 
 build-universal:
 	@echo "Building WailBrew universal binary version: $(VERSION)"
-	wails build -platform darwin/universal -ldflags "-X main.Version=$(VERSION)"
+	$(WAILS) build -platform darwin/universal -ldflags "-X main.Version=$(VERSION)"
 
 dev:
-	wails dev
+	$(WAILS) dev
 
 clean:
 	rm -rf build/

@@ -1,64 +1,60 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { CheckSquare, Copy, RefreshCw, Sparkles, Square, X } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
-import { RefreshCw, Sparkles, Copy, X, CheckSquare, Square } from 'lucide-react';
-import "./style.css";
-import "./App.css";
+import { useTranslation } from "react-i18next";
 import {
-    GetBrewPackages,
+    CheckForUpdates,
+    CheckHomebrewUpdate,
+    ClearBrewCache,
+    GetAllBrewPackages,
+    GetAppVersion,
     GetBrewCasks,
-    GetBrewUpdatablePackages,
-    GetBrewUpdatablePackagesWithUpdate,
+    GetBrewCaskSizes,
+    GetBrewCleanupDryRun,
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
-    RemoveBrewPackage,
-    InstallBrewPackage,
-    UpdateBrewPackage,
-    UpdateAllBrewPackages,
-    UpdateSelectedBrewPackages,
-    RunBrewDoctor,
-    RunBrewCleanup,
-    GetAllBrewPackages,
-    GetBrewLeaves,
-    GetBrewTaps,
-    UntapBrewRepository,
-    TapBrewRepository,
-    GetBrewTapInfo,
-    GetAppVersion,
-    SetLanguage,
-    CheckForUpdates,
-    GetHomebrewVersion,
-    CheckHomebrewUpdate,
-    UpdateHomebrew,
-    GetSessionLogs,
-    GetBrewCleanupDryRun,
-    GetDeprecatedFormulae,
     GetBrewPackageSizes,
-    GetBrewCaskSizes,
-    GetStartupData,
+    GetBrewTapInfo,
+    GetBrewUpdatablePackages,
+    GetBrewUpdatablePackagesWithUpdate,
+    GetDeprecatedFormulae,
+    GetHomebrewVersion,
+    GetSessionLogs,
     GetStartupDataWithUpdate,
-    ClearBrewCache,
+    InstallBrewPackage,
+    RemoveBrewPackage,
+    RunBrewCleanup,
+    RunBrewDoctor,
+    SetLanguage,
+    TapBrewRepository,
+    UntapBrewRepository,
+    UpdateAllBrewPackages,
+    UpdateBrewPackage,
+    UpdateHomebrew,
+    UpdateSelectedBrewPackages
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
+import "./App.css";
+import "./style.css";
 
-import Sidebar from "./components/Sidebar";
-import HeaderRow from "./components/HeaderRow";
-import PackageTable from "./components/PackageTable";
-import RepositoryTable from "./components/RepositoryTable";
-import PackageInfo from "./components/PackageInfo";
-import RepositoryInfo from "./components/RepositoryInfo";
-import DoctorView from "./components/DoctorView";
-import CleanupView from "./components/CleanupView";
-import HomebrewView from "./components/HomebrewView";
-import SettingsView from "./components/SettingsView";
-import ConfirmDialog from "./components/ConfirmDialog";
-import LogDialog from "./components/LogDialog";
 import AboutDialog from "./components/AboutDialog";
-import UpdateDialog from "./components/UpdateDialog";
-import RestartDialog from "./components/RestartDialog";
-import TapInputDialog from "./components/TapInputDialog";
+import CleanupView from "./components/CleanupView";
 import CommandPalette from "./components/CommandPalette";
+import ConfirmDialog from "./components/ConfirmDialog";
+import DoctorView from "./components/DoctorView";
+import HeaderRow from "./components/HeaderRow";
+import HomebrewView from "./components/HomebrewView";
+import LogDialog from "./components/LogDialog";
+import PackageInfo from "./components/PackageInfo";
+import PackageTable from "./components/PackageTable";
+import RepositoryInfo from "./components/RepositoryInfo";
+import RepositoryTable from "./components/RepositoryTable";
+import RestartDialog from "./components/RestartDialog";
+import SettingsView from "./components/SettingsView";
 import ShortcutsDialog from "./components/ShortcutsDialog";
+import Sidebar from "./components/Sidebar";
+import TapInputDialog from "./components/TapInputDialog";
+import UpdateDialog from "./components/UpdateDialog";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
@@ -126,7 +122,7 @@ const WailBrewApp = () => {
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [homebrewLog, setHomebrewLog] = useState<string>("");
     const [homebrewVersion, setHomebrewVersion] = useState<string>("");
-    const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{isUpToDate: boolean | null, latestVersion: string | null}>({isUpToDate: null, latestVersion: null});
+    const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{ isUpToDate: boolean | null, latestVersion: string | null }>({ isUpToDate: null, latestVersion: null });
     const [isUpdateRunning, setIsUpdateRunning] = useState<boolean>(false);
     const [isInstallRunning, setIsInstallRunning] = useState<boolean>(false);
     const [isUninstallRunning, setIsUninstallRunning] = useState<boolean>(false);
@@ -141,13 +137,13 @@ const WailBrewApp = () => {
     const updateCheckDone = useRef<boolean>(false);
     const lastSyncedLanguage = useRef<string>("en");
     const isInitialLoad = useRef<boolean>(true);
-    
+
     // Loading timer for development
     const [loadingStartTime, setLoadingStartTime] = useState<number | null>(null);
     const [loadingElapsedTime, setLoadingElapsedTime] = useState<number>(0);
     const loadingTimerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
     const loadingStartTimeRef = useRef<number | null>(null);
-    
+
     // Background update checking state
     const [isBackgroundCheckRunning, setIsBackgroundCheckRunning] = useState<boolean>(false);
     const [timeUntilNextCheck, setTimeUntilNextCheck] = useState<number>(0);
@@ -155,7 +151,7 @@ const WailBrewApp = () => {
     const backgroundCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null);
     const timeUpdateInterval = useRef<ReturnType<typeof setInterval> | null>(null);
     const nextCheckTime = useRef<number>(Date.now() + 15 * 60 * 1000); // 15 minutes from now
-    
+
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
         const saved = localStorage.getItem('sidebarWidth');
@@ -178,14 +174,14 @@ const WailBrewApp = () => {
         loadingStartTimeRef.current = startTime;
         setLoadingStartTime(startTime);
         setLoadingElapsedTime(0);
-        
+
         // Update timer every 100ms
         loadingTimerInterval.current = setInterval(() => {
             if (loadingStartTimeRef.current) {
                 setLoadingElapsedTime(Date.now() - loadingStartTimeRef.current);
             }
         }, 100);
-        
+
         // Use single optimized startup call with database update for fresh outdated packages
         // Database update runs in parallel with other fetches to minimize startup time
         GetStartupDataWithUpdate()
@@ -259,7 +255,7 @@ const WailBrewApp = () => {
                 setLeavesPackages(leavesFormatted);
                 setRepositories(reposFormatted);
                 // Note: allPackages are loaded lazily when user switches to "all" view
-                
+
                 // Stop loading timer
                 if (loadingTimerInterval.current) {
                     clearInterval(loadingTimerInterval.current);
@@ -270,28 +266,28 @@ const WailBrewApp = () => {
                     setLoadingElapsedTime(finalTime);
                     loadingStartTimeRef.current = null;
                 }
-                
+
                 setLoading(false);
-                
+
                 // Keep timer visible for 5 seconds after loading completes
                 setTimeout(() => {
                     setLoadingStartTime(null);
                 }, 5000);
-                
+
                 // Initialize last known outdated count
                 lastKnownOutdatedCount.current = updatableFormatted.length;
-                
+
                 // Mark initial load as complete after a short delay to allow backend events to fire
                 setTimeout(() => {
                     isInitialLoad.current = false;
                 }, 3000);
-                
+
                 // Lazy load sizes in the background
                 if (installedFormatted.length > 0) {
                     const packageNames = installedFormatted.map(pkg => pkg.name);
                     GetBrewPackageSizes(packageNames)
                         .then((sizes: Record<string, string>) => {
-                            setPackages(prevPackages => 
+                            setPackages(prevPackages =>
                                 prevPackages.map(pkg => ({
                                     ...pkg,
                                     size: sizes[pkg.name] || pkg.size || ""
@@ -311,7 +307,7 @@ const WailBrewApp = () => {
                             console.error("Error loading package sizes:", err);
                         });
                 }
-                
+
                 if (casksFormatted.length > 0) {
                     const caskNames = casksFormatted.map(cask => cask.name);
                     GetBrewCaskSizes(caskNames)
@@ -336,20 +332,20 @@ const WailBrewApp = () => {
                 setAllPackages([]);
                 setLeavesPackages([]);
                 setRepositories([]);
-                
+
                 let errorMessage = t('errors.loadingFormulas') + (err.message || err);
-                
+
                 // Provide helpful error message for common issues on fresh installations
                 if (errorMessage.includes("validation failed") || errorMessage.includes("not found")) {
                     errorMessage += "\n\n💡 This commonly happens on fresh Homebrew installations. Please:\n" +
-                                  "• Make sure Homebrew is properly installed\n" + 
-                                  "• Try running 'brew doctor' in Terminal to check for issues\n" +
-                                  "• Wait a few minutes for Homebrew to finish setting up, then refresh\n" +
-                                  "• On first use, Homebrew may need to download formula data which can take time";
+                        "• Make sure Homebrew is properly installed\n" +
+                        "• Try running 'brew doctor' in Terminal to check for issues\n" +
+                        "• Wait a few minutes for Homebrew to finish setting up, then refresh\n" +
+                        "• On first use, Homebrew may need to download formula data which can take time";
                 }
-                
+
                 setError(errorMessage);
-                
+
                 // Stop loading timer on error
                 if (loadingTimerInterval.current) {
                     clearInterval(loadingTimerInterval.current);
@@ -360,21 +356,21 @@ const WailBrewApp = () => {
                     setLoadingElapsedTime(finalTime);
                     loadingStartTimeRef.current = null;
                 }
-                
+
                 setLoading(false);
-                
+
                 // Keep timer visible for 5 seconds after error
                 setTimeout(() => {
                     setLoadingStartTime(null);
                 }, 5000);
             });
-        
+
         // Check for app updates on startup
         checkAppUpdatesOnStartup();
-        
+
         // Start background update checking
         startBackgroundUpdateCheck();
-        
+
         // Cleanup on unmount
         return () => {
             if (backgroundCheckInterval.current) {
@@ -424,25 +420,25 @@ const WailBrewApp = () => {
     // Background update checking function
     const performBackgroundUpdateCheck = async () => {
         if (isBackgroundCheckRunning) return;
-        
+
         setIsBackgroundCheckRunning(true);
         try {
             // Use the "with update" version to ensure fresh data for background checks
             const updatable = await GetBrewUpdatablePackagesWithUpdate();
-            
+
             // Check for errors
             if (updatable.length === 1 && updatable[0][0] === "Error") {
                 console.error("Background check failed:", updatable[0][1]);
                 return;
             }
-            
+
             const currentCount = updatable.length;
             const previousCount = lastKnownOutdatedCount.current;
-            
+
             // If there are new outdated packages (increase in count)
             if (currentCount > previousCount) {
                 const newPackagesCount = currentCount - previousCount;
-                
+
                 // Update the state
                 const formatted = updatable.map(([name, installedVersion, latestVersion, size]) => ({
                     name,
@@ -452,14 +448,14 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
                 setUpdatablePackages(formatted);
-                
+
                 // Show toast notification
                 toast(
                     (t_obj) => (
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                        <div className="toast-notification">
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
-                                    {newPackagesCount === 1 
+                                    {newPackagesCount === 1
                                         ? t('toast.newOutdatedPackages_one', { count: newPackagesCount })
                                         : t('toast.newOutdatedPackages_other', { count: newPackagesCount })
                                     }
@@ -469,47 +465,14 @@ const WailBrewApp = () => {
                                         setView("updatable");
                                         toast.dismiss(t_obj.id);
                                     }}
-                                    style={{
-                                        padding: '0.5rem 1rem',
-                                        background: 'rgba(59, 130, 246, 0.8)',
-                                        border: 'none',
-                                        borderRadius: '6px',
-                                        color: '#fff',
-                                        cursor: 'pointer',
-                                        fontSize: '0.875rem',
-                                        fontWeight: 500,
-                                        transition: 'background 0.2s',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(59, 130, 246, 1)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)';
-                                    }}
+                                    className="toast-action-btn"
                                 >
                                     {t('toast.viewOutdated')}
                                 </button>
                             </div>
                             <button
                                 onClick={() => toast.dismiss(t_obj.id)}
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: 'rgba(255, 255, 255, 0.6)',
-                                    cursor: 'pointer',
-                                    padding: '0.25rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    transition: 'color 0.2s',
-                                    flexShrink: 0,
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
-                                }}
+                                className="toast-dismiss-btn"
                                 title="Dismiss"
                             >
                                 <X size={18} />
@@ -517,13 +480,21 @@ const WailBrewApp = () => {
                         </div>
                     ),
                     {
-                        icon: <RefreshCw size={20} color="#3B82F6" />,
+                        icon: <RefreshCw size={20} color="var(--accent)" />,
                         duration: 8000,
                         position: 'bottom-center',
+                        style: {
+                            background: 'transparent',
+                            borderRadius: '0',
+                            border: 'none',
+                            boxShadow: 'none',
+                            padding: 0,
+                            maxWidth: '400px',
+                        }
                     }
                 );
             }
-            
+
             // Update last known count
             lastKnownOutdatedCount.current = currentCount;
         } catch (error) {
@@ -534,7 +505,7 @@ const WailBrewApp = () => {
             nextCheckTime.current = Date.now() + 15 * 60 * 1000;
         }
     };
-    
+
     // Start background update checking
     const startBackgroundUpdateCheck = () => {
         // Update time until next check every second
@@ -543,62 +514,62 @@ const WailBrewApp = () => {
             const timeRemaining = Math.max(0, nextCheckTime.current - now);
             setTimeUntilNextCheck(Math.floor(timeRemaining / 1000)); // Convert to seconds
         }, 1000);
-        
+
         // Perform initial check after a short delay
         setTimeout(() => {
             performBackgroundUpdateCheck();
         }, 2000);
-        
+
         // Set up interval for checking every 15 minutes
         backgroundCheckInterval.current = setInterval(() => {
             performBackgroundUpdateCheck();
         }, 15 * 60 * 1000); // 15 minutes
     };
-    
+
     // Format time until next check
     const formatTimeUntilNextCheck = (seconds: number): string => {
         if (seconds <= 0) return t('backgroundCheck.checkingNow');
-        
+
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
-        
+
         if (minutes > 0) {
             return t('backgroundCheck.nextCheckIn', { minutes, seconds: remainingSeconds });
         }
         return t('backgroundCheck.nextCheckInSeconds', { seconds: remainingSeconds });
     };
-    
+
     const checkAppUpdatesOnStartup = async () => {
         // Prevent duplicate calls
         if (updateCheckDone.current) return;
         updateCheckDone.current = true;
-        
+
         try {
             // Wait a bit to let the app fully load first
             setTimeout(async () => {
                 const updateInfo = await CheckForUpdates();
-                
+
                 if (updateInfo.available) {
                     const upgradeCommand = 'brew update\nbrew upgrade --cask wailbrew';
-                    
+
                     toast(
                         (t_obj) => {
                             const handleNavigateToOutdated = () => {
                                 // Navigate to outdated view
                                 setView("updatable");
-                                
+
                                 // Find wailbrew package in updatable packages
                                 const wailbrewPackage = updatablePackages.find(pkg => pkg.name.toLowerCase() === "wailbrew");
-                                
+
                                 if (wailbrewPackage) {
                                     // Select the wailbrew package
                                     handleSelect(wailbrewPackage);
                                 }
-                                
+
                                 // Dismiss the toast
                                 toast.dismiss(t_obj.id);
                             };
-                            
+
                             return (
                                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                                     <div style={{ flex: 1 }}>
@@ -606,12 +577,12 @@ const WailBrewApp = () => {
                                         <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
                                             {t('toast.versionReady', { version: updateInfo.latestVersion })}
                                         </div>
-                                        <div 
+                                        <div
                                             role="button"
                                             tabIndex={0}
-                                            style={{ 
-                                                display: 'flex', 
-                                                alignItems: 'center', 
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
                                                 gap: '0.5rem',
                                                 marginTop: '0.5rem',
                                                 padding: '0.4rem 0.6rem',
@@ -838,20 +809,20 @@ const WailBrewApp = () => {
                 const packageInfo = JSON.parse(data);
                 const { newFormulae = [], newCasks = [] } = packageInfo;
                 const totalNew = newFormulae.length + newCasks.length;
-                
+
                 // Only show toast on initial app load, not on manual refresh
                 if (totalNew > 0 && isInitialLoad.current) {
                     // Dismiss any existing new packages toast to prevent duplicates
                     toast.dismiss('newPackagesDiscovered');
-                    
-                    const formulaeText = newFormulae.length > 0 
+
+                    const formulaeText = newFormulae.length > 0
                         ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
                         : '';
                     const casksText = newCasks.length > 0
                         ? `${newCasks.length} ${t('toast.newCask', { count: newCasks.length })}`
                         : '';
                     const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
-                    
+
                     toast(
                         (t_obj) => (
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
@@ -964,7 +935,7 @@ const WailBrewApp = () => {
                 try {
                     const version = await GetHomebrewVersion();
                     setHomebrewVersion(version);
-                    
+
                     // Check if update is available
                     const updateInfo = await CheckHomebrewUpdate();
                     if (updateInfo) {
@@ -991,7 +962,7 @@ const WailBrewApp = () => {
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!isResizing) return;
-            
+
             const newWidth = e.clientX;
             if (newWidth >= 180 && newWidth <= 400) {
                 setSidebarWidth(newWidth);
@@ -1089,15 +1060,15 @@ const WailBrewApp = () => {
     const handleSelectDependency = async (dependencyName: string) => {
         // Clear search first to ensure package is visible
         setSearchQuery("");
-        
+
         // Try to find the dependency in all packages
         let pkg = allPackages.find(p => p.name === dependencyName);
-        
+
         // If not found in all packages, check installed packages
         if (!pkg) {
             pkg = packages.find(p => p.name === dependencyName);
         }
-        
+
         if (!pkg) {
             // Create a minimal package entry if not found
             pkg = {
@@ -1106,10 +1077,10 @@ const WailBrewApp = () => {
                 isInstalled: false,
             };
         }
-        
+
         // Switch to "all" view to show all packages
         setView("all");
-        
+
         // Use setTimeout to ensure view renders and then select & scroll to package
         setTimeout(async () => {
             await handleSelect(pkg!);
@@ -1135,7 +1106,7 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("packageUninstallComplete", async (finalMessage: string) => {
             // Update the package list after successful uninstall
             await handleRefreshPackages();
-            
+
             // If we're on the doctor view, refresh deprecated formulae
             if (view === "doctor" && doctorLog) {
                 const deprecated = await GetDeprecatedFormulae(doctorLog);
@@ -1143,7 +1114,7 @@ const WailBrewApp = () => {
             }
 
             setIsUninstallRunning(false);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1157,18 +1128,18 @@ const WailBrewApp = () => {
         // Close the log dialog
         setUntapLogs(null);
         setUntapLogPackages([]);
-        
+
         // Navigate to the package in "installed" view
         setSearchQuery("");
-        
+
         // Try to find the package in installed packages first
         let pkg = packages.find(p => p.name === packageName);
-        
+
         // If not found in installed packages, check all packages
         if (!pkg) {
             pkg = allPackages.find(p => p.name === packageName);
         }
-        
+
         if (!pkg) {
             // Create a minimal package entry if not found
             pkg = {
@@ -1177,10 +1148,10 @@ const WailBrewApp = () => {
                 isInstalled: false,
             };
         }
-        
+
         // Switch to "installed" view to show installed packages
         setView("installed");
-        
+
         // Use setTimeout to ensure view renders and then select & scroll to package
         setTimeout(async () => {
             await handleSelect(pkg!);
@@ -1221,7 +1192,7 @@ const WailBrewApp = () => {
             }));
             setUpdatablePackages(formatted);
             setIsUpdateRunning(false);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1249,7 +1220,7 @@ const WailBrewApp = () => {
                 const packageName = packageNameWithVersion.split(/[@\s]/)[0]; // Remove version info if present
                 setCurrentlyUpdatingPackage(packageName);
             }
-            
+
             setUpdateLogs(prevLogs => {
                 if (!prevLogs) {
                     return `${t('dialogs.updateAllLogs')}\n${progress}`;
@@ -1263,7 +1234,7 @@ const WailBrewApp = () => {
             await handleRefreshPackages();
             setIsUpdateRunning(false);
             setCurrentlyUpdatingPackage(null);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1321,7 +1292,7 @@ const WailBrewApp = () => {
     const handleUpdateSelectedConfirmed = async () => {
         setShowUpdateSelectedConfirm(false);
         setIsUpdateAllOperation(true);
-        
+
         const packageNames = Array.from(selectedPackages);
         setUpdateLogs(t('dialogs.updatingSelected', { count: packageNames.length }));
         setIsUpdateRunning(true);
@@ -1341,11 +1312,11 @@ const WailBrewApp = () => {
             await handleRefreshPackages();
 
             setIsUpdateRunning(false);
-            
+
             // Clear selections after successful update
             setSelectedPackages(new Set());
             setMultiSelectMode(false);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1359,22 +1330,22 @@ const WailBrewApp = () => {
     const clearSelection = () => {
         setSelectedPackage(null);
         setSelectedRepository(null);
-        
+
         // Close contextual dialogs when navigating to a different view
         // Info logs are specific to a package in a view, so close them
         setInfoLogs(null);
         setInfoPackage(null);
-        
+
         // Close confirmation dialogs as they're contextual to the current view
         setShowConfirm(false);
         setShowInstallConfirm(false);
         setShowUpdateConfirm(false);
-        
+
         // Clear multi-select state when changing views
         setMultiSelectMode(false);
         setSelectedPackages(new Set());
         setShowUpdateAllConfirm(false);
-        
+
         // Note: We keep update/install/uninstall logs open if operations are running
         // as these are long-running operations that users may want to monitor
     };
@@ -1420,18 +1391,18 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("repositoryUntapComplete", async (finalMessage: string) => {
             // Get the final accumulated logs including the final message
             const allLogs = logsRef.current + '\n' + finalMessage;
-            
+
             // Check if untap failed due to installed packages
             const isError = allLogs.includes("❌") || allLogs.includes("failed") || allLogs.includes("Error:");
-            const hasInstalledPackages = allLogs.includes("contains the following installed") || 
-                                        allLogs.includes("installed formulae or casks");
-            
+            const hasInstalledPackages = allLogs.includes("contains the following installed") ||
+                allLogs.includes("installed formulae or casks");
+
             if (isError && hasInstalledPackages) {
                 // Parse the error message to extract package names
                 const packages: string[] = [];
                 const lines = allLogs.split('\n');
                 let inPackageList = false;
-                
+
                 for (const line of lines) {
                     const trimmed = line.trim();
                     // Look for the error message that indicates installed packages
@@ -1449,9 +1420,9 @@ const WailBrewApp = () => {
                             .replace(/^❌\s*/, '')
                             .trim();
                         // Skip if it's still an error message line
-                        if (!cleanName.includes("Error:") && 
-                            !cleanName.includes("failed") && 
-                            cleanName.length > 0 && 
+                        if (!cleanName.includes("Error:") &&
+                            !cleanName.includes("failed") &&
+                            cleanName.length > 0 &&
                             !cleanName.includes("exit status") &&
                             !cleanName.includes("Refusing to untap") &&
                             !cleanName.includes("because it contains")) {
@@ -1463,24 +1434,24 @@ const WailBrewApp = () => {
                         break;
                     }
                 }
-                
+
                 if (packages.length > 0) {
                     // Make packages clickable in the log dialog
                     setUntapLogPackages(packages);
                     // Keep the log dialog open so user can click on package links
-                    
+
                     // Clean up event listeners
                     progressListener();
                     completeListener();
                     return;
                 }
             }
-            
+
             // Update the repository list after successful untap
             await handleRefreshPackages();
             setUntapLogs(null);
             setUntapLogPackages([]);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1497,7 +1468,7 @@ const WailBrewApp = () => {
     const handleShowRepositoryInfo = async (repo: RepositoryEntry) => {
         setShowRepositoryInfo(true);
         setRepositoryInfoLogs(t('dialogs.gettingInfo', { name: repo.name }));
-        
+
         try {
             const info = await GetBrewTapInfo(repo.name);
             setRepositoryInfoLogs(info);
@@ -1516,7 +1487,7 @@ const WailBrewApp = () => {
             GetAllBrewPackages(),
             GetBrewCasks()
         ]);
-        
+
         const oldAllPackagesSet = new Set(oldAllPackages.map(([name]: string[]) => name));
         const oldCasksSet = new Set(oldCasks.map(([name]: string[]) => name));
 
@@ -1533,44 +1504,44 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("repositoryTapComplete", async (finalMessage: string) => {
             // Check if tap was successful (not an error message)
             const isSuccess = !finalMessage.includes("❌") && !finalMessage.includes("failed");
-            
+
             if (isSuccess) {
                 // Get new package lists after tapping
                 const [newAllPackages, newCasks] = await Promise.all([
                     GetAllBrewPackages(),
                     GetBrewCasks()
                 ]);
-                
+
                 // Find new packages
                 const newFormulae: string[] = [];
                 const newCasksList: string[] = [];
-                
+
                 newAllPackages.forEach(([name]: string[]) => {
                     if (!oldAllPackagesSet.has(name)) {
                         newFormulae.push(name);
                     }
                 });
-                
+
                 newCasks.forEach(([name]: string[]) => {
                     if (!oldCasksSet.has(name)) {
                         newCasksList.push(name);
                     }
                 });
-                
+
                 const totalNew = newFormulae.length + newCasksList.length;
-                
+
                 // Show toast notification if new packages were discovered
                 if (totalNew > 0) {
                     toast.dismiss('newPackagesDiscovered');
-                    
-                    const formulaeText = newFormulae.length > 0 
+
+                    const formulaeText = newFormulae.length > 0
                         ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
                         : '';
                     const casksText = newCasksList.length > 0
                         ? `${newCasksList.length} ${t('toast.newCask', { count: newCasksList.length })}`
                         : '';
                     const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
-                    
+
                     toast(
                         (t_obj) => (
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
@@ -1655,12 +1626,12 @@ const WailBrewApp = () => {
                     );
                 }
             }
-            
+
             // Update the repository list after tap completion
             await handleRefreshPackages();
             setTapLogs(null);
             setTappingRepository(null);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1696,7 +1667,7 @@ const WailBrewApp = () => {
             await handleRefreshPackages();
 
             setIsInstallRunning(false);
-            
+
             // Clean up event listeners
             progressListener();
             completeListener();
@@ -1713,12 +1684,12 @@ const WailBrewApp = () => {
     // Function to load all packages (lazy loaded)
     const loadAllPackages = async () => {
         if (loadingAllPackages) return; // Prevent duplicate loads
-        
+
         setLoadingAllPackages(true);
         try {
             const all = await GetAllBrewPackages();
             const safeAll = all || [];
-            
+
             if (safeAll.length === 1 && safeAll[0][0] === "Error") {
                 setError(`${t('errors.failedAllPackages')}: ${safeAll[0][1]}`);
                 setAllPackages([]);
@@ -1747,7 +1718,7 @@ const WailBrewApp = () => {
     const handleRefreshPackages = async () => {
         setLoading(true);
         setError("");
-        
+
         // Clear existing data to show clean loading state
         setPackages([]);
         setCasks([]);
@@ -1756,14 +1727,14 @@ const WailBrewApp = () => {
         setAllPackagesLoaded(false);
         setLeavesPackages([]);
         setRepositories([]);
-        
+
         try {
             // Clear cache to ensure fresh data on manual refresh
             await ClearBrewCache();
-            
+
             // Use single optimized startup call with database update for fresh data
             const startupData = await GetStartupDataWithUpdate();
-            
+
             // Process the data same as in useEffect
             const safeInstalled = startupData.packages || [];
             const safeInstalledCasks = startupData.casks || [];
@@ -1782,13 +1753,13 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
                 setPackages(formatted);
-                
+
                 // Lazy load package sizes in the background
                 if (formatted.length > 0) {
                     const packageNames = formatted.map(pkg => pkg.name);
                     GetBrewPackageSizes(packageNames)
                         .then((sizes: Record<string, string>) => {
-                            setPackages(prevPackages => 
+                            setPackages(prevPackages =>
                                 prevPackages.map(pkg => ({
                                     ...pkg,
                                     size: sizes[pkg.name] || pkg.size || ""
@@ -1821,7 +1792,7 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 }));
                 setCasks(casksFormatted);
-                
+
                 // Lazy load cask sizes in the background
                 if (casksFormatted.length > 0) {
                     const caskNames = casksFormatted.map(cask => cask.name);
@@ -1928,7 +1899,7 @@ const WailBrewApp = () => {
                 timeUntilNextCheck={timeUntilNextCheck}
                 formatTimeUntilNextCheck={formatTimeUntilNextCheck}
             />
-            <div 
+            <div
                 className="sidebar-resize-handle"
                 onMouseDown={handleResizeStart}
             />
@@ -2238,7 +2209,7 @@ const WailBrewApp = () => {
                         onClearLog={() => setHomebrewLog("")}
                         onUpdateHomebrew={async () => {
                             setHomebrewLog(t('dialogs.runningHomebrewUpdate'));
-                            
+
                             // Set up event listeners for live progress
                             const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
                                 setHomebrewLog(prevLogs => {
@@ -2248,10 +2219,10 @@ const WailBrewApp = () => {
                                     return prevLogs + '\n' + progress;
                                 });
                             });
-                            
+
                             const completeListener = EventsOn("homebrewUpdateComplete", async (finalMessage: string) => {
                                 setHomebrewLog(prevLogs => prevLogs + '\n' + finalMessage);
-                                
+
                                 // Refresh version after update
                                 try {
                                     const newVersion = await GetHomebrewVersion();
@@ -2266,12 +2237,12 @@ const WailBrewApp = () => {
                                 } catch (error) {
                                     console.error("Failed to refresh Homebrew version:", error);
                                 }
-                                
+
                                 // Clean up event listeners
                                 progressListener();
                                 completeListener();
                             });
-                            
+
                             // Start the update process
                             await UpdateHomebrew();
                         }}
@@ -2523,13 +2494,15 @@ const WailBrewApp = () => {
                     gutter={8}
                     toastOptions={{
                         duration: 4000,
+                        className: 'toast-notification',
                         style: {
-                            background: 'rgba(40, 44, 52, 0.95)',
-                            color: '#fff',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: 'var(--toast-bg)',
+                            color: 'var(--toast-text)',
+                            border: '1px solid var(--glass-border-strong)',
                             borderRadius: '12px',
                             backdropFilter: 'blur(12px)',
                             WebkitBackdropFilter: 'blur(12px)',
+                            boxShadow: 'var(--glass-shadow-strong)',
                         },
                         success: {
                             iconTheme: {
