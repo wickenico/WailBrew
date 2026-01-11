@@ -36,6 +36,7 @@ import {
     GetBrewPackageSizes,
     GetBrewCaskSizes,
     GetStartupData,
+    GetStartupDataWithUpdate,
     ClearBrewCache,
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime";
@@ -185,9 +186,9 @@ const WailBrewApp = () => {
             }
         }, 100);
         
-        // Use single optimized startup call instead of multiple parallel calls
-        // This drastically reduces duplicate brew command executions
-        GetStartupData()
+        // Use single optimized startup call with database update for fresh outdated packages
+        // Database update runs in parallel with other fetches to minimize startup time
+        GetStartupDataWithUpdate()
             .then((startupData) => {
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = startupData.packages || [];
@@ -1760,8 +1761,8 @@ const WailBrewApp = () => {
             // Clear cache to ensure fresh data on manual refresh
             await ClearBrewCache();
             
-            // Use single optimized startup call instead of multiple parallel calls
-            const startupData = await GetStartupData();
+            // Use single optimized startup call with database update for fresh data
+            const startupData = await GetStartupDataWithUpdate();
             
             // Process the data same as in useEffect
             const safeInstalled = startupData.packages || [];

@@ -16,7 +16,7 @@ import (
 type Service interface {
 	// Startup - optimized data loading for app initialization
 	GetStartupData() *StartupData
-	GetStartupDataWithUpdate() (*StartupData, string, error)
+	GetStartupDataWithUpdate() *StartupData
 
 	// Package listing
 	GetAllBrewPackages() [][]string
@@ -186,7 +186,7 @@ func (s *serviceImpl) GetStartupData() *StartupData {
 	return s.startupService.GetStartupData()
 }
 
-func (s *serviceImpl) GetStartupDataWithUpdate() (*StartupData, string, error) {
+func (s *serviceImpl) GetStartupDataWithUpdate() *StartupData {
 	return s.startupService.GetStartupDataWithUpdate()
 }
 

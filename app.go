@@ -374,7 +374,7 @@ func (a *App) GetStartupData() *StartupData {
 }
 
 // GetStartupDataWithUpdate returns startup data after updating the database
-func (a *App) GetStartupDataWithUpdate() (*StartupData, string, error) {
+func (a *App) GetStartupDataWithUpdate() *StartupData {
 	return a.brewService.GetStartupDataWithUpdate()
 }
 
