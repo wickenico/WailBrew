@@ -513,7 +513,7 @@
       "startingInstall": "❌ Erro ao iniciar a instalação: {{error}}",
       "startingUninstall": "❌ Erro ao iniciar a desinstalação: {{error}}",
       "startingTap": "❌ Erro ao iniciar a adição: {{error}}",
-      "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}"
+      "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}",
       "startingHomebrewUpdate": "❌ Erro ao iniciar atualização do Homebrew: {{error}}"
     }
   }
