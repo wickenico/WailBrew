@@ -478,6 +478,13 @@
       "success": "✅ Atualização de todos os pacotes concluída com sucesso!",
       "failed": "❌ Atualização de todos os pacotes falhou: {{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 Iniciando atualização do Homebrew...",
+      "success": "✅ Atualização do Homebrew concluída com sucesso!",
+      "failed": "❌ Atualização do Homebrew falhou: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 Iniciando a instalação de '{{name}}'...",
       "success": "✅ Instalação de '{{name}}' foi concluída com sucesso!",
@@ -507,6 +514,7 @@
       "startingUninstall": "❌ Erro ao iniciar a desinstalação: {{error}}",
       "startingTap": "❌ Erro ao iniciar a adição: {{error}}",
       "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}"
+      "startingHomebrewUpdate": "❌ Erro ao iniciar atualização do Homebrew: {{error}}"
     }
   }
 }

@@ -476,6 +476,13 @@
       "success": "✅ Update for all packages completed successfully!",
       "failed": "❌ Update for all packages failed: {{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 Starting Homebrew update...",
+      "success": "✅ Homebrew update completed successfully!",
+      "failed": "❌ Homebrew update failed: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 Starting installation for '{{name}}'...",
       "success": "✅ Installation for '{{name}}' completed successfully!",
@@ -504,7 +511,8 @@
       "startingInstall": "❌ Error starting installation: {{error}}",
       "startingUninstall": "❌ Error starting uninstallation: {{error}}",
       "startingTap": "❌ Error starting tap: {{error}}",
-      "startingUntap": "❌ Error starting untap: {{error}}"
+      "startingUntap": "❌ Error starting untap: {{error}}",
+      "startingHomebrewUpdate": "❌ Error starting Homebrew update: {{error}}"
     }
   }
 }

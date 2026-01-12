@@ -511,27 +511,28 @@ func (s *serviceImpl) CheckHomebrewUpdate() (map[string]interface{}, error) {
 }
 
 func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
-	s.eventEmitter.Emit("homebrewUpdateProgress", "🔄 Starting Homebrew update...")
+	startMessage := s.getBackendMsg("homebrewUpdateStart", map[string]string{})
+	s.eventEmitter.Emit("homebrewUpdateProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "update")
 	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		errorMsg := fmt.Sprintf("❌ Error creating output pipe: %v", err)
+		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		errorMsg := fmt.Sprintf("❌ Error creating error pipe: %v", err)
+		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	}
 
 	if err := cmd.Start(); err != nil {
-		errorMsg := fmt.Sprintf("❌ Error starting Homebrew update: %v", err)
+		errorMsg := s.getBackendMsg("errorStartingHomebrewUpdate", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	}
@@ -541,7 +542,7 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
 			if line != "" {
-				s.eventEmitter.Emit("homebrewUpdateProgress", fmt.Sprintf("📦 %s", line))
+				s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateOutput", map[string]string{"line": line}))
 			}
 		}
 	}()
@@ -551,7 +552,7 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
 			if line != "" {
-				s.eventEmitter.Emit("homebrewUpdateProgress", fmt.Sprintf("⚠️ %s", line))
+				s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateWarning", map[string]string{"line": line}))
 			}
 		}
 	}()
@@ -559,9 +560,9 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 	err = cmd.Wait()
 	var finalMessage string
 	if err != nil {
-		finalMessage = fmt.Sprintf("❌ Homebrew update failed: %v", err)
+		finalMessage = s.getBackendMsg("homebrewUpdateFailed", map[string]string{"error": err.Error()})
 	} else {
-		finalMessage = "✅ Homebrew update completed successfully!"
+		finalMessage = s.getBackendMsg("homebrewUpdateSuccess", map[string]string{})
 	}
 
 	s.eventEmitter.Emit("homebrewUpdateComplete", finalMessage)
