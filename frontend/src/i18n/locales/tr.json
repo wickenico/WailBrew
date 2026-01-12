@@ -473,6 +473,13 @@
       "success": "✅ Tüm paketler için güncelleme başarıyla tamamlandı!",
       "failed": "❌ Tüm paketler için güncelleme başarısız: {{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 Homebrew güncelleme başlatılıyor...",
+      "success": "✅ Homebrew güncelleme başarıyla tamamlandı!",
+      "failed": "❌ Homebrew güncelleme başarısız: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 '{{name}}' için kurulum başlatılıyor...",
       "success": "✅ '{{name}}' için kurulum başarıyla tamamlandı!",
@@ -501,7 +508,8 @@
       "startingInstall": "❌ Kurulum başlatılırken hata: {{error}}",
       "startingUninstall": "❌ Kaldırma başlatılırken hata: {{error}}",
       "startingTap": "❌ Tap başlatılırken hata: {{error}}",
-      "startingUntap": "❌ Untap başlatılırken hata: {{error}}"
+      "startingUntap": "❌ Untap başlatılırken hata: {{error}}",
+      "startingHomebrewUpdate": "❌ Homebrew güncelleme başlatılırken hata: {{error}}"
     }
   }
 }

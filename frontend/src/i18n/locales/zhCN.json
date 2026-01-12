@@ -473,6 +473,13 @@
       "success": "✅ 所有包的更新已成功完成！",
       "failed": "❌ 所有包的更新失败：{{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 正在开始 Homebrew 更新...",
+      "success": "✅ Homebrew 更新已成功完成！",
+      "failed": "❌ Homebrew 更新失败：{{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 正在为 '{{name}}' 开始安装...",
       "success": "✅ '{{name}}' 的安装已成功完成！",
@@ -501,7 +508,8 @@
       "startingInstall": "❌ 启动安装时出错：{{error}}",
       "startingUninstall": "❌ 启动卸载时出错：{{error}}",
       "startingTap": "❌ 启动 tap 时出错：{{error}}",
-      "startingUntap": "❌ 启动 untap 时出错：{{error}}"
+      "startingUntap": "❌ 启动 untap 时出错：{{error}}",
+      "startingHomebrewUpdate": "❌ 启动 Homebrew 更新时出错：{{error}}"
     }
   }
 }

@@ -473,6 +473,13 @@
       "success": "✅ Aktualisierung für alle Pakete erfolgreich abgeschlossen!",
       "failed": "❌ Aktualisierung für alle Pakete fehlgeschlagen: {{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 Starte Homebrew-Aktualisierung...",
+      "success": "✅ Homebrew-Aktualisierung erfolgreich abgeschlossen!",
+      "failed": "❌ Homebrew-Aktualisierung fehlgeschlagen: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 Starte Installation für '{{name}}'...",
       "success": "✅ Installation für '{{name}}' erfolgreich abgeschlossen!",
@@ -501,7 +508,8 @@
       "startingInstall": "❌ Fehler beim Starten der Installation: {{error}}",
       "startingUninstall": "❌ Fehler beim Starten der Deinstallation: {{error}}",
       "startingTap": "❌ Fehler beim Starten des Taps: {{error}}",
-      "startingUntap": "❌ Fehler beim Starten des Untaps: {{error}}"
+      "startingUntap": "❌ Fehler beim Starten des Untaps: {{error}}",
+      "startingHomebrewUpdate": "❌ Fehler beim Starten der Homebrew-Aktualisierung: {{error}}"
     }
   }
 }

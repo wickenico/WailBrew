@@ -473,6 +473,13 @@
       "success": "✅ Mise à jour pour tous les paquets terminée avec succès !",
       "failed": "❌ Échec de la mise à jour pour tous les paquets : {{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 Démarrage de la mise à jour Homebrew...",
+      "success": "✅ Mise à jour Homebrew terminée avec succès !",
+      "failed": "❌ Échec de la mise à jour Homebrew : {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 Démarrage de l'installation pour '{{name}}'...",
       "success": "✅ Installation pour '{{name}}' terminée avec succès !",
@@ -501,7 +508,8 @@
       "startingInstall": "❌ Erreur lors du démarrage de l'installation : {{error}}",
       "startingUninstall": "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
       "startingTap": "❌ Erreur lors du démarrage du tap : {{error}}",
-      "startingUntap": "❌ Erreur lors du démarrage de l'untap : {{error}}"
+      "startingUntap": "❌ Erreur lors du démarrage de l'untap : {{error}}",
+      "startingHomebrewUpdate": "❌ Erreur lors du démarrage de la mise à jour Homebrew : {{error}}"
     }
   }
 }
