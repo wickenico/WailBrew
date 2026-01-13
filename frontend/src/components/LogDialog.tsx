@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
 import { Copy } from "lucide-react";
+import React, { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 interface LogDialogProps {
     open: boolean;
@@ -13,11 +13,11 @@ interface LogDialogProps {
     onPackageClick?: (packageName: string) => void;
 }
 
-const LogDialog: React.FC<LogDialogProps> = ({ 
-    open, 
-    title, 
-    log, 
-    onClose, 
+const LogDialog: React.FC<LogDialogProps> = ({
+    open,
+    title,
+    log,
+    onClose,
     isRunning = false,
     clickablePackages = [],
     onPackageClick
@@ -48,7 +48,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
                 {lines.map((line, lineIndex) => {
                     let lastIndex = 0;
                     const elements: React.ReactNode[] = [];
-                    
+
                     // Find all package names in this line
                     for (const packageName of clickablePackages) {
                         const index = line.indexOf(packageName, lastIndex);
@@ -89,17 +89,17 @@ const LogDialog: React.FC<LogDialogProps> = ({
                             lastIndex = index + packageName.length;
                         }
                     }
-                    
+
                     // Add remaining text after last package
                     if (lastIndex < line.length) {
                         elements.push(line.substring(lastIndex));
                     }
-                    
+
                     // If no packages found, just add the line as-is
                     if (elements.length === 0) {
                         elements.push(line);
                     }
-                    
+
                     return (
                         <div key={`line-${lineIndex}-${line.substring(0, 20)}`}>
                             {elements}
@@ -112,7 +112,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
 
     const handleCopyLogs = async () => {
         if (!log) return;
-        
+
         try {
             await navigator.clipboard.writeText(log);
             toast.success(t('logDialog.copiedToClipboard'), {
@@ -129,7 +129,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
     };
 
     if (!open) return null;
-    
+
     return (
         <div className="confirm-overlay">
             <div className="confirm-box log-dialog-box">
@@ -157,12 +157,12 @@ const LogDialog: React.FC<LogDialogProps> = ({
                         </div>
                     )}
                 </div>
-                
+
                 {/* Log content with copy button in bottom right */}
                 <div className="log-content-wrapper">
                     {renderLogContent()}
                     {log && (
-                        <button 
+                        <button
                             onClick={handleCopyLogs}
                             className="log-copy-button"
                             title={t('logDialog.copyToClipboard')}
@@ -172,10 +172,10 @@ const LogDialog: React.FC<LogDialogProps> = ({
                         </button>
                     )}
                 </div>
-                
+
                 {/* OK button centered */}
                 <div className="confirm-actions log-dialog-actions">
-                    <button onClick={onClose}>{t('buttons.ok')}</button>
+                    <button onClick={onClose} className="log-dialog-btn">{t('buttons.ok')}</button>
                 </div>
             </div>
         </div>
