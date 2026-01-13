@@ -53,6 +53,19 @@
   --stat-label: rgba(255, 255, 255, 0.5);
   --stat-value-gradient: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
 
+  /* Surface Colors */
+  --surface-translucent: rgba(30, 34, 40, 0.85);
+  --surface-panel: rgba(30, 34, 40, 0.82);
+  --surface-footer: rgba(30, 34, 40, 0.72);
+  --surface-overlay: rgba(30, 34, 40, 0.92);
+
+  /* Card Colors */
+  --card-bg-gradient: linear-gradient(135deg, rgba(55, 62, 72, 0.6) 0%, rgba(48, 54, 63, 0.5) 100%);
+  --card-border: rgba(74, 158, 255, 0.2);
+
+  /* Text Colors */
+  --text-tertiary: rgba(255, 255, 255, 0.4);
+
   /* Misc */
   --radius: 18px;
   --transition: 0.18s cubic-bezier(.4, 0, .2, 1);
@@ -111,6 +124,19 @@
   --table-row-stripe: rgba(0, 0, 0, 0.02);
   --stat-label: #5f6368;
   --stat-value-gradient: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+
+  /* Surface Colors */
+  --surface-translucent: rgba(255, 255, 255, 0.95);
+  --surface-panel: rgba(255, 255, 255, 0.9);
+  --surface-footer: rgba(255, 255, 255, 0.85);
+  --surface-overlay: rgba(255, 255, 255, 0.98);
+
+  /* Card Colors */
+  --card-bg-gradient: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
+  --card-border: rgba(0, 0, 0, 0.12);
+
+  /* Text Colors */
+  --text-tertiary: #80868b;
 }
 
 @keyframes spin {
@@ -4382,6 +4408,40 @@ body {
   opacity: 0.6;
   color: var(--text-main);
   font-weight: 600;
+}
+
+[data-theme='light'] .about-header {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .about-info {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .about-footer {
+  background: rgba(0, 0, 0, 0.03);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .about-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .about-content::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border: 3px solid rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .about-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 12px rgba(2, 136, 209, 0.4);
+}
+
+[data-theme='light'] .about-icon img {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme='light'] .keyboard-hint {
