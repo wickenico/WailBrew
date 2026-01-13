@@ -476,6 +476,13 @@
       "success": "✅ 모든 패키지 업데이트가 성공적으로 완료되었습니다!",
       "failed": "❌ 모든 패키지 업데이트 실패: {{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 Homebrew 업데이트 시작 중...",
+      "success": "✅ Homebrew 업데이트가 성공적으로 완료되었습니다!",
+      "failed": "❌ Homebrew 업데이트 실패: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 '{{name}}' 설치 시작 중...",
       "success": "✅ '{{name}}' 설치가 성공적으로 완료되었습니다!",
@@ -504,7 +511,8 @@
       "startingInstall": "❌ 설치 시작 오류: {{error}}",
       "startingUninstall": "❌ 제거 시작 오류: {{error}}",
       "startingTap": "❌ tap 시작 오류: {{error}}",
-      "startingUntap": "❌ untap 시작 오류: {{error}}"
+      "startingUntap": "❌ untap 시작 오류: {{error}}",
+      "startingHomebrewUpdate": "❌ Homebrew 업데이트 시작 오류: {{error}}"
     }
   }
 }

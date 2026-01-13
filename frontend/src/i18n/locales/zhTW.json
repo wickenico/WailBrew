@@ -473,6 +473,13 @@
       "success": "✅ 所有套件的更新已成功完成！",
       "failed": "❌ 所有套件的更新失敗：{{error}}"
     },
+    "homebrewUpdate": {
+      "start": "🔄 正在開始 Homebrew 更新...",
+      "success": "✅ Homebrew 更新已成功完成！",
+      "failed": "❌ Homebrew 更新失敗：{{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
     "install": {
       "start": "🔄 正在為 '{{name}}' 開始安裝...",
       "success": "✅ '{{name}}' 的安裝已成功完成！",
@@ -501,7 +508,8 @@
       "startingInstall": "❌ 啟動安裝時發生錯誤：{{error}}",
       "startingUninstall": "❌ 啟動解除安裝時發生錯誤：{{error}}",
       "startingTap": "❌ 啟動 tap 時發生錯誤：{{error}}",
-      "startingUntap": "❌ 啟動 untap 時發生錯誤：{{error}}"
+      "startingUntap": "❌ 啟動 untap 時發生錯誤：{{error}}",
+      "startingHomebrewUpdate": "❌ 啟動 Homebrew 更新時發生錯誤：{{error}}"
     }
   }
 }

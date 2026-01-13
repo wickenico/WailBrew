@@ -15,11 +15,11 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
-    "react-i18next": "^16.5.1",
+    "react-i18next": "^16.5.2",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "@types/react": "19.2.7",
+    "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "typescript": "^5.9.3",

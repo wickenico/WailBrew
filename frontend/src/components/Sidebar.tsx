@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { ChevronDown, Clock, Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
@@ -42,6 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     const { t, i18n } = useTranslation();
     const currentLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
     const [showTooltip, setShowTooltip] = useState(false);
+    const iconRef = useRef<HTMLDivElement>(null);
 
     // Detect if user is on Mac
     const isMac = typeof navigator !== 'undefined' &&
@@ -85,6 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 WailBrew
                 {isBackgroundCheckRunning !== undefined && (
                     <div
+                        ref={iconRef}
                         className="background-check-icon"
                         style={{
                             position: "relative",
@@ -208,4 +210,4 @@ const Sidebar: React.FC<SidebarProps> = ({
     );
 };
 
-export default Sidebar; 
+export default Sidebar;

@@ -58,7 +58,7 @@
       "leaves": "Leaves",
       "repositories": "Repositórios",
       "homebrew": "Homebrew",
-      "doctor": "Doctor",
+      "doctor": "Diagnóstico",
       "cleanup": "Limpeza"
     },
     "table": {
@@ -88,6 +88,7 @@
     "uninstall": "Desinstalar \"{{name}}\"",
     "install": "Instalar \"{{name}}\"",
     "update": "Atualizar \"{{name}}\"",
+    "tap":"Adicionar Repositório",
     "updateAll": "Atualizar Tudo",
     "multiSelect": "Seleção Múltipla",
     "exitMultiSelect": "Sair da Seleção Múltipla",
@@ -107,13 +108,12 @@
     "yesUpdate": "Sim, atualizar",
     "yesUpdateAll": "Sim, atualizar tudo",
     "yesUpdateSelected": "Sim, atualizar {{count}} selecionado(s)",
+    "yesUntap": "Sim, remover repositório",
+    "yesUninstallAndUntap": "Sim, desinstalar e remover repositório",
     "ok": "Ok",
     "close": "Fechar",
     "updateHomebrew": "Atualizar Homebrew",
-    "uninstallDeprecated": "Desinstalar fórmula descontinuada \"{{name}}\"",
-    "untap": "Desconectar \"{{name}}\"",
-    "tap": "Conectar repositório",
-    "yesUntap": "Sim, desconectar"
+    "uninstallDeprecated": "Desinstalar fórmula descontinuada \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} de {{total}} selecionado(s)"
@@ -158,7 +158,7 @@
     "allFormulas": "Todas as fórmulas do Homebrew disponíveis. O destaque em verde mostra as fórmulas instaladas.",
     "leaves": "Leaves são fórmulas que não são necessárias como dependências por outras fórmulas instaladas.",
     "repositories": "Repositórios (Taps) são fontes para fórmulas. Eles contêm pacotes adicionais além do repositório padrão.",
-    "homebrew": "Gerencie e atualize o próprio Homebrew. Verifique a versão instalada e atualize o core do Homebrew quando uma nova versão estiver disponível.",
+    "homebrew": "Gerencie o Homebrew. Verifique a versão instalada e atualize o core do Homebrew quando uma nova versão estiver disponível.",
     "doctor": "O Diagnóstico é um recurso do Homebrew que pode detectar as causas mais comuns de erros.",
     "cleanup": "A Limpeza remove downloads desatualizados e arquivos em cache para liberar espaço em disco."
   },
@@ -178,21 +178,25 @@
     "confirmUpdateAll": "Você realmente deseja atualizar todos os pacotes desatualizados?",
     "confirmUpdateSelected": "Você realmente deseja atualizar {{count}} pacote(s) selecionado(s)?",
     "confirmUntap": "Você realmente deseja desconectar \"{{name}}\"?",
-    "updateLogs": "Logs de atualização para {{name}}",
-    "updateAllLogs": "Logs de atualização para todos os pacotes",
-    "updateSelectedLogs": "Logs de atualização para pacotes selecionados",
-    "installLogs": "Logs de instalação para {{name}}",
-    "uninstallLogs": "Logs de desinstalação para {{name}}",
-    "untapLogs": "Logs de desconexão para {{name}}",
+    "updateLogs": "Logs de atualização de {{name}}",
+    "updateAllLogs": "Logs de atualização de todos os pacotes",
+    "updateSelectedLogs": "Logs de atualização de pacotes selecionados",
+    "installLogs": "Logs de instalação de {{name}}",
+    "uninstallLogs": "Logs de desinstalação de {{name}}",
+    "untapLogs": "Logs de desconexão de {{name}}",
     "untapping": "Desconectando \"{{name}}\"...\nPor favor, aguarde...",
-    "tapLogs": "Logs de conexão para {{name}}",
-    "tapping": "Conectando \"{{name}}\"...\nPor favor, aguarde...",
-    "tapInputTitle": "Conectar repositório",
+    "tapLogs": "Logs de conexão de {{name}}",
+    "tapping": "Adicionando repositório \"{{name}}\"...\nPor favor, aguarde...",
+    "tapInputTitle": "Adicionar Repositório",
     "tapInputPlaceholder": "usuário/repo (ex: homebrew/cask)",
     "tapInputHint": "Digite o nome do repositório no formato: usuário/repo",
     "tapInputEmpty": "Por favor, digite um nome de repositório",
     "tapInputInvalid": "Formato inválido. O nome do repositório deve estar no formato: usuário/repo",
     "repositoryInfo": "Informações de {{name}}",
+    "confirmUntapUninstall": "Não é possível remover o repositório \"{{name}}\" porque ele contém {{count}} pacote(s) instalado(s): {{packages}}\n\nDeseja desinstalá-los primeiro e, em seguida, remover o repositório?",
+    "uninstallingPackagesBeforeUntap": "Desinstalando {{count}} pacote(s) antes de remover o repositório \"{{name}}\"...\nPor favor, aguarde...",
+    "uninstallingPackage": "Desinstalando {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Tentando remover o repositório \"{{name}}\" novamente...\nPor favor, aguarde...",
     "packageInfo": "Informações de {{name}}",
     "sessionLogs": "Logs de Sessão",
     "updating": "Atualizando \"{{name}}\"...\nPor favor, aguarde...",
@@ -325,6 +329,7 @@
     "size": "Tamanho",
     "changes": "Mudanças",
     "viewReleaseNotes": "Ver Notas da Versão",
+    "availableViaHomebrew": "Uma nova versão está disponível via Homebrew Cask",
     "manualUpdate": "Atualização Manual",
     "instruction": "Para atualizar o WailBrew, por favor execute o seguinte comando no seu terminal:",
     "copyCommand": "Copiar comando para a área de transferência",
@@ -333,12 +338,12 @@
     "currentVersionIs": "A versão {{version}} é a versão atual.",
     "tryAgain": "Tentar novamente",
     "gotIt": "Entendi",
-    "downloadAndInstall": "Download & Install",
-    "installing": "Installing...",
+    "downloadAndInstall": "Baixar e Instalar",
+    "installing": "Instalando...",
     "updateInstalled": "Atualização Instalada!",
     "restartMessage": "A atualização foi instalada com sucesso. Por favor, reinicie o WailBrew para usar a nova versão.",
     "restartNow": "Reiniciar Agora",
-    "rateLimitError": "Limite de taxa da API do GitHub excedido. A verificação de atualizações usa a API do GitHub que tem um limite para solicitações não autenticadas.",
+    "rateLimitError": "Limite de taxa da API do GitHub excedido. A verificação de atualizações usa a API do GitHub que tem um limite de solicitações não autenticadas.",
     "rateLimitAdvice": "Por favor, aguarde alguns minutos e tente novamente. O limite de taxa é redefinido a cada hora."
   },
   "restartDialog": {
@@ -381,7 +386,7 @@
     },
     "brewPath": {
       "title": "Configuração do Caminho do Homebrew",
-      "description": "Especifique o caminho para a sua instalação do Homebrew. O WailBrew usará este caminho para executar todos os comandos do Homebrew.",
+      "description": "Especifique o caminho da sua instalação do Homebrew. O WailBrew usará este caminho para executar todos os comandos do Homebrew.",
       "currentPath": "Caminho do Homebrew",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "Detectar caminho do brew automaticamente",
@@ -420,8 +425,8 @@
       "description": "Altere as fontes de espelho do Homebrew para melhorar as velocidades de download em regiões com problemas de rede. Isso configura as variáveis de ambiente HOMEBREW_GIT_REMOTE e HOMEBREW_BOTTLE_DOMAIN.",
       "selectMirror": "Selecionar Fonte de Espelho",
       "custom": "Personalizado",
-      "customGitRemote": "URL Git Remota Personalizada",
-      "customBottleDomain": "URL de Domínio Bottle Personalizada",
+      "customGitRemote": "URL do Git Remote Personalizada",
+      "customBottleDomain": "URL do Domínio da Bottle Personalizada",
       "note": "Nota: Alterar a fonte de espelho afetará todas as operações do Homebrew. Reinicie o aplicativo ou atualize os pacotes após a alteração.",
       "mirrors": {
         "official": "Oficial (Padrão)",
@@ -439,7 +444,7 @@
       "options": {
         "none": "Padrão (Sem flags)",
         "greedy": "Greedy",
-        "greedyAutoUpdates": "Greedy (Atualizações automáticas)"
+        "greedyAutoUpdates": "Greedy (Flag: Auto-updates)"
       },
       "descriptions": {
         "none": "Mostra apenas pacotes que têm versões mais recentes disponíveis. Este é o comportamento padrão do Homebrew.",
@@ -462,46 +467,54 @@
   },
   "backend": {
     "update": {
-      "start": "🔄 Iniciando atualização para '{{name}}'...",
-      "success": "✅ Atualização para '{{name}}' concluída com sucesso!",
-      "failed": "❌ Atualização para '{{name}}' falhou: {{error}}",
-      "retryingWithForce": "🔄 Tentando novamente atualização para '{{name}}' com --force (aplicativo pode estar em uso)...",
-      "retryingFailedCasks": "🔄 Tentando novamente {{count}} cask(s) falhado(s) com --force..."
+      "start": "🔄 Iniciando atualização de '{{name}}'...",
+      "success": "✅ Atualização de '{{name}}' concluída com sucesso!",
+      "failed": "❌ Atualização de '{{name}}' falhou: {{error}}",
+      "retryingWithForce": "🔄 Tentando novamente atualização de '{{name}}' com --force (aplicativo pode estar em uso)...",
+      "retryingFailedCasks": "🔄 Tentando novamente, {{count}} cask(s) falhado(s) com --force..."
     },
     "updateAll": {
-      "start": "🔄 Iniciando atualização para todos os pacotes...",
-      "success": "✅ Atualização para todos os pacotes concluída com sucesso!",
-      "failed": "❌ Atualização para todos os pacotes falhou: {{error}}"
+      "start": "🔄 Iniciando atualização de todos os pacotes...",
+      "success": "✅ Atualização de todos os pacotes concluída com sucesso!",
+      "failed": "❌ Atualização de todos os pacotes falhou: {{error}}"
+    },
+    "homebrewUpdate": {
+      "start": "🔄 Iniciando atualização do Homebrew...",
+      "success": "✅ Atualização do Homebrew concluída com sucesso!",
+      "failed": "❌ Atualização do Homebrew falhou: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
     },
     "install": {
-      "start": "🔄 Iniciando instalação para '{{name}}'...",
-      "success": "✅ Instalação para '{{name}}' concluída com sucesso!",
-      "failed": "❌ Instalação para '{{name}}' falhou: {{error}}"
+      "start": "🔄 Iniciando a instalação de '{{name}}'...",
+      "success": "✅ Instalação de '{{name}}' foi concluída com sucesso!",
+      "failed": "❌ Instalação de '{{name}}' falhou: {{error}}"
     },
     "uninstall": {
-      "start": "🔄 Iniciando desinstalação para '{{name}}'...",
-      "success": "✅ Desinstalação para '{{name}}' concluída com sucesso!",
-      "failed": "❌ Desinstalação para '{{name}}' falhou: {{error}}"
+      "start": "🔄 Iniciando a desinstalação de '{{name}}'...",
+      "success": "✅ A desinstalação de '{{name}}' foi concluída com sucesso!",
+      "failed": "❌ A desinstalação de '{{name}}' falhou: {{error}}"
     },
     "tap": {
-      "start": "🔄 Iniciando tap para '{{name}}'...",
-      "success": "✅ Tap para '{{name}}' concluído com sucesso!",
-      "failed": "❌ Tap para '{{name}}' falhou: {{error}}"
+      "start": "🔄 Iniciando a adição do repositório '{{name}}'...",
+      "success": "✅ A adição do repositório '{{name}}' foi concluída com sucesso!",
+      "failed": "❌ A adição do repositório '{{name}}' falhou: {{error}}"
     },
     "untap": {
-      "start": "🔄 Iniciando untap para '{{name}}'...",
-      "success": "✅ Untap para '{{name}}' concluído com sucesso!",
-      "failed": "❌ Untap para '{{name}}' falhou: {{error}}"
+      "start": "🔄 Iniciando a remoção do repositório '{{name}}'...",
+      "success": "✅ A remoção do repositório '{{name}}' foi concluída com sucesso!",
+      "failed": "❌ A remoção do repositório '{{name}}' falhou: {{error}}"
     },
     "errors": {
       "creatingPipe": "❌ Erro ao criar pipe de saída: {{error}}",
       "creatingErrorPipe": "❌ Erro ao criar pipe de erro: {{error}}",
       "startingUpdate": "❌ Erro ao iniciar atualização: {{error}}",
       "startingUpdateAll": "❌ Erro ao iniciar atualização de todos: {{error}}",
-      "startingInstall": "❌ Erro ao iniciar instalação: {{error}}",
-      "startingUninstall": "❌ Erro ao iniciar desinstalação: {{error}}",
-      "startingTap": "❌ Erro ao iniciar tap: {{error}}",
-      "startingUntap": "❌ Erro ao iniciar untap: {{error}}"
+      "startingInstall": "❌ Erro ao iniciar a instalação: {{error}}",
+      "startingUninstall": "❌ Erro ao iniciar a desinstalação: {{error}}",
+      "startingTap": "❌ Erro ao iniciar a adição: {{error}}",
+      "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}",
+      "startingHomebrewUpdate": "❌ Erro ao iniciar atualização do Homebrew: {{error}}"
     }
   }
 }
