@@ -1,6 +1,7 @@
 /// <reference types="react" />
 import { ChevronDown, Clock, Loader2 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
@@ -42,7 +43,19 @@ const Sidebar: React.FC<SidebarProps> = ({
     const { t, i18n } = useTranslation();
     const currentLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
     const [showTooltip, setShowTooltip] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
     const iconRef = useRef<HTMLDivElement>(null);
+
+    // Update tooltip position when showing
+    useEffect(() => {
+        if (showTooltip && iconRef.current) {
+            const rect = iconRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                top: rect.bottom + 8,
+                left: rect.left + rect.width / 2,
+            });
+        }
+    }, [showTooltip]);
 
     // Detect if user is on Mac
     const isMac = typeof navigator !== 'undefined' &&
@@ -114,14 +127,24 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }}
                             />
                         )}
-                        {showTooltip && formatTimeUntilNextCheck && (
-                            <div className="background-check-tooltip">
-                                {formatTimeUntilNextCheck(timeUntilNextCheck)}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+                        {showTooltip && formatTimeUntilNextCheck && ReactDOM.createPortal(
+                                <div
+                                    className="background-check-tooltip"
+                                    style={{
+                                        position: "fixed",
+                                        top: tooltipPosition.top,
+                                        left: tooltipPosition.left,
+                                        transform: "translateX(-50%)",
+                                        zIndex: 99999,
+                                    }}
+                                >
+                                    {formatTimeUntilNextCheck(timeUntilNextCheck)}
+                                </div>,
+                                document.body
+                            )}
+                        </div>
+                    )}
+                </div>
             <div className="sidebar-section">
                 <h4>{t('sidebar.formulas')}</h4>
                 <ul>
