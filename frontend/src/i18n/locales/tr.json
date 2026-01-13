@@ -297,6 +297,7 @@
     "loadingFormulas": "Formüller yükleniyor…",
     "loadingRepositories": "Depolar yükleniyor…",
     "noResults": "Eşleşen sonuç yok.",
+    "allUpToDate": "Her şey güncel!",
     "installedStatus": "Yüklendi",
     "notInstalledStatus": "Yüklenmedi",
     "package": "paket",

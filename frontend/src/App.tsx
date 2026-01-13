@@ -1,4 +1,4 @@
-import { CheckSquare, Copy, RefreshCw, Sparkles, Square, X } from 'lucide-react';
+import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Square, X } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from "react-i18next";
@@ -2102,32 +2102,41 @@ const WailBrewApp = () => {
                             </div>
                         )}
                         {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "updatable" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={multiSelectMode ? (pkg) => togglePackageSelection(pkg.name) : handleSelect}
-                            columns={columnsUpdatable}
-                            onUninstall={!multiSelectMode ? handleUninstallPackage : undefined}
-                            onShowInfo={!multiSelectMode ? handleShowInfoLogs : undefined}
-                            onUpdate={!multiSelectMode ? handleUpdate : undefined}
-                            multiSelectMode={multiSelectMode}
-                            selectedPackages={selectedPackages}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
+                        {updatablePackages.length === 0 && !loading ? (
+                            <div className="all-up-to-date">
+                                <PartyPopper size={48} strokeWidth={1.5} />
+                                <p>{t('table.allUpToDate')}</p>
                             </div>
-                            <div className="package-footer">
-                                {t('footers.outdatedFormulas')}
+                        ) : (
+                            <PackageTable
+                                ref={view === "updatable" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading}
+                                onSelect={multiSelectMode ? (pkg) => togglePackageSelection(pkg.name) : handleSelect}
+                                columns={columnsUpdatable}
+                                onUninstall={!multiSelectMode ? handleUninstallPackage : undefined}
+                                onShowInfo={!multiSelectMode ? handleShowInfoLogs : undefined}
+                                onUpdate={!multiSelectMode ? handleUpdate : undefined}
+                                multiSelectMode={multiSelectMode}
+                                selectedPackages={selectedPackages}
+                            />
+                        )}
+                        {updatablePackages.length > 0 && (
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">
+                                    {t('footers.outdatedFormulas')}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </>
                 )}
                 {view === "all" && (

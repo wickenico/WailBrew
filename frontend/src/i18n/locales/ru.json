@@ -297,6 +297,7 @@
     "loadingFormulas": "Загрузка пакетов…",
     "loadingRepositories": "Загрузка репозиториев…",
     "noResults": "Нет совпадений.",
+    "allUpToDate": "Всё обновлено!",
     "installedStatus": "Установлено",
     "notInstalledStatus": "Не установлено",
     "package": "пакет",

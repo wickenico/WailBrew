@@ -301,6 +301,7 @@
     "loadingFormulas": "Carregando fórmulas…",
     "loadingRepositories": "Carregando repositórios…",
     "noResults": "Nenhum resultado correspondente.",
+    "allUpToDate": "Tudo atualizado!",
     "installedStatus": "Instalado",
     "notInstalledStatus": "Não instalado",
     "package": "pacote",

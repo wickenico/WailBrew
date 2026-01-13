@@ -297,6 +297,7 @@
     "loadingFormulas": "正在加载 Formulae...",
     "loadingRepositories": "正在加载软件源...",
     "noResults": "没有匹配的结果。",
+    "allUpToDate": "所有软件包都是最新的！",
     "installedStatus": "已安装",
     "notInstalledStatus": "未安装",
     "package": "个软件包",

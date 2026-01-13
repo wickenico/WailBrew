@@ -1554,6 +1554,30 @@ body {
   font-weight: 500;
 }
 
+.all-up-to-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  min-height: 200px;
+  color: var(--text-secondary);
+  gap: 1rem;
+}
+
+.all-up-to-date svg {
+  color: #4ade80;
+  opacity: 0.9;
+}
+
+.all-up-to-date p {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.8;
+}
+
 .table-loading-overlay {
   position: absolute;
   top: 0;

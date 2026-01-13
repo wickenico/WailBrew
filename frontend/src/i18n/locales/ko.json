@@ -301,6 +301,7 @@
     "loadingFormulas": "Formulae 로딩 중…",
     "loadingRepositories": "Repositories 로딩 중…",
     "noResults": "일치하는 결과가 없습니다.",
+    "allUpToDate": "모든 패키지가 최신 상태입니다!",
     "installedStatus": "설치됨",
     "notInstalledStatus": "설치 안 됨",
     "package": "패키지",

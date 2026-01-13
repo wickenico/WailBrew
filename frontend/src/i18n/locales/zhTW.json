@@ -297,6 +297,7 @@
     "loadingFormulas": "載入套件中…",
     "loadingRepositories": "載入軟體庫中…",
     "noResults": "沒有符合的結果。",
+    "allUpToDate": "所有套件都是最新的！",
     "installedStatus": "已安裝",
     "notInstalledStatus": "未安裝",
     "package": "個套件",

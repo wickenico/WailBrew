@@ -297,6 +297,7 @@
     "loadingFormulas": "Chargement des formules…",
     "loadingRepositories": "Chargement des dépôts…",
     "noResults": "Aucun résultat correspondant.",
+    "allUpToDate": "Tout est à jour !",
     "installedStatus": "Installé",
     "notInstalledStatus": "Non installé",
     "package": "paquet",

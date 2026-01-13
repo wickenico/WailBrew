@@ -297,6 +297,7 @@
     "loadingFormulas": "Formeln werden geladen…",
     "loadingRepositories": "Repositories werden geladen…",
     "noResults": "Keine passenden Ergebnisse.",
+    "allUpToDate": "Alles ist auf dem neuesten Stand!",
     "installedStatus": "Installiert",
     "notInstalledStatus": "Nicht installiert",
     "package": "Paket",
