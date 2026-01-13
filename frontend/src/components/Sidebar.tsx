@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { ChevronDown, Clock, Loader2 } from "lucide-react";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
