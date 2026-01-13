@@ -158,6 +158,9 @@ const WailBrewApp = () => {
         complete: null
     });
 
+    // Track info request to prevent reopening dialog after close
+    const infoRequestIdRef = useRef<number>(0);
+
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
         const saved = localStorage.getItem('sidebarWidth');
@@ -1270,12 +1273,18 @@ const WailBrewApp = () => {
     const handleShowInfoLogs = async (pkg: PackageEntry) => {
         if (!pkg) return;
 
+        // Increment request ID to track this specific request
+        const currentRequestId = ++infoRequestIdRef.current;
+
         setInfoPackage(pkg);
         setInfoLogs(t('dialogs.gettingInfo', { name: pkg.name }));
 
         const info = await GetBrewPackageInfo(pkg.name);
 
-        setInfoLogs(info);
+        // Only update if this request is still the current one (dialog wasn't closed)
+        if (currentRequestId === infoRequestIdRef.current) {
+            setInfoLogs(info);
+        }
     };
 
     // Multi-select handlers
@@ -2452,6 +2461,8 @@ const WailBrewApp = () => {
                     title={t('dialogs.packageInfo', { name: infoPackage?.name })}
                     log={infoLogs}
                     onClose={() => {
+                        // Invalidate any pending info request (prevents dialog from reopening)
+                        infoRequestIdRef.current++;
                         setInfoLogs(null);
                         setInfoPackage(null);
                     }}
