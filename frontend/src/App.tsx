@@ -152,6 +152,12 @@ const WailBrewApp = () => {
     const timeUpdateInterval = useRef<ReturnType<typeof setInterval> | null>(null);
     const nextCheckTime = useRef<number>(Date.now() + 15 * 60 * 1000); // 15 minutes from now
 
+    // Track update event listeners for cleanup (prevents duplicate listeners bug)
+    const updateListenersRef = useRef<{ progress: (() => void) | null; complete: (() => void) | null }>({
+        progress: null,
+        complete: null
+    });
+
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
         const saved = localStorage.getItem('sidebarWidth');
@@ -1165,6 +1171,11 @@ const WailBrewApp = () => {
 
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
+        
+        // Clean up any existing listeners first (prevents duplicate listeners bug)
+        if (updateListenersRef.current.progress) updateListenersRef.current.progress();
+        if (updateListenersRef.current.complete) updateListenersRef.current.complete();
+        
         setShowUpdateConfirm(false);
         setIsUpdateAllOperation(false);
         setUpdateLogs(t('dialogs.updating', { name: selectedPackage.name }));
@@ -1194,15 +1205,23 @@ const WailBrewApp = () => {
             setIsUpdateRunning(false);
 
             // Clean up event listeners
-            progressListener();
-            completeListener();
+            updateListenersRef.current.progress?.();
+            updateListenersRef.current.complete?.();
+            updateListenersRef.current = { progress: null, complete: null };
         });
+
+        // Store cleanup functions in ref for cleanup on dialog close
+        updateListenersRef.current = { progress: progressListener, complete: completeListener };
 
         // Start the update process
         await UpdateBrewPackage(selectedPackage.name);
     };
 
     const handleUpdateAllConfirmed = async () => {
+        // Clean up any existing listeners first (prevents duplicate listeners bug)
+        if (updateListenersRef.current.progress) updateListenersRef.current.progress();
+        if (updateListenersRef.current.complete) updateListenersRef.current.complete();
+        
         setShowUpdateAllConfirm(false);
         setIsUpdateAllOperation(true);
         setCurrentlyUpdatingPackage(null);
@@ -1236,9 +1255,13 @@ const WailBrewApp = () => {
             setCurrentlyUpdatingPackage(null);
 
             // Clean up event listeners
-            progressListener();
-            completeListener();
+            updateListenersRef.current.progress?.();
+            updateListenersRef.current.complete?.();
+            updateListenersRef.current = { progress: null, complete: null };
         });
+
+        // Store cleanup functions in ref for cleanup on dialog close
+        updateListenersRef.current = { progress: progressListener, complete: completeListener };
 
         // Start the update all process
         await UpdateAllBrewPackages();
@@ -1290,6 +1313,10 @@ const WailBrewApp = () => {
     };
 
     const handleUpdateSelectedConfirmed = async () => {
+        // Clean up any existing listeners first (prevents duplicate listeners bug)
+        if (updateListenersRef.current.progress) updateListenersRef.current.progress();
+        if (updateListenersRef.current.complete) updateListenersRef.current.complete();
+        
         setShowUpdateSelectedConfirm(false);
         setIsUpdateAllOperation(true);
 
@@ -1318,9 +1345,13 @@ const WailBrewApp = () => {
             setMultiSelectMode(false);
 
             // Clean up event listeners
-            progressListener();
-            completeListener();
+            updateListenersRef.current.progress?.();
+            updateListenersRef.current.complete?.();
+            updateListenersRef.current = { progress: null, complete: null };
         });
+
+        // Store cleanup functions in ref for cleanup on dialog close
+        updateListenersRef.current = { progress: progressListener, complete: completeListener };
 
         // Start the update process for selected packages
         await UpdateSelectedBrewPackages(packageNames);
@@ -2354,6 +2385,11 @@ const WailBrewApp = () => {
                     log={updateLogs}
                     isRunning={isUpdateRunning}
                     onClose={async () => {
+                        // Clean up any pending event listeners (prevents duplicate listeners bug)
+                        if (updateListenersRef.current.progress) updateListenersRef.current.progress();
+                        if (updateListenersRef.current.complete) updateListenersRef.current.complete();
+                        updateListenersRef.current = { progress: null, complete: null };
+                        
                         setUpdateLogs(null);
                         setIsUpdateRunning(false);
                         setCurrentlyUpdatingPackage(null);
