@@ -22,3 +22,5 @@ releases/
 ehthumbs.db
 Thumbs.db
 
+/.cursor/
+.cursorrules
