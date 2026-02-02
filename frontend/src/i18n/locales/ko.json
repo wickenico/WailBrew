@@ -288,6 +288,8 @@
       "exportSuccess": "내보내기 성공",
       "exportFailed": "내보내기 실패",
       "exportMessage": "Brewfile이 다음 위치로 성공적으로 내보내졌습니다:\n%s",
+      "openConfigFile": "구성 파일 열기",
+      "openConfigFailed": "구성 열기 실패",
       "viewSessionLogs": "세션 로그 보기..."
     },
     "help": {

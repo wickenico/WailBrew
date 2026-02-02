@@ -16,6 +16,7 @@ type AppInterface interface {
 	OpenURL(url string)
 	GetTranslation(key string, params map[string]string) string
 	ExportBrewfile(filePath string) error
+	OpenConfigFile() error
 }
 
 // Build creates the application menu
@@ -131,6 +132,17 @@ func Build(app AppInterface) *menu.Menu {
 					Message: fmt.Sprintf(getT("menu.tools.exportMessage"), saveDialog),
 				})
 			}
+		}
+	})
+	ToolsMenu.AddText(getT("menu.tools.openConfigFile"), nil, func(cd *menu.CallbackData) {
+		ctx := getCtx()
+		err := app.OpenConfigFile()
+		if err != nil {
+			rt.MessageDialog(ctx, rt.MessageDialogOptions{
+				Type:    rt.ErrorDialog,
+				Title:   getT("menu.tools.openConfigFailed"),
+				Message: fmt.Sprintf("Failed to open config file: %v", err),
+			})
 		}
 	})
 	ToolsMenu.AddSeparator()

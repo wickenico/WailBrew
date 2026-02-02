@@ -288,6 +288,8 @@
       "exportSuccess": "Export Successful",
       "exportFailed": "Export Failed",
       "exportMessage": "Brewfile exported successfully to:\n%s",
+      "openConfigFile": "Open Config File",
+      "openConfigFailed": "Failed to Open Config",
       "viewSessionLogs": "View Session Logs..."
     },
     "help": {

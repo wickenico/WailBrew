@@ -158,6 +158,10 @@ export function InstallBrewPackage(arg1) {
   return window['go']['main']['App']['InstallBrewPackage'](arg1);
 }
 
+export function OpenConfigFile() {
+  return window['go']['main']['App']['OpenConfigFile']();
+}
+
 export function OpenURL(arg1) {
   return window['go']['main']['App']['OpenURL'](arg1);
 }

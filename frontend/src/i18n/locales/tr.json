@@ -284,6 +284,8 @@
       "exportSuccess": "Dışa Aktarma Başarılı",
       "exportFailed": "Dışa Aktarma Başarısız",
       "exportMessage": "Brewfile başarıyla dışa aktarıldı:\n%s",
+      "openConfigFile": "Yapılandırma Dosyasını Aç",
+      "openConfigFailed": "Yapılandırma Açılamadı",
       "viewSessionLogs": "Oturum Günlüklerini Görüntüle..."
     },
     "help": {

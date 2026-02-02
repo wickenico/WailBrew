@@ -284,6 +284,8 @@
       "exportSuccess": "导出成功",
       "exportFailed": "导出失败",
       "exportMessage": "Brewfile 已成功导出到：\n%s",
+      "openConfigFile": "打开配置文件",
+      "openConfigFailed": "打开配置失败",
       "viewSessionLogs": "查看会话日志..."
     },
     "help": {

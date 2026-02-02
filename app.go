@@ -589,6 +589,40 @@ func (a *App) ExportBrewfile(filePath string) error {
 	return a.brewService.ExportBrewfile(filePath)
 }
 
+func (a *App) OpenConfigFile() error {
+	configPath, err := config.GetConfigPath()
+	if err != nil {
+		return fmt.Errorf("failed to get config path: %w", err)
+	}
+
+	// Ensure config file exists
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		// Create config file if it doesn't exist
+		if err := a.config.Save(); err != nil {
+			return fmt.Errorf("failed to create config file: %w", err)
+		}
+	}
+
+	// Open the file with the default text editor
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", "-t", configPath)
+	case "linux":
+		cmd = exec.Command("xdg-open", configPath)
+	case "windows":
+		cmd = exec.Command("notepad", configPath)
+	default:
+		return fmt.Errorf("unsupported operating system: %s", runtime.GOOS)
+	}
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to open config file: %w", err)
+	}
+
+	return nil
+}
+
 // CONFIG OPERATIONS - Simple delegation to config
 
 func (a *App) GetMirrorSource() map[string]string {

@@ -284,6 +284,8 @@
       "exportSuccess": "Экспорт успешен",
       "exportFailed": "Экспорт не удался",
       "exportMessage": "Brewfile успешно экспортирован в:\n%s",
+      "openConfigFile": "Открыть файл конфигурации",
+      "openConfigFailed": "Ошибка открытия конфигурации",
       "viewSessionLogs": "Просмотр журналов сеанса..."
     },
     "help": {
