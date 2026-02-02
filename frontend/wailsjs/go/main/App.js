@@ -186,6 +186,14 @@ export function SetCaskAppDir(arg1) {
   return window['go']['main']['App']['SetCaskAppDir'](arg1);
 }
 
+export function SetDockBadge(arg1) {
+  return window['go']['main']['App']['SetDockBadge'](arg1);
+}
+
+export function SetDockBadgeCount(arg1) {
+  return window['go']['main']['App']['SetDockBadgeCount'](arg1);
+}
+
 export function SetLanguage(arg1) {
   return window['go']['main']['App']['SetLanguage'](arg1);
 }

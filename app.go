@@ -896,3 +896,17 @@ func (a *App) RestartApp() error {
 
 	return nil
 }
+
+// DOCK OPERATIONS - macOS-specific
+
+// SetDockBadge sets the macOS dock badge with the given label
+// Pass an empty string to clear the badge
+func (a *App) SetDockBadge(label string) {
+	system.SetDockBadge(label)
+}
+
+// SetDockBadgeCount sets the macOS dock badge with a numeric count
+// Pass 0 to clear the badge
+func (a *App) SetDockBadgeCount(count int) {
+	system.SetDockBadgeCount(count)
+}

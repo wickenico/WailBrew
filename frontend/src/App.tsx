@@ -25,6 +25,7 @@ import {
     RemoveBrewPackage,
     RunBrewCleanup,
     RunBrewDoctor,
+    SetDockBadgeCount,
     SetLanguage,
     TapBrewRepository,
     UntapBrewRepository,
@@ -425,6 +426,13 @@ const WailBrewApp = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [view, allPackagesLoaded, loadingAllPackages]);
+
+    // Update Dock badge when updatable packages count changes
+    useEffect(() => {
+        SetDockBadgeCount(updatablePackages.length).catch(err => {
+            console.error("Failed to update dock badge:", err);
+        });
+    }, [updatablePackages.length]);
 
     // Background update checking function
     const performBackgroundUpdateCheck = async () => {

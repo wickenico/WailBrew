@@ -96,6 +96,10 @@ export function SetBrewPath(arg1:string):Promise<void>;
 
 export function SetCaskAppDir(arg1:string):Promise<void>;
 
+export function SetDockBadge(arg1:string):Promise<void>;
+
+export function SetDockBadgeCount(arg1:number):Promise<void>;
+
 export function SetLanguage(arg1:string):Promise<void>;
 
 export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
