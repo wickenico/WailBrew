@@ -409,7 +409,9 @@
       "outdatedFlagUpdated": "Configuração de detecção de pacotes desatualizados atualizada com sucesso!",
       "outdatedFlagReset": "Configuração de detecção de pacotes desatualizados redefinida para o valor atual.",
       "caskAppDirUpdated": "Configuração do diretório de aplicativos Cask atualizada com sucesso!",
-      "caskAppDirReset": "Configuração do diretório de aplicativos Cask redefinida para o valor atual."
+      "caskAppDirReset": "Configuração do diretório de aplicativos Cask redefinida para o valor atual.",
+      "customCaskOptsUpdated": "Opções Cask personalizadas atualizadas com sucesso!",
+      "customOutdatedArgsUpdated": "Argumentos outdated personalizados atualizados com sucesso!"
     },
     "errors": {
       "failedToGetPath": "Falha ao obter o caminho atual do brew.",
@@ -419,7 +421,9 @@
       "failedToSetMirrorSource": "Falha ao definir a fonte de espelho. Verifique sua configuração.",
       "failedToSetOutdatedFlag": "Falha ao definir a configuração de detecção de pacotes desatualizados. Verifique sua configuração.",
       "failedToSetCaskAppDir": "Falha ao definir a configuração do diretório de aplicativos Cask. Verifique sua configuração.",
-      "failedToSelectDirectory": "Falha ao selecionar diretório."
+      "failedToSelectDirectory": "Falha ao selecionar diretório.",
+      "failedToSetCustomCaskOpts": "Falha ao definir opções Cask personalizadas. Verifique sua entrada.",
+      "failedToSetCustomOutdatedArgs": "Falha ao definir argumentos outdated personalizados. Verifique sua entrada."
     },
     "mirrorSource": {
       "title": "Fonte de Espelho Homebrew",
@@ -464,6 +468,25 @@
       "selectDirectory": "Selecionar diretório",
       "newDirectory": "Novo diretório",
       "note": "Nota: Alterar esta configuração afetará onde novas instalações e atualizações de casks são colocadas. Instalações existentes não são movidas automaticamente."
+    },
+    "advancedOptions": {
+      "title": "Opções Avançadas",
+      "subtitle": "Para usuários avançados",
+      "description": "Configure opções adicionais de comando do Homebrew diretamente. Estas configurações permitem que você passe argumentos e opções personalizados para comandos do Homebrew.",
+      "warning": "⚠️ Apenas para usuários avançados: Opções incorretas podem fazer com que comandos do Homebrew falhem. Consulte a documentação do Homebrew para opções válidas.",
+      "none": "(nenhuma)",
+      "customCaskOpts": {
+        "label": "Opções Cask Personalizadas",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "Flags HOMEBREW_CASK_OPTS adicionais. Exemplo: --fontdir, --qlplugindir, --prefpanedir. Estas serão mescladas com a configuração --appdir da interface acima.",
+        "preview": "Novas opções"
+      },
+      "customOutdatedArgs": {
+        "label": "Argumentos Outdated Personalizados",
+        "placeholder": "--verbose --formula",
+        "hint": "Argumentos adicionais para o comando 'brew outdated'. Exemplo: --verbose, --formula, --cask. Estes serão anexados à flag outdated configurada na interface acima.",
+        "preview": "Novos argumentos"
+      }
     }
   },
   "backend": {

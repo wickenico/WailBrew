@@ -404,7 +404,9 @@
       "outdatedFlagUpdated": "Eski paket algılama ayarı başarıyla güncellendi!",
       "outdatedFlagReset": "Eski paket algılama ayarı güncel değerine sıfırlandı.",
       "caskAppDirUpdated": "Cask uygulama dizini ayarı başarıyla güncellendi!",
-      "caskAppDirReset": "Cask uygulama dizini ayarı güncel değerine sıfırlandı."
+      "caskAppDirReset": "Cask uygulama dizini ayarı güncel değerine sıfırlandı.",
+      "customCaskOptsUpdated": "Özel Cask seçenekleri başarıyla güncellendi!",
+      "customOutdatedArgsUpdated": "Özel outdated argümanları başarıyla güncellendi!"
     },
     "errors": {
       "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
@@ -414,7 +416,9 @@
       "failedToSetMirrorSource": "Ayna kaynağı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin.",
       "failedToSetOutdatedFlag": "Eski paket algılama ayarı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin.",
       "failedToSetCaskAppDir": "Cask uygulama dizini ayarı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin.",
-      "failedToSelectDirectory": "Dizin seçilemedi."
+      "failedToSelectDirectory": "Dizin seçilemedi.",
+      "failedToSetCustomCaskOpts": "Özel Cask seçenekleri ayarlanamadı. Lütfen girişinizi kontrol edin.",
+      "failedToSetCustomOutdatedArgs": "Özel outdated argümanları ayarlanamadı. Lütfen girişinizi kontrol edin."
     },
     "mirrorSource": {
       "title": "Homebrew Ayna Kaynağı",
@@ -459,6 +463,25 @@
       "selectDirectory": "Dizin seç",
       "newDirectory": "Yeni dizin",
       "note": "Not: Bu ayarı değiştirmek, yeni cask kurulumlarının ve güncellemelerinin yerleştirildiği yeri etkileyecektir. Mevcut kurulumlar otomatik olarak taşınmaz."
+    },
+    "advancedOptions": {
+      "title": "Gelişmiş Seçenekler",
+      "subtitle": "İleri düzey kullanıcılar için",
+      "description": "Ek Homebrew komut seçeneklerini doğrudan yapılandırın. Bu ayarlar, Homebrew komutlarına özel argümanlar ve seçenekler geçirmenize izin verir.",
+      "warning": "⚠️ Yalnızca ileri düzey kullanıcılar için: Yanlış seçenekler Homebrew komutlarının başarısız olmasına neden olabilir. Geçerli seçenekler için Homebrew belgelerine bakın.",
+      "none": "(yok)",
+      "customCaskOpts": {
+        "label": "Özel Cask Seçenekleri",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "Ek HOMEBREW_CASK_OPTS bayrakları. Örnek: --fontdir, --qlplugindir, --prefpanedir. Bunlar yukarıdaki arayüzde yapılandırılan --appdir ayarıyla birleştirilecektir.",
+        "preview": "Yeni seçenekler"
+      },
+      "customOutdatedArgs": {
+        "label": "Özel Outdated Argümanları",
+        "placeholder": "--verbose --formula",
+        "hint": "'brew outdated' komutu için ek argümanlar. Örnek: --verbose, --formula, --cask. Bunlar yukarıdaki arayüzde yapılandırılan outdated bayrağına eklenecektir.",
+        "preview": "Yeni argümanlar"
+      }
     }
   },
   "backend": {

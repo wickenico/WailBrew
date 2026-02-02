@@ -404,7 +404,9 @@
       "outdatedFlagUpdated": "过时包检测设置更新成功！",
       "outdatedFlagReset": "过时包检测设置重置为当前值。",
       "caskAppDirUpdated": "Cask 应用程序目录设置更新成功！",
-      "caskAppDirReset": "Cask 应用程序目录设置重置为当前值。"
+      "caskAppDirReset": "Cask 应用程序目录设置重置为当前值。",
+      "customCaskOptsUpdated": "自定义 Cask 选项更新成功！",
+      "customOutdatedArgsUpdated": "自定义 outdated 参数更新成功！"
     },
     "errors": {
       "failedToGetPath": "无法获取当前 brew 的路径。",
@@ -414,7 +416,9 @@
       "failedToSetMirrorSource": "设置镜像源失败。请检查您的配置。",
       "failedToSetOutdatedFlag": "设置过时包检测失败。请检查您的配置。",
       "failedToSetCaskAppDir": "设置 Cask 应用程序目录失败。请检查您的配置。",
-      "failedToSelectDirectory": "选择目录失败。"
+      "failedToSelectDirectory": "选择目录失败。",
+      "failedToSetCustomCaskOpts": "设置自定义 Cask 选项失败。请检查您的输入。",
+      "failedToSetCustomOutdatedArgs": "设置自定义 outdated 参数失败。请检查您的输入。"
     },
     "mirrorSource": {
       "title": "Homebrew 镜像源",
@@ -459,6 +463,25 @@
       "selectDirectory": "选择目录",
       "newDirectory": "新目录",
       "note": "注意：更改此设置将影响新 cask 安装和升级的放置位置。现有安装不会自动移动。"
+    },
+    "advancedOptions": {
+      "title": "高级选项",
+      "subtitle": "适用于高级用户",
+      "description": "直接配置额外的 Homebrew 命令选项。这些设置允许您向 Homebrew 命令传递自定义参数和选项。",
+      "warning": "⚠️ 仅限高级用户：不正确的选项可能导致 Homebrew 命令失败。请查阅 Homebrew 文档以获取有效选项。",
+      "none": "（无）",
+      "customCaskOpts": {
+        "label": "自定义 Cask 选项",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "额外的 HOMEBREW_CASK_OPTS 标志。例如：--fontdir、--qlplugindir、--prefpanedir。这些将与上面界面配置的 --appdir 设置合并。",
+        "preview": "新选项"
+      },
+      "customOutdatedArgs": {
+        "label": "自定义 outdated 参数",
+        "placeholder": "--verbose --formula",
+        "hint": "'brew outdated' 命令的额外参数。例如：--verbose、--formula、--cask。这些将附加到上面界面配置的 outdated 标志。",
+        "preview": "新参数"
+      }
     }
   },
   "backend": {

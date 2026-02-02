@@ -10,11 +10,13 @@ const appDataDir = ".wailbrew"
 
 // Config holds application configuration
 type Config struct {
-	BrewPath     string `json:"brewPath"` // Homebrew binary path (e.g., "/opt/homebrew/bin/brew")
-	GitRemote    string `json:"gitRemote"`
-	BottleDomain string `json:"bottleDomain"`
-	OutdatedFlag string `json:"outdatedFlag"` // "none", "greedy", or "greedy-auto-updates"
-	CaskAppDir   string `json:"caskAppDir"`   // Custom directory for cask applications (e.g., "/Applications/3rd-party")
+	BrewPath           string `json:"brewPath"` // Homebrew binary path (e.g., "/opt/homebrew/bin/brew")
+	GitRemote          string `json:"gitRemote"`
+	BottleDomain       string `json:"bottleDomain"`
+	OutdatedFlag       string `json:"outdatedFlag"`       // "none", "greedy", or "greedy-auto-updates"
+	CaskAppDir         string `json:"caskAppDir"`         // Custom directory for cask applications (e.g., "/Applications/3rd-party")
+	CustomCaskOpts     string `json:"customCaskOpts"`     // Additional cask options (e.g., "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook")
+	CustomOutdatedArgs string `json:"customOutdatedArgs"` // Additional outdated command arguments (e.g., "--verbose --formula")
 }
 
 // GetConfigPath returns the path to the config file

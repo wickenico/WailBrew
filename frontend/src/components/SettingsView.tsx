@@ -12,9 +12,10 @@ import {
     RotateCcw,
     Loader2,
     Info,
-    Sparkles
+    Sparkles,
+    Code2
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -31,6 +32,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [isMirrorSourceExpanded, setIsMirrorSourceExpanded] = useState<boolean>(false);
     const [isOutdatedFlagExpanded, setIsOutdatedFlagExpanded] = useState<boolean>(false);
     const [isCaskAppDirExpanded, setIsCaskAppDirExpanded] = useState<boolean>(false);
+    const [isAdvancedOptsExpanded, setIsAdvancedOptsExpanded] = useState<boolean>(false);
     const [mirrorSource, setMirrorSource] = useState<string>("official");
     const [customGitRemote, setCustomGitRemote] = useState<string>("");
     const [customBottleDomain, setCustomBottleDomain] = useState<string>("");
@@ -41,6 +43,12 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [caskAppDir, setCaskAppDir] = useState<string>("");
     const [newCaskAppDir, setNewCaskAppDir] = useState<string>("");
     const [savingCaskAppDir, setSavingCaskAppDir] = useState<boolean>(false);
+    const [customCaskOpts, setCustomCaskOpts] = useState<string>("");
+    const [newCustomCaskOpts, setNewCustomCaskOpts] = useState<string>("");
+    const [savingCustomCaskOpts, setSavingCustomCaskOpts] = useState<boolean>(false);
+    const [customOutdatedArgs, setCustomOutdatedArgs] = useState<string>("");
+    const [newCustomOutdatedArgs, setNewCustomOutdatedArgs] = useState<string>("");
+    const [savingCustomOutdatedArgs, setSavingCustomOutdatedArgs] = useState<boolean>(false);
     const [macOSVersion, setMacOSVersion] = useState<string>("");
     const [macOSReleaseName, setMacOSReleaseName] = useState<string>("");
     const [systemArchitecture, setSystemArchitecture] = useState<string>("");
@@ -50,6 +58,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadCurrentMirrorSource();
         loadCurrentOutdatedFlag();
         loadCurrentCaskAppDir();
+        loadCustomCaskOpts();
+        loadCustomOutdatedArgs();
         loadSystemInfo();
     }, []);
 
@@ -328,6 +338,84 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             console.error("Failed to select directory:", error);
             toast.error(t('settings.errors.failedToSelectDirectory'));
         }
+    };
+
+    const loadCustomCaskOpts = async () => {
+        try {
+            const currentOpts = await GetCustomCaskOpts();
+            setCustomCaskOpts(currentOpts);
+            setNewCustomCaskOpts(currentOpts);
+        } catch (error) {
+            console.error("Failed to get custom cask options:", error);
+            setCustomCaskOpts("");
+            setNewCustomCaskOpts("");
+        }
+    };
+
+    const handleSaveCustomCaskOpts = async () => {
+        const trimmedOpts = newCustomCaskOpts.trim();
+        if (trimmedOpts === customCaskOpts) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+
+        try {
+            setSavingCustomCaskOpts(true);
+            await SetCustomCaskOpts(trimmedOpts);
+            setCustomCaskOpts(trimmedOpts);
+            setNewCustomCaskOpts(trimmedOpts);
+            toast.success(t('settings.messages.customCaskOptsUpdated'));
+            onRefreshPackages();
+        } catch (error) {
+            console.error("Failed to set custom cask options:", error);
+            toast.error(t('settings.errors.failedToSetCustomCaskOpts'));
+            setNewCustomCaskOpts(customCaskOpts);
+        } finally {
+            setSavingCustomCaskOpts(false);
+        }
+    };
+
+    const handleResetCustomCaskOpts = () => {
+        setNewCustomCaskOpts(customCaskOpts);
+    };
+
+    const loadCustomOutdatedArgs = async () => {
+        try {
+            const currentArgs = await GetCustomOutdatedArgs();
+            setCustomOutdatedArgs(currentArgs);
+            setNewCustomOutdatedArgs(currentArgs);
+        } catch (error) {
+            console.error("Failed to get custom outdated args:", error);
+            setCustomOutdatedArgs("");
+            setNewCustomOutdatedArgs("");
+        }
+    };
+
+    const handleSaveCustomOutdatedArgs = async () => {
+        const trimmedArgs = newCustomOutdatedArgs.trim();
+        if (trimmedArgs === customOutdatedArgs) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+
+        try {
+            setSavingCustomOutdatedArgs(true);
+            await SetCustomOutdatedArgs(trimmedArgs);
+            setCustomOutdatedArgs(trimmedArgs);
+            setNewCustomOutdatedArgs(trimmedArgs);
+            toast.success(t('settings.messages.customOutdatedArgsUpdated'));
+            onRefreshPackages();
+        } catch (error) {
+            console.error("Failed to set custom outdated args:", error);
+            toast.error(t('settings.errors.failedToSetCustomOutdatedArgs'));
+            setNewCustomOutdatedArgs(customOutdatedArgs);
+        } finally {
+            setSavingCustomOutdatedArgs(false);
+        }
+    };
+
+    const handleResetCustomOutdatedArgs = () => {
+        setNewCustomOutdatedArgs(customOutdatedArgs);
     };
 
     const loadSystemInfo = async () => {
@@ -713,6 +801,119 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             >
                                 {savingCaskAppDir ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
                                 {savingCaskAppDir ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Advanced Options Card */}
+                <div className={`settings-card ${isAdvancedOptsExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsAdvancedOptsExpanded(!isAdvancedOptsExpanded)}
+                        aria-expanded={isAdvancedOptsExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <Code2 size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.advancedOptions.title')}</h3>
+                            <span className="settings-card-value">{t('settings.advancedOptions.subtitle')}</span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isAdvancedOptsExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+                    
+                    <div className={`settings-card-content ${isAdvancedOptsExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.advancedOptions.description')}
+                        </p>
+                        
+                        <div className="settings-info-box" style={{marginBottom: "1rem"}}>
+                            <Info size={16} />
+                            <span>{t('settings.advancedOptions.warning')}</span>
+                        </div>
+
+                        {/* Custom Cask Options */}
+                        <div className="settings-input-group">
+                            <label>{t('settings.advancedOptions.customCaskOpts.label')}</label>
+                            <input
+                                type="text"
+                                value={newCustomCaskOpts}
+                                onChange={(e) => setNewCustomCaskOpts(e.target.value)}
+                                placeholder={t('settings.advancedOptions.customCaskOpts.placeholder')}
+                                disabled={savingCustomCaskOpts}
+                            />
+                            <small className="settings-input-hint">
+                                {t('settings.advancedOptions.customCaskOpts.hint')}
+                            </small>
+                        </div>
+
+                        {newCustomCaskOpts !== customCaskOpts && (
+                            <div className="settings-preview-box">
+                                <Sparkles size={16} />
+                                <span>{t('settings.advancedOptions.customCaskOpts.preview')}: <code>{newCustomCaskOpts || t('settings.advancedOptions.none')}</code></span>
+                            </div>
+                        )}
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetCustomCaskOpts}
+                                disabled={savingCustomCaskOpts || newCustomCaskOpts === customCaskOpts}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveCustomCaskOpts}
+                                disabled={savingCustomCaskOpts || newCustomCaskOpts.trim() === customCaskOpts}
+                            >
+                                {savingCustomCaskOpts ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingCustomCaskOpts ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+
+                        <div className="settings-divider" style={{margin: "1.5rem 0"}}></div>
+
+                        {/* Custom Outdated Arguments */}
+                        <div className="settings-input-group">
+                            <label>{t('settings.advancedOptions.customOutdatedArgs.label')}</label>
+                            <input
+                                type="text"
+                                value={newCustomOutdatedArgs}
+                                onChange={(e) => setNewCustomOutdatedArgs(e.target.value)}
+                                placeholder={t('settings.advancedOptions.customOutdatedArgs.placeholder')}
+                                disabled={savingCustomOutdatedArgs}
+                            />
+                            <small className="settings-input-hint">
+                                {t('settings.advancedOptions.customOutdatedArgs.hint')}
+                            </small>
+                        </div>
+
+                        {newCustomOutdatedArgs !== customOutdatedArgs && (
+                            <div className="settings-preview-box">
+                                <Sparkles size={16} />
+                                <span>{t('settings.advancedOptions.customOutdatedArgs.preview')}: <code>{newCustomOutdatedArgs || t('settings.advancedOptions.none')}</code></span>
+                            </div>
+                        )}
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetCustomOutdatedArgs}
+                                disabled={savingCustomOutdatedArgs || newCustomOutdatedArgs === customOutdatedArgs}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveCustomOutdatedArgs}
+                                disabled={savingCustomOutdatedArgs || newCustomOutdatedArgs.trim() === customOutdatedArgs}
+                            >
+                                {savingCustomOutdatedArgs ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingCustomOutdatedArgs ? t('settings.buttons.saving') : t('settings.buttons.save')}
                             </button>
                         </div>
                     </div>

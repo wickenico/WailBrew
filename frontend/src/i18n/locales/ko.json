@@ -407,7 +407,9 @@
       "outdatedFlagUpdated": "오래된 패키지 감지 설정이 성공적으로 업데이트되었습니다!",
       "outdatedFlagReset": "오래된 패키지 감지 설정이 현재 값으로 초기화되었습니다.",
       "caskAppDirUpdated": "Cask 애플리케이션 디렉토리 설정이 성공적으로 업데이트되었습니다!",
-      "caskAppDirReset": "Cask 애플리케이션 디렉토리 설정이 현재 값으로 초기화되었습니다."
+      "caskAppDirReset": "Cask 애플리케이션 디렉토리 설정이 현재 값으로 초기화되었습니다.",
+      "customCaskOptsUpdated": "사용자 정의 Cask 옵션이 성공적으로 업데이트되었습니다!",
+      "customOutdatedArgsUpdated": "사용자 정의 outdated 인수가 성공적으로 업데이트되었습니다!"
     },
     "errors": {
       "failedToGetPath": "현재 brew 경로를 가져오지 못했습니다.",
@@ -417,7 +419,9 @@
       "failedToSetMirrorSource": "미러 소스 설정에 실패했습니다. 설정을 확인해 주세요.",
       "failedToSetOutdatedFlag": "오래된 패키지 감지 설정에 실패했습니다. 설정을 확인해 주세요.",
       "failedToSetCaskAppDir": "Cask 애플리케이션 디렉토리 설정에 실패했습니다. 설정을 확인해 주세요.",
-      "failedToSelectDirectory": "디렉토리 선택에 실패했습니다."
+      "failedToSelectDirectory": "디렉토리 선택에 실패했습니다.",
+      "failedToSetCustomCaskOpts": "사용자 정의 Cask 옵션 설정에 실패했습니다. 입력을 확인해 주세요.",
+      "failedToSetCustomOutdatedArgs": "사용자 정의 outdated 인수 설정에 실패했습니다. 입력을 확인해 주세요."
     },
     "mirrorSource": {
       "title": "Homebrew 미러 소스",
@@ -462,6 +466,25 @@
       "selectDirectory": "디렉토리 선택",
       "newDirectory": "새 디렉토리",
       "note": "참고: 이 설정을 변경하면 새로운 캐스크 설치 및 업그레이드가 배치되는 위치에 영향을 미칩니다. 기존 설치물은 자동으로 이동되지 않습니다."
+    },
+    "advancedOptions": {
+      "title": "고급 옵션",
+      "subtitle": "고급 사용자용",
+      "description": "추가 Homebrew 명령 옵션을 직접 구성합니다. 이 설정을 사용하면 Homebrew 명령에 사용자 정의 인수 및 옵션을 전달할 수 있습니다.",
+      "warning": "⚠️ 고급 사용자 전용: 잘못된 옵션은 Homebrew 명령이 실패할 수 있습니다. 유효한 옵션은 Homebrew 문서를 참조하세요.",
+      "none": "(없음)",
+      "customCaskOpts": {
+        "label": "사용자 정의 Cask 옵션",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "추가 HOMEBREW_CASK_OPTS 플래그. 예: --fontdir, --qlplugindir, --prefpanedir. 위의 UI에서 구성된 --appdir 설정과 병합됩니다.",
+        "preview": "새 옵션"
+      },
+      "customOutdatedArgs": {
+        "label": "사용자 정의 outdated 인수",
+        "placeholder": "--verbose --formula",
+        "hint": "'brew outdated' 명령에 대한 추가 인수. 예: --verbose, --formula, --cask. 위의 UI에서 구성된 outdated 플래그에 추가됩니다.",
+        "preview": "새 인수"
+      }
     }
   },
   "backend": {

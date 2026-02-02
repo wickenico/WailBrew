@@ -404,7 +404,9 @@
       "outdatedFlagUpdated": "Einstellung für veraltete Pakete erfolgreich aktualisiert!",
       "outdatedFlagReset": "Einstellung für veraltete Pakete auf aktuellen Wert zurückgesetzt.",
       "caskAppDirUpdated": "Einstellung für Cask-Anwendungsverzeichnis erfolgreich aktualisiert!",
-      "caskAppDirReset": "Einstellung für Cask-Anwendungsverzeichnis auf aktuellen Wert zurückgesetzt."
+      "caskAppDirReset": "Einstellung für Cask-Anwendungsverzeichnis auf aktuellen Wert zurückgesetzt.",
+      "customCaskOptsUpdated": "Benutzerdefinierte Cask-Optionen erfolgreich aktualisiert!",
+      "customOutdatedArgsUpdated": "Benutzerdefinierte Outdated-Argumente erfolgreich aktualisiert!"
     },
     "errors": {
       "failedToGetPath": "Aktueller Brew-Pfad konnte nicht abgerufen werden.",
@@ -414,7 +416,9 @@
       "failedToSetMirrorSource": "Spiegelquelle konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
       "failedToSetOutdatedFlag": "Einstellung für veraltete Pakete konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
       "failedToSetCaskAppDir": "Einstellung für Cask-Anwendungsverzeichnis konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
-      "failedToSelectDirectory": "Verzeichnisauswahl fehlgeschlagen."
+      "failedToSelectDirectory": "Verzeichnisauswahl fehlgeschlagen.",
+      "failedToSetCustomCaskOpts": "Benutzerdefinierte Cask-Optionen konnten nicht gesetzt werden. Bitte überprüfen Sie Ihre Eingabe.",
+      "failedToSetCustomOutdatedArgs": "Benutzerdefinierte Outdated-Argumente konnten nicht gesetzt werden. Bitte überprüfen Sie Ihre Eingabe."
     },
     "mirrorSource": {
       "title": "Homebrew Spiegelquelle",
@@ -459,6 +463,25 @@
       "selectDirectory": "Verzeichnis auswählen",
       "newDirectory": "Neues Verzeichnis",
       "note": "Hinweis: Das Ändern dieser Einstellung wirkt sich darauf aus, wo neue Cask-Installationen und -Aktualisierungen platziert werden. Bestehende Installationen werden nicht automatisch verschoben."
+    },
+    "advancedOptions": {
+      "title": "Erweiterte Optionen",
+      "subtitle": "Für fortgeschrittene Benutzer",
+      "description": "Konfigurieren Sie zusätzliche Homebrew-Befehlsoptionen direkt. Diese Einstellungen ermöglichen es Ihnen, benutzerdefinierte Argumente und Optionen an Homebrew-Befehle zu übergeben.",
+      "warning": "⚠️ Nur für fortgeschrittene Benutzer: Falsche Optionen können dazu führen, dass Homebrew-Befehle fehlschlagen. Konsultieren Sie die Homebrew-Dokumentation für gültige Optionen.",
+      "none": "(keine)",
+      "customCaskOpts": {
+        "label": "Benutzerdefinierte Cask-Optionen",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "Zusätzliche HOMEBREW_CASK_OPTS Flags. Beispiel: --fontdir, --qlplugindir, --prefpanedir. Diese werden mit der oben konfigurierten --appdir Einstellung zusammengeführt.",
+        "preview": "Neue Optionen"
+      },
+      "customOutdatedArgs": {
+        "label": "Benutzerdefinierte Outdated-Argumente",
+        "placeholder": "--verbose --formula",
+        "hint": "Zusätzliche Argumente für den 'brew outdated' Befehl. Beispiel: --verbose, --formula, --cask. Diese werden an das oben konfigurierte Outdated-Flag angehängt.",
+        "preview": "Neue Argumente"
+      }
     }
   },
   "backend": {

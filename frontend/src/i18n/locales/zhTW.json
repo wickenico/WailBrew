@@ -404,7 +404,9 @@
       "outdatedFlagUpdated": "過時套件偵測設定更新成功！",
       "outdatedFlagReset": "過時套件偵測設定已重設為目前值。",
       "caskAppDirUpdated": "Cask 應用程式目錄設定更新成功！",
-      "caskAppDirReset": "Cask 應用程式目錄設定已重設為目前值。"
+      "caskAppDirReset": "Cask 應用程式目錄設定已重設為目前值。",
+      "customCaskOptsUpdated": "自訂 Cask 選項更新成功！",
+      "customOutdatedArgsUpdated": "自訂 outdated 參數更新成功！"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
@@ -414,7 +416,9 @@
       "failedToSetMirrorSource": "設定鏡像源失敗。請檢查您的設定。",
       "failedToSetOutdatedFlag": "設定過時套件偵測失敗。請檢查您的設定。",
       "failedToSetCaskAppDir": "設定 Cask 應用程式目錄失敗。請檢查您的設定。",
-      "failedToSelectDirectory": "選擇目錄失敗。"
+      "failedToSelectDirectory": "選擇目錄失敗。",
+      "failedToSetCustomCaskOpts": "設定自訂 Cask 選項失敗。請檢查您的輸入。",
+      "failedToSetCustomOutdatedArgs": "設定自訂 outdated 參數失敗。請檢查您的輸入。"
     },
     "mirrorSource": {
       "title": "Homebrew 鏡像源",
@@ -459,6 +463,25 @@
       "selectDirectory": "選擇目錄",
       "newDirectory": "新目錄",
       "note": "注意：變更此設定將影響新 cask 安裝和升級的放置位置。現有安裝不會自動移動。"
+    },
+    "advancedOptions": {
+      "title": "進階選項",
+      "subtitle": "適用於進階使用者",
+      "description": "直接設定額外的 Homebrew 指令選項。這些設定允許您向 Homebrew 指令傳遞自訂參數和選項。",
+      "warning": "⚠️ 僅限進階使用者：不正確的選項可能導致 Homebrew 指令失敗。請查閱 Homebrew 文件以獲取有效選項。",
+      "none": "（無）",
+      "customCaskOpts": {
+        "label": "自訂 Cask 選項",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "額外的 HOMEBREW_CASK_OPTS 旗標。例如：--fontdir、--qlplugindir、--prefpanedir。這些將與上面界面設定的 --appdir 設定合併。",
+        "preview": "新選項"
+      },
+      "customOutdatedArgs": {
+        "label": "自訂 outdated 參數",
+        "placeholder": "--verbose --formula",
+        "hint": "'brew outdated' 指令的額外參數。例如：--verbose、--formula、--cask。這些將附加到上面界面設定的 outdated 旗標。",
+        "preview": "新參數"
+      }
     }
   },
   "backend": {

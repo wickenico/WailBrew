@@ -209,12 +209,39 @@ func (a *App) getBrewEnv() []string {
 		env = append(env, fmt.Sprintf("HOMEBREW_BOTTLE_DOMAIN=%s", a.config.BottleDomain))
 	}
 
-	// Add HOMEBREW_CASK_OPTS if cask app directory is configured
-	if a.config.CaskAppDir != "" {
-		env = append(env, fmt.Sprintf("HOMEBREW_CASK_OPTS=--appdir=%s", a.config.CaskAppDir))
+	// Build and add HOMEBREW_CASK_OPTS if cask options are configured
+	caskOpts := a.buildCaskOpts()
+	if caskOpts != "" {
+		env = append(env, fmt.Sprintf("HOMEBREW_CASK_OPTS=%s", caskOpts))
 	}
 
 	return env
+}
+
+// buildCaskOpts builds HOMEBREW_CASK_OPTS by merging UI-configured options with custom options
+func (a *App) buildCaskOpts() string {
+	var opts []string
+
+	// Add UI-configured appdir if set
+	if a.config.CaskAppDir != "" {
+		opts = append(opts, fmt.Sprintf("--appdir=%s", a.config.CaskAppDir))
+	}
+
+	// Parse and append custom opts, but skip --appdir if already set via UI
+	if a.config.CustomCaskOpts != "" {
+		customParts := strings.Fields(a.config.CustomCaskOpts)
+		hasAppDir := a.config.CaskAppDir != ""
+
+		for _, part := range customParts {
+			// Skip --appdir in custom opts if already set via UI setting
+			if hasAppDir && strings.HasPrefix(part, "--appdir") {
+				continue
+			}
+			opts = append(opts, part)
+		}
+	}
+
+	return strings.Join(opts, " ")
 }
 
 // startup saves the application context and sets up services
@@ -298,6 +325,7 @@ func (a *App) startup(ctx context.Context) {
 		},
 		a.eventEmitter,
 		func() string { return a.GetOutdatedFlag() },
+		func() string { return a.GetCustomOutdatedArgs() },
 		brew.ExtractJSONFromOutput,
 		brew.ParseWarnings,
 	)
@@ -684,6 +712,39 @@ func (a *App) SelectCaskAppDir() (string, error) {
 	}
 
 	return selectedDir, nil
+}
+
+func (a *App) GetCustomCaskOpts() string {
+	return a.config.CustomCaskOpts
+}
+
+func (a *App) SetCustomCaskOpts(opts string) error {
+	a.config.CustomCaskOpts = strings.TrimSpace(opts)
+
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	// Update brew executor with new environment
+	if a.brewExecutor != nil {
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+	}
+
+	return nil
+}
+
+func (a *App) GetCustomOutdatedArgs() string {
+	return a.config.CustomOutdatedArgs
+}
+
+func (a *App) SetCustomOutdatedArgs(args string) error {
+	a.config.CustomOutdatedArgs = strings.TrimSpace(args)
+
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	return nil
 }
 
 func (a *App) GetBrewPath() string {

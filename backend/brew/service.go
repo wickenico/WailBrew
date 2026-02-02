@@ -111,6 +111,7 @@ func NewService(
 	getBackendMsg func(string, map[string]string) string,
 	eventEmitter EventEmitter,
 	getOutdatedFlag func() string,
+	getCustomOutdatedArgs func() string,
 	extractJSON func(string) (string, string, error),
 	parseWarnings func(string) map[string]string,
 ) Service {
@@ -140,6 +141,7 @@ func NewService(
 			return sizeService.GetPackageSizes(names, isCask)
 		},
 		getOutdatedFlag,
+		getCustomOutdatedArgs,
 	)
 
 	// Create actions service

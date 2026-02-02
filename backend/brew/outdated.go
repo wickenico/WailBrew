@@ -8,13 +8,14 @@ import (
 
 // OutdatedService provides outdated package checking functionality
 type OutdatedService struct {
-	executor        *Executor
-	validateFunc    func() error
-	logFunc         func(string)
-	extractJSON     func(string) (string, string, error)
-	parseWarnings   func(string) map[string]string
-	getSizes        func([]string, bool) map[string]string
-	getOutdatedFlag func() string
+	executor              *Executor
+	validateFunc          func() error
+	logFunc               func(string)
+	extractJSON           func(string) (string, string, error)
+	parseWarnings         func(string) map[string]string
+	getSizes              func([]string, bool) map[string]string
+	getOutdatedFlag       func() string
+	getCustomOutdatedArgs func() string
 }
 
 // NewOutdatedService creates a new outdated service
@@ -26,15 +27,17 @@ func NewOutdatedService(
 	parseWarnings func(string) map[string]string,
 	getSizes func([]string, bool) map[string]string,
 	getOutdatedFlag func() string,
+	getCustomOutdatedArgs func() string,
 ) *OutdatedService {
 	return &OutdatedService{
-		executor:        executor,
-		validateFunc:    validateFunc,
-		logFunc:         logFunc,
-		extractJSON:     extractJSON,
-		parseWarnings:   parseWarnings,
-		getSizes:        getSizes,
-		getOutdatedFlag: getOutdatedFlag,
+		executor:              executor,
+		validateFunc:          validateFunc,
+		logFunc:               logFunc,
+		extractJSON:           extractJSON,
+		parseWarnings:         parseWarnings,
+		getSizes:              getSizes,
+		getOutdatedFlag:       getOutdatedFlag,
+		getCustomOutdatedArgs: getCustomOutdatedArgs,
 	}
 }
 
@@ -55,6 +58,15 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 		args = append(args, "--greedy-auto-updates")
 	}
 	// If outdatedFlag is "none", no additional flag is added
+
+	// Append custom outdated args if configured
+	customArgs := s.getCustomOutdatedArgs()
+	if customArgs != "" {
+		// Parse custom args and append them (split by spaces)
+		customParts := strings.Fields(customArgs)
+		args = append(args, customParts...)
+	}
+
 	output, err := s.executor.Run(args...)
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to check for updates: %v", err)}}

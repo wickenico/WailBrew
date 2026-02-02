@@ -407,7 +407,9 @@
       "outdatedFlagUpdated": "Outdated flag setting updated successfully!",
       "outdatedFlagReset": "Outdated flag reset to current value.",
       "caskAppDirUpdated": "Cask app directory setting updated successfully!",
-      "caskAppDirReset": "Cask app directory reset to current value."
+      "caskAppDirReset": "Cask app directory reset to current value.",
+      "customCaskOptsUpdated": "Custom cask options updated successfully!",
+      "customOutdatedArgsUpdated": "Custom outdated arguments updated successfully!"
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
@@ -417,7 +419,9 @@
       "failedToSetMirrorSource": "Failed to set mirror source. Please check your configuration.",
       "failedToSetOutdatedFlag": "Failed to set outdated flag. Please check your configuration.",
       "failedToSetCaskAppDir": "Failed to set cask app directory. Please check your configuration.",
-      "failedToSelectDirectory": "Failed to select directory."
+      "failedToSelectDirectory": "Failed to select directory.",
+      "failedToSetCustomCaskOpts": "Failed to set custom cask options. Please check your input.",
+      "failedToSetCustomOutdatedArgs": "Failed to set custom outdated arguments. Please check your input."
     },
     "mirrorSource": {
       "title": "Homebrew Mirror Source",
@@ -462,6 +466,25 @@
       "selectDirectory": "Select directory",
       "newDirectory": "New directory",
       "note": "Note: Changing this setting will affect where new cask installations and upgrades are placed. Existing installations are not moved automatically."
+    },
+    "advancedOptions": {
+      "title": "Advanced Options",
+      "subtitle": "For advanced users",
+      "description": "Configure additional Homebrew command options directly. These settings allow you to pass custom arguments and options to Homebrew commands.",
+      "warning": "⚠️ Advanced users only: Incorrect options may cause Homebrew commands to fail. Consult Homebrew documentation for valid options.",
+      "none": "(none)",
+      "customCaskOpts": {
+        "label": "Custom Cask Options",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "Additional HOMEBREW_CASK_OPTS flags. Example: --fontdir, --qlplugindir, --prefpanedir. These will be merged with the UI-configured --appdir setting above.",
+        "preview": "New options"
+      },
+      "customOutdatedArgs": {
+        "label": "Custom Outdated Arguments",
+        "placeholder": "--verbose --formula",
+        "hint": "Additional arguments for 'brew outdated' command. Example: --verbose, --formula, --cask. These will be appended to the UI-configured outdated flag above.",
+        "preview": "New arguments"
+      }
     }
   },
   "backend": {

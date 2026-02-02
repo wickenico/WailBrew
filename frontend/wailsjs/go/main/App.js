@@ -98,6 +98,14 @@ export function GetCurrentLanguage() {
   return window['go']['main']['App']['GetCurrentLanguage']();
 }
 
+export function GetCustomCaskOpts() {
+  return window['go']['main']['App']['GetCustomCaskOpts']();
+}
+
+export function GetCustomOutdatedArgs() {
+  return window['go']['main']['App']['GetCustomOutdatedArgs']();
+}
+
 export function GetDeprecatedFormulae(arg1) {
   return window['go']['main']['App']['GetDeprecatedFormulae'](arg1);
 }
@@ -184,6 +192,14 @@ export function SetBrewPath(arg1) {
 
 export function SetCaskAppDir(arg1) {
   return window['go']['main']['App']['SetCaskAppDir'](arg1);
+}
+
+export function SetCustomCaskOpts(arg1) {
+  return window['go']['main']['App']['SetCustomCaskOpts'](arg1);
+}
+
+export function SetCustomOutdatedArgs(arg1) {
+  return window['go']['main']['App']['SetCustomOutdatedArgs'](arg1);
 }
 
 export function SetDockBadge(arg1) {

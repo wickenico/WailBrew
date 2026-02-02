@@ -52,6 +52,10 @@ export function GetContext():Promise<context.Context>;
 
 export function GetCurrentLanguage():Promise<string>;
 
+export function GetCustomCaskOpts():Promise<string>;
+
+export function GetCustomOutdatedArgs():Promise<string>;
+
 export function GetDeprecatedFormulae(arg1:string):Promise<Array<string>>;
 
 export function GetHomebrewCaskVersion():Promise<string>;
@@ -95,6 +99,10 @@ export function SelectCaskAppDir():Promise<string>;
 export function SetBrewPath(arg1:string):Promise<void>;
 
 export function SetCaskAppDir(arg1:string):Promise<void>;
+
+export function SetCustomCaskOpts(arg1:string):Promise<void>;
+
+export function SetCustomOutdatedArgs(arg1:string):Promise<void>;
 
 export function SetDockBadge(arg1:string):Promise<void>;
 
