@@ -420,7 +420,8 @@
       "failedToSetCaskAppDir": "设置 Cask 应用程序目录失败。请检查您的配置。",
       "failedToSelectDirectory": "选择目录失败。",
       "failedToSetCustomCaskOpts": "设置自定义 Cask 选项失败。请检查您的输入。",
-      "failedToSetCustomOutdatedArgs": "设置自定义 outdated 参数失败。请检查您的输入。"
+      "failedToSetCustomOutdatedArgs": "设置自定义 outdated 参数失败。请检查您的输入。",
+      "failedToSetAdminUsername": "更新管理员用户名失败"
     },
     "mirrorSource": {
       "title": "Homebrew 镜像源",
@@ -465,6 +466,14 @@
       "selectDirectory": "选择目录",
       "newDirectory": "新目录",
       "note": "注意：更改此设置将影响新 cask 安装和升级的放置位置。现有安装不会自动移动。"
+    },
+    "adminUsername": {
+      "title": "管理员用户名",
+      "description": "为特权操作指定备用管理员账户",
+      "label": "管理员用户名",
+      "placeholder": "输入管理员用户名",
+      "currentUser": "当前用户",
+      "info": "当 Homebrew 操作需要管理员权限时，将使用此用户名。留空则使用您当前的用户账户。"
     },
     "advancedOptions": {
       "title": "高级选项",

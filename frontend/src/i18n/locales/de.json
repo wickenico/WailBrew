@@ -408,7 +408,8 @@
       "caskAppDirUpdated": "Einstellung für Cask-Anwendungsverzeichnis erfolgreich aktualisiert!",
       "caskAppDirReset": "Einstellung für Cask-Anwendungsverzeichnis auf aktuellen Wert zurückgesetzt.",
       "customCaskOptsUpdated": "Benutzerdefinierte Cask-Optionen erfolgreich aktualisiert!",
-      "customOutdatedArgsUpdated": "Benutzerdefinierte Outdated-Argumente erfolgreich aktualisiert!"
+      "customOutdatedArgsUpdated": "Benutzerdefinierte Outdated-Argumente erfolgreich aktualisiert!",
+      "adminUsernameUpdated": "Administrator-Benutzername erfolgreich aktualisiert!"
     },
     "errors": {
       "failedToGetPath": "Aktueller Brew-Pfad konnte nicht abgerufen werden.",
@@ -420,7 +421,8 @@
       "failedToSetCaskAppDir": "Einstellung für Cask-Anwendungsverzeichnis konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration.",
       "failedToSelectDirectory": "Verzeichnisauswahl fehlgeschlagen.",
       "failedToSetCustomCaskOpts": "Benutzerdefinierte Cask-Optionen konnten nicht gesetzt werden. Bitte überprüfen Sie Ihre Eingabe.",
-      "failedToSetCustomOutdatedArgs": "Benutzerdefinierte Outdated-Argumente konnten nicht gesetzt werden. Bitte überprüfen Sie Ihre Eingabe."
+      "failedToSetCustomOutdatedArgs": "Benutzerdefinierte Outdated-Argumente konnten nicht gesetzt werden. Bitte überprüfen Sie Ihre Eingabe.",
+      "failedToSetAdminUsername": "Administrator-Benutzername konnte nicht aktualisiert werden"
     },
     "mirrorSource": {
       "title": "Homebrew Spiegelquelle",
@@ -465,6 +467,14 @@
       "selectDirectory": "Verzeichnis auswählen",
       "newDirectory": "Neues Verzeichnis",
       "note": "Hinweis: Das Ändern dieser Einstellung wirkt sich darauf aus, wo neue Cask-Installationen und -Aktualisierungen platziert werden. Bestehende Installationen werden nicht automatisch verschoben."
+    },
+    "adminUsername": {
+      "title": "Administrator-Benutzername",
+      "description": "Alternatives Administrator-Konto für privilegierte Operationen angeben",
+      "label": "Administrator-Benutzername",
+      "placeholder": "Administrator-Benutzername eingeben",
+      "currentUser": "Aktueller Benutzer",
+      "info": "Dieser Benutzername wird verwendet, wenn Homebrew-Operationen Administratorrechte erfordern. Leer lassen, um Ihr aktuelles Benutzerkonto zu verwenden."
     },
     "advancedOptions": {
       "title": "Erweiterte Optionen",

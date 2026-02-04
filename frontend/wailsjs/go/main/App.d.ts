@@ -16,6 +16,8 @@ export function DownloadAndInstallUpdate(arg1:string):Promise<void>;
 
 export function ExportBrewfile(arg1:string):Promise<void>;
 
+export function GetAdminUsername():Promise<string>;
+
 export function GetAllBrewPackages():Promise<Array<any>>;
 
 export function GetAppVersion():Promise<string>;
@@ -97,6 +99,8 @@ export function RunBrewCleanup():Promise<string>;
 export function RunBrewDoctor():Promise<string>;
 
 export function SelectCaskAppDir():Promise<string>;
+
+export function SetAdminUsername(arg1:string):Promise<void>;
 
 export function SetBrewPath(arg1:string):Promise<void>;
 

@@ -411,7 +411,8 @@
       "caskAppDirUpdated": "Cask app directory setting updated successfully!",
       "caskAppDirReset": "Cask app directory reset to current value.",
       "customCaskOptsUpdated": "Custom cask options updated successfully!",
-      "customOutdatedArgsUpdated": "Custom outdated arguments updated successfully!"
+      "customOutdatedArgsUpdated": "Custom outdated arguments updated successfully!",
+      "adminUsernameUpdated": "Admin username updated successfully!"
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
@@ -423,7 +424,8 @@
       "failedToSetCaskAppDir": "Failed to set cask app directory. Please check your configuration.",
       "failedToSelectDirectory": "Failed to select directory.",
       "failedToSetCustomCaskOpts": "Failed to set custom cask options. Please check your input.",
-      "failedToSetCustomOutdatedArgs": "Failed to set custom outdated arguments. Please check your input."
+      "failedToSetCustomOutdatedArgs": "Failed to set custom outdated arguments. Please check your input.",
+      "failedToSetAdminUsername": "Failed to update admin username"
     },
     "mirrorSource": {
       "title": "Homebrew Mirror Source",
@@ -468,6 +470,14 @@
       "selectDirectory": "Select directory",
       "newDirectory": "New directory",
       "note": "Note: Changing this setting will affect where new cask installations and upgrades are placed. Existing installations are not moved automatically."
+    },
+    "adminUsername": {
+      "title": "Admin Username",
+      "description": "Specify an alternative admin account for privileged operations",
+      "label": "Admin Username",
+      "placeholder": "Enter admin username",
+      "currentUser": "Current user",
+      "info": "This username will be used when Homebrew operations require administrator privileges. Leave empty to use your current user account."
     },
     "advancedOptions": {
       "title": "Advanced Options",

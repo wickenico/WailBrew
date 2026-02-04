@@ -26,6 +26,10 @@ export function ExportBrewfile(arg1) {
   return window['go']['main']['App']['ExportBrewfile'](arg1);
 }
 
+export function GetAdminUsername() {
+  return window['go']['main']['App']['GetAdminUsername']();
+}
+
 export function GetAllBrewPackages() {
   return window['go']['main']['App']['GetAllBrewPackages']();
 }
@@ -188,6 +192,10 @@ export function RunBrewDoctor() {
 
 export function SelectCaskAppDir() {
   return window['go']['main']['App']['SelectCaskAppDir']();
+}
+
+export function SetAdminUsername(arg1) {
+  return window['go']['main']['App']['SetAdminUsername'](arg1);
 }
 
 export function SetBrewPath(arg1) {

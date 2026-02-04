@@ -157,11 +157,20 @@ func detectBrewPath() string {
 // NewApp creates a new App application struct
 func NewApp() *App {
 	brewPath := detectBrewPath()
+	cfg := &config.Config{}
+	cfg.Load() // Load config early to get admin username
+	
+	// Get admin username from config, or current user as fallback
+	adminUsername := cfg.AdminUsername
+	if adminUsername == "" {
+		adminUsername = os.Getenv("USER")
+	}
+	
 	app := &App{
 		brewPath:          brewPath,
 		currentLanguage:   "en",
-		config:            &config.Config{},
-		askpassManager:    system.NewManager(),
+		config:            cfg,
+		askpassManager:    system.NewManager(adminUsername),
 		sessionLogManager: logging.NewManager(),
 	}
 
@@ -776,6 +785,39 @@ func (a *App) SetCustomOutdatedArgs(args string) error {
 
 	if err := a.config.Save(); err != nil {
 		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	return nil
+}
+
+func (a *App) GetAdminUsername() string {
+	if a.config.AdminUsername == "" {
+		// Default to current user
+		return os.Getenv("USER")
+	}
+	return a.config.AdminUsername
+}
+
+func (a *App) SetAdminUsername(username string) error {
+	a.config.AdminUsername = strings.TrimSpace(username)
+
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	// Update askpass manager with new default username
+	if a.askpassManager != nil {
+		adminUsername := a.config.AdminUsername
+		if adminUsername == "" {
+			adminUsername = os.Getenv("USER")
+		}
+		// Recreate the askpass manager with the new username
+		a.askpassManager.Cleanup()
+		a.askpassManager = system.NewManager(adminUsername)
+		// Re-setup the askpass helper
+		if err := a.askpassManager.Setup(); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to re-setup askpass helper: %v\n", err)
+		}
 	}
 
 	return nil

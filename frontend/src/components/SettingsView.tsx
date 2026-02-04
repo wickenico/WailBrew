@@ -13,9 +13,10 @@ import {
     Loader2,
     Info,
     Sparkles,
-    Code2
+    Code2,
+    Shield
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -49,6 +50,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [customOutdatedArgs, setCustomOutdatedArgs] = useState<string>("");
     const [newCustomOutdatedArgs, setNewCustomOutdatedArgs] = useState<string>("");
     const [savingCustomOutdatedArgs, setSavingCustomOutdatedArgs] = useState<boolean>(false);
+    const [adminUsername, setAdminUsername] = useState<string>("");
+    const [newAdminUsername, setNewAdminUsername] = useState<string>("");
+    const [savingAdminUsername, setSavingAdminUsername] = useState<boolean>(false);
+    const [isAdminUsernameExpanded, setIsAdminUsernameExpanded] = useState<boolean>(false);
     const [macOSVersion, setMacOSVersion] = useState<string>("");
     const [macOSReleaseName, setMacOSReleaseName] = useState<string>("");
     const [systemArchitecture, setSystemArchitecture] = useState<string>("");
@@ -60,6 +65,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadCurrentCaskAppDir();
         loadCustomCaskOpts();
         loadCustomOutdatedArgs();
+        loadAdminUsername();
         loadSystemInfo();
     }, []);
 
@@ -416,6 +422,44 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleResetCustomOutdatedArgs = () => {
         setNewCustomOutdatedArgs(customOutdatedArgs);
+    };
+
+    const loadAdminUsername = async () => {
+        try {
+            const username = await GetAdminUsername();
+            setAdminUsername(username);
+            setNewAdminUsername(username);
+        } catch (error) {
+            console.error("Failed to get admin username:", error);
+            setAdminUsername("");
+            setNewAdminUsername("");
+        }
+    };
+
+    const handleSaveAdminUsername = async () => {
+        const trimmedUsername = newAdminUsername.trim();
+        if (trimmedUsername === adminUsername) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+
+        try {
+            setSavingAdminUsername(true);
+            await SetAdminUsername(trimmedUsername);
+            setAdminUsername(trimmedUsername);
+            setNewAdminUsername(trimmedUsername);
+            toast.success(t('settings.messages.adminUsernameUpdated'));
+        } catch (error) {
+            console.error("Failed to set admin username:", error);
+            toast.error(t('settings.errors.failedToSetAdminUsername'));
+            setNewAdminUsername(adminUsername);
+        } finally {
+            setSavingAdminUsername(false);
+        }
+    };
+
+    const handleResetAdminUsername = () => {
+        setNewAdminUsername(adminUsername);
     };
 
     const loadSystemInfo = async () => {
@@ -801,6 +845,67 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             >
                                 {savingCaskAppDir ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
                                 {savingCaskAppDir ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Admin Username Card */}
+                <div className={`settings-card ${isAdminUsernameExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsAdminUsernameExpanded(!isAdminUsernameExpanded)}
+                        aria-expanded={isAdminUsernameExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <Shield size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.adminUsername.title')}</h3>
+                            <span className="settings-card-value">
+                                {adminUsername || t('settings.adminUsername.currentUser')}
+                            </span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isAdminUsernameExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+                    
+                    <div className={`settings-card-content ${isAdminUsernameExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.adminUsername.description')}
+                        </p>
+                        
+                        <div className="settings-info-box" style={{marginBottom: "1rem"}}>
+                            <Info size={16} />
+                            <span>{t('settings.adminUsername.info')}</span>
+                        </div>
+
+                        <div className="settings-input-group">
+                            <label>{t('settings.adminUsername.label')}</label>
+                            <input
+                                type="text"
+                                value={newAdminUsername}
+                                onChange={(e) => setNewAdminUsername(e.target.value)}
+                                placeholder={t('settings.adminUsername.placeholder')}
+                                disabled={savingAdminUsername}
+                            />
+                        </div>
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetAdminUsername}
+                                disabled={savingAdminUsername || newAdminUsername === adminUsername}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveAdminUsername}
+                                disabled={savingAdminUsername || newAdminUsername.trim() === adminUsername}
+                            >
+                                {savingAdminUsername ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingAdminUsername ? t('settings.buttons.saving') : t('settings.buttons.save')}
                             </button>
                         </div>
                     </div>

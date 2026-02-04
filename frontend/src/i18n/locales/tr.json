@@ -408,7 +408,8 @@
       "caskAppDirUpdated": "Cask uygulama dizini ayarı başarıyla güncellendi!",
       "caskAppDirReset": "Cask uygulama dizini ayarı güncel değerine sıfırlandı.",
       "customCaskOptsUpdated": "Özel Cask seçenekleri başarıyla güncellendi!",
-      "customOutdatedArgsUpdated": "Özel outdated argümanları başarıyla güncellendi!"
+      "customOutdatedArgsUpdated": "Özel outdated argümanları başarıyla güncellendi!",
+      "adminUsernameUpdated": "Yönetici kullanıcı adı başarıyla güncellendi!"
     },
     "errors": {
       "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
@@ -420,7 +421,8 @@
       "failedToSetCaskAppDir": "Cask uygulama dizini ayarı ayarlanamadı. Lütfen yapılandırmanızı kontrol edin.",
       "failedToSelectDirectory": "Dizin seçilemedi.",
       "failedToSetCustomCaskOpts": "Özel Cask seçenekleri ayarlanamadı. Lütfen girişinizi kontrol edin.",
-      "failedToSetCustomOutdatedArgs": "Özel outdated argümanları ayarlanamadı. Lütfen girişinizi kontrol edin."
+      "failedToSetCustomOutdatedArgs": "Özel outdated argümanları ayarlanamadı. Lütfen girişinizi kontrol edin.",
+      "failedToSetAdminUsername": "Yönetici kullanıcı adı güncellenemedi"
     },
     "mirrorSource": {
       "title": "Homebrew Ayna Kaynağı",
@@ -465,6 +467,14 @@
       "selectDirectory": "Dizin seç",
       "newDirectory": "Yeni dizin",
       "note": "Not: Bu ayarı değiştirmek, yeni cask kurulumlarının ve güncellemelerinin yerleştirildiği yeri etkileyecektir. Mevcut kurulumlar otomatik olarak taşınmaz."
+    },
+    "adminUsername": {
+      "title": "Yönetici Kullanıcı Adı",
+      "description": "Ayrıcalıklı işlemler için alternatif bir yönetici hesabı belirtin",
+      "label": "Yönetici Kullanıcı Adı",
+      "placeholder": "Yönetici kullanıcı adını girin",
+      "currentUser": "Mevcut kullanıcı",
+      "info": "Homebrew işlemleri yönetici ayrıcalıkları gerektirdiğinde bu kullanıcı adı kullanılacaktır. Mevcut kullanıcı hesabınızı kullanmak için boş bırakın."
     },
     "advancedOptions": {
       "title": "Gelişmiş Seçenekler",

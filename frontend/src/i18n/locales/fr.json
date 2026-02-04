@@ -408,7 +408,8 @@
       "caskAppDirUpdated": "Paramètre du répertoire d'applications Cask mis à jour avec succès !",
       "caskAppDirReset": "Paramètre du répertoire d'applications Cask réinitialisé à la valeur actuelle.",
       "customCaskOptsUpdated": "Options Cask personnalisées mises à jour avec succès !",
-      "customOutdatedArgsUpdated": "Arguments outdated personnalisés mis à jour avec succès !"
+      "customOutdatedArgsUpdated": "Arguments outdated personnalisés mis à jour avec succès !",
+      "adminUsernameUpdated": "Nom d'utilisateur administrateur mis à jour avec succès !"
     },
     "errors": {
       "failedToGetPath": "Échec de la récupération du chemin brew actuel.",
@@ -420,7 +421,8 @@
       "failedToSetCaskAppDir": "Échec de la configuration du répertoire d'applications Cask. Veuillez vérifier votre configuration.",
       "failedToSelectDirectory": "Échec de la sélection du répertoire.",
       "failedToSetCustomCaskOpts": "Échec de la configuration des options Cask personnalisées. Veuillez vérifier votre saisie.",
-      "failedToSetCustomOutdatedArgs": "Échec de la configuration des arguments outdated personnalisés. Veuillez vérifier votre saisie."
+      "failedToSetCustomOutdatedArgs": "Échec de la configuration des arguments outdated personnalisés. Veuillez vérifier votre saisie.",
+      "failedToSetAdminUsername": "Échec de la mise à jour du nom d'utilisateur administrateur"
     },
     "mirrorSource": {
       "title": "Source miroir Homebrew",
@@ -465,6 +467,14 @@
       "selectDirectory": "Sélectionner un répertoire",
       "newDirectory": "Nouveau répertoire",
       "note": "Note : Changer ce paramètre affectera l'emplacement des nouvelles installations et mises à jour de casks. Les installations existantes ne sont pas déplacées automatiquement."
+    },
+    "adminUsername": {
+      "title": "Nom d'utilisateur administrateur",
+      "description": "Spécifier un compte administrateur alternatif pour les opérations privilégiées",
+      "label": "Nom d'utilisateur administrateur",
+      "placeholder": "Entrer le nom d'utilisateur administrateur",
+      "currentUser": "Utilisateur actuel",
+      "info": "Ce nom d'utilisateur sera utilisé lorsque les opérations Homebrew nécessitent des privilèges administrateur. Laisser vide pour utiliser votre compte utilisateur actuel."
     },
     "advancedOptions": {
       "title": "Options avancées",

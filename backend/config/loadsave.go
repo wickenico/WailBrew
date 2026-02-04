@@ -17,6 +17,7 @@ type Config struct {
 	CaskAppDir         string `json:"caskAppDir"`         // Custom directory for cask applications (e.g., "/Applications/3rd-party")
 	CustomCaskOpts     string `json:"customCaskOpts"`     // Additional cask options (e.g., "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook")
 	CustomOutdatedArgs string `json:"customOutdatedArgs"` // Additional outdated command arguments (e.g., "--verbose --formula")
+	AdminUsername      string `json:"adminUsername"`      // Admin username for sudo operations (defaults to current user)
 }
 
 // GetConfigPath returns the path to the config file

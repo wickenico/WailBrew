@@ -408,7 +408,8 @@
       "caskAppDirUpdated": "Cask 應用程式目錄設定更新成功！",
       "caskAppDirReset": "Cask 應用程式目錄設定已重設為目前值。",
       "customCaskOptsUpdated": "自訂 Cask 選項更新成功！",
-      "customOutdatedArgsUpdated": "自訂 outdated 參數更新成功！"
+      "customOutdatedArgsUpdated": "自訂 outdated 參數更新成功！",
+      "adminUsernameUpdated": "管理員使用者名稱已成功更新！"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
@@ -420,7 +421,8 @@
       "failedToSetCaskAppDir": "設定 Cask 應用程式目錄失敗。請檢查您的設定。",
       "failedToSelectDirectory": "選擇目錄失敗。",
       "failedToSetCustomCaskOpts": "設定自訂 Cask 選項失敗。請檢查您的輸入。",
-      "failedToSetCustomOutdatedArgs": "設定自訂 outdated 參數失敗。請檢查您的輸入。"
+      "failedToSetCustomOutdatedArgs": "設定自訂 outdated 參數失敗。請檢查您的輸入。",
+      "failedToSetAdminUsername": "更新管理員使用者名稱失敗"
     },
     "mirrorSource": {
       "title": "Homebrew 鏡像源",
@@ -465,6 +467,14 @@
       "selectDirectory": "選擇目錄",
       "newDirectory": "新目錄",
       "note": "注意：變更此設定將影響新 cask 安裝和升級的放置位置。現有安裝不會自動移動。"
+    },
+    "adminUsername": {
+      "title": "管理員使用者名稱",
+      "description": "為特權操作指定替代管理員帳戶",
+      "label": "管理員使用者名稱",
+      "placeholder": "輸入管理員使用者名稱",
+      "currentUser": "目前使用者",
+      "info": "當 Homebrew 操作需要管理員權限時，將使用此使用者名稱。留空則使用您目前的使用者帳戶。"
     },
     "advancedOptions": {
       "title": "進階選項",

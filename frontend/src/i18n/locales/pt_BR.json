@@ -413,7 +413,8 @@
       "caskAppDirUpdated": "Configuração do diretório de aplicativos Cask atualizada com sucesso!",
       "caskAppDirReset": "Configuração do diretório de aplicativos Cask redefinida para o valor atual.",
       "customCaskOptsUpdated": "Opções Cask personalizadas atualizadas com sucesso!",
-      "customOutdatedArgsUpdated": "Argumentos outdated personalizados atualizados com sucesso!"
+      "customOutdatedArgsUpdated": "Argumentos outdated personalizados atualizados com sucesso!",
+      "adminUsernameUpdated": "Nome de usuário administrador atualizado com sucesso!"
     },
     "errors": {
       "failedToGetPath": "Falha ao obter o caminho atual do brew.",
@@ -425,7 +426,8 @@
       "failedToSetCaskAppDir": "Falha ao definir a configuração do diretório de aplicativos Cask. Verifique sua configuração.",
       "failedToSelectDirectory": "Falha ao selecionar diretório.",
       "failedToSetCustomCaskOpts": "Falha ao definir opções Cask personalizadas. Verifique sua entrada.",
-      "failedToSetCustomOutdatedArgs": "Falha ao definir argumentos outdated personalizados. Verifique sua entrada."
+      "failedToSetCustomOutdatedArgs": "Falha ao definir argumentos outdated personalizados. Verifique sua entrada.",
+      "failedToSetAdminUsername": "Falha ao atualizar nome de usuário administrador"
     },
     "mirrorSource": {
       "title": "Fonte de Espelho Homebrew",
@@ -470,6 +472,14 @@
       "selectDirectory": "Selecionar diretório",
       "newDirectory": "Novo diretório",
       "note": "Nota: Alterar esta configuração afetará onde novas instalações e atualizações de casks são colocadas. Instalações existentes não são movidas automaticamente."
+    },
+    "adminUsername": {
+      "title": "Nome de Usuário Administrador",
+      "description": "Especifique uma conta de administrador alternativa para operações privilegiadas",
+      "label": "Nome de Usuário Administrador",
+      "placeholder": "Digite o nome de usuário administrador",
+      "currentUser": "Usuário atual",
+      "info": "Este nome de usuário será usado quando as operações do Homebrew exigirem privilégios de administrador. Deixe vazio para usar sua conta de usuário atual."
     },
     "advancedOptions": {
       "title": "Opções Avançadas",
