@@ -214,6 +214,14 @@ export function SetDockBadgeCount(arg1) {
   return window['go']['main']['App']['SetDockBadgeCount'](arg1);
 }
 
+export function SetDockBadgeCountSync(arg1) {
+  return window['go']['main']['App']['SetDockBadgeCountSync'](arg1);
+}
+
+export function SetDockBadgeSync(arg1) {
+  return window['go']['main']['App']['SetDockBadgeSync'](arg1);
+}
+
 export function SetLanguage(arg1) {
   return window['go']['main']['App']['SetLanguage'](arg1);
 }

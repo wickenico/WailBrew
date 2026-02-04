@@ -1005,3 +1005,15 @@ func (a *App) SetDockBadge(label string) {
 func (a *App) SetDockBadgeCount(count int) {
 	system.SetDockBadgeCount(count)
 }
+
+// SetDockBadgeSync sets the macOS dock badge synchronously (for testing)
+// Pass an empty string to clear the badge
+func (a *App) SetDockBadgeSync(label string) {
+	system.SetDockBadgeSync(label)
+}
+
+// SetDockBadgeCountSync sets the macOS dock badge with a numeric count synchronously
+// Pass 0 to clear the badge
+func (a *App) SetDockBadgeCountSync(count int) {
+	system.SetDockBadgeCountSync(count)
+}

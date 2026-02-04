@@ -26,6 +26,7 @@ import {
     RunBrewCleanup,
     RunBrewDoctor,
     SetDockBadgeCount,
+    SetDockBadgeCountSync,
     SetLanguage,
     TapBrewRepository,
     UntapBrewRepository,
@@ -429,9 +430,28 @@ const WailBrewApp = () => {
 
     // Update Dock badge when updatable packages count changes
     useEffect(() => {
-        SetDockBadgeCount(updatablePackages.length).catch(err => {
-            console.error("Failed to update dock badge:", err);
-        });
+        const updateBadge = async () => {
+            const count = updatablePackages.length;
+            console.log(`[WailBrew] Updating dock badge to: ${count}`);
+            
+            try {
+                // Try async version first
+                await SetDockBadgeCount(count);
+                console.log(`[WailBrew] Dock badge set successfully (async)`);
+            } catch (err) {
+                console.error("[WailBrew] Failed to update dock badge (async):", err);
+                
+                // Try sync version as fallback
+                try {
+                    await SetDockBadgeCountSync(count);
+                    console.log(`[WailBrew] Dock badge set successfully (sync fallback)`);
+                } catch (error_) {
+                    console.error("[WailBrew] Failed to update dock badge (sync):", error_);
+                }
+            }
+        };
+        
+        updateBadge();
     }, [updatablePackages.length]);
 
     // Background update checking function
