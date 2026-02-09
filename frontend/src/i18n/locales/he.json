@@ -1,0 +1,555 @@
+{
+  "sidebar": {
+    "formulas": "נוסחאות",
+    "tools": "כלים",
+    "installed": "מותקנים",
+    "casks": "Casks",
+    "outdated": "מיושנים",
+    "all": "כל הנוסחאות",
+    "leaves": "עלים",
+    "repositories": "מאגרים",
+    "homebrew": "Homebrew",
+    "doctor": "דוקטור",
+    "cleanup": "ניקוי",
+    "settings": "הגדרות",
+    "refresh": "רענון",
+    "commandPalette": "לוח פקודות"
+  },
+  "headers": {
+    "installedFormulas": "נוסחאות מותקנות",
+    "installedCasks": "Casks מותקנים",
+    "outdatedFormulas": "נוסחאות מיושנות",
+    "allFormulas": "נוסחאות",
+    "leaves": "עלים",
+    "repositories": "מאגרים",
+    "homebrew": "Homebrew",
+    "homebrewDoctor": "Homebrew דוקטור",
+    "homebrewCleanup": "Homebrew ניקוי",
+    "deprecatedFormulae": "נוסחאות שהוצאו משימוש"
+  },
+  "search": {
+    "placeholder": "חיפוש...",
+    "clearSearch": "נקה חיפוש",
+    "recentSearches": "חיפושים אחרונים",
+    "removeFromHistory": "הסר את \"{{item}}\" מההיסטוריה"
+  },
+  "commandPalette": {
+    "placeholder": "חפש חבילות, casks, מאגרים, או נווט לתצוגות...",
+    "noResults": "לא נמצאו תוצאות",
+    "toSelect": "לבחירה",
+    "toNavigate": "לניווט",
+    "toClose": "לסגירה"
+  },
+  "shortcuts": {
+    "title": "קיצורי מקלדת",
+    "menu": {
+      "title": "תפריט",
+      "commandPalette": "לוח פקודות",
+      "shortcuts": "קיצורי מקלדת",
+      "settings": "הגדרות",
+      "quit": "יציאה"
+    },
+    "navigation": {
+      "title": "ניווט",
+      "installed": "נוסחאות מותקנות",
+      "casks": "Casks",
+      "outdated": "נוסחאות מיושנות",
+      "all": "כל הנוסחאות",
+      "leaves": "עלים",
+      "repositories": "מאגרים",
+      "homebrew": "Homebrew",
+      "doctor": "דוקטור",
+      "cleanup": "ניקוי"
+    },
+    "table": {
+      "title": "טבלה",
+      "focus": "מיקוד בטבלה",
+      "select": "בחירת פריט",
+      "navigate": "ניווט בשורות",
+      "multiSelect": "מצב בחירה מרובה",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "פעולות",
+      "refresh": "רענון חבילות",
+      "exportBrewfile": "ייצוא Brewfile"
+    },
+    "dialogs": {
+      "title": "דיאלוגים",
+      "close": "סגור דיאלוג",
+      "confirm": "אישור פעולה",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
+  "buttons": {
+    "uninstall": "הסרת \"{{name}}\"",
+    "install": "התקנת \"{{name}}\"",
+    "update": "עדכון \"{{name}}\"",
+    "tap": "הוספת מאגר",
+    "updateAll": "עדכון הכל",
+    "multiSelect": "בחירה מרובה",
+    "exitMultiSelect": "יציאה מבחירה מרובה",
+    "updateSelected": "עדכון {{count}} נבחרים",
+    "selectAll": "בחר הכל",
+    "deselectAll": "בטל בחירת הכל",
+    "showInfo": "הצג מידע על \"{{name}}\"",
+    "clearLog": "נקה יומן",
+    "runDoctor": "הפעל דוקטור",
+    "runCleanup": "הפעל ניקוי",
+    "checkEstimate": "בדוק הערכה",
+    "refresh": "רענון חבילות",
+    "yes": "כן",
+    "cancel": "ביטול",
+    "yesUninstall": "כן, הסר",
+    "yesInstall": "כן, התקן",
+    "yesUpdate": "כן, עדכן",
+    "yesUpdateAll": "כן, עדכן הכל",
+    "yesUpdateSelected": "כן, עדכן {{count}} נבחרים",
+    "yesUntap": "כן, הסר מאגר",
+    "yesUninstallAndUntap": "כן, הסר ונתק מאגר",
+    "ok": "אישור",
+    "close": "סגור",
+    "updateHomebrew": "עדכן Homebrew",
+    "uninstallDeprecated": "הסר נוסחה שהוצאה משימוש \"{{name}}\""
+  },
+  "multiSelect": {
+    "selectedCount": "{{count}} מתוך {{total}} נבחרו"
+  },
+  "logDialog": {
+    "running": "מריץ...",
+    "completed": "הושלם",
+    "copy": "העתק",
+    "copyToClipboard": "העתק יומן ללוח",
+    "copiedToClipboard": "היומן הועתק ללוח!",
+    "copyFailed": "העתקת היומן נכשלה"
+  },
+  "packageInfo": {
+    "loading": "(טוען…)",
+    "description": "תיאור",
+    "homepage": "דף בית",
+    "version": "גרסה",
+    "status": "מצב",
+    "dependencies": "תלויות",
+    "conflicts": "התנגשויות",
+    "installed": "מותקן",
+    "notInstalled": "לא מותקן",
+    "noSelection": "לא נבחרה חבילה",
+    "downloadStatistics": "סטטיסטיקות הורדה",
+    "last30Days": "30 ימים אחרונים",
+    "last90Days": "90 ימים אחרונים",
+    "last365Days": "365 ימים אחרונים",
+    "loadingAnalytics": "טוען סטטיסטיקות..."
+  },
+  "tableColumns": {
+    "name": "שם",
+    "version": "גרסה מותקנת",
+    "latestVersion": "גרסה אחרונה",
+    "size": "גודל",
+    "status": "מצב",
+    "actions": "פעולות"
+  },
+  "footers": {
+    "installedFormulas": "נוסחאות אלו כבר מותקנות במערכת שלך.",
+    "installedCasks": "Casks אלו (יישומים גרפיים) כבר מותקנים במערכת שלך.",
+    "outdatedFormulas": "חלק מהנוסחאות ניתנות לעדכון.",
+    "allFormulas": "כל נוסחאות Homebrew הזמינות. הדגשה ירוקה מציינת נוסחאות מותקנות.",
+    "leaves": "עלים הם נוסחאות שאינן נדרשות כתלויות על ידי נוסחאות מותקנות אחרות.",
+    "repositories": "מאגרים (Taps) הם מקורות לנוסחאות. אלו מכילים חבילות נוספות מעבר למאגר הרגיל.",
+    "homebrew": "נהל ועדכן את Homebrew עצמו. בדוק את הגרסה המותקנת ועדכן את ליבת Homebrew כשגרסה חדשה זמינה.",
+    "doctor": "דוקטור הוא תכונה של Homebrew שיכולה לזהות את הגורמים הנפוצים ביותר לשגיאות.",
+    "cleanup": "ניקוי מסיר הורדות מיושנות וקבצים שמורים כדי לפנות מקום בדיסק."
+  },
+  "homebrew": {
+    "currentVersion": "גרסה נוכחית",
+    "upToDate": "מעודכן",
+    "updateAvailable": "עדכון זמין: v{{version}}"
+  },
+  "cleanup": {
+    "estimatedSpace": "שטח משוער לפינוי: {{size}}",
+    "spaceToFree": "ניתן לפנות {{size}}"
+  },
+  "dialogs": {
+    "confirmUninstall": "האם באמת ברצונך להסיר את \"{{name}}\"?",
+    "confirmInstall": "האם באמת ברצונך להתקין את \"{{name}}\"?",
+    "confirmUpdate": "האם באמת ברצונך לעדכן את \"{{name}}\"?",
+    "confirmUpdateAll": "האם באמת ברצונך לעדכן את כל החבילות המיושנות?",
+    "confirmUpdateSelected": "האם באמת ברצונך לעדכן {{count}} חבילות נבחרות?",
+    "confirmUntap": "האם באמת ברצונך להסיר את המאגר \"{{name}}\"?",
+    "updateLogs": "יומן עדכון עבור {{name}}",
+    "updateAllLogs": "יומן עדכון עבור כל החבילות",
+    "updateSelectedLogs": "יומן עדכון עבור חבילות נבחרות",
+    "installLogs": "יומן התקנה עבור {{name}}",
+    "uninstallLogs": "יומן הסרה עבור {{name}}",
+    "untapLogs": "יומן הסרת מאגר עבור {{name}}",
+    "untapping": "מסיר את המאגר \"{{name}}\"...\nאנא המתן...",
+    "tapLogs": "יומן הוספת מאגר עבור {{name}}",
+    "tapping": "מוסיף את המאגר \"{{name}}\"...\nאנא המתן...",
+    "tapInputTitle": "הוספת מאגר",
+    "tapInputPlaceholder": "user/repo (לדוגמה, homebrew/cask)",
+    "tapInputHint": "הזן שם מאגר בפורמט: user/repo",
+    "tapInputEmpty": "אנא הזן שם מאגר",
+    "tapInputInvalid": "פורמט לא תקין. שם המאגר חייב להיות בפורמט: user/repo",
+    "repositoryInfo": "מידע על {{name}}",
+    "confirmUntapUninstall": "לא ניתן להסיר את המאגר \"{{name}}\" כיוון שהוא מכיל {{count}} חבילות מותקנות: {{packages}}\n\nהאם ברצונך להסיר אותן תחילה ואז להסיר את המאגר?",
+    "uninstallingPackagesBeforeUntap": "מסיר {{count}} חבילות לפני הסרת המאגר \"{{name}}\"...\nאנא המתן...",
+    "uninstallingPackage": "מסיר את {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "מנסה שוב להסיר את המאגר \"{{name}}\"...\nאנא המתן...",
+    "packageInfo": "מידע על {{name}}",
+    "sessionLogs": "יומני הפעלה",
+    "updating": "מעדכן את \"{{name}}\"...\nאנא המתן...",
+    "installing": "מתקין את \"{{name}}\"...\nאנא המתן...",
+    "uninstalling": "מסיר את \"{{name}}\"...\nאנא המתן...",
+    "updatingAll": "מעדכן את כל החבילות המיושנות...\nאנא המתן...",
+    "updatingSelected": "מעדכן {{count}} חבילות נבחרות...\nאנא המתן...",
+    "gettingInfo": "מקבל מידע על \"{{name}}\"...\nאנא המתן...",
+    "runningHomebrewUpdate": "מעדכן את Homebrew...\nאנא המתן...",
+    "homebrewUpdateLogs": "יומני עדכון Homebrew",
+    "runningDoctor": "מפעיל brew doctor…\nאנא המתן...",
+    "runningCleanup": "מפעיל brew cleanup…\nאנא המתן...",
+    "noHomebrewOutput": "אין פלט עדיין. לחץ על \"עדכן Homebrew\".",
+    "installSuccess": "\"{{name}}\" הותקן בהצלחה!",
+    "installFailed": "התקנת \"{{name}}\" נכשלה: {{error}}",
+    "noDoctorOutput": "אין פלט עדיין. לחץ על \"הפעל דוקטור\".",
+    "noCleanupOutput": "אין פלט עדיין. לחץ על \"הפעל ניקוי\"."
+  },
+  "errors": {
+    "loadingFormulas": "❌ שגיאה בטעינת נוסחאות!",
+    "failedInstalledPackages": "נכשל בקבלת חבילות מותקנות",
+    "failedInstalledCasks": "נכשל בקבלת casks מותקנים",
+    "failedUpdatablePackages": "נכשל בקבלת חבילות הניתנות לעדכון",
+    "failedAllPackages": "נכשל בקבלת כל החבילות",
+    "failedLeaves": "נכשל בקבלת עלים",
+    "failedRepositories": "נכשל בקבלת מאגרים"
+  },
+  "about": {
+    "title": "אודות",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – ממשק גרפי מינימליסטי ל-Homebrew עבור macOS",
+    "createdBy": "נוצר על ידי Nico Wickersheim",
+    "developedWith": "פותח עם {{wails}} ו-React",
+    "description": "WailBrew הוא ממשק משתמש גרפי מודרני ל-Homebrew שמקל על ניהול, התקנה ועדכון חבילות.",
+    "links": "קישורים:",
+    "wailbrewWebsite": "אתר WailBrew",
+    "githubRepo": "מאגר GitHub",
+    "reportBug": "דווח על באג",
+    "homebrewWebsite": "אתר Homebrew",
+    "acknowledgments": "תודות:",
+    "acknowledgmentText": "בהשראת {{cakebrew}} מאת Bruno Philipe.\\nתודה על העבודה המצוינת על ממשק Homebrew המקורי!",
+    "translationTitle": "תרגומים:",
+    "translationThanks": "תודה ענקית לכל מי שתרם תרגומים!",
+    "improveTranslations": "→ עזור לשפר תרגומים",
+    "copyright": "Copyright © 2025 Nico Wickersheim. כל הזכויות שמורות."
+  },
+  "language": {
+    "switchLanguage": "החלף שפה",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe",
+    "simplified_chinese": "简体中文",
+    "traditional_chinese": "繁體中文",
+    "brazilian_portuguese": "Português do Brasil",
+    "russian": "Русский",
+    "korean": "한국어",
+    "hebrew": "עברית"
+  },
+  "menu": {
+    "app": {
+      "about": "אודות WailBrew",
+      "checkUpdates": "בדוק עדכונים...",
+      "visitWebsite": "בקר באתר",
+      "visitGitHub": "בקר במאגר GitHub",
+      "reportBug": "דווח על באג",
+      "visitSubreddit": "בקר ב-Subreddit",
+      "sponsorProject": "תמוך בפרויקט",
+      "quit": "יציאה"
+    },
+    "view": {
+      "title": "תצוגה",
+      "installed": "נוסחאות מותקנות",
+      "casks": "Casks",
+      "outdated": "נוסחאות מיושנות",
+      "all": "כל הנוסחאות",
+      "leaves": "עלים",
+      "repositories": "מאגרים",
+      "homebrew": "Homebrew",
+      "doctor": "דוקטור",
+      "cleanup": "ניקוי",
+      "settings": "הגדרות",
+      "commandPalette": "לוח פקודות...",
+      "shortcuts": "קיצורי מקלדת..."
+    },
+    "tools": {
+      "title": "כלים",
+      "refreshPackages": "רענן חבילות",
+      "exportBrewfile": "ייצא Brewfile...",
+      "exportSuccess": "הייצוא הצליח",
+      "exportFailed": "הייצוא נכשל",
+      "exportMessage": "Brewfile יוצא בהצלחה אל:\n%s",
+      "openConfigFile": "פתח קובץ הגדרות",
+      "openConfigFailed": "פתיחת קובץ ההגדרות נכשלה",
+      "viewSessionLogs": "צפה ביומני הפעלה..."
+    },
+    "help": {
+      "title": "עזרה",
+      "wailbrewHelp": "עזרת WailBrew",
+      "helpTitle": "עזרה",
+      "helpMessage": "כרגע אין דף עזרה זמין."
+    }
+  },
+  "table": {
+    "loadingFormulas": "טוען נוסחאות…",
+    "loadingRepositories": "טוען מאגרים…",
+    "noResults": "לא נמצאו תוצאות תואמות.",
+    "allUpToDate": "הכל מעודכן!",
+    "installedStatus": "מותקן",
+    "notInstalledStatus": "לא מותקן",
+    "package": "חבילה",
+    "packages": "חבילות",
+    "repository": "מאגר",
+    "repositories": "מאגרים"
+  },
+  "repository": {
+    "noSelection": "לא נבחר מאגר",
+    "status": "מצב",
+    "description": "תיאור",
+    "defaultDescription": "מאגר Homebrew Tap",
+    "active": "פעיל"
+  },
+  "common": {
+    "notAvailable": "--"
+  },
+  "updateDialog": {
+    "title": "בדיקת עדכונים",
+    "checking": "בודק עדכונים דרך Homebrew...",
+    "error": "שגיאה בבדיקת עדכונים",
+    "available": "עדכון זמין דרך Homebrew!",
+    "currentVersion": "גרסה נוכחית",
+    "newVersion": "גרסה חדשה",
+    "published": "פורסם",
+    "size": "גודל",
+    "changes": "שינויים",
+    "viewReleaseNotes": "צפה בהערות שחרור",
+    "availableViaHomebrew": "גרסה חדשה זמינה דרך Homebrew Cask",
+    "manualUpdate": "עדכון ידני",
+    "instruction": "כדי לעדכן את WailBrew, אנא הרץ את הפקודות הבאות בטרמינל:",
+    "copyCommand": "העתק פקודה ללוח",
+    "copied": "הפקודה הועתקה ללוח!",
+    "upToDate": "הכל מעודכן!",
+    "currentVersionIs": "גרסה {{version}} היא הגרסה הנוכחית הזמינה דרך Homebrew.",
+    "tryAgain": "נסה שוב",
+    "gotIt": "הבנתי",
+    "downloadAndInstall": "הורד והתקן",
+    "installing": "מתקין...",
+    "updateInstalled": "העדכון הותקן!",
+    "restartMessage": "העדכון הותקן בהצלחה. אנא הפעל מחדש את WailBrew כדי להשתמש בגרסה החדשה.",
+    "restartNow": "הפעל מחדש עכשיו"
+  },
+  "restartDialog": {
+    "title": "נדרשת הפעלה מחדש",
+    "message": "WailBrew עודכן!",
+    "description": "WailBrew עודכן בהצלחה. אנא הפעל מחדש את היישום כדי להשתמש בגרסה החדשה.",
+    "restartNow": "הפעל מחדש עכשיו",
+    "later": "מאוחר יותר"
+  },
+  "toast": {
+    "updateAvailable": "עדכון זמין!",
+    "versionReady": "v{{version}} מוכן",
+    "upToDate": "אתה משתמש בגרסה האחרונה!",
+    "newOutdatedPackages_one": "נמצאה {{count}} חבילה מיושנת חדשה",
+    "newOutdatedPackages_other": "נמצאו {{count}} חבילות מיושנות חדשות",
+    "viewOutdated": "צפה במיושנים",
+    "newPackagesDiscovered": "🎉 חבילות חדשות התגלו! {{message}}",
+    "viewAllPackages": "צפה בכל החבילות",
+    "newFormulaeLabel": "נוסחאות חדשות:",
+    "newCasksLabel": "Casks חדשים:",
+    "andMore": "+{{count}} נוספים",
+    "newFormula_one": "נוסחה חדשה",
+    "newFormula_other": "נוסחאות חדשות",
+    "newCask_one": "cask חדש",
+    "newCask_other": "casks חדשים",
+    "and": " ו-"
+  },
+  "backgroundCheck": {
+    "checkingNow": "בודק עדכונים עכשיו...",
+    "nextCheckIn": "בדיקה הבאה בעוד {{minutes}}ד׳ {{seconds}}ש׳",
+    "nextCheckInSeconds": "בדיקה הבאה בעוד {{seconds}}ש׳"
+  },
+  "settings": {
+    "title": "הגדרות",
+    "subtitle": "הגדר את חווית ה-Homebrew שלך",
+    "loading": "טוען הגדרות...",
+    "footer": "הגדר את הגדרות WailBrew כדי להתאים אישית את חווית ה-Homebrew שלך.",
+    "categories": {
+      "general": "כללי"
+    },
+    "brewPath": {
+      "title": "הגדרת נתיב Homebrew",
+      "description": "ציין את הנתיב להתקנת Homebrew שלך. WailBrew ישתמש בנתיב זה להפעלת כל פקודות Homebrew.",
+      "currentPath": "נתיב Homebrew",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "זהה נתיב brew אוטומטית",
+      "currentlyUsing": "משתמש כעת ב:",
+      "note": "הערה: שינוי נתיב ה-brew ירענן את כל נתוני החבילות כדי לשקף את התקנת Homebrew החדשה."
+    },
+    "buttons": {
+      "save": "שמור שינויים",
+      "saving": "שומר...",
+      "reset": "איפוס"
+    },
+    "messages": {
+      "pathUpdated": "נתיב Brew עודכן בהצלחה!",
+      "pathReset": "הנתיב אופס לערך הנוכחי.",
+      "noChanges": "אין שינויים לשמירה.",
+      "pathDetected": "נתיב brew זוהה אוטומטית: {{path}}",
+      "mirrorSourceUpdated": "מקור המראה עודכן בהצלחה!",
+      "mirrorSourceReset": "מקור המראה אופס לערך הנוכחי.",
+      "outdatedFlagUpdated": "הגדרת דגל המיושנים עודכנה בהצלחה!",
+      "outdatedFlagReset": "דגל המיושנים אופס לערך הנוכחי.",
+      "caskAppDirUpdated": "תיקיית יישומי Cask עודכנה בהצלחה!",
+      "caskAppDirReset": "תיקיית יישומי Cask אופסה לערך הנוכחי.",
+      "customCaskOptsUpdated": "אפשרויות cask מותאמות עודכנו בהצלחה!",
+      "customOutdatedArgsUpdated": "ארגומנטים מותאמים למיושנים עודכנו בהצלחה!",
+      "adminUsernameUpdated": "שם משתמש מנהל עודכן בהצלחה!"
+    },
+    "errors": {
+      "failedToGetPath": "נכשל בקבלת נתיב brew הנוכחי.",
+      "emptyPath": "אנא הזן נתיב brew תקין.",
+      "invalidPath": "נתיב brew לא תקין. אנא ודא שהנתיב קיים ושהוא קובץ brew הפעלה תקין.",
+      "autoDetectionFailed": "לא ניתן לזהות אוטומטית את נתיב brew. אנא הזן את הנתיב ידנית.",
+      "failedToSetMirrorSource": "נכשל בהגדרת מקור המראה. אנא בדוק את ההגדרות.",
+      "failedToSetOutdatedFlag": "נכשל בהגדרת דגל המיושנים. אנא בדוק את ההגדרות.",
+      "failedToSetCaskAppDir": "נכשל בהגדרת תיקיית יישומי cask. אנא בדוק את ההגדרות.",
+      "failedToSelectDirectory": "נכשל בבחירת תיקייה.",
+      "failedToSetCustomCaskOpts": "נכשל בהגדרת אפשרויות cask מותאמות. אנא בדוק את הקלט.",
+      "failedToSetCustomOutdatedArgs": "נכשל בהגדרת ארגומנטים מותאמים למיושנים. אנא בדוק את הקלט.",
+      "failedToSetAdminUsername": "נכשל בעדכון שם משתמש מנהל"
+    },
+    "mirrorSource": {
+      "title": "מקור מראה של Homebrew",
+      "description": "החלף מקורות מראה של Homebrew כדי לשפר מהירויות הורדה באזורים עם בעיות רשת. זה מגדיר את משתני הסביבה HOMEBREW_GIT_REMOTE ו-HOMEBREW_BOTTLE_DOMAIN.",
+      "selectMirror": "בחר מקור מראה",
+      "custom": "מותאם אישית",
+      "customGitRemote": "כתובת Git Remote מותאמת",
+      "customBottleDomain": "כתובת Bottle Domain מותאמת",
+      "note": "הערה: שינוי מקור המראה ישפיע על כל פעולות Homebrew. הפעל מחדש את היישום או רענן חבילות לאחר השינוי.",
+      "mirrors": {
+        "official": "רשמי (ברירת מחדל)",
+        "tsinghua": "אוניברסיטת Tsinghua (סין)",
+        "aliyun": "Alibaba Cloud (סין)",
+        "ustc": "USTC (סין)",
+        "tencent": "Tencent Cloud (סין)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "זיהוי חבילות מיושנות",
+      "description": "הגדר כיצד WailBrew מזהה חבילות מיושנות. הגדרה זו קובעת אילו דגלים משמשים עם הפקודה 'brew outdated'.",
+      "selectFlag": "מצב זיהוי מיושנים",
+      "note": "הערה: שינוי הגדרה זו ירענן את רשימת החבילות המיושנות כדי לשקף את מצב הזיהוי החדש.",
+      "options": {
+        "none": "רגיל (ללא דגלים)",
+        "greedy": "חמדן",
+        "greedyAutoUpdates": "חמדן (עדכונים אוטומטיים)"
+      },
+      "descriptions": {
+        "none": "מציג רק חבילות שיש להן גרסאות חדשות יותר. זו התנהגות ברירת המחדל של Homebrew.",
+        "greedy": "כולל גם casks שיש להם גרסה זמינה אך מסומנים כמתעדכנים אוטומטית. שימושי לצפייה בכל העדכונים הזמינים.",
+        "greedyAutoUpdates": "כולל casks מתעדכנים אוטומטית שניתן לשדרג בפועל. זהו מצב הזיהוי המקיף ביותר."
+      }
+    },
+    "caskAppDir": {
+      "title": "תיקיית יישומי Cask",
+      "description": "הגדר את התיקייה בה מותקנים יישומי Homebrew Cask. זה מגדיר את משתנה הסביבה HOMEBREW_CASK_OPTS עם אפשרות --appdir.",
+      "currentDir": "תיקיית יישומים",
+      "placeholder": "/Applications/3rd-party",
+      "default": "ברירת מחדל (/Applications)",
+      "currentlyUsing": "משתמש כעת ב:",
+      "hint": "לחץ על סמל התיקייה כדי לבחור תיקייה. השאר ריק כדי להשתמש בתיקיית ברירת המחדל /Applications.",
+      "selectDirectory": "בחר תיקייה",
+      "newDirectory": "תיקייה חדשה",
+      "note": "הערה: שינוי הגדרה זו ישפיע על המקום בו התקנות ושדרוגי cask חדשים ימוקמו. התקנות קיימות לא מועברות אוטומטית."
+    },
+    "adminUsername": {
+      "title": "שם משתמש מנהל",
+      "description": "ציין חשבון מנהל חלופי לפעולות מורשות",
+      "label": "שם משתמש מנהל",
+      "placeholder": "הזן שם משתמש מנהל",
+      "currentUser": "משתמש נוכחי",
+      "info": "שם משתמש זה ישמש כאשר פעולות Homebrew דורשות הרשאות מנהל. השאר ריק כדי להשתמש בחשבון המשתמש הנוכחי שלך."
+    },
+    "advancedOptions": {
+      "title": "אפשרויות מתקדמות",
+      "subtitle": "למשתמשים מתקדמים",
+      "description": "הגדר אפשרויות נוספות לפקודות Homebrew ישירות. הגדרות אלו מאפשרות לך להעביר ארגומנטים ואפשרויות מותאמים לפקודות Homebrew.",
+      "warning": "⚠️ למשתמשים מתקדמים בלבד: אפשרויות שגויות עלולות לגרום לכשל בפקודות Homebrew. עיין בתיעוד Homebrew לאפשרויות תקינות.",
+      "none": "(ללא)",
+      "customCaskOpts": {
+        "label": "אפשרויות Cask מותאמות",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "דגלי HOMEBREW_CASK_OPTS נוספים. לדוגמה: --fontdir, --qlplugindir, --prefpanedir. אלו ימוזגו עם הגדרת --appdir שהוגדרה בממשק למעלה.",
+        "preview": "אפשרויות חדשות"
+      },
+      "customOutdatedArgs": {
+        "label": "ארגומנטים מותאמים למיושנים",
+        "placeholder": "--verbose --formula",
+        "hint": "ארגומנטים נוספים לפקודת 'brew outdated'. לדוגמה: --verbose, --formula, --cask. אלו יצורפו לדגל המיושנים שהוגדר בממשק למעלה.",
+        "preview": "ארגומנטים חדשים"
+      }
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 מתחיל עדכון עבור '{{name}}'...",
+      "success": "✅ העדכון עבור '{{name}}' הושלם בהצלחה!",
+      "failed": "❌ העדכון עבור '{{name}}' נכשל: {{error}}",
+      "retryingWithForce": "🔄 מנסה שוב לעדכן את '{{name}}' עם --force (היישום עשוי להיות בשימוש)...",
+      "retryingFailedCasks": "🔄 מנסה שוב {{count}} cask(s) שנכשלו עם --force..."
+    },
+    "updateAll": {
+      "start": "🔄 מתחיל עדכון עבור כל החבילות...",
+      "success": "✅ העדכון עבור כל החבילות הושלם בהצלחה!",
+      "failed": "❌ העדכון עבור כל החבילות נכשל: {{error}}"
+    },
+    "homebrewUpdate": {
+      "start": "🔄 מתחיל עדכון Homebrew...",
+      "success": "✅ עדכון Homebrew הושלם בהצלחה!",
+      "failed": "❌ עדכון Homebrew נכשל: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
+    "install": {
+      "start": "🔄 מתחיל התקנה עבור '{{name}}'...",
+      "success": "✅ ההתקנה עבור '{{name}}' הושלמה בהצלחה!",
+      "failed": "❌ ההתקנה עבור '{{name}}' נכשלה: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 מתחיל הסרה עבור '{{name}}'...",
+      "success": "✅ ההסרה עבור '{{name}}' הושלמה בהצלחה!",
+      "failed": "❌ ההסרה עבור '{{name}}' נכשלה: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 מתחיל הוספת מאגר עבור '{{name}}'...",
+      "success": "✅ הוספת מאגר עבור '{{name}}' הושלמה בהצלחה!",
+      "failed": "❌ הוספת מאגר עבור '{{name}}' נכשלה: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 מתחיל הסרת מאגר עבור '{{name}}'...",
+      "success": "✅ הסרת מאגר עבור '{{name}}' הושלמה בהצלחה!",
+      "failed": "❌ הסרת מאגר עבור '{{name}}' נכשלה: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ שגיאה ביצירת צינור פלט: {{error}}",
+      "creatingErrorPipe": "❌ שגיאה ביצירת צינור שגיאה: {{error}}",
+      "startingUpdate": "❌ שגיאה בהתחלת עדכון: {{error}}",
+      "startingUpdateAll": "❌ שגיאה בהתחלת עדכון כולל: {{error}}",
+      "startingInstall": "❌ שגיאה בהתחלת התקנה: {{error}}",
+      "startingUninstall": "❌ שגיאה בהתחלת הסרה: {{error}}",
+      "startingTap": "❌ שגיאה בהתחלת הוספת מאגר: {{error}}",
+      "startingUntap": "❌ שגיאה בהתחלת הסרת מאגר: {{error}}",
+      "startingHomebrewUpdate": "❌ שגיאה בהתחלת עדכון Homebrew: {{error}}"
+    }
+  }
+}
