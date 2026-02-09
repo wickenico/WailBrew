@@ -82,6 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         pt_BR: { flag: '🇧🇷', name: t('language.brazilian_portuguese') },
         ru: { flag: '🇷🇺', name: t('language.russian') },
         ko: { flag: '🇰🇷', name: t('language.korean') },
+        he: { flag: '🇮🇱', name: t('language.hebrew') },
     };
 
     return (
