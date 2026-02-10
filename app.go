@@ -424,6 +424,10 @@ func (a *App) GetAllBrewPackages() [][]string {
 	return a.brewService.GetAllBrewPackages()
 }
 
+func (a *App) GetAllBrewCasks() [][]string {
+	return a.brewService.GetAllBrewCasks()
+}
+
 func (a *App) GetBrewPackages() [][]string {
 	return a.brewService.GetBrewPackages()
 }

@@ -30,6 +30,10 @@ export function GetAdminUsername() {
   return window['go']['main']['App']['GetAdminUsername']();
 }
 
+export function GetAllBrewCasks() {
+  return window['go']['main']['App']['GetAllBrewCasks']();
+}
+
 export function GetAllBrewPackages() {
   return window['go']['main']['App']['GetAllBrewPackages']();
 }

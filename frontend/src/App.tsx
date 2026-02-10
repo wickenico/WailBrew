@@ -6,6 +6,7 @@ import {
     CheckForUpdates,
     CheckHomebrewUpdate,
     ClearBrewCache,
+    GetAllBrewCasks,
     GetAllBrewPackages,
     GetAppVersion,
     GetBrewCasks,
@@ -86,11 +87,14 @@ const WailBrewApp = () => {
     const [allPackages, setAllPackages] = useState<PackageEntry[]>([]);
     const [allPackagesLoaded, setAllPackagesLoaded] = useState<boolean>(false);
     const [loadingAllPackages, setLoadingAllPackages] = useState<boolean>(false);
+    const [allCasksAll, setAllCasksAll] = useState<PackageEntry[]>([]);
+    const [allCasksLoaded, setAllCasksLoaded] = useState<boolean>(false);
+    const [loadingAllCasks, setLoadingAllCasks] = useState<boolean>(false);
     const [leavesPackages, setLeavesPackages] = useState<PackageEntry[]>([]);
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
+    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -427,6 +431,14 @@ const WailBrewApp = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [view, allPackagesLoaded, loadingAllPackages]);
+
+    // Load all casks when user switches to "allCasks" view
+    useEffect(() => {
+        if (view === "allCasks" && !allCasksLoaded && !loadingAllCasks) {
+            loadAllCasks();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [view, allCasksLoaded, loadingAllCasks]);
 
     // Update Dock badge when updatable packages count changes
     useEffect(() => {
@@ -806,7 +818,7 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         const unlisten = EventsOn("setView", (data: string) => {
-            setView(data as "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
+            setView(data as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
             clearSelection();
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {
@@ -1042,6 +1054,8 @@ const WailBrewApp = () => {
                 return updatablePackages;
             case "all":
                 return allPackages;
+            case "allCasks":
+                return allCasksAll;
             case "leaves":
                 return leavesPackages;
             default:
@@ -1783,6 +1797,40 @@ const WailBrewApp = () => {
         }
     };
 
+    // Function to load all casks (lazy loaded)
+    const loadAllCasks = async () => {
+        if (loadingAllCasks) return; // Prevent duplicate loads
+
+        setLoadingAllCasks(true);
+        try {
+            const all = await GetAllBrewCasks();
+            const safeAll = all || [];
+
+            if (safeAll.length === 1 && safeAll[0][0] === "Error") {
+                setError(`${t('errors.failedAllCasks')}: ${safeAll[0][1]}`);
+                setAllCasksAll([]);
+                setAllCasksLoaded(false);
+            } else {
+                const installedNames = new Set(casks.map(pkg => pkg.name));
+                const formatted = safeAll.map(([name, desc, size]) => ({
+                    name,
+                    installedVersion: "",
+                    desc,
+                    size,
+                    isInstalled: installedNames.has(name),
+                }));
+                setAllCasksAll(formatted);
+                setAllCasksLoaded(true);
+            }
+        } catch (err) {
+            console.error("Error loading all casks:", err);
+            setAllCasksAll([]);
+            setAllCasksLoaded(false);
+        } finally {
+            setLoadingAllCasks(false);
+        }
+    };
+
     const handleRefreshPackages = async () => {
         setLoading(true);
         setError("");
@@ -1793,6 +1841,8 @@ const WailBrewApp = () => {
         setUpdatablePackages([]);
         setAllPackages([]);
         setAllPackagesLoaded(false);
+        setAllCasksAll([]);
+        setAllCasksLoaded(false);
         setLeavesPackages([]);
         setRepositories([]);
 
@@ -1958,6 +2008,7 @@ const WailBrewApp = () => {
                 casksCount={casks.length}
                 updatableCount={updatablePackages.length}
                 allCount={allPackagesLoaded ? allPackages.length : -1}
+                allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
                 leavesCount={leavesPackages.length}
                 repositoriesCount={repositories.length}
                 onClearSelection={clearSelection}
@@ -2207,6 +2258,50 @@ const WailBrewApp = () => {
                             </div>
                             <div className="package-footer">
                                 {t('footers.allFormulas')}
+                            </div>
+                        </div>
+                    </>
+                )}
+                {view === "allCasks" && (
+                    <>
+                        <HeaderRow
+                            title={t('headers.allCasks', { count: allCasksAll.length })}
+                            actions={
+                                <button
+                                    className="refresh-button"
+                                    onClick={loadAllCasks}
+                                    disabled={loadingAllCasks}
+                                    title={t('buttons.refresh')}
+                                >
+                                    <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
+                                </button>
+                            }
+                            searchQuery={searchQuery}
+                            onSearchChange={setSearchQuery}
+                            onClearSearch={() => setSearchQuery("")}
+                        />
+                        {error && <div className="result error">{error}</div>}
+                        <PackageTable
+                            ref={view === "allCasks" ? packageTableRef : null}
+                            packages={filteredPackages}
+                            selectedPackage={selectedPackage}
+                            loading={loading || loadingAllCasks}
+                            onSelect={handleSelect}
+                            columns={columnsAll}
+                            onShowInfo={handleShowInfoLogs}
+                            onInstall={handleInstallPackage}
+                        />
+                        <div className="info-footer-container">
+                            <div className="package-info">
+                                <PackageInfo
+                                    packageEntry={selectedPackage}
+                                    loadingDetailsFor={loadingDetailsFor}
+                                    view={view}
+                                    onSelectDependency={handleSelectDependency}
+                                />
+                            </div>
+                            <div className="package-footer">
+                                {t('footers.allCasks')}
                             </div>
                         </div>
                     </>
@@ -2569,7 +2664,7 @@ const WailBrewApp = () => {
                         }
                     }}
                     onNavigateToView={(view) => {
-                        setView(view as "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
+                        setView(view as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
                     }}
                 />
                 <Toaster

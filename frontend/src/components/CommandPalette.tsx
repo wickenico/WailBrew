@@ -10,7 +10,7 @@ interface CommandPaletteProps {
     repositories: Array<{ name: string; desc?: string }>;
     onSelectPackage: (pkg: { name: string; installedVersion?: string; desc?: string; isInstalled?: boolean; latestVersion?: string; size?: string; homepage?: string; dependencies?: string[]; conflicts?: string[]; warning?: string }) => void;
     onSelectRepository: (repo: { name: string; desc?: string }) => void;
-    onNavigateToView: (view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
+    onNavigateToView: (view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
 }
 
 interface CommandItem {
@@ -87,15 +87,15 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                 },
             });
         }
-        if (lowerQuery.length === 0 || 'all'.includes(lowerQuery) || t('sidebar.all').toLowerCase().includes(lowerQuery)) {
+        if (lowerQuery.length === 0 || 'leaves'.includes(lowerQuery) || t('sidebar.leaves').toLowerCase().includes(lowerQuery)) {
             items.push({
-                id: 'view-all',
+                id: 'view-leaves',
                 type: 'view',
-                title: t('sidebar.all'),
+                title: t('sidebar.leaves'),
                 subtitle: `${cmdKey}4`,
-                icon: <Database size={16} />,
+                icon: <Package size={16} />,
                 action: () => {
-                    onNavigateToView('all');
+                    onNavigateToView('leaves');
                     onClose();
                 },
             });
@@ -105,10 +105,36 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                 id: 'view-repositories',
                 type: 'view',
                 title: t('sidebar.repositories'),
-                subtitle: `${cmdKey}6`,
+                subtitle: `${cmdKey}5`,
                 icon: <Database size={16} />,
                 action: () => {
                     onNavigateToView('repositories');
+                    onClose();
+                },
+            });
+        }
+        if (lowerQuery.length === 0 || 'all'.includes(lowerQuery) || 'formulae'.includes(lowerQuery) || t('sidebar.allFormulae').toLowerCase().includes(lowerQuery)) {
+            items.push({
+                id: 'view-all',
+                type: 'view',
+                title: t('sidebar.allFormulae'),
+                subtitle: `${cmdKey}6`,
+                icon: <Database size={16} />,
+                action: () => {
+                    onNavigateToView('all');
+                    onClose();
+                },
+            });
+        }
+        if (lowerQuery.length === 0 || 'all casks'.includes(lowerQuery) || t('sidebar.allCasks').toLowerCase().includes(lowerQuery)) {
+            items.push({
+                id: 'view-allCasks',
+                type: 'view',
+                title: t('sidebar.allCasks'),
+                subtitle: `${cmdKey}7`,
+                icon: <Box size={16} />,
+                action: () => {
+                    onNavigateToView('allCasks');
                     onClose();
                 },
             });
@@ -118,7 +144,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                 id: 'view-homebrew',
                 type: 'view',
                 title: t('sidebar.homebrew'),
-                subtitle: `${cmdKey}7`,
+                subtitle: `${cmdKey}8`,
                 icon: <Home size={16} />,
                 action: () => {
                     onNavigateToView('homebrew');
@@ -131,7 +157,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                 id: 'view-doctor',
                 type: 'view',
                 title: t('sidebar.doctor'),
-                subtitle: `${cmdKey}8`,
+                subtitle: `${cmdKey}9`,
                 icon: <Stethoscope size={16} />,
                 action: () => {
                     onNavigateToView('doctor');
@@ -144,7 +170,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                 id: 'view-cleanup',
                 type: 'view',
                 title: t('sidebar.cleanup'),
-                subtitle: `${cmdKey}9`,
+                subtitle: `${cmdKey}0`,
                 icon: <Trash2 size={16} />,
                 action: () => {
                     onNavigateToView('cleanup');

@@ -20,6 +20,7 @@ type Service interface {
 
 	// Package listing
 	GetAllBrewPackages() [][]string
+	GetAllBrewCasks() [][]string
 	GetBrewPackages() [][]string
 	GetBrewCasks() [][]string
 	GetBrewLeaves() []string
@@ -200,6 +201,10 @@ func (s *serviceImpl) ClearCache() {
 // Package listing methods
 func (s *serviceImpl) GetAllBrewPackages() [][]string {
 	return s.listService.GetAllBrewPackages()
+}
+
+func (s *serviceImpl) GetAllBrewCasks() [][]string {
+	return s.listService.GetAllBrewCasks()
 }
 
 func (s *serviceImpl) GetBrewPackages() [][]string {

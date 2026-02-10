@@ -82,23 +82,27 @@ func Build(app AppInterface) *menu.Menu {
 	ViewMenu.AddText(getT("menu.view.outdated"), keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "updatable")
 	})
-	ViewMenu.AddText(getT("menu.view.all"), keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "all")
-	})
-	ViewMenu.AddText(getT("menu.view.leaves"), keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(getT("menu.view.leaves"), keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "leaves")
 	})
-	ViewMenu.AddText(getT("menu.view.repositories"), keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(getT("menu.view.repositories"), keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "repositories")
 	})
 	ViewMenu.AddSeparator()
-	ViewMenu.AddText(getT("menu.view.homebrew"), keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(getT("menu.view.allFormulae"), keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(getCtx(), "setView", "all")
+	})
+	ViewMenu.AddText(getT("menu.view.allCasks"), keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(getCtx(), "setView", "allCasks")
+	})
+	ViewMenu.AddSeparator()
+	ViewMenu.AddText(getT("menu.view.homebrew"), keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "homebrew")
 	})
-	ViewMenu.AddText(getT("menu.view.doctor"), keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(getT("menu.view.doctor"), keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "doctor")
 	})
-	ViewMenu.AddText(getT("menu.view.cleanup"), keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
+	ViewMenu.AddText(getT("menu.view.cleanup"), keys.CmdOrCtrl("0"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "cleanup")
 	})
 

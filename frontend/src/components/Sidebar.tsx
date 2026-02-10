@@ -8,12 +8,13 @@ import { mapToSupportedLanguage } from "../i18n/languageUtils";
 import ThemeToggle from "./ThemeToggle";
 
 interface SidebarProps {
-    view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings";
-    setView: (view: "installed" | "casks" | "updatable" | "all" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
+    view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings";
+    setView: (view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
     packagesCount: number;
     casksCount: number;
     updatableCount: number;
     allCount: number;
+    allCasksCount: number;
     leavesCount: number;
     repositoriesCount: number;
     onClearSelection: () => void;
@@ -31,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     casksCount,
     updatableCount,
     allCount,
+    allCasksCount,
     leavesCount,
     repositoriesCount,
     onClearSelection,
@@ -147,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     )}
                 </div>
             <div className="sidebar-section">
-                <h4>{t('sidebar.formulas')}</h4>
+                <h4>{t('sidebar.packages')}</h4>
                 <ul>
                     <li className={view === "installed" ? "active" : ""} onClick={() => { setView("installed"); onClearSelection(); }}>
                         <span className="sidebar-shortcut">{cmdKey}1</span>
@@ -164,20 +166,30 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <span>🔄 {t('sidebar.outdated')}</span>
                         <span className="badge">{updatableCount}</span>
                     </li>
-                    <li className={view === "all" ? "active" : ""} onClick={() => { setView("all"); onClearSelection(); }}>
-                        <span className="sidebar-shortcut">{cmdKey}4</span>
-                        <span>📚 {t('sidebar.all')}</span>
-                        <span className="badge">{allCount === -1 ? "—" : allCount}</span>
-                    </li>
                     <li className={view === "leaves" ? "active" : ""} onClick={() => { setView("leaves"); onClearSelection(); }}>
-                        <span className="sidebar-shortcut">{cmdKey}5</span>
+                        <span className="sidebar-shortcut">{cmdKey}4</span>
                         <span>🍃 {t('sidebar.leaves')}</span>
                         <span className="badge">{leavesCount}</span>
                     </li>
                     <li className={view === "repositories" ? "active" : ""} onClick={() => { setView("repositories"); onClearSelection(); }}>
-                        <span className="sidebar-shortcut">{cmdKey}6</span>
+                        <span className="sidebar-shortcut">{cmdKey}5</span>
                         <span>📂 {t('sidebar.repositories')}</span>
                         <span className="badge">{repositoriesCount}</span>
+                    </li>
+                </ul>
+            </div>
+            <div className="sidebar-section">
+                <h4>{t('sidebar.browseInstall')}</h4>
+                <ul>
+                    <li className={view === "all" ? "active" : ""} onClick={() => { setView("all"); onClearSelection(); }}>
+                        <span className="sidebar-shortcut">{cmdKey}6</span>
+                        <span>📚 {t('sidebar.allFormulae')}</span>
+                        <span className="badge">{allCount === -1 ? "—" : allCount}</span>
+                    </li>
+                    <li className={view === "allCasks" ? "active" : ""} onClick={() => { setView("allCasks"); onClearSelection(); }}>
+                        <span className="sidebar-shortcut">{cmdKey}7</span>
+                        <span>🖥️ {t('sidebar.allCasks')}</span>
+                        <span className="badge">{allCasksCount === -1 ? "—" : allCasksCount}</span>
                     </li>
                 </ul>
             </div>
@@ -185,15 +197,15 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <h4>{t('sidebar.tools')}</h4>
                 <ul>
                     <li className={view === "homebrew" ? "active" : ""} onClick={() => { setView("homebrew"); onClearSelection(); }}>
-                        <span className="sidebar-shortcut">{cmdKey}7</span>
+                        <span className="sidebar-shortcut">{cmdKey}8</span>
                         <span>🍺 {t('sidebar.homebrew')}</span>
                     </li>
                     <li className={view === "doctor" ? "active" : ""} onClick={() => { setView("doctor"); onClearSelection(); }}>
-                        <span className="sidebar-shortcut">{cmdKey}8</span>
+                        <span className="sidebar-shortcut">{cmdKey}9</span>
                         <span>🩺 {t('sidebar.doctor')}</span>
                     </li>
                     <li className={view === "cleanup" ? "active" : ""} onClick={() => { setView("cleanup"); onClearSelection(); }}>
-                        <span className="sidebar-shortcut">{cmdKey}9</span>
+                        <span className="sidebar-shortcut">{cmdKey}0</span>
                         <span>🧹 {t('sidebar.cleanup')}</span>
                     </li>
                 </ul>

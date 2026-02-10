@@ -223,6 +223,30 @@ func (s *ListService) GetBrewCasks() [][]string {
 	return casks
 }
 
+// GetAllBrewCasks retrieves all available brew casks
+func (s *ListService) GetAllBrewCasks() [][]string {
+	output, err := s.executor.Run("casks")
+	if err != nil {
+		return [][]string{{"Error", fmt.Sprintf("Failed to fetch all casks: %v. This often happens on fresh Homebrew installations. Try refreshing after a few minutes.", err)}}
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return [][]string{}
+	}
+
+	lines := strings.Split(outputStr, "\n")
+	var results [][]string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			results = append(results, []string{line, "", ""})
+		}
+	}
+
+	return results
+}
+
 // GetBrewLeaves retrieves the list of leaf packages
 func (s *ListService) GetBrewLeaves() []string {
 	output, err := s.executor.Run("leaves")

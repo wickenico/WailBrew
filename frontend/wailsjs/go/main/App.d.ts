@@ -18,6 +18,8 @@ export function ExportBrewfile(arg1:string):Promise<void>;
 
 export function GetAdminUsername():Promise<string>;
 
+export function GetAllBrewCasks():Promise<Array<any>>;
+
 export function GetAllBrewPackages():Promise<Array<any>>;
 
 export function GetAppVersion():Promise<string>;
