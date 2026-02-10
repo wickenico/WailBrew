@@ -39,6 +39,8 @@ const explicitMappings: Record<string, SupportedLanguage> = {
   "ko-KR": "ko",
   he: "he",
   "he-IL": "he",
+  iw: "he",
+  "iw-IL": "he",
 };
 
 export function mapToSupportedLanguage(
