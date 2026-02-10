@@ -41,6 +41,7 @@ const explicitMappings: Record<string, SupportedLanguage> = {
   "he-IL": "he",
   iw: "he",
   "iw-IL": "he",
+  "iw_IL": "he",
 };
 
 export function mapToSupportedLanguage(
