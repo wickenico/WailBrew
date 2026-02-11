@@ -125,7 +125,7 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                             <h4>{t('about.translationTitle')}</h4>
                             <p>{t('about.translationThanks')}</p>
                             <p className="about-contributors">
-                                egesucu, ultrazg, viniciusmi00, appleboy, moseoh
+                                egesucu, ultrazg, viniciusmi00, appleboy, moseoh, EliShteinman
                             </p>
                             <p style={{ marginTop: '12px' }}>
                                 <span 
