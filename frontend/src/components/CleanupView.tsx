@@ -6,11 +6,12 @@ interface CleanupViewProps {
     cleanupLog: string;
     cleanupEstimate: string;
     onClearLog: () => void;
+    onRunDryRun: () => void;
     onRunCleanup: () => void;
     onCheckEstimate: () => void;
 }
 
-const CleanupView: React.FC<CleanupViewProps> = ({ cleanupLog, cleanupEstimate, onClearLog, onRunCleanup, onCheckEstimate }) => {
+const CleanupView: React.FC<CleanupViewProps> = ({ cleanupLog, cleanupEstimate, onClearLog, onRunDryRun, onRunCleanup, onCheckEstimate }) => {
     const { t } = useTranslation();
     
     // Check estimate when component mounts
@@ -47,6 +48,9 @@ const CleanupView: React.FC<CleanupViewProps> = ({ cleanupLog, cleanupEstimate, 
                 <div className="header-actions">
                     <button className="doctor-button" onClick={onClearLog}>
                         {t('buttons.clearLog')}
+                    </button>
+                    <button className="doctor-button" onClick={onRunDryRun}>
+                        {t('buttons.runDryRun')}
                     </button>
                     <button className="doctor-button" onClick={onRunCleanup}>
                         {t('buttons.runCleanup')}

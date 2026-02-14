@@ -190,6 +190,10 @@ export function RunBrewCleanup() {
   return window['go']['main']['App']['RunBrewCleanup']();
 }
 
+export function RunBrewCleanupDryRun() {
+  return window['go']['main']['App']['RunBrewCleanupDryRun']();
+}
+
 export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
 }

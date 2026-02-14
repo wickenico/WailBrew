@@ -25,6 +25,7 @@ import {
     InstallBrewPackage,
     RemoveBrewPackage,
     RunBrewCleanup,
+    RunBrewCleanupDryRun,
     RunBrewDoctor,
     SetDockBadgeCount,
     SetDockBadgeCountSync,
@@ -2448,6 +2449,18 @@ const WailBrewApp = () => {
                         cleanupLog={cleanupLog}
                         cleanupEstimate={cleanupEstimate}
                         onClearLog={() => setCleanupLog("")}
+                        onRunDryRun={async () => {
+                            setCleanupLog(t('dialogs.runningDryRun'));
+                            const result = await RunBrewCleanupDryRun();
+                            setCleanupLog(result);
+                            // Refresh estimate after dry run
+                            try {
+                                const estimate = await GetBrewCleanupDryRun();
+                                setCleanupEstimate(estimate);
+                            } catch (error) {
+                                console.error("Failed to get cleanup estimate:", error);
+                            }
+                        }}
                         onRunCleanup={async () => {
                             setCleanupLog(t('dialogs.runningCleanup'));
                             const result = await RunBrewCleanup();

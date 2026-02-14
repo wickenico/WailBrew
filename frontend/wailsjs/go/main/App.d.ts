@@ -98,6 +98,8 @@ export function RestartApp():Promise<void>;
 
 export function RunBrewCleanup():Promise<string>;
 
+export function RunBrewCleanupDryRun():Promise<string>;
+
 export function RunBrewDoctor():Promise<string>;
 
 export function SelectCaskAppDir():Promise<string>;

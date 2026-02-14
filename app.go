@@ -578,6 +578,10 @@ func (a *App) GetBrewCleanupDryRun() (string, error) {
 	return a.brewService.GetBrewCleanupDryRun()
 }
 
+func (a *App) RunBrewCleanupDryRun() string {
+	return a.brewService.RunBrewCleanupDryRun()
+}
+
 func (a *App) RunBrewCleanup() string {
 	return a.brewService.RunBrewCleanup()
 }

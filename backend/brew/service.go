@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"time"
 )
 
 // Service provides a high-level interface for brew operations
@@ -62,6 +63,7 @@ type Service interface {
 	RunBrewDoctor() string
 	GetDeprecatedFormulae(doctorOutput string) []string
 	GetBrewCleanupDryRun() (string, error)
+	RunBrewCleanupDryRun() string
 	RunBrewCleanup() string
 	GetHomebrewVersion() (string, error)
 	CheckHomebrewUpdate() (map[string]interface{}, error)
@@ -418,8 +420,10 @@ func (s *serviceImpl) GetDeprecatedFormulae(doctorOutput string) []string {
 }
 
 func (s *serviceImpl) GetBrewCleanupDryRun() (string, error) {
-	output, err := s.executor.Run("cleanup", "--dry-run")
-	if err != nil {
+	output, err := s.executor.RunWithTimeout(120*time.Second, "cleanup", "--dry-run")
+	// Don't discard output on error — brew cleanup --dry-run often exits non-zero
+	// due to warnings but still produces valid output with the summary line.
+	if err != nil && len(output) == 0 {
 		return "", fmt.Errorf("failed to run brew cleanup --dry-run: %w", err)
 	}
 
@@ -427,7 +431,7 @@ func (s *serviceImpl) GetBrewCleanupDryRun() (string, error) {
 	lines := strings.Split(outputStr, "\n")
 	for _, line := range lines {
 		if strings.Contains(line, "would free approximately") {
-			re := regexp.MustCompile(`approximately ([\d.]+(MB|GB|KB|B))`)
+			re := regexp.MustCompile(`approximately ([\d.]+\s*(MB|GB|KB|B))`)
 			matches := re.FindStringSubmatch(line)
 			if len(matches) > 1 {
 				return matches[1], nil
@@ -436,6 +440,14 @@ func (s *serviceImpl) GetBrewCleanupDryRun() (string, error) {
 	}
 
 	return "0B", nil
+}
+
+func (s *serviceImpl) RunBrewCleanupDryRun() string {
+	output, err := s.executor.RunWithTimeout(120*time.Second, "cleanup", "--dry-run")
+	if err != nil {
+		return fmt.Sprintf("Error running brew cleanup --dry-run: %v\n\nOutput:\n%s", err, string(output))
+	}
+	return string(output)
 }
 
 func (s *serviceImpl) RunBrewCleanup() string {
