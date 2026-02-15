@@ -2,6 +2,7 @@
 
 [![Latest Release](https://img.shields.io/github/v/release/wickenico/WailBrew)](https://github.com/wickenico/WailBrew/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/wickenico/WailBrew/total)](https://github.com/wickenico/WailBrew/releases)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-pink)](https://github.com/sponsors/wickenico)
 
 ## 🍺 About
 
@@ -74,6 +75,12 @@ If you wish to contribute by translating WailBrew to your language, feel free to
 - <a href="https://www.apfeltalk.de/magazin/news/dieser-neue-texteditor-koennte-nano-auf-linux-und-macos-abloesen/" target="_blank" rel="noopener noreferrer">Apfeltalk</a>
 - <a href="https://www.macgadget.de/index.php/News/2025/10/24/Ticker-Guenstige-Aqara-Sicherheitskamera-mit-HomeKit-Steinberg-und-macOS-26-FRITZOS" target="_blank" rel="noopener noreferrer">Mac Gadget</a>
 - <a href="https://macked.app/wailbrew-homebrew.html" target="_blank" rel="noopener noreferrer">Macked</a>
+
+## ❤️ Sponsor
+
+If WailBrew helps you, consider supporting ongoing development:
+
+- [GitHub Sponsors](https://github.com/sponsors/wickenico)
 
 ## 🛠️ Contributing
 
