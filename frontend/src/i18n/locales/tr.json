@@ -148,6 +148,7 @@
     "last30Days": "Son 30 Gün",
     "last90Days": "Son 90 Gün",
     "last365Days": "Son 365 Gün",
+    "brewPage": "Homebrew Sayfası",
     "loadingAnalytics": "İstatistikler yükleniyor..."
   },
   "tableColumns": {

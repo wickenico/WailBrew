@@ -35,6 +35,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const [isHomepageHovered, setIsHomepageHovered] = useState(false);
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loadingAnalytics, setLoadingAnalytics] = useState(false);
+    const [brewPageUrl, setBrewPageUrl] = useState<string | null>(null);
 
     const name = packageEntry?.name || t('common.notAvailable');
     const desc = packageEntry?.desc || t('common.notAvailable');
@@ -58,6 +59,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     useEffect(() => {
         if (!packageEntry?.name) {
             setAnalytics(null);
+            setBrewPageUrl(null);
             return;
         }
 
@@ -66,25 +68,34 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             try {
                 // Try formula first, then cask if formula fails
                 let response = await fetch(`https://formulae.brew.sh/api/formula/${packageEntry.name}.json`);
-
-                if (!response.ok) {
-                    // Try cask API
-                    response = await fetch(`https://formulae.brew.sh/api/cask/${packageEntry.name}.json`);
-                }
+                let packageType: "formula" | "cask" | null = null;
 
                 if (response.ok) {
+                    packageType = "formula";
+                } else {
+                    // Try cask API
+                    response = await fetch(`https://formulae.brew.sh/api/cask/${packageEntry.name}.json`);
+                    if (response.ok) {
+                        packageType = "cask";
+                    }
+                }
+
+                if (response.ok && packageType) {
                     const data = await response.json();
                     if (data.analytics?.install) {
                         setAnalytics(data.analytics);
                     } else {
                         setAnalytics(null);
                     }
+                    setBrewPageUrl(`https://formulae.brew.sh/${packageType}/${packageEntry.name}`);
                 } else {
                     setAnalytics(null);
+                    setBrewPageUrl(null);
                 }
             } catch (error) {
                 console.error('Failed to fetch analytics:', error);
                 setAnalytics(null);
+                setBrewPageUrl(null);
             } finally {
                 setLoadingAnalytics(false);
             }
@@ -129,6 +140,20 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                         </span>
                     ) : (
                         <span>{homepage}</span>
+                    )}
+                </p>
+                <p>
+                    {t('packageInfo.brewPage')}:{" "}
+                    {brewPageUrl ? (
+                        <span
+                            onClick={() => BrowserOpenURL(brewPageUrl)}
+                            className="text-link"
+                            title={brewPageUrl}
+                        >
+                            {brewPageUrl}
+                        </span>
+                    ) : (
+                        <span>{t('common.notAvailable')}</span>
                     )}
                 </p>
                 {view === "all" ? (

@@ -148,6 +148,7 @@
     "last30Days": "最近 30 天",
     "last90Days": "最近 90 天",
     "last365Days": "最近 365 天",
+    "brewPage": "Homebrew 页面",
     "loadingAnalytics": "加载统计数据..."
   },
   "tableColumns": {

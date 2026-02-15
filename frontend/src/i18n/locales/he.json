@@ -148,6 +148,7 @@
     "last30Days": "30 ימים אחרונים",
     "last90Days": "90 ימים אחרונים",
     "last365Days": "365 ימים אחרונים",
+    "brewPage": "דף Homebrew",
     "loadingAnalytics": "טוען סטטיסטיקות..."
   },
   "tableColumns": {

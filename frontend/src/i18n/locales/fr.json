@@ -148,6 +148,7 @@
     "last30Days": "30 derniers jours",
     "last90Days": "90 derniers jours",
     "last365Days": "365 derniers jours",
+    "brewPage": "Page Homebrew",
     "loadingAnalytics": "Chargement des statistiques..."
   },
   "tableColumns": {

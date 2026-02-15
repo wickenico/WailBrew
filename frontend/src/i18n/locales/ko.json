@@ -148,6 +148,7 @@
     "last30Days": "최근 30일",
     "last90Days": "최근 90일",
     "last365Days": "최근 365일",
+    "brewPage": "Homebrew 페이지",
     "loadingAnalytics": "통계 로딩 중..."
   },
   "tableColumns": {
