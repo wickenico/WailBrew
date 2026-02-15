@@ -273,6 +273,7 @@ body {
   justify-content: center;
   gap: 4px;
   font-size: 11px;
+  line-height: 1;
   color: var(--text-secondary);
   cursor: pointer;
   margin-bottom: 12px;
@@ -294,6 +295,11 @@ body {
 }
 
 .sidebar-sponsor svg {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  position: relative;
+  top: -1px;
   transition: all 0.2s ease;
 }
 
