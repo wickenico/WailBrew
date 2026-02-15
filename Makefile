@@ -4,7 +4,7 @@ VERSION := $(shell ./get-version.js)
 GOPATH ?= $(shell go env GOPATH)
 WAILS := $(shell command -v wails 2> /dev/null || echo $(GOPATH)/bin/wails)
 
-.PHONY: build dev clean
+.PHONY: build dev clean bump
 
 i:
 	cd frontend && pnpm install
@@ -20,6 +20,19 @@ build-universal:
 
 dev:
 	$(WAILS) dev
+
+bump:
+	@CURRENT=$$(grep '"version"' frontend/package.json | head -1 | sed 's/.*"\([0-9]*\.[0-9]*\.[0-9]*\)".*/\1/'); \
+	MAJOR=$$(echo $$CURRENT | cut -d. -f1); \
+	MINOR=$$(echo $$CURRENT | cut -d. -f2); \
+	PATCH=$$(echo $$CURRENT | cut -d. -f3); \
+	NEW_PATCH=$$((PATCH + 1)); \
+	NEW_VERSION="$$MAJOR.$$MINOR.$$NEW_PATCH"; \
+	echo "Bumping version: $$CURRENT -> $$NEW_VERSION"; \
+	sed -i '' "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" frontend/package.json; \
+	sed -i '' "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" wails.json; \
+	sed -i '' "s/\"productVersion\": \"$$CURRENT\"/\"productVersion\": \"$$NEW_VERSION\"/g" wails.json; \
+	echo "Updated frontend/package.json and wails.json to $$NEW_VERSION"
 
 clean:
 	rm -rf build/
