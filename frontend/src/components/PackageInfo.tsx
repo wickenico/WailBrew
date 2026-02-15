@@ -13,6 +13,7 @@ interface PackageEntry {
     dependencies?: string[];
     conflicts?: string[];
     isInstalled?: boolean;
+    isCask?: boolean;
 }
 
 interface PackageInfoProps {

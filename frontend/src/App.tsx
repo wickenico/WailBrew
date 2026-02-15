@@ -72,6 +72,7 @@ interface PackageEntry {
     conflicts?: string[];
     isInstalled?: boolean;
     warning?: string;
+    isCask?: boolean;
 }
 
 interface RepositoryEntry {
@@ -236,13 +237,14 @@ const WailBrewApp = () => {
                     size,
                     isInstalled: true,
                 }));
-                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning]) => ({
+                const updatableFormatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                     size,
                     isInstalled: true,
                     warning: warning || undefined,
+                    isCask: type === "cask",
                 }));
                 // Format leaves packages with their versions and sizes from installed packages
                 const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, { installedVersion: pkg.installedVersion, size: pkg.size }]));
@@ -482,12 +484,14 @@ const WailBrewApp = () => {
                 const newPackagesCount = currentCount - previousCount;
 
                 // Update the state
-                const formatted = updatable.map(([name, installedVersion, latestVersion, size]) => ({
+                const formatted = updatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                     size,
                     isInstalled: true,
+                    warning: warning || undefined,
+                    isCask: type === "cask",
                 }));
                 setUpdatablePackages(formatted);
 
@@ -1203,11 +1207,14 @@ const WailBrewApp = () => {
             // Clear cache and update the package list after successful update
             await ClearBrewCache();
             const updated = await GetBrewUpdatablePackages();
-            const formatted = updated.map(([name, installedVersion, latestVersion]) => ({
+            const formatted = updated.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                 name,
                 installedVersion,
                 latestVersion,
+                size,
                 isInstalled: true,
+                warning: warning || undefined,
+                isCask: type === "cask",
             }));
             setUpdatablePackages(formatted);
             setIsUpdateRunning(false);
@@ -1911,13 +1918,14 @@ const WailBrewApp = () => {
             if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
                 setUpdatablePackages([]);
             } else {
-                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning]) => ({
+                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                     name,
                     installedVersion,
                     latestVersion,
                     size,
                     isInstalled: true,
                     warning: warning || undefined,
+                    isCask: type === "cask",
                 }));
                 setUpdatablePackages(formatted);
             }

@@ -140,8 +140,9 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 			formula.Name,
 			installedVersion,
 			formula.CurrentVersion,
-			"",      // size placeholder, will be filled below
-			warning, // warning message
+			"",        // size placeholder, will be filled below
+			warning,   // warning message
+			"formula", // package type
 		})
 	}
 
@@ -166,6 +167,7 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 			cask.CurrentVersion,
 			"",      // size placeholder, will be filled below
 			warning, // warning message
+			"cask",  // package type
 		})
 	}
 

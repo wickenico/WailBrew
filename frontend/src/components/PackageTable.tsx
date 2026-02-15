@@ -13,6 +13,7 @@ interface PackageEntry {
     conflicts?: string[];
     isInstalled?: boolean;
     warning?: string;
+    isCask?: boolean;
 }
 
 interface PackageTableProps {
@@ -254,23 +255,37 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                 </span>
                 : <span className="status-not-installed">{t('table.notInstalledStatus')}</span>;
         }
-        if (col.key === "name" && pkg.warning) {
-            return (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                    <span>{pkg.name}</span>
-                    <span
-                        className="warning-icon-wrapper"
-                        title={pkg.warning}
-                        style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            cursor: "help",
-                        }}
-                    >
-                        <TriangleAlert size={16} className="warning-icon" />
-                    </span>
-                </div>
-            );
+        if (col.key === "name") {
+            const typeIcon = pkg.isCask !== undefined ? (
+                <span
+                    title={pkg.isCask ? "Cask" : "Formula"}
+                    style={{ display: "inline-flex", alignItems: "center", fontSize: "14px", flexShrink: 0 }}
+                >
+                    {pkg.isCask ? "🖥️" : "📦"}
+                </span>
+            ) : null;
+            if (pkg.warning || typeIcon) {
+                return (
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        {typeIcon}
+                        <span>{pkg.name}</span>
+                        {pkg.warning && (
+                            <span
+                                className="warning-icon-wrapper"
+                                title={pkg.warning}
+                                style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    cursor: "help",
+                                }}
+                            >
+                                <TriangleAlert size={16} className="warning-icon" />
+                            </span>
+                        )}
+                    </div>
+                );
+            }
+            return pkg.name;
         }
         return (pkg as any)[col.key];
     };
