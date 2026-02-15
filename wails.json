@@ -2,7 +2,7 @@
   "$schema": "https://wails.io/schemas/config.v2.json",
   "name": "WailBrew",
   "outputfilename": "WailBrew",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "frontend:install": "pnpm install",
   "frontend:build": "pnpm run build",
   "frontend:dev:watcher": "pnpm run dev",
@@ -13,7 +13,7 @@
   },
   "info": {
     "productName": "WailBrew",
-    "productVersion": "0.9.12"
+    "productVersion": "0.9.13"
   },
   "assets": {
     "include": ["frontend/src/i18n/locales/*.json"]
