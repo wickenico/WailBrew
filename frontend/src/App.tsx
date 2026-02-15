@@ -153,10 +153,8 @@ const WailBrewApp = () => {
 
     // Background update checking state
     const [isBackgroundCheckRunning, setIsBackgroundCheckRunning] = useState<boolean>(false);
-    const [timeUntilNextCheck, setTimeUntilNextCheck] = useState<number>(0);
     const lastKnownOutdatedCount = useRef<number>(0);
     const backgroundCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-    const timeUpdateInterval = useRef<ReturnType<typeof setInterval> | null>(null);
     const nextCheckTime = useRef<number>(Date.now() + 15 * 60 * 1000); // 15 minutes from now
 
     // Track update event listeners for cleanup (prevents duplicate listeners bug)
@@ -392,9 +390,6 @@ const WailBrewApp = () => {
             if (backgroundCheckInterval.current) {
                 clearInterval(backgroundCheckInterval.current);
             }
-            if (timeUpdateInterval.current) {
-                clearInterval(timeUpdateInterval.current);
-            }
             if (loadingTimerInterval.current) {
                 clearInterval(loadingTimerInterval.current);
             }
@@ -558,13 +553,6 @@ const WailBrewApp = () => {
 
     // Start background update checking
     const startBackgroundUpdateCheck = () => {
-        // Update time until next check every second
-        timeUpdateInterval.current = setInterval(() => {
-            const now = Date.now();
-            const timeRemaining = Math.max(0, nextCheckTime.current - now);
-            setTimeUntilNextCheck(Math.floor(timeRemaining / 1000)); // Convert to seconds
-        }, 1000);
-
         // Perform initial check after a short delay
         setTimeout(() => {
             performBackgroundUpdateCheck();
@@ -576,17 +564,10 @@ const WailBrewApp = () => {
         }, 15 * 60 * 1000); // 15 minutes
     };
 
-    // Format time until next check
-    const formatTimeUntilNextCheck = (seconds: number): string => {
-        if (seconds <= 0) return t('backgroundCheck.checkingNow');
-
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-
-        if (minutes > 0) {
-            return t('backgroundCheck.nextCheckIn', { minutes, seconds: remainingSeconds });
-        }
-        return t('backgroundCheck.nextCheckInSeconds', { seconds: remainingSeconds });
+    // Get seconds until next background check (computed on demand, no re-renders)
+    const getSecondsUntilNextCheck = (): number => {
+        const timeRemaining = Math.max(0, nextCheckTime.current - Date.now());
+        return Math.floor(timeRemaining / 1000);
     };
 
     const checkAppUpdatesOnStartup = async () => {
@@ -2016,8 +1997,7 @@ const WailBrewApp = () => {
                 sidebarWidth={sidebarWidth}
                 sidebarRef={sidebarRef}
                 isBackgroundCheckRunning={isBackgroundCheckRunning}
-                timeUntilNextCheck={timeUntilNextCheck}
-                formatTimeUntilNextCheck={formatTimeUntilNextCheck}
+                getSecondsUntilNextCheck={getSecondsUntilNextCheck}
             />
             <div
                 className="sidebar-resize-handle"

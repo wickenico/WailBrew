@@ -21,8 +21,7 @@ interface SidebarProps {
     sidebarWidth?: number;
     sidebarRef?: React.RefObject<HTMLElement | null>;
     isBackgroundCheckRunning?: boolean;
-    timeUntilNextCheck?: number;
-    formatTimeUntilNextCheck?: (seconds: number) => string;
+    getSecondsUntilNextCheck?: () => number;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -39,16 +38,27 @@ const Sidebar: React.FC<SidebarProps> = ({
     sidebarWidth,
     sidebarRef,
     isBackgroundCheckRunning = false,
-    timeUntilNextCheck = 0,
-    formatTimeUntilNextCheck,
+    getSecondsUntilNextCheck,
 }) => {
     const { t, i18n } = useTranslation();
     const currentLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
     const [showTooltip, setShowTooltip] = useState(false);
     const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+    const [tooltipText, setTooltipText] = useState("");
     const iconRef = useRef<HTMLDivElement>(null);
 
-    // Update tooltip position when showing
+    // Format seconds into a readable countdown string
+    const formatCountdown = (seconds: number): string => {
+        if (seconds <= 0) return t('backgroundCheck.checkingNow');
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        if (minutes > 0) {
+            return t('backgroundCheck.nextCheckIn', { minutes, seconds: remainingSeconds });
+        }
+        return t('backgroundCheck.nextCheckInSeconds', { seconds: remainingSeconds });
+    };
+
+    // Update tooltip position and start countdown only while tooltip is visible
     useEffect(() => {
         if (showTooltip && iconRef.current) {
             const rect = iconRef.current.getBoundingClientRect();
@@ -56,7 +66,22 @@ const Sidebar: React.FC<SidebarProps> = ({
                 top: rect.bottom + 8,
                 left: rect.left + rect.width / 2,
             });
+
+            // Compute initial value immediately
+            if (getSecondsUntilNextCheck) {
+                setTooltipText(formatCountdown(getSecondsUntilNextCheck()));
+            }
+
+            // Update every second only while tooltip is visible
+            const interval = setInterval(() => {
+                if (getSecondsUntilNextCheck) {
+                    setTooltipText(formatCountdown(getSecondsUntilNextCheck()));
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showTooltip]);
 
     // Detect if user is on Mac
@@ -130,7 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }}
                             />
                         )}
-                        {showTooltip && formatTimeUntilNextCheck && ReactDOM.createPortal(
+                        {showTooltip && getSecondsUntilNextCheck && ReactDOM.createPortal(
                                 <div
                                     className="background-check-tooltip"
                                     style={{
@@ -141,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                         zIndex: 99999,
                                     }}
                                 >
-                                    {formatTimeUntilNextCheck(timeUntilNextCheck)}
+                                    {tooltipText}
                                 </div>,
                                 document.body
                             )}
