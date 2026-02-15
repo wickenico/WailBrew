@@ -121,7 +121,8 @@
     "ok": "Ok",
     "close": "Close",
     "updateHomebrew": "Update Homebrew",
-    "uninstallDeprecated": "Uninstall deprecated formula \"{{name}}\""
+    "uninstallDeprecated": "Uninstall deprecated formula \"{{name}}\"",
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} of {{total}} selected"
@@ -334,7 +335,8 @@
     "active": "Active"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "Check for Updates",
@@ -385,7 +387,9 @@
     "newFormula_other": "new formulae",
     "newCask_one": "new cask",
     "newCask_other": "new casks",
-    "and": " and "
+    "and": " and ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "Checking for updates now...",
@@ -565,5 +569,8 @@
       "startingUntap": "❌ Error starting untap: {{error}}",
       "startingHomebrewUpdate": "❌ Error starting Homebrew update: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

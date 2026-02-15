@@ -1,15 +1,15 @@
 {
   "sidebar": {
-    "formulas": "נוסחאות",
     "packages": "חבילות",
+    "formulas": "נוסחאות",
     "browseInstall": "עיון והתקנה",
-    "allFormulae": "כל הנוסחאות",
-    "allCasks": "כל ה-Casks",
     "tools": "כלים",
     "installed": "מותקנים",
     "casks": "Casks",
     "outdated": "מיושנים",
     "all": "כל הנוסחאות",
+    "allFormulae": "כל הנוסחאות",
+    "allCasks": "כל ה-Casks",
     "leaves": "עלים",
     "repositories": "מאגרים",
     "homebrew": "Homebrew",
@@ -121,7 +121,8 @@
     "ok": "אישור",
     "close": "סגור",
     "updateHomebrew": "עדכן Homebrew",
-    "uninstallDeprecated": "הסר נוסחה שהוצאה משימוש \"{{name}}\""
+    "uninstallDeprecated": "הסר נוסחה שהוצאה משימוש \"{{name}}\"",
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} מתוך {{total}} נבחרו"
@@ -334,7 +335,8 @@
     "active": "פעיל"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "בדיקת עדכונים",
@@ -385,7 +387,9 @@
     "newFormula_other": "נוסחאות חדשות",
     "newCask_one": "cask חדש",
     "newCask_other": "casks חדשים",
-    "and": " ו-"
+    "and": " ו-",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "בודק עדכונים עכשיו...",
@@ -565,5 +569,8 @@
       "startingUntap": "❌ שגיאה בהתחלת הסרת מאגר: {{error}}",
       "startingHomebrewUpdate": "❌ שגיאה בהתחלת עדכון Homebrew: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

@@ -1,15 +1,15 @@
 {
   "sidebar": {
-    "formulas": "Пакеты",
     "packages": "Пакеты",
+    "formulas": "Пакеты",
     "browseInstall": "Просмотр и установка",
-    "allFormulae": "Все пакеты",
-    "allCasks": "Все Casks",
     "tools": "Инструменты",
     "installed": "Установленные",
     "casks": "Приложения",
     "outdated": "Устаревшие",
     "all": "Все пакеты",
+    "allFormulae": "Все пакеты",
+    "allCasks": "Все Casks",
     "leaves": "Листья",
     "repositories": "Репозитории",
     "homebrew": "Homebrew",
@@ -95,6 +95,7 @@
     "uninstall": "Удалить \"{{name}}\"",
     "install": "Установить \"{{name}}\"",
     "update": "Обновить \"{{name}}\"",
+    "tap": "Подключить репозиторий",
     "updateAll": "Обновить всё",
     "multiSelect": "Множественный выбор",
     "exitMultiSelect": "Выйти из множественного выбора",
@@ -115,13 +116,13 @@
     "yesUpdate": "Да, обновить",
     "yesUpdateAll": "Да, обновить всё",
     "yesUpdateSelected": "Да, обновить {{count}} выбранных",
+    "yesUntap": "Да, отключить",
+    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "ОК",
     "close": "Закрыть",
     "updateHomebrew": "Обновить Homebrew",
     "uninstallDeprecated": "Удалить устаревший пакет \"{{name}}\"",
-    "untap": "Отключить \"{{name}}\"",
-    "tap": "Подключить репозиторий",
-    "yesUntap": "Да, отключить"
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} из {{total}} выбрано"
@@ -203,6 +204,10 @@
     "tapInputEmpty": "Пожалуйста, введите имя репозитория",
     "tapInputInvalid": "Неверный формат. Имя репозитория должно быть в формате: пользователь/репо",
     "repositoryInfo": "Информация о {{name}}",
+    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
+    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
+    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "Информация о {{name}}",
     "sessionLogs": "Журналы сеанса",
     "updating": "Обновление \"{{name}}\"...\nПожалуйста, подождите...",
@@ -330,7 +335,8 @@
     "active": "Активен"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "Проверить обновления",
@@ -343,6 +349,7 @@
     "size": "Размер",
     "changes": "Изменения",
     "viewReleaseNotes": "Просмотреть примечания к выпуску",
+    "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Ручное обновление",
     "instruction": "Чтобы обновить WailBrew, выполните следующую команду в терминале:",
     "copyCommand": "Скопировать команду в буфер обмена",
@@ -355,9 +362,7 @@
     "installing": "Установка...",
     "updateInstalled": "Обновление установлено!",
     "restartMessage": "Обновление успешно установлено. Пожалуйста, перезапустите WailBrew для использования новой версии.",
-    "restartNow": "Перезапустить сейчас",
-    "rateLimitError": "Превышен лимит запросов API GitHub. Проверка обновлений использует API GitHub, который имеет ограничение для неаутентифицированных запросов.",
-    "rateLimitAdvice": "Пожалуйста, подождите несколько минут и попробуйте снова. Лимит запросов сбрасывается каждый час."
+    "restartNow": "Перезапустить сейчас"
   },
   "restartDialog": {
     "title": "Требуется перезапуск",
@@ -382,7 +387,9 @@
     "newFormula_other": "новые формулы",
     "newCask_one": "новый cask",
     "newCask_other": "новые casks",
-    "and": " и "
+    "and": " и ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "Проверка обновлений...",
@@ -562,6 +569,8 @@
       "startingUntap": "❌ Ошибка запуска untap: {{error}}",
       "startingHomebrewUpdate": "❌ Ошибка запуска обновления Homebrew: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }
-

@@ -1,7 +1,7 @@
 {
   "sidebar": {
-    "formulas": "Formules",
     "packages": "Paquets",
+    "formulas": "Formules",
     "browseInstall": "Parcourir & Installer",
     "tools": "Outils",
     "installed": "Installées",
@@ -95,6 +95,7 @@
     "uninstall": "Désinstaller \"{{name}}\"",
     "install": "Installer \"{{name}}\"",
     "update": "Mettre à jour \"{{name}}\"",
+    "tap": "Tapper un dépôt",
     "updateAll": "Tout mettre à jour",
     "multiSelect": "Sélection multiple",
     "exitMultiSelect": "Quitter la sélection multiple",
@@ -115,13 +116,13 @@
     "yesUpdate": "Oui, mettre à jour",
     "yesUpdateAll": "Oui, tout mettre à jour",
     "yesUpdateSelected": "Oui, mettre à jour {{count}} sélectionné(s)",
+    "yesUntap": "Oui, détapper",
+    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Fermer",
     "updateHomebrew": "Mettre à jour Homebrew",
     "uninstallDeprecated": "Désinstaller la formule obsolète \"{{name}}\"",
-    "untap": "Détapper \"{{name}}\"",
-    "tap": "Tapper un dépôt",
-    "yesUntap": "Oui, détapper"
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} sur {{total}} sélectionné(s)"
@@ -203,6 +204,10 @@
     "tapInputEmpty": "Veuillez entrer un nom de dépôt",
     "tapInputInvalid": "Format invalide. Le nom du dépôt doit être au format: utilisateur/repo",
     "repositoryInfo": "Informations pour {{name}}",
+    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
+    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
+    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "Informations pour {{name}}",
     "sessionLogs": "Journaux de session",
     "updating": "Mise à jour de \"{{name}}\"...\nVeuillez patienter...",
@@ -330,7 +335,8 @@
     "active": "Actif"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "Vérifier les mises à jour",
@@ -343,6 +349,7 @@
     "size": "Taille",
     "changes": "Changements",
     "viewReleaseNotes": "Voir les notes de version",
+    "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Mise à jour manuelle",
     "instruction": "Pour mettre à jour WailBrew, veuillez exécuter la commande suivante dans votre terminal :",
     "copyCommand": "Copier la commande dans le presse-papiers",
@@ -355,9 +362,7 @@
     "installing": "Installation...",
     "updateInstalled": "Mise à jour installée !",
     "restartMessage": "La mise à jour a été installée avec succès. Veuillez redémarrer WailBrew pour utiliser la nouvelle version.",
-    "restartNow": "Redémarrer maintenant",
-    "rateLimitError": "Limite de taux de l'API GitHub dépassée. La vérification des mises à jour utilise l'API de GitHub qui a une limite pour les requêtes non authentifiées.",
-    "rateLimitAdvice": "Veuillez patienter quelques minutes et réessayer. La limite de taux est réinitialisée toutes les heures."
+    "restartNow": "Redémarrer maintenant"
   },
   "restartDialog": {
     "title": "Redémarrage requis",
@@ -382,7 +387,9 @@
     "newFormula_other": "nouvelles formules",
     "newCask_one": "nouveau cask",
     "newCask_other": "nouveaux casks",
-    "and": " et "
+    "and": " et ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "Vérification des mises à jour en cours...",
@@ -562,6 +569,8 @@
       "startingUntap": "❌ Erreur lors du démarrage de l'untap : {{error}}",
       "startingHomebrewUpdate": "❌ Erreur lors du démarrage de la mise à jour Homebrew : {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }
-

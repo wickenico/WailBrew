@@ -1,11 +1,15 @@
 {
   "sidebar": {
+    "packages": "Pakete",
     "formulas": "Formeln",
+    "browseInstall": "Durchsuchen & Installieren",
     "tools": "Werkzeuge",
     "installed": "Installiert",
     "casks": "Casks",
     "outdated": "Veraltet",
     "all": "Formeln",
+    "allFormulae": "Alle Formeln",
+    "allCasks": "Alle Casks",
     "leaves": "Blätter",
     "repositories": "Repositories",
     "homebrew": "Homebrew",
@@ -21,6 +25,7 @@
     "installedCasks": "Installierte Casks",
     "outdatedFormulas": "Veraltete Formeln",
     "allFormulas": "Alle Formeln",
+    "allCasks": "Alle Casks",
     "leaves": "Blätter",
     "repositories": "Repositories",
     "homebrew": "Homebrew",
@@ -56,6 +61,7 @@
       "casks": "Casks",
       "outdated": "Veraltete Formeln",
       "all": "Alle Formeln",
+      "allCasks": "All Casks",
       "leaves": "Leaves",
       "repositories": "Repositories",
       "homebrew": "Homebrew",
@@ -89,6 +95,7 @@
     "uninstall": "\"{{name}}\" deinstallieren",
     "install": "\"{{name}}\" installieren",
     "update": "\"{{name}}\" aktualisieren",
+    "tap": "Repository tappen",
     "updateAll": "Alle aktualisieren",
     "multiSelect": "Mehrfachauswahl",
     "exitMultiSelect": "Mehrfachauswahl beenden",
@@ -109,13 +116,13 @@
     "yesUpdate": "Ja, aktualisieren",
     "yesUpdateAll": "Ja, alle aktualisieren",
     "yesUpdateSelected": "Ja, {{count}} ausgewählte aktualisieren",
+    "yesUntap": "Ja, enttappen",
+    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Schließen",
     "updateHomebrew": "Homebrew aktualisieren",
     "uninstallDeprecated": "Veraltete Formel \"{{name}}\" deinstallieren",
-    "untap": "\"{{name}}\" enttappen",
-    "tap": "Repository tappen",
-    "yesUntap": "Ja, enttappen"
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} von {{total}} ausgewählt"
@@ -159,6 +166,7 @@
     "installedCasks": "Diese Casks (GUI-Anwendungen) sind bereits auf Ihrem System installiert.",
     "outdatedFormulas": "Einige Formeln können aktualisiert werden.",
     "allFormulas": "Alle verfügbaren Homebrew-Formeln. Grüne Markierung zeigt installierte Formeln an.",
+    "allCasks": "Alle verfügbaren Homebrew-Casks (GUI-Anwendungen, Schriften, Plugins). Grüne Markierung zeigt installierte Casks an.",
     "leaves": "Blätter sind Formeln, die nicht als Abhängigkeit von anderen installierten Formeln benötigt werden.",
     "repositories": "Repositories (Taps) sind Quellen für Formeln. Diese enthalten zusätzliche Pakete neben dem Standard-Repository.",
     "homebrew": "Homebrew selbst verwalten und aktualisieren. Überprüfen Sie die installierte Version und aktualisieren Sie Homebrew-Core, wenn eine neuere Version verfügbar ist.",
@@ -196,6 +204,10 @@
     "tapInputEmpty": "Bitte geben Sie einen Repository-Namen ein",
     "tapInputInvalid": "Ungültiges Format. Repository-Name muss im Format sein: benutzer/repo",
     "repositoryInfo": "Info für {{name}}",
+    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
+    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
+    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "Info für {{name}}",
     "sessionLogs": "Sitzungsprotokolle",
     "updating": "Aktualisiere \"{{name}}\"...\nBitte warten...",
@@ -221,6 +233,7 @@
     "failedInstalledCasks": "Fehler beim Laden der installierten Casks",
     "failedUpdatablePackages": "Fehler beim Laden der aktualisierbaren Pakete",
     "failedAllPackages": "Fehler beim Laden aller Pakete",
+    "failedAllCasks": "Failed to get all casks",
     "failedLeaves": "Fehler beim Laden der Blätter",
     "failedRepositories": "Fehler beim Laden der Repositories"
   },
@@ -272,7 +285,9 @@
       "installed": "Installierte Formeln",
       "casks": "Casks",
       "outdated": "Veraltete Formeln",
-      "all": "Alle Formeln",
+      "all": "All Formulae",
+      "allFormulae": "Alle Formeln",
+      "allCasks": "Alle Casks",
       "leaves": "Blätter",
       "repositories": "Repositories",
       "homebrew": "Homebrew",
@@ -320,7 +335,8 @@
     "active": "Aktiv"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "Nach Updates suchen",
@@ -333,6 +349,7 @@
     "size": "Größe",
     "changes": "Änderungen",
     "viewReleaseNotes": "Release-Notizen anzeigen",
+    "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Manuelles Update",
     "instruction": "Um WailBrew zu aktualisieren, führen Sie bitte den folgenden Befehl in Ihrem Terminal aus:",
     "copyCommand": "Befehl in die Zwischenablage kopieren",
@@ -345,9 +362,7 @@
     "installing": "Installiere...",
     "updateInstalled": "Update installiert!",
     "restartMessage": "Das Update wurde erfolgreich installiert. Bitte starten Sie WailBrew neu, um die neue Version zu verwenden.",
-    "restartNow": "Jetzt neu starten",
-    "rateLimitError": "GitHub API-Rate-Limit überschritten. Die Update-Prüfung verwendet GitHubs API, die ein Limit für nicht authentifizierte Anfragen hat.",
-    "rateLimitAdvice": "Bitte warten Sie einige Minuten und versuchen Sie es erneut. Das Rate-Limit wird stündlich zurückgesetzt."
+    "restartNow": "Jetzt neu starten"
   },
   "restartDialog": {
     "title": "Neustart erforderlich",
@@ -372,7 +387,9 @@
     "newFormula_other": "neue Formeln",
     "newCask_one": "neuer Cask",
     "newCask_other": "neue Casks",
-    "and": " und "
+    "and": " und ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "Suche jetzt nach Updates...",
@@ -552,5 +569,8 @@
       "startingUntap": "❌ Fehler beim Starten des Untaps: {{error}}",
       "startingHomebrewUpdate": "❌ Fehler beim Starten der Homebrew-Aktualisierung: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

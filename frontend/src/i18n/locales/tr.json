@@ -1,15 +1,15 @@
 {
   "sidebar": {
-    "formulas": "Formüller",
     "packages": "Paketler",
+    "formulas": "Formüller",
     "browseInstall": "Gözat & Yükle",
-    "allFormulae": "Tüm Formüller",
-    "allCasks": "Tüm Casks",
     "tools": "Araçlar",
     "installed": "Yüklendi",
     "casks": "Fıçılar",
     "outdated": "Eski",
     "all": "Tüm Formüller",
+    "allFormulae": "Tüm Formüller",
+    "allCasks": "Tüm Casks",
     "leaves": "Yapraklar",
     "repositories": "Depolar",
     "homebrew": "Homebrew",
@@ -95,6 +95,7 @@
     "uninstall": "\"{{name}}\" kaldır",
     "install": "\"{{name}}\" indir",
     "update": "\"{{name}}\" güncelle",
+    "tap": "Depo ekle",
     "updateAll": "Tümünü Güncelle",
     "multiSelect": "Çoklu Seçim",
     "exitMultiSelect": "Çoklu Seçimden Çık",
@@ -115,13 +116,13 @@
     "yesUpdate": "Evet, güncelle",
     "yesUpdateAll": "Evet, tümünü güncelle",
     "yesUpdateSelected": "Evet, {{count}} seçiliyi güncelle",
+    "yesUntap": "Evet, kaldır",
+    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Kapat",
     "updateHomebrew": "Homebrew'i güncelle",
     "uninstallDeprecated": "Kullanımdan kaldırılan formül \"{{name}}\" kaldır",
-    "untap": "\"{{name}}\" deposunu kaldır",
-    "tap": "Depo ekle",
-    "yesUntap": "Evet, kaldır"
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{total}} içinden {{count}} seçildi"
@@ -203,6 +204,10 @@
     "tapInputEmpty": "Lütfen bir depo adı girin",
     "tapInputInvalid": "Geçersiz format. Depo adı şu formatta olmalıdır: kullanıcı/repo",
     "repositoryInfo": "{{name}} için bilgi",
+    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
+    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
+    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "{{name}} detayı",
     "sessionLogs": "Oturum günlükleri",
     "updating": "\"{{name}}\" güncelleniyor...\nLütfen bekle...",
@@ -330,7 +335,8 @@
     "active": "Aktif"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "Güncellemeleri denetle",
@@ -343,6 +349,7 @@
     "size": "Boyut",
     "changes": "Değişiklikler",
     "viewReleaseNotes": "Güncelleme Notlarını Görüntüle",
+    "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Manual Güncelleme",
     "instruction": "WailBrew'i güncellemek için, lütfen aşağıdaki komutu komut satırında uygulayın;",
     "copyCommand": "Komutu panoya kopyala",
@@ -355,9 +362,7 @@
     "installing": "Yükleniyor...",
     "updateInstalled": "Güncelleme Yüklendi!",
     "restartMessage": "Güncelleme başarıyla yüklendi. Yeni sürümü kullanmak için lütfen WailBrew'i yeniden başlatın.",
-    "restartNow": "Şimdi Yeniden Başlat",
-    "rateLimitError": "GitHub API hız limiti aşıldı. Güncelleme kontrolü, kimlik doğrulaması yapılmamış istekler için sınırlı olan GitHub API'sini kullanır.",
-    "rateLimitAdvice": "Lütfen birkaç dakika bekleyin ve tekrar deneyin. Hız limiti her saat başı sıfırlanır."
+    "restartNow": "Şimdi Yeniden Başlat"
   },
   "restartDialog": {
     "title": "Yeniden Başlatma Gerekli",
@@ -382,7 +387,9 @@
     "newFormula_other": "yeni formüller",
     "newCask_one": "yeni cask",
     "newCask_other": "yeni casks",
-    "and": " ve "
+    "and": " ve ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "Şimdi güncellemeler kontrol ediliyor...",
@@ -562,5 +569,8 @@
       "startingUntap": "❌ Untap başlatılırken hata: {{error}}",
       "startingHomebrewUpdate": "❌ Homebrew güncelleme başlatılırken hata: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

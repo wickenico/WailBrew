@@ -1,15 +1,15 @@
 {
   "sidebar": {
-    "formulas": "Formulae",
     "packages": "软件包",
+    "formulas": "Formulae",
     "browseInstall": "浏览 & 安装",
-    "allFormulae": "所有 Formulae",
-    "allCasks": "所有 Casks",
     "tools": "Tools",
     "installed": "已安装",
     "casks": "Casks",
     "outdated": "可更新",
     "all": "Formulae",
+    "allFormulae": "所有 Formulae",
+    "allCasks": "所有 Casks",
     "leaves": "独立包",
     "repositories": "软件源",
     "homebrew": "Homebrew",
@@ -95,6 +95,7 @@
     "uninstall": "卸载 \"{{name}}\"",
     "install": "安装 \"{{name}}\"",
     "update": "更新 \"{{name}}\"",
+    "tap": "连接软件源",
     "updateAll": "更新所有",
     "multiSelect": "多选",
     "exitMultiSelect": "退出多选",
@@ -115,13 +116,13 @@
     "yesUpdate": "是，更新",
     "yesUpdateAll": "是，更新所有",
     "yesUpdateSelected": "是，更新 {{count}} 个已选",
+    "yesUntap": "是，取消连接",
+    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "关闭",
     "updateHomebrew": "更新 Homebrew",
     "uninstallDeprecated": "卸载已弃用的包 \"{{name}}\"",
-    "untap": "取消连接 \"{{name}}\"",
-    "tap": "连接软件源",
-    "yesUntap": "是，取消连接"
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "已选 {{count}}/{{total}}"
@@ -203,6 +204,10 @@
     "tapInputEmpty": "请输入软件源名称",
     "tapInputInvalid": "格式无效。软件源名称必须为格式：用户/仓库",
     "repositoryInfo": "{{name}} 的信息",
+    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
+    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
+    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "{{name}} 的信息",
     "sessionLogs": "会话日志",
     "updating": "正在更新 \"{{name}}\"...\n请等待...",
@@ -330,7 +335,8 @@
     "active": "可用"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "检查更新",
@@ -343,6 +349,7 @@
     "size": "大小",
     "changes": "变更",
     "viewReleaseNotes": "查看发布说明",
+    "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "手动更新",
     "instruction": "要更新 WailBrew，请在终端中运行以下命令：",
     "copyCommand": "复制命令到剪贴板",
@@ -355,9 +362,7 @@
     "installing": "安装中...",
     "updateInstalled": "更新已安装！",
     "restartMessage": "更新已成功安装。请重启 WailBrew 以使用新版本。",
-    "restartNow": "立即重启",
-    "rateLimitError": "GitHub API 速率限制已超出。更新检查使用 GitHub API，该 API 对未经身份验证的请求有限制。",
-    "rateLimitAdvice": "请等待几分钟后重试。速率限制每小时重置一次。"
+    "restartNow": "立即重启"
   },
   "restartDialog": {
     "title": "需要重启",
@@ -382,7 +387,9 @@
     "newFormula_other": "个新公式",
     "newCask_one": "个新 cask",
     "newCask_other": "个新 casks",
-    "and": "和"
+    "and": "和",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "正在检查更新...",
@@ -423,7 +430,8 @@
       "caskAppDirUpdated": "Cask 应用程序目录设置更新成功！",
       "caskAppDirReset": "Cask 应用程序目录设置重置为当前值。",
       "customCaskOptsUpdated": "自定义 Cask 选项更新成功！",
-      "customOutdatedArgsUpdated": "自定义 outdated 参数更新成功！"
+      "customOutdatedArgsUpdated": "自定义 outdated 参数更新成功！",
+      "adminUsernameUpdated": "Admin username updated successfully!"
     },
     "errors": {
       "failedToGetPath": "无法获取当前 brew 的路径。",
@@ -561,5 +569,8 @@
       "startingUntap": "❌ 启动 untap 时出错：{{error}}",
       "startingHomebrewUpdate": "❌ 启动 Homebrew 更新时出错：{{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

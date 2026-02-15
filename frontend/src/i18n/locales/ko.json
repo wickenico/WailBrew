@@ -1,7 +1,7 @@
 {
   "sidebar": {
-    "formulas": "Formulae",
     "packages": "패키지",
+    "formulas": "Formulae",
     "browseInstall": "검색 & 설치",
     "tools": "도구",
     "installed": "설치됨",
@@ -121,7 +121,8 @@
     "ok": "확인",
     "close": "닫기",
     "updateHomebrew": "Homebrew 업데이트",
-    "uninstallDeprecated": "지원 중단된 Formula \"{{name}}\" 제거"
+    "uninstallDeprecated": "지원 중단된 Formula \"{{name}}\" 제거",
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{total}}개 중 {{count}}개 선택됨"
@@ -334,7 +335,8 @@
     "active": "활성"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "업데이트 확인",
@@ -385,7 +387,9 @@
     "newFormula_other": "새 Formulae",
     "newCask_one": "새 Cask",
     "newCask_other": "새 Casks",
-    "and": " 및 "
+    "and": " 및 ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "지금 업데이트 확인 중...",
@@ -565,5 +569,8 @@
       "startingUntap": "❌ untap 시작 오류: {{error}}",
       "startingHomebrewUpdate": "❌ Homebrew 업데이트 시작 오류: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

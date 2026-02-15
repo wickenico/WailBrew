@@ -1,15 +1,15 @@
 {
   "sidebar": {
-    "formulas": "套件",
     "packages": "軟體包",
+    "formulas": "套件",
     "browseInstall": "瀏覽 & 安裝",
-    "allFormulae": "所有套件",
-    "allCasks": "所有 Casks",
     "tools": "工具",
     "installed": "已安裝",
     "casks": "應用程式",
     "outdated": "可更新",
     "all": "全部套件",
+    "allFormulae": "所有套件",
+    "allCasks": "所有 Casks",
     "leaves": "獨立套件",
     "repositories": "軟體庫",
     "homebrew": "Homebrew",
@@ -95,6 +95,7 @@
     "uninstall": "解除安裝 \"{{name}}\"",
     "install": "安裝 \"{{name}}\"",
     "update": "更新 \"{{name}}\"",
+    "tap": "連接軟體庫",
     "updateAll": "全部更新",
     "multiSelect": "多選",
     "exitMultiSelect": "退出多選",
@@ -115,13 +116,13 @@
     "yesUpdate": "是，更新",
     "yesUpdateAll": "是，全部更新",
     "yesUpdateSelected": "是，更新 {{count}} 個已選",
+    "yesUntap": "是，取消連接",
+    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "確定",
     "close": "關閉",
     "updateHomebrew": "更新 Homebrew",
     "uninstallDeprecated": "解除安裝已棄用的套件 \"{{name}}\"",
-    "untap": "取消連接 \"{{name}}\"",
-    "tap": "連接軟體庫",
-    "yesUntap": "是，取消連接"
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "已選 {{count}}/{{total}}"
@@ -203,6 +204,10 @@
     "tapInputEmpty": "請輸入軟體庫名稱",
     "tapInputInvalid": "格式無效。軟體庫名稱必須為格式：使用者/倉庫",
     "repositoryInfo": "{{name}} 的資訊",
+    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
+    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
+    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "{{name}} 的資訊",
     "sessionLogs": "工作階段記錄",
     "updating": "正在更新 \"{{name}}\"...\n請稍候...",
@@ -330,7 +335,8 @@
     "active": "作用中"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "檢查更新",
@@ -343,6 +349,7 @@
     "size": "大小",
     "changes": "變更",
     "viewReleaseNotes": "檢視發布說明",
+    "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "手動更新",
     "instruction": "要更新 WailBrew，請在終端機中執行以下指令：",
     "copyCommand": "複製指令到剪貼簿",
@@ -355,9 +362,7 @@
     "installing": "安裝中...",
     "updateInstalled": "更新已安裝！",
     "restartMessage": "更新已成功安裝。請重新啟動 WailBrew 以使用新版本。",
-    "restartNow": "立即重新啟動",
-    "rateLimitError": "GitHub API 速率限制已超出。更新檢查使用 GitHub API，該 API 對未驗證的請求有限制。",
-    "rateLimitAdvice": "請等候幾分鐘後重試。速率限制每小時重置。"
+    "restartNow": "立即重新啟動"
   },
   "restartDialog": {
     "title": "需要重新啟動",
@@ -382,7 +387,9 @@
     "newFormula_other": "個新公式",
     "newCask_one": "個新 cask",
     "newCask_other": "個新 casks",
-    "and": "和"
+    "and": "和",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "正在檢查更新...",
@@ -562,5 +569,8 @@
       "startingUntap": "❌ 啟動 untap 時發生錯誤：{{error}}",
       "startingHomebrewUpdate": "❌ 啟動 Homebrew 更新時發生錯誤：{{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }

@@ -1,7 +1,7 @@
 {
   "sidebar": {
-    "formulas": "Fórmulas",
     "packages": "Pacotes",
+    "formulas": "Fórmulas",
     "browseInstall": "Buscar & Instalar",
     "tools": "Ferramentas",
     "installed": "Instalados",
@@ -95,7 +95,7 @@
     "uninstall": "Desinstalar \"{{name}}\"",
     "install": "Instalar \"{{name}}\"",
     "update": "Atualizar \"{{name}}\"",
-    "tap":"Adicionar Repositório",
+    "tap": "Adicionar Repositório",
     "updateAll": "Atualizar Tudo",
     "multiSelect": "Seleção Múltipla",
     "exitMultiSelect": "Sair da Seleção Múltipla",
@@ -121,7 +121,8 @@
     "ok": "Ok",
     "close": "Fechar",
     "updateHomebrew": "Atualizar Homebrew",
-    "uninstallDeprecated": "Desinstalar fórmula descontinuada \"{{name}}\""
+    "uninstallDeprecated": "Desinstalar fórmula descontinuada \"{{name}}\"",
+    "untap": "Untap \"{{name}}\""
   },
   "multiSelect": {
     "selectedCount": "{{count}} de {{total}} selecionado(s)"
@@ -334,7 +335,8 @@
     "active": "Ativo"
   },
   "common": {
-    "notAvailable": "--"
+    "notAvailable": "--",
+    "loading": "Loading..."
   },
   "updateDialog": {
     "title": "Verificar Atualizações",
@@ -360,9 +362,7 @@
     "installing": "Instalando...",
     "updateInstalled": "Atualização Instalada!",
     "restartMessage": "A atualização foi instalada com sucesso. Por favor, reinicie o WailBrew para usar a nova versão.",
-    "restartNow": "Reiniciar Agora",
-    "rateLimitError": "Limite de taxa da API do GitHub excedido. A verificação de atualizações usa a API do GitHub que tem um limite de solicitações não autenticadas.",
-    "rateLimitAdvice": "Por favor, aguarde alguns minutos e tente novamente. O limite de taxa é redefinido a cada hora."
+    "restartNow": "Reiniciar Agora"
   },
   "restartDialog": {
     "title": "É necessário reiniciar.",
@@ -387,7 +387,9 @@
     "newFormula_other": "novas fórmulas",
     "newCask_one": "novo cask",
     "newCask_other": "novos casks",
-    "and": " e "
+    "and": " e ",
+    "newFormula": "new formula(e)",
+    "newCask": "new cask(s)"
   },
   "backgroundCheck": {
     "checkingNow": "Verificando atualizações agora...",
@@ -567,5 +569,8 @@
       "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}",
       "startingHomebrewUpdate": "❌ Erro ao iniciar atualização do Homebrew: {{error}}"
     }
+  },
+  "view": {
+    "settings": "Settings"
   }
 }
