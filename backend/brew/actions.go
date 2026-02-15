@@ -24,6 +24,7 @@ type ActionsService struct {
 	isAppExistsError func(string) bool
 	extractFailed    func(string) []string
 	validateFunc     func() error
+	getOutdatedFlag  func() string
 }
 
 // NewActionsService creates a new actions service
@@ -36,6 +37,7 @@ func NewActionsService(
 	isAppExistsError func(string) bool,
 	extractFailed func(string) []string,
 	validateFunc func() error,
+	getOutdatedFlag func() string,
 ) *ActionsService {
 	return &ActionsService{
 		brewPath:         brewPath,
@@ -46,6 +48,7 @@ func NewActionsService(
 		isAppExistsError: isAppExistsError,
 		extractFailed:    extractFailed,
 		validateFunc:     validateFunc,
+		getOutdatedFlag:  getOutdatedFlag,
 	}
 }
 
@@ -428,8 +431,16 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	startMessage := s.getBackendMsg("updateAllStart", map[string]string{})
 	s.eventEmitter.Emit("packageUpdateProgress", startMessage)
 
-	// Use --greedy-auto-updates flag to update casks that can actually be upgraded
-	cmd := exec.Command(s.brewPath, "upgrade", "--greedy-auto-updates")
+	// Build upgrade command respecting the user's Outdated Detection Mode setting
+	upgradeArgs := []string{"upgrade"}
+	outdatedFlag := s.getOutdatedFlag()
+	if outdatedFlag == "greedy" {
+		upgradeArgs = append(upgradeArgs, "--greedy")
+	} else if outdatedFlag == "greedy-auto-updates" {
+		upgradeArgs = append(upgradeArgs, "--greedy-auto-updates")
+	}
+	// If outdatedFlag is "none", no additional flag is added (standard mode)
+	cmd := exec.Command(s.brewPath, upgradeArgs...)
 	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
 
 	// Create pipes for real-time output

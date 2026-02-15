@@ -157,6 +157,7 @@ func NewService(
 		outdatedService.IsAppAlreadyExistsError,
 		outdatedService.ExtractFailedPackagesFromError,
 		validateFunc,
+		getOutdatedFlag,
 	)
 
 	// Create tap service
