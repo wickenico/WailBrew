@@ -12,6 +12,7 @@ import {
     GetBrewCasks,
     GetBrewCaskSizes,
     GetBrewCleanupDryRun,
+    GetBrewPackages,
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
     GetBrewPackageSizes,
@@ -1751,7 +1752,11 @@ const WailBrewApp = () => {
 
         setLoadingAllPackages(true);
         try {
-            const all = await GetAllBrewPackages();
+            // Fetch both all available and currently installed packages from backend
+            const [all, installed] = await Promise.all([
+                GetAllBrewPackages(),
+                GetBrewPackages(),
+            ]);
             const safeAll = all || [];
 
             if (safeAll.length === 1 && safeAll[0][0] === "Error") {
@@ -1759,7 +1764,11 @@ const WailBrewApp = () => {
                 setAllPackages([]);
                 setAllPackagesLoaded(false);
             } else {
-                const installedNames = new Set(packages.map(pkg => pkg.name));
+                const installedNames = new Set(
+                    (installed || [])
+                        .filter(pkg => pkg.length > 0 && pkg[0] !== "Error")
+                        .map(pkg => pkg[0])
+                );
                 const formatted = safeAll.map(([name, desc, size]) => ({
                     name,
                     installedVersion: "",
@@ -1785,7 +1794,11 @@ const WailBrewApp = () => {
 
         setLoadingAllCasks(true);
         try {
-            const all = await GetAllBrewCasks();
+            // Fetch both all available and currently installed casks from backend
+            const [all, installed] = await Promise.all([
+                GetAllBrewCasks(),
+                GetBrewCasks(),
+            ]);
             const safeAll = all || [];
 
             if (safeAll.length === 1 && safeAll[0][0] === "Error") {
@@ -1793,7 +1806,11 @@ const WailBrewApp = () => {
                 setAllCasksAll([]);
                 setAllCasksLoaded(false);
             } else {
-                const installedNames = new Set(casks.map(pkg => pkg.name));
+                const installedNames = new Set(
+                    (installed || [])
+                        .filter(pkg => pkg.length > 0 && pkg[0] !== "Error")
+                        .map(pkg => pkg[0])
+                );
                 const formatted = safeAll.map(([name, desc, size]) => ({
                     name,
                     installedVersion: "",
