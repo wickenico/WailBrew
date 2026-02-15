@@ -1,9 +1,10 @@
 /// <reference types="react" />
-import { ChevronDown, Clock, Loader2 } from "lucide-react";
+import { ChevronDown, Clock, Heart, Loader2 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
 import ThemeToggle from "./ThemeToggle";
 
@@ -172,6 +173,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                             )}
                         </div>
                     )}
+                </div>
+                <div
+                    className="sidebar-sponsor"
+                    onClick={() => BrowserOpenURL("https://github.com/sponsors/wickenico")}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            BrowserOpenURL("https://github.com/sponsors/wickenico");
+                        }
+                    }}
+                >
+                    <Heart size={12} />
+                    <span>{t('sidebar.sponsor')}</span>
                 </div>
             <div className="sidebar-section">
                 <h4>{t('sidebar.packages')}</h4>

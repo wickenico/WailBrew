@@ -262,9 +262,39 @@ body {
   gap: 10px;
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 4px;
   color: var(--accent);
   letter-spacing: 1px;
+}
+
+.sidebar-sponsor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-bottom: 12px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+  width: 100%;
+}
+
+.sidebar-sponsor:hover {
+  opacity: 1;
+  color: #e74c8b;
+}
+
+.sidebar-sponsor:hover svg {
+  fill: #e74c8b;
+  color: #e74c8b;
+}
+
+.sidebar-sponsor svg {
+  transition: all 0.2s ease;
 }
 
 .version-badge {

@@ -17,7 +17,8 @@
     "cleanup": "Temizlik",
     "settings": "Ayarlar",
     "refresh": "Yenile",
-    "commandPalette": "Komut Paleti"
+    "commandPalette": "Komut Paleti",
+    "sponsor": "Destekle"
   },
   "headers": {
     "installedFormulas": "Yüklü Formüller",

@@ -17,7 +17,8 @@
     "cleanup": "Limpeza",
     "settings": "Configurações",
     "refresh": "Atualizar",
-    "commandPalette": "Paleta de Comandos"
+    "commandPalette": "Paleta de Comandos",
+    "sponsor": "Patrocinar"
   },
   "headers": {
     "installedFormulas": "Fórmulas Instaladas",

@@ -17,7 +17,8 @@
     "cleanup": "ניקוי",
     "settings": "הגדרות",
     "refresh": "רענון",
-    "commandPalette": "לוח פקודות"
+    "commandPalette": "לוח פקודות",
+    "sponsor": "תמיכה"
   },
   "headers": {
     "installedFormulas": "נוסחאות מותקנות",

@@ -17,7 +17,8 @@
     "cleanup": "Очистка",
     "settings": "Настройки",
     "refresh": "Обновить",
-    "commandPalette": "Палитра команд"
+    "commandPalette": "Палитра команд",
+    "sponsor": "Поддержать"
   },
   "headers": {
     "installedFormulas": "Установленные пакеты",

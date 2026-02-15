@@ -17,7 +17,8 @@
     "cleanup": "清理",
     "settings": "設定",
     "refresh": "重新整理",
-    "commandPalette": "命令面板"
+    "commandPalette": "命令面板",
+    "sponsor": "贊助"
   },
   "headers": {
     "installedFormulas": "已安裝套件",

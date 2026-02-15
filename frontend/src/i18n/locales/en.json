@@ -17,7 +17,8 @@
     "cleanup": "Cleanup",
     "settings": "Settings",
     "refresh": "Refresh",
-    "commandPalette": "Command Palette"
+    "commandPalette": "Command Palette",
+    "sponsor": "Sponsor"
   },
   "headers": {
     "installedFormulas": "Installed Formulae",

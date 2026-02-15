@@ -17,7 +17,8 @@
     "cleanup": "Cleanup",
     "settings": "설정",
     "refresh": "새로고침",
-    "commandPalette": "명령 팔레트"
+    "commandPalette": "명령 팔레트",
+    "sponsor": "후원"
   },
   "headers": {
     "installedFormulas": "설치된 Formulae",

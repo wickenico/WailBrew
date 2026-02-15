@@ -17,7 +17,8 @@
     "cleanup": "Nettoyage",
     "settings": "Paramètres",
     "refresh": "Actualiser",
-    "commandPalette": "Palette de commandes"
+    "commandPalette": "Palette de commandes",
+    "sponsor": "Sponsoriser"
   },
   "headers": {
     "installedFormulas": "Formules Installées",

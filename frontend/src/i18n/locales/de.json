@@ -13,7 +13,8 @@
     "cleanup": "Cleanup",
     "settings": "Einstellungen",
     "refresh": "Aktualisieren",
-    "commandPalette": "Befehls-Palette"
+    "commandPalette": "Befehls-Palette",
+    "sponsor": "Unterstützen"
   },
   "headers": {
     "installedFormulas": "Installierte Formeln",
