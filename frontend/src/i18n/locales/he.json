@@ -151,7 +151,9 @@
     "last90Days": "90 ימים אחרונים",
     "last365Days": "365 ימים אחרונים",
     "brewPage": "דף Homebrew",
-    "loadingAnalytics": "טוען סטטיסטיקות..."
+    "loadingAnalytics": "טוען סטטיסטיקות...",
+    "installedDepsTitle": "תלויות מותקנות",
+    "installedDepsNone": "אין תלויות מותקנות"
   },
   "tableColumns": {
     "name": "שם",

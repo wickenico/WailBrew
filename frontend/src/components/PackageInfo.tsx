@@ -1,6 +1,7 @@
-import { BarChart3, Calendar, ExternalLink, TrendingUp } from "lucide-react";
+import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, TrendingUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { GetInstalledDependencies } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageEntry {
@@ -37,6 +38,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loadingAnalytics, setLoadingAnalytics] = useState(false);
     const [brewPageUrl, setBrewPageUrl] = useState<string | null>(null);
+    const [showInstalledDeps, setShowInstalledDeps] = useState(false);
+    const [installedDeps, setInstalledDeps] = useState<string[]>([]);
+    const [loadingInstalledDeps, setLoadingInstalledDeps] = useState(false);
 
     const name = packageEntry?.name || t('common.notAvailable');
     const desc = packageEntry?.desc || t('common.notAvailable');
@@ -104,6 +108,22 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
 
         fetchAnalytics();
     }, [packageEntry?.name]);
+
+    // Reset installed deps when package changes
+    useEffect(() => {
+        setShowInstalledDeps(false);
+        setInstalledDeps([]);
+    }, [packageEntry?.name]);
+
+    // Fetch installed dependencies when panel is opened
+    useEffect(() => {
+        if (!showInstalledDeps || !packageEntry?.name) return;
+        setLoadingInstalledDeps(true);
+        GetInstalledDependencies(packageEntry.name)
+            .then(deps => setInstalledDeps(deps ?? []))
+            .catch(() => setInstalledDeps([]))
+            .finally(() => setLoadingInstalledDeps(false));
+    }, [showInstalledDeps, packageEntry?.name]);
 
     const formatNumber = (num: number): string => {
         return num.toLocaleString();
@@ -186,6 +206,40 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                     )}
                 </p>
                 <p>{t('packageInfo.conflicts')}: {conflicts}</p>
+
+                {packageEntry?.isInstalled && !packageEntry?.isCask && (
+                    <div className="installed-deps-section">
+                        <button
+                            className={`installed-deps-toggle${showInstalledDeps ? ' open' : ''}`}
+                            onClick={() => setShowInstalledDeps(prev => !prev)}
+                        >
+                            <GitBranch size={11} />
+                            <span>{t('packageInfo.installedDepsTitle')}</span>
+                            <ChevronDown size={11} className={`installed-deps-chevron${showInstalledDeps ? ' rotated' : ''}`} />
+                        </button>
+
+                        {showInstalledDeps && (
+                            <div className="installed-deps-list">
+                                {loadingInstalledDeps ? (
+                                    <span className="installed-dep-loading">{t('common.loading')}</span>
+                                ) : installedDeps.length === 0 ? (
+                                    <span className="installed-dep-none">{t('packageInfo.installedDepsNone')}</span>
+                                ) : (
+                                    installedDeps.map(dep => (
+                                        <span
+                                            key={dep}
+                                            className="installed-dep-chip"
+                                            onClick={() => onSelectDependency?.(dep)}
+                                            title={dep}
+                                        >
+                                            {dep}
+                                        </span>
+                                    ))
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="package-analytics">

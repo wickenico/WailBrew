@@ -58,6 +58,7 @@ type Service interface {
 	// Package info
 	GetBrewPackageInfoAsJson(packageName string) map[string]interface{}
 	GetBrewPackageInfo(packageName string) string
+	GetInstalledDependencies(packageName string) []string
 
 	// Other operations
 	RunBrewDoctor() string
@@ -373,6 +374,26 @@ func (s *serviceImpl) GetBrewPackageInfo(packageName string) string {
 		return fmt.Sprintf("Error: Failed to get package info: %v", err)
 	}
 	return string(output)
+}
+
+func (s *serviceImpl) GetInstalledDependencies(packageName string) []string {
+	output, err := s.executor.Run("deps", packageName, "--installed")
+	if err != nil {
+		return []string{}
+	}
+	raw := strings.TrimSpace(string(output))
+	if raw == "" {
+		return []string{}
+	}
+	lines := strings.Split(raw, "\n")
+	deps := make([]string, 0, len(lines))
+	for _, line := range lines {
+		dep := strings.TrimSpace(line)
+		if dep != "" {
+			deps = append(deps, dep)
+		}
+	}
+	return deps
 }
 
 func (s *serviceImpl) RunBrewDoctor() string {

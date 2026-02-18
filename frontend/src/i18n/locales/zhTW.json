@@ -151,7 +151,9 @@
     "last90Days": "最近 90 天",
     "last365Days": "最近 365 天",
     "brewPage": "Homebrew 頁面",
-    "loadingAnalytics": "載入統計數據..."
+    "loadingAnalytics": "載入統計數據...",
+    "installedDepsTitle": "已安裝的相依套件",
+    "installedDepsNone": "沒有已安裝的相依套件"
   },
   "tableColumns": {
     "name": "名稱",

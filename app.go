@@ -566,6 +566,10 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 	return a.brewService.GetBrewPackageInfo(packageName)
 }
 
+func (a *App) GetInstalledDependencies(packageName string) []string {
+	return a.brewService.GetInstalledDependencies(packageName)
+}
+
 func (a *App) RunBrewDoctor() string {
 	return a.brewService.RunBrewDoctor()
 }

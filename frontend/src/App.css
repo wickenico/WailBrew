@@ -3725,6 +3725,117 @@ body {
   text-align: center;
 }
 
+/* ── Installed Dependencies ───────────────────────────────────── */
+.installed-deps-section {
+  margin-top: 0.5rem;
+}
+
+.installed-deps-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  font-family: inherit;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.installed-deps-toggle:hover {
+  background: var(--hover-bg);
+  border-color: var(--glass-border-strong);
+  color: var(--text-main);
+}
+
+.installed-deps-toggle.open {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.installed-deps-toggle svg {
+  flex-shrink: 0;
+}
+
+.installed-deps-chevron {
+  transition: transform 0.2s ease;
+}
+
+.installed-deps-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+.installed-deps-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+  padding: 0.4rem 0.5rem;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  animation: deps-expand 0.15s ease;
+}
+
+@keyframes deps-expand {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.installed-dep-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  background: var(--badge-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.installed-dep-chip:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.installed-dep-loading,
+.installed-dep-none {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  padding: 0.1rem 0.2rem;
+}
+
+/* Light theme overrides */
+[data-theme='light'] .installed-deps-list {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .installed-dep-chip {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text-secondary);
+}
+
+[data-theme='light'] .installed-dep-chip:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .package-info-container {

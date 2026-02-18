@@ -151,7 +151,9 @@
     "last90Days": "최근 90일",
     "last365Days": "최근 365일",
     "brewPage": "Homebrew 페이지",
-    "loadingAnalytics": "통계 로딩 중..."
+    "loadingAnalytics": "통계 로딩 중...",
+    "installedDepsTitle": "설치된 의존성",
+    "installedDepsNone": "설치된 의존성 없음"
   },
   "tableColumns": {
     "name": "이름",

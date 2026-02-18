@@ -126,6 +126,10 @@ export function GetHomebrewVersion() {
   return window['go']['main']['App']['GetHomebrewVersion']();
 }
 
+export function GetInstalledDependencies(arg1) {
+  return window['go']['main']['App']['GetInstalledDependencies'](arg1);
+}
+
 export function GetMacOSReleaseName() {
   return window['go']['main']['App']['GetMacOSReleaseName']();
 }

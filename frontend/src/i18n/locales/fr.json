@@ -151,7 +151,9 @@
     "last90Days": "90 derniers jours",
     "last365Days": "365 derniers jours",
     "brewPage": "Page Homebrew",
-    "loadingAnalytics": "Chargement des statistiques..."
+    "loadingAnalytics": "Chargement des statistiques...",
+    "installedDepsTitle": "Dépendances installées",
+    "installedDepsNone": "Aucune dépendance installée"
   },
   "tableColumns": {
     "name": "Nom",

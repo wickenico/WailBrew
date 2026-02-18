@@ -151,7 +151,9 @@
     "last90Days": "Последние 90 дней",
     "last365Days": "Последние 365 дней",
     "brewPage": "Страница Homebrew",
-    "loadingAnalytics": "Загрузка статистики..."
+    "loadingAnalytics": "Загрузка статистики...",
+    "installedDepsTitle": "Установленные зависимости",
+    "installedDepsNone": "Нет установленных зависимостей"
   },
   "tableColumns": {
     "name": "Название",
