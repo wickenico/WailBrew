@@ -9,6 +9,7 @@ const supportedLanguages = [
   "ru",
   "ko",
   "he",
+  "es",
 ] as const;
 
 type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -42,6 +43,9 @@ const explicitMappings: Record<string, SupportedLanguage> = {
   iw: "he",
   "iw-IL": "he",
   "iw_IL": "he",
+  es: "es",
+  "es-ES": "es", 
+  "es-CO": "es",
 };
 
 export function mapToSupportedLanguage(

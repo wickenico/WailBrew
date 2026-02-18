@@ -1,0 +1,577 @@
+{
+  "sidebar": {
+    "packages": "Paquetes",
+    "formulas": "Programas CLI",
+    "browseInstall": "Buscar e instalar",
+    "tools": "Herramientas",
+    "installed": "Instalados",
+    "casks": "Con interfaz",
+    "outdated": "Actualizables",
+    "all": "Todo",
+    "allFormulae": "Todos CLI",
+    "allCasks": "Todos GUI",
+    "leaves": "Instalados manualmente",
+    "repositories": "Repositorios",
+    "homebrew": "Homebrew",
+    "doctor": "Auditar",
+    "cleanup": "Limpiar",
+    "settings": "Ajustes",
+    "refresh": "Refrescar",
+    "commandPalette": "Paleta de comandos",
+    "sponsor": "Patrocinador"
+  },
+  "headers": {
+    "installedFormulas": "Programas CLI instalados",
+    "installedCasks": "Programs GUI instalados",
+    "outdatedFormulas": "Programas CLI actualizables",
+    "allFormulas": "Todos los programas CLI",
+    "allCasks": "Todos los programas GUI",
+    "leaves": "Instalados manualmente",
+    "repositories": "Repositorios",
+    "homebrew": "Homebrew",
+    "homebrewDoctor": "Auditar",
+    "homebrewCleanup": "Limpiar",
+    "deprecatedFormulae": "Programas CLI en desuso"
+  },
+  "search": {
+    "placeholder": "Buscar...",
+    "clearSearch": "Limpiar búsqueda",
+    "recentSearches": "Búsquedas recientes",
+    "removeFromHistory": "Eliminar \"{{item}}\" del historial"
+  },
+  "commandPalette": {
+    "placeholder": "Buscar paquetes, programas GUI, repositorios, o navegar a vistas...",
+    "noResults": "No se encontraron resultados",
+    "toSelect": "para seleccionar",
+    "toNavigate": "para navegar",
+    "toClose": "para cerrar"
+  },
+  "shortcuts": {
+    "title": "Atajos de teclado",
+    "menu": {
+      "title": "Menu",
+      "commandPalette": "Paleta de comandos",
+      "shortcuts": "Atajos de teclado",
+      "settings": "Ajustes",
+      "quit": "Salir"
+    },
+    "navigation": {
+      "title": "Navegación",
+      "installed": "Instalados",
+      "casks": "Con interfaz",
+      "outdated": "Actualizables",
+      "all": "Todo",
+      "allCasks": "Todos GUI",
+      "leaves": "Instalados manualmente",
+      "repositories": "Repositorios",
+      "homebrew": "Homebrew",
+      "doctor": "Auditar",
+      "cleanup": "Limpiar"
+    },
+    "table": {
+      "title": "Tabla",
+      "focus": "Enfocar tabla",
+      "select": "Seleccionar elemento",
+      "navigate": "Navegar filas",
+      "multiSelect": "Modo multi-selección",
+      "enter": "Enter",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "Acciones",
+      "refresh": "Actualizar paquetes",
+      "exportBrewfile": "Exportar Brewfile"
+    },
+    "dialogs": {
+      "title": "Dialogos",
+      "close": "Cerrar dialogo",
+      "confirm": "Confirmar accion",
+      "escape": "Esc",
+      "enter": "Enter"
+    }
+  },
+  "buttons": {
+    "uninstall": "Desinstalar \"{{name}}\"",
+    "install": "Instalar \"{{name}}\"",
+    "update": "Actualizar \"{{name}}\"",
+    "tap": "Agregar repositorio",
+    "updateAll": "Actualizar todo",
+    "multiSelect": "Multi-Selección",
+    "exitMultiSelect": "Salir de Multi-Selección",
+    "updateSelected": "Actualizar {{count}} seleccionados",
+    "selectAll": "Seleccionar todo",
+    "deselectAll": "Deseleccionar todo",
+    "showInfo": "Mostrar info para \"{{name}}\"",
+    "clearLog": "Limpiar log",
+    "runDoctor": "Ejecutar Auditar",
+    "runCleanup": "Ejecutar limpieza",
+    "runDryRun": "Ejecutar Dry Run",
+    "checkEstimate": "Verificar estimado",
+    "refresh": "Actualizar paquetes",
+    "yes": "Sí",
+    "cancel": "Cancelar",
+    "yesUninstall": "Sí, desinstalar",
+    "yesInstall": "Sí, instalar",
+    "yesUpdate": "Sí, actualizar",
+    "yesUpdateAll": "Sí, actualizar todo",
+    "yesUpdateSelected": "Sí, actualizar {{count}} seleccionados",
+    "yesUntap": "Si, remover repositorio",
+    "yesUninstallAndUntap": "Si, desinstalar y remover repositorio",
+    "ok": "Ok",
+    "close": "Cerrar",
+    "updateHomebrew": "Actualizar Homebrew",
+    "uninstallDeprecated": "Desinstalar formula en desuso \"{{name}}\"",
+    "untap": "Remover \"{{name}}\""
+  },
+  "multiSelect": {
+    "selectedCount": "{{count}} de {{total}} seleccionados"
+  },
+  "logDialog": {
+    "running": "Ejecutando...",
+    "completed": "Completado",
+    "copy": "Copiar",
+    "copyToClipboard": "Copiar logs a portapapeles",
+    "copiedToClipboard": "Logs copiados al portapapeles!",
+    "copyFailed": "No se pudo copiar logs"
+  },
+  "packageInfo": {
+    "loading": "(Cargando…)",
+    "description": "Descripción",
+    "homepage": "Homepage",
+    "version": "Version",
+    "status": "Estado",
+    "dependencies": "Dependencias",
+    "conflicts": "Conflictos",
+    "installed": "Instalado",
+    "notInstalled": "No instalado",
+    "noSelection": "No se seleccionó ningún paquete",
+    "downloadStatistics": "Estadísticas de descargas",
+    "last30Days": "Últimos 30 días",
+    "last90Days": "Últimos 90 días",
+    "last365Days": "Últimos 365 días",
+    "brewPage": "Página de Homebrew",
+    "loadingAnalytics": "Cargando análisis..."
+  },
+  "tableColumns": {
+    "name": "Nombre",
+    "version": "Version instalada",
+    "latestVersion": "Version más reciente",
+    "size": "Tamaño",
+    "status": "Estado",
+    "actions": "Acciones"
+  },
+  "footers": {
+    "installedFormulas": "Estos programas CLI están instalados en su sistema.",
+    "installedCasks": "Estos programas GUI están instaladas en su sistema.",
+    "outdatedFormulas": "Algunos programas CLI pueden ser actualizados.",
+    "allFormulas": "Todos los programas CLI disponibles. El resaltado verde muestra los programas instalados.",
+    "allCasks": "Todos los programas GUI disponibles. El resaltado verde muestra los programas instalados.",
+    "leaves": "Los programas que no son dependencias de otros programas instalados.",
+    "repositories": "Repositorios (Taps) son fuentes para programas CLI. Estos contienen paquetes adicionales además del repositorio estándar.",
+    "homebrew": "Gestionar y actualizar Homebrew. Verifique la versión instalada y actualice Homebrew core cuando una nueva versión esté disponible.",
+    "doctor": "Doctor es una característica de Homebrew que puede detectar las causas más comunes de errores.",
+    "cleanup": "Limpieza remueve descargas y archivos en caché para liberar espacio en disco."
+  },
+  "homebrew": {
+    "currentVersion": "Version Actual",
+    "upToDate": "Actualizado",
+    "updateAvailable": "Actualización disponible: v{{version}}"
+  },
+  "cleanup": {
+    "estimatedSpace": "Espacio estimado para liberar: {{size}}",
+    "spaceToFree": "{{size}} puede ser liberado"
+  },
+  "dialogs": {
+    "confirmUninstall": "¿Realmente desea desinstalar \"{{name}}\"?",
+    "confirmInstall": "¿Realmente desea instalar \"{{name}}\"?",
+    "confirmUpdate": "¿Realmente desea actualizar \"{{name}}\"?",
+    "confirmUpdateAll": "¿Realmente desea actualizar todos los paquetes actualizados?",
+    "confirmUpdateSelected": "¿Realmente desea actualizar {{count}} paquetes seleccionados?",
+    "confirmUntap": "¿Realmente desea remover \"{{name}}\"?",
+    "updateLogs": "Logs de actualización para {{name}}",
+    "updateAllLogs": "Logs de actualización para todos los paquetes",
+    "updateSelectedLogs": "Logs de actualización para paquetes seleccionados",
+    "installLogs": "Logs de instalación para {{name}}",
+    "uninstallLogs": "Logs de desinstalación para {{name}}",
+    "untapLogs": "Logs de remover {{name}}",
+    "untapping": "Removiendo \"{{name}}\"...\nPor favor, espere...",
+    "tapLogs": "Logs de agregar repositorio \"{{name}}\"",
+    "tapping": "Agregando repositorio \"{{name}}\"...\nPor favor, espere...",
+    "tapInputTitle": "Agregar repositorio",
+    "tapInputPlaceholder": "user/repo (e.g., homebrew/cask)",
+    "tapInputHint": "Ingrese el nombre del repositorio en el formato: user/repo",
+    "tapInputEmpty": "Por favor, ingrese un nombre de repositorio",
+    "tapInputInvalid": "Formato inválido. El nombre del repositorio debe estar en el formato: user/repo",
+    "repositoryInfo": "Info para {{name}}",
+    "confirmUntapUninstall": "No se puede remover \"{{name}}\" porque contiene {{count}} paquete(s) instalado(s): {{packages}}\n\n¿Desea desinstalarlos primero y luego remover?",
+    "uninstallingPackagesBeforeUntap": "Desinstalando {{count}} paquete(s) antes de remover \"{{name}}\"...\nPor favor, espere...",
+    "uninstallingPackage": "Desinstalando {{name}} ({{current}}/{{total}})...",
+    "retryingUntap": "Reintentando remover \"{{name}}\"...\nPor favor, espere...",
+    "packageInfo": "Info para {{name}}",
+    "sessionLogs": "Logs de sesión",
+    "updating": "Actualizando \"{{name}}\"...\nPor favor, espere...",
+    "installing": "Instalando \"{{name}}\"...\nPor favor, espere...",
+    "uninstalling": "Desinstalando \"{{name}}\"...\nPor favor, espere...",
+    "updatingAll": "Actualizando los paquetes viejos...\nPor favor, espere...",
+    "updatingSelected": "Actualizando {{count}} paquetes seleccionados...\nPor favor, espere...",
+    "gettingInfo": "Obteniendo información para \"{{name}}\"...\nPor favor, espere...",
+    "runningHomebrewUpdate": "Actualizando Homebrew...\nPor favor, espere...",
+    "homebrewUpdateLogs": "Logs de actualización de Homebrew",
+    "runningDoctor": "Ejecutando brew doctor...\nPor favor, espere...",
+    "runningCleanup": "Ejecutando brew cleanup...\nPor favor, espere...",
+    "runningDryRun": "Ejecutando brew cleanup --dry-run...\nPor favor, espere...",
+    "noHomebrewOutput": "No hay registro aun. Hacer clic \"Update Homebrew\".",
+    "installSuccess": "Instalado \"{{name}}\" exitosamente!",
+    "installFailed": "No se pudo instalar \"{{name}}\": {{error}}",
+    "noDoctorOutput": "No hay registro aun. Hacer clic \"Run doctor\".",
+    "noCleanupOutput": "No hay registro aun. Hacer clic \"Run cleanup\"."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Error al cargar programas CLI!",
+    "failedInstalledPackages": "Error al obtener paquetes instalados",
+    "failedInstalledCasks": "Error al obtener casks instalados",
+    "failedUpdatablePackages": "Error al obtener paquetes actualizables",
+    "failedAllPackages": "Error al obtener todos los paquetes",
+    "failedAllCasks": "Error al obtener todos los programas GUI",
+    "failedLeaves": "Error al obtener leaves",
+    "failedRepositories": "Error al obtener repositorios"
+  },
+  "about": {
+    "title": "Acerca de",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – Minimalist Homebrew GUI for macOS",
+    "createdBy": "Creado por Nico Wickersheim",
+    "developedWith": "Desarrollado con {{wails}} y React",
+    "description": "WailBrew es una interfaz gráfica moderna para Homebrew que facilita la gestión, instalación y actualización de paquetes.",
+    "links": "Enlaces:",
+    "wailbrewWebsite": "Sitio web de WailBrew",
+    "githubRepo": "Repositorio GitHub",
+    "reportBug": "Reportar Bug",
+    "homebrewWebsite": "Sitio web de Homebrew",
+    "acknowledgments": "Agradecimientos:",
+    "acknowledgmentText": "Inspirado por {{cakebrew}} de Bruno Philipe.\\nGracias por el gran trabajo en el original Homebrew GUI!",
+    "translationTitle": "Traducciones:",
+    "translationThanks": "Gracias a todos los que contribuyeron a las traducciones!",
+    "improveTranslations": "→ Ayuda a mejorar las traducciones",
+    "copyright": "Copyright © 2025 Nico Wickersheim. Todos los derechos reservados."
+  },
+  "language": {
+    "switchLanguage": "Cambiar idioma",
+    "english": "English",
+    "german": "Deutsch",
+    "french": "Français",
+    "turkish": "Türkçe",
+    "simplified_chinese": "简体中文",
+    "traditional_chinese": "繁體中文",
+    "brazilian_portuguese": "Português do Brasil",
+    "russian": "Русский",
+    "korean": "한국어",
+    "hebrew": "עברית",
+    "spanish": "Español"
+  },
+  "menu": {
+    "app": {
+      "about": "Acerca de WailBrew",
+      "checkUpdates": "Buscar actualizaciones...",
+      "visitWebsite": "Visitar sitio web",
+      "visitGitHub": "Visitar repositorio GitHub",
+      "reportBug": "Reportar Bug",
+      "visitSubreddit": "Visitar Subreddit",
+      "sponsorProject": "Patrocinar proyecto",
+      "quit": "Salir"
+    },
+    "view": {
+      "title": "Ver",
+      "installed": "Programas instaladas",
+      "casks": "Programas GUI instaladas",
+      "outdated": "Programas actualizables",
+      "all": "Todos los programas",
+      "allFormulae": "Todos los programas",
+      "allCasks": "Todos los programas GUI",
+      "leaves": "Leaves",
+      "repositories": "Repositorios",
+      "homebrew": "Homebrew",
+      "doctor": "Auditar",
+      "cleanup": "Limpieza",
+      "settings": "Configuración",
+      "commandPalette": "Paleta de comandos...",
+      "shortcuts": "Atajos de teclado..."
+    },
+    "tools": {
+      "title": "Herramientas",
+      "refreshPackages": "Actualizar paquetes",
+      "exportBrewfile": "Exportar Brewfile...",
+      "exportSuccess": "Exportación exitosa",
+      "exportFailed": "Exportación fallida",
+      "exportMessage": "Brewfile exportado exitosamente a:\n%s",
+      "openConfigFile": "Abrir archivo de configuración",
+      "openConfigFailed": "Failed to Open Config",
+      "viewSessionLogs": "Ver logs de sesión..."
+    },
+    "help": {
+      "title": "Ayuda",
+      "wailbrewHelp": "WailBrew ayuda",
+      "helpTitle": "Ayuda",
+      "helpMessage": "Actualmente no hay una página de ayuda disponible."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Cargando programas…",
+    "loadingRepositories": "Cargando repositorios…",
+    "noResults": "No se encontraron resultados",
+    "allUpToDate": "¡Todo está actualizado!",
+    "installedStatus": "Instalado",
+    "notInstalledStatus": "No instalado",
+    "package": "paquete",
+    "packages": "paquetes",
+    "repository": "repositorio",
+    "repositories": "repositorios"
+  },
+  "repository": {
+    "noSelection": "No se seleccionó repositorio",
+    "status": "Estado",
+    "description": "Descripción",
+    "defaultDescription": "Repositorio de Homebrew",
+    "active": "Activo"
+  },
+  "common": {
+    "notAvailable": "--",
+    "loading": "Cargando..."
+  },
+  "updateDialog": {
+    "title": "Buscar actualizaciones",
+    "checking": "Buscando actualizaciones via Homebrew...",
+    "error": "Error buscando actualizaciones",
+    "available": "Actualización disponible via Homebrew!",
+    "currentVersion": "Version actual",
+    "newVersion": "Nueva version",
+    "published": "Publicado",
+    "size": "Tamaño",
+    "changes": "Cambios",
+    "viewReleaseNotes": "Ver notas de la versión",
+    "availableViaHomebrew": "Nueva version disponible via Homebrew",
+    "manualUpdate": "Actualización manual",
+    "instruction": "Para actualizar WailBrew, por favor ejecuta los siguientes comandos en tu terminal:",
+    "copyCommand": "Copiar comando al portapapeles",
+    "copied": "Comando copiado al portapapeles!",
+    "upToDate": "¡Todo está actualizado!",
+    "currentVersionIs": "Version {{version}} es la version actual disponible via Homebrew.",
+    "tryAgain": "Intentar de nuevo",
+    "gotIt": "Entendido",
+    "downloadAndInstall": "Descargar e instalar",
+    "installing": "Instalando...",
+    "updateInstalled": "Actualización instalada!",
+    "restartMessage": "La actualización ha sido instalada exitosamente. Por favor reinicia WailBrew para usar la nueva version.",
+    "restartNow": "Reiniciar ahora"
+  },
+  "restartDialog": {
+    "title": "Reiniciar requerido",
+    "message": "WailBrew ha sido actualizado!",
+    "description": "WailBrew ha sido actualizado exitosamente. Por favor reinicia la aplicación para usar la nueva version.",
+    "restartNow": "Reiniciar ahora",
+    "later": "Mas tarde"
+  },
+  "toast": {
+    "updateAvailable": "Actualización disponible!",
+    "versionReady": "v{{version}} está lista",
+    "upToDate": "¡Todo está actualizado!",
+    "newOutdatedPackages_one": "{{count}} paquete desactualizado encontrado",
+    "newOutdatedPackages_other": "{{count}} paquetes desactualizados encontrados",
+    "viewOutdated": "Ver paquetes desactualizados",
+    "newPackagesDiscovered": "🎉 Nuevos paquetes descubiertos! {{message}}",
+    "viewAllPackages": "Ver todos los paquetes",
+    "newFormulaeLabel": "Nuevos Programas CLI:",
+    "newCasksLabel": "Nuevos Programas GUI:",
+    "andMore": "+{{count}} más",
+    "newFormula_one": "Nueva programa CLI",
+    "newFormula_other": "Nuevas programas CLI",
+    "newCask_one": "Nueva programa GUI",
+    "newCask_other": "Nuevas programas GUI",
+    "and": " y ",
+    "newFormula": "programa CLI",
+    "newCask": "programa GUI"
+  },
+  "backgroundCheck": {
+    "checkingNow": "Buscando actualizaciones ahora...",
+    "nextCheckIn": "Siguiente verificación en {{minutes}}m {{seconds}}s",
+    "nextCheckInSeconds": "Siguiente verificación en {{seconds}}s"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Configure tu experiencia con Homebrew",
+    "loading": "Cargando configuración...",
+    "footer": "Configure WailBrew settings to customize your Homebrew experience.",
+    "categories": {
+      "general": "General"
+    },
+    "brewPath": {
+      "title": "Configuración del path de Homebrew",
+      "description": "Especifique el path de su instalación de Homebrew. WailBrew usará esta ruta para ejecutar todos los comandos de Homebrew.",
+      "currentPath": "Path actual de Homebrew",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "detectar automáticamente el path de Homebrew",
+      "currentlyUsing": "Actualmente usando:",
+      "note": "Nota: Cambiar el path de Homebrew recargará todos los datos de los paquetes para reflejar la nueva instalación de Homebrew."
+    },
+    "buttons": {
+      "save": "Guardar cambios",
+      "saving": "Guardando...",
+      "reset": "Restablecer"
+    },
+    "messages": {
+      "pathUpdated": "Path de Homebrew actualizado exitosamente!",
+      "pathReset": "Path restablecido al valor actual.",
+      "noChanges": "No hay cambios para guardar.",
+      "pathDetected": "Path detectado automáticamente: {{path}}",
+      "mirrorSourceUpdated": "Fuentes de Homebrew actualizadas exitosamente!",
+      "mirrorSourceReset": "Fuentes de Homebrew restablecidas al valor actual.",
+      "outdatedFlagUpdated": "Flag de actualización actualizado exitosamente!",
+      "outdatedFlagReset": "Flag de actualización restablecido al valor actual.",
+      "caskAppDirUpdated": "Directorio de aplicaciones GUI actualizado exitosamente!",
+      "caskAppDirReset": "Directorio de aplicaciones GUI restablecido al valor actual.",
+      "customCaskOptsUpdated": "Opciones personalizadas de cask actualizadas exitosamente!",
+      "customOutdatedArgsUpdated": "Argumentos personalizados de actualización actualizados exitosamente!",
+      "adminUsernameUpdated": "Nombre de usuario administrador actualizado exitosamente!"
+    },
+    "errors": {
+      "failedToGetPath": "No se pudo obtener el path actual de Homebrew.",
+      "emptyPath": "Por favor ingrese un path de Homebrew válido.",
+      "invalidPath": "Path inválido. Por favor verifique que el path existe y es un ejecutable de Homebrew válido.",
+      "autoDetectionFailed": "No se pudo detectar el path de Homebrew. Por favor ingrese el path manualmente.",
+      "failedToSetMirrorSource": "No se pudo establecer la fuente de Homebrew. Por favor verifique su configuración.",
+      "failedToSetOutdatedFlag": "No se pudo establecer el flag de actualización. Por favor verifique su configuración.",
+      "failedToSetCaskAppDir": "No se pudo establecer el directorio de aplicaciones GUI. Por favor verifique su configuración.",
+      "failedToSelectDirectory": "No se pudo seleccionar el directorio.",
+      "failedToSetCustomCaskOpts": "No se pudo establecer las opciones personalizadas de programa GUI. Por favor verifique su entrada.",
+      "failedToSetCustomOutdatedArgs": "No se pudo establecer los argumentos personalizados de actualización. Por favor verifique su entrada.",
+      "failedToSetAdminUsername": "No se pudo actualizar el nombre de usuario administrador"
+    },
+    "mirrorSource": {
+      "title": "Homebrew servidores",
+      "description": "Switch Homebrew mirror sources to improve download speeds in regions with network issues. This configures HOMEBREW_GIT_REMOTE and HOMEBREW_BOTTLE_DOMAIN environment variables.",
+      "selectMirror": "Seleccionar fuente para descargar paquetes",
+      "custom": "Personalizado",
+      "customGitRemote": "URL Git Remote",
+      "customBottleDomain": "URL Dominio Botella",
+      "note": "Nota: Cambiar la fuente del reflejo afectará todas las operaciones de Homebrew. Reinicie la aplicación o recargue los paquetes después de cambiar.",
+      "mirrors": {
+        "official": "Oficial (Por defecto)",
+        "tsinghua": "Universidad de Tsinghua (China)",
+        "aliyun": "Alibaba Cloud (China)",
+        "ustc": "USTC (China)",
+        "tencent": "Tencent Cloud (China)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "Detección de paquetes desactualizados",
+      "description": "Configure cómo WailBrew detecta paquetes desactualizados. Este ajuste controla qué banderas se usan con el comando 'brew outdated'.",
+      "selectFlag": "Modo de detección de paquetes desactualizados",
+      "note": "Nota: Cambiar esta configuración recargará la lista de paquetes desactualizados para reflejar el nuevo modo de detección.",
+      "options": {
+        "none": "Estándar (Sin condicionales)",
+        "greedy": "Forzar",
+        "greedyAutoUpdates": "Forzar (actulizaciones automáticas)"
+      },
+      "descriptions": {
+        "none": "Muestra solo paquetes que tengan versiones más nuevas disponibles. Este es el comportamiento predeterminado de Homebrew.",
+        "greedy": "También incluye casks que tengan una versión disponible pero están marcados como auto-actualizables. útil para ver todas las actualizaciones disponibles.",
+        "greedyAutoUpdates": "Incluye casks auto-actualizables que pueden ser actualizados. Este es el modo de detección más completo."
+      }
+    },
+    "caskAppDir": {
+      "title": "Directorio de aplicaciones GUI",
+      "description": "Configure el directorio donde se instalan las aplicaciones GUI de Homebrew. Esto establece la variable de entorno HOMEBREW_CASK_OPTS con la opción --appdir.",
+      "currentDir": "Directorio actual",
+      "placeholder": "/Applications/3rd-party",
+      "default": "Por defecto (/Applications)",
+      "currentlyUsing": "Actualmente usando:",
+      "hint": "Haga clic en el icono de la carpeta para seleccionar un directorio. Dejar en blanco para usar el directorio predeterminado /Applications.",
+      "selectDirectory": "Seleccionar directorio",
+      "newDirectory": "Nuevo directorio",
+      "note": "Nota: Cambiar esta configuración afectará donde se colocarán las nuevas instalaciones y actualizaciones de cask. Las instalaciones existentes no se mueven automáticamente."
+    },
+    "adminUsername": {
+      "title": "Nombre de usuario administrador",
+      "description": "Especifique una cuenta administrador alternativa para operaciones con privilegios",
+      "label": "Nombre de usuario administrador",
+      "placeholder": "Enter admin username",
+      "currentUser": "Usuario actual",
+      "info": "Este nombre de usuario se utilizará cuando las operaciones de Homebrew requieran privilegios de administrador. Dejar en blanco para usar su cuenta de usuario actual."
+    },
+    "advancedOptions": {
+      "title": "Opciones avanzadas",
+      "subtitle": "Para usuarios avanzados",
+      "description": "Configure opciones adicionales de Homebrew directamente. Estos ajustes permiten pasar argumentos y opciones personalizados a los comandos de Homebrew.",
+      "warning": "⚠️ Solo usuarios avanzados: Opciones incorrectas pueden causar que los comandos de Homebrew fallen. Consulte la documentación de Homebrew para opciones válidas.",
+      "none": "(none)",
+      "customCaskOpts": {
+        "label": "Opciones personalizadas de programas GUI",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "Flags adicionales para HOMEBREW_CASK_OPTS. Ejemplo: --fontdir, --qlplugindir, --prefpanedir. Estos se fusionarán con la configuración de --appdir de la interfaz.",
+        "preview": "Nuevas opciones"
+      },
+      "customOutdatedArgs": {
+        "label": "Argumentos personalizados de actualización",
+        "placeholder": "--verbose --formula",
+        "hint": "Argumentos para el comando 'brew outdated'. Ejemplo: --verbose, --formula, --cask. Estos se agregarán a la bandera de actualización configurada en la interfaz.",
+        "preview": "Nuevos argumentos"
+      }
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 Iniciando actualización para '{{name}}'...",
+      "success": "✅ Actualización para '{{name}}' completada exitosamente!",
+      "failed": "❌ Actualización para '{{name}}' fallida: {{error}}",
+      "retryingWithForce": "🔄 Reintentando actualización para '{{name}}' con --force (la aplicación puede estar en uso)...",
+      "retryingFailedCasks": "🔄 Reintentando {{count}} cask(s) fallidos con --force..."
+    },
+    "updateAll": {
+      "start": "🔄 Iniciando actualización para todos los paquetes...",
+      "success": "✅ Actualización para todos los paquetes completada exitosamente!",
+      "failed": "❌ Actualización para todos los paquetes fallida: {{error}}"
+    },
+    "homebrewUpdate": {
+      "start": "🔄 Iniciando actualización de Homebrew...",
+      "success": "✅ Actualización de Homebrew completada exitosamente!",
+      "failed": "❌ Actualización de Homebrew fallida: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
+    "install": {
+      "start": "🔄 Iniciando instalación para '{{name}}'...",
+      "success": "✅ Instalación para '{{name}}' completada exitosamente!",
+      "failed": "❌ Instalación para '{{name}}' fallida: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 Iniciando desinstalación para '{{name}}'...",
+      "success": "✅ Desinstalación para '{{name}}' completada exitosamente!",
+      "failed": "❌ Desinstalación para '{{name}}' fallida: {{error}}"
+    },
+    "tap": {
+      "start": "🔄 Iniciando registro para '{{name}}'...",
+      "success": "✅ Registro para '{{name}}' completado exitosamente!",
+      "failed": "❌ Registro para '{{name}}' fallido: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 Iniciando desregistro para '{{name}}'...",
+      "success": "✅ Desregistro para '{{name}}' completado exitosamente!",
+      "failed": "❌ Desregistro para '{{name}}' fallido: {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Error creando pipe de salida: {{error}}",
+      "creatingErrorPipe": "❌ Error creando pipe de error: {{error}}",
+      "startingUpdate": "❌ Error iniciando actualización: {{error}}",
+      "startingUpdateAll": "❌ Error iniciando actualización de todos los paquetes: {{error}}",
+      "startingInstall": "❌ Error iniciando instalación: {{error}}",
+      "startingUninstall": "❌ Error iniciando desinstalación: {{error}}",
+      "startingTap": "❌ Error iniciando registro: {{error}}",
+      "startingUntap": "❌ Error iniciando desregistro: {{error}}",
+      "startingHomebrewUpdate": "❌ Error iniciando actualización de Homebrew: {{error}}"
+    }
+  },
+  "view": {
+    "settings": "Ajustes"
+  }
+}
