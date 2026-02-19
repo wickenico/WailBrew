@@ -153,7 +153,12 @@
     "brewPage": "Homebrew 頁面",
     "loadingAnalytics": "載入統計數據...",
     "installedDepsTitle": "已安裝的相依套件",
-    "installedDepsNone": "沒有已安裝的相依套件"
+    "installedDepsNone": "沒有已安裝的相依套件",
+    "labelHomepage": "首頁",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "相依",
+    "labelLatest": "最新",
+    "labelConflicts": "衝突"
   },
   "tableColumns": {
     "name": "名稱",

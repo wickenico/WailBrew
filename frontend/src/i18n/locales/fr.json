@@ -153,7 +153,12 @@
     "brewPage": "Page Homebrew",
     "loadingAnalytics": "Chargement des statistiques...",
     "installedDepsTitle": "Dépendances installées",
-    "installedDepsNone": "Aucune dépendance installée"
+    "installedDepsNone": "Aucune dépendance installée",
+    "labelHomepage": "Homepage",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "Dépend.",
+    "labelLatest": "Récent",
+    "labelConflicts": "Conflits"
   },
   "tableColumns": {
     "name": "Nom",

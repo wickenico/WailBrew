@@ -153,7 +153,12 @@
     "brewPage": "Страница Homebrew",
     "loadingAnalytics": "Загрузка статистики...",
     "installedDepsTitle": "Установленные зависимости",
-    "installedDepsNone": "Нет установленных зависимостей"
+    "installedDepsNone": "Нет установленных зависимостей",
+    "labelHomepage": "Сайт",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "Завис.",
+    "labelLatest": "Новая",
+    "labelConflicts": "Конфликты"
   },
   "tableColumns": {
     "name": "Название",

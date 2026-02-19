@@ -153,7 +153,12 @@
     "brewPage": "Homebrew Sayfası",
     "loadingAnalytics": "İstatistikler yükleniyor...",
     "installedDepsTitle": "Yüklü bağımlılıklar",
-    "installedDepsNone": "Yüklü bağımlılık yok"
+    "installedDepsNone": "Yüklü bağımlılık yok",
+    "labelHomepage": "Anasayfa",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "Bağıml.",
+    "labelLatest": "Son",
+    "labelConflicts": "Çakışma"
   },
   "tableColumns": {
     "name": "İsim",

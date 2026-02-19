@@ -153,7 +153,12 @@
     "brewPage": "דף Homebrew",
     "loadingAnalytics": "טוען סטטיסטיקות...",
     "installedDepsTitle": "תלויות מותקנות",
-    "installedDepsNone": "אין תלויות מותקנות"
+    "installedDepsNone": "אין תלויות מותקנות",
+    "labelHomepage": "דף הבית",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "תלויות",
+    "labelLatest": "חדש",
+    "labelConflicts": "קונפליקטים"
   },
   "tableColumns": {
     "name": "שם",

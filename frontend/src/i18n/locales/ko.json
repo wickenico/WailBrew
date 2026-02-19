@@ -153,7 +153,12 @@
     "brewPage": "Homebrew 페이지",
     "loadingAnalytics": "통계 로딩 중...",
     "installedDepsTitle": "설치된 의존성",
-    "installedDepsNone": "설치된 의존성 없음"
+    "installedDepsNone": "설치된 의존성 없음",
+    "labelHomepage": "홈페이지",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "의존성",
+    "labelLatest": "최신",
+    "labelConflicts": "충돌"
   },
   "tableColumns": {
     "name": "이름",

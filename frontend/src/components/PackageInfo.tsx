@@ -1,5 +1,5 @@
 import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, TrendingUp } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GetInstalledDependencies } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
@@ -32,9 +32,12 @@ interface AnalyticsData {
     };
 }
 
+// Session-level cache: survives re-renders, reset on page reload
+interface CacheEntry { analytics: AnalyticsData | null; brewPageUrl: string | null; }
+const analyticsCache = new Map<string, CacheEntry>();
+
 const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view, onSelectDependency }) => {
     const { t } = useTranslation();
-    const [isHomepageHovered, setIsHomepageHovered] = useState(false);
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loadingAnalytics, setLoadingAnalytics] = useState(false);
     const [brewPageUrl, setBrewPageUrl] = useState<string | null>(null);
@@ -42,25 +45,23 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const [installedDeps, setInstalledDeps] = useState<string[]>([]);
     const [loadingInstalledDeps, setLoadingInstalledDeps] = useState(false);
 
-    const name = packageEntry?.name || t('common.notAvailable');
-    const desc = packageEntry?.desc || t('common.notAvailable');
-    const homepage = packageEntry?.homepage || t('common.notAvailable');
-    const version = packageEntry?.installedVersion || t('common.notAvailable');
-    const status = packageEntry ? (packageEntry.isInstalled ? t('packageInfo.installed') : t('packageInfo.notInstalled')) : t('common.notAvailable');
     const dependencies = packageEntry?.dependencies || [];
-    const conflicts = packageEntry?.conflicts?.length ? packageEntry.conflicts.join(", ") : t('common.notAvailable');
+    const conflicts = packageEntry?.conflicts?.filter(Boolean) || [];
 
-    const isValidUrl = (url: string) => {
-        return url && url !== t('common.notAvailable') && (url.startsWith('http://') || url.startsWith('https://'));
-    };
+    const isValidUrl = (url: string) =>
+        url && (url.startsWith('http://') || url.startsWith('https://'));
 
-    const handleHomepageClick = () => {
-        if (packageEntry?.homepage && isValidUrl(packageEntry.homepage)) {
-            BrowserOpenURL(packageEntry.homepage);
+    const shortenUrl = (url: string) => {
+        try {
+            const u = new URL(url);
+            return u.hostname + (u.pathname !== '/' ? u.pathname : '');
+        } catch {
+            return url;
         }
     };
 
-    // Fetch analytics data from Homebrew API
+    // Analytics fetch — with cache + isCask-aware endpoint selection
+    const fetchRef = useRef<string | null>(null);
     useEffect(() => {
         if (!packageEntry?.name) {
             setAnalytics(null);
@@ -68,46 +69,75 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             return;
         }
 
+        const name = packageEntry.name;
+
+        // Cache hit → instant, no network needed
+        if (analyticsCache.has(name)) {
+            const cached = analyticsCache.get(name)!;
+            setAnalytics(cached.analytics);
+            setBrewPageUrl(cached.brewPageUrl);
+            return;
+        }
+
+        fetchRef.current = name;
+        setLoadingAnalytics(true);
+
         const fetchAnalytics = async () => {
-            setLoadingAnalytics(true);
             try {
-                // Try formula first, then cask if formula fails
-                let response = await fetch(`https://formulae.brew.sh/api/formula/${packageEntry.name}.json`);
-                let packageType: "formula" | "cask" | null = null;
+                let analytics: AnalyticsData | null = null;
+                let brewPageUrl: string | null = null;
 
-                if (response.ok) {
-                    packageType = "formula";
+                if (packageEntry.isCask === true) {
+                    // Known cask → single targeted request
+                    const res = await fetch(`https://formulae.brew.sh/api/cask/${name}.json`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        analytics = data.analytics?.install ? data.analytics : null;
+                        brewPageUrl = `https://formulae.brew.sh/cask/${name}`;
+                    }
+                } else if (packageEntry.isCask === false) {
+                    // Known formula → single targeted request
+                    const res = await fetch(`https://formulae.brew.sh/api/formula/${name}.json`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        analytics = data.analytics?.install ? data.analytics : null;
+                        brewPageUrl = `https://formulae.brew.sh/formula/${name}`;
+                    }
                 } else {
-                    // Try cask API
-                    response = await fetch(`https://formulae.brew.sh/api/cask/${packageEntry.name}.json`);
-                    if (response.ok) {
-                        packageType = "cask";
+                    // Unknown type → fetch both in parallel, use whichever responds OK first
+                    const [formulaRes, caskRes] = await Promise.all([
+                        fetch(`https://formulae.brew.sh/api/formula/${name}.json`),
+                        fetch(`https://formulae.brew.sh/api/cask/${name}.json`),
+                    ]);
+                    if (formulaRes.ok) {
+                        const data = await formulaRes.json();
+                        analytics = data.analytics?.install ? data.analytics : null;
+                        brewPageUrl = `https://formulae.brew.sh/formula/${name}`;
+                    } else if (caskRes.ok) {
+                        const data = await caskRes.json();
+                        analytics = data.analytics?.install ? data.analytics : null;
+                        brewPageUrl = `https://formulae.brew.sh/cask/${name}`;
                     }
                 }
 
-                if (response.ok && packageType) {
-                    const data = await response.json();
-                    if (data.analytics?.install) {
-                        setAnalytics(data.analytics);
-                    } else {
-                        setAnalytics(null);
-                    }
-                    setBrewPageUrl(`https://formulae.brew.sh/${packageType}/${packageEntry.name}`);
-                } else {
-                    setAnalytics(null);
-                    setBrewPageUrl(null);
-                }
-            } catch (error) {
-                console.error('Failed to fetch analytics:', error);
+                // Only apply if this fetch is still the current one (no stale updates)
+                if (fetchRef.current !== name) return;
+
+                analyticsCache.set(name, { analytics, brewPageUrl });
+                setAnalytics(analytics);
+                setBrewPageUrl(brewPageUrl);
+            } catch {
+                if (fetchRef.current !== name) return;
+                analyticsCache.set(name, { analytics: null, brewPageUrl: null });
                 setAnalytics(null);
                 setBrewPageUrl(null);
             } finally {
-                setLoadingAnalytics(false);
+                if (fetchRef.current === name) setLoadingAnalytics(false);
             }
         };
 
         fetchAnalytics();
-    }, [packageEntry?.name]);
+    }, [packageEntry?.name, packageEntry?.isCask]);
 
     // Reset installed deps when package changes
     useEffect(() => {
@@ -125,9 +155,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             .finally(() => setLoadingInstalledDeps(false));
     }, [showInstalledDeps, packageEntry?.name]);
 
-    const formatNumber = (num: number): string => {
-        return num.toLocaleString();
-    };
+    const formatNumber = (num: number): string => num.toLocaleString();
 
     const getInstallCount = (period: "30d" | "90d" | "365d"): number => {
         if (!analytics?.install?.[period]) return 0;
@@ -136,78 +164,155 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         return mainPackage ? periodData[mainPackage] : 0;
     };
 
-    return (
-        <div className="package-info-container">
-            <div className="package-info-main">
-                <p>
-                    <strong>{name}</strong>{" "}
-                    {packageEntry && loadingDetailsFor === packageEntry.name && (
-                        <span style={{ fontSize: "12px", color: "#888" }}>{t('packageInfo.loading')}</span>
-                    )}
-                </p>
-                <p>{t('packageInfo.description')}: {desc}</p>
-                <p>
-                    {t('packageInfo.homepage')}:{" "}
-                    {isValidUrl(homepage) ? (
-                        <span
-                            onClick={handleHomepageClick}
-                            className="text-link"
-                            title={homepage}
-                        >
-                            {homepage}
-                            {isHomepageHovered && (
-                                <ExternalLink size={14} className="link-icon" />
-                            )}
-                        </span>
-                    ) : (
-                        <span>{homepage}</span>
-                    )}
-                </p>
-                <p>
-                    {t('packageInfo.brewPage')}:{" "}
-                    {brewPageUrl ? (
-                        <span
-                            onClick={() => BrowserOpenURL(brewPageUrl)}
-                            className="text-link"
-                            title={brewPageUrl}
-                        >
-                            {brewPageUrl}
-                        </span>
-                    ) : (
-                        <span>{t('common.notAvailable')}</span>
-                    )}
-                </p>
-                {view === "all" ? (
-                    <p>{t('packageInfo.status')}: {status}</p>
-                ) : (
-                    <p>{t('packageInfo.version')}: {version}</p>
-                )}
-                <p>
-                    {t('packageInfo.dependencies')}:{" "}
-                    {dependencies.length > 0 ? (
-                        dependencies.map((dep, index) => (
-                            <React.Fragment key={dep}>
-                                {onSelectDependency ? (
-                                    <span
-                                        onClick={() => onSelectDependency(dep)}
-                                        className="text-link"
-                                        title={`Click to view ${dep}`}
-                                    >
-                                        {dep}
-                                    </span>
-                                ) : (
-                                    <span>{dep}</span>
-                                )}
-                                {index < dependencies.length - 1 && ", "}
-                            </React.Fragment>
-                        ))
-                    ) : (
-                        <span>{t('common.notAvailable')}</span>
-                    )}
-                </p>
-                <p>{t('packageInfo.conflicts')}: {conflicts}</p>
+    // ── Empty state ──────────────────────────────────────────────
+    if (!packageEntry) {
+        return (
+            <div className="pi-container">
+                <div className="pi-empty">
+                    <span className="pi-empty-icon">📦</span>
+                    <span className="pi-empty-text">{t('packageInfo.noSelection')}</span>
+                </div>
+            </div>
+        );
+    }
 
-                {packageEntry?.isInstalled && !packageEntry?.isCask && (
+    const isLoading = loadingDetailsFor === packageEntry.name;
+    const typeLabel = packageEntry.isCask ? 'Cask' : 'Formula';
+    const typeBadgeClass = packageEntry.isCask ? 'pi-type-badge cask' : 'pi-type-badge formula';
+
+    return (
+        <div className="pi-container">
+            {/* ── Left: main info ──────────────────────────────── */}
+            <div className="pi-main">
+
+                {/* Header — always visible immediately */}
+                <div className="pi-header">
+                    <div className="pi-header-left">
+                        <span className="pi-name">{packageEntry.name}</span>
+                        {packageEntry.isCask !== undefined && (
+                            <span className={typeBadgeClass}>{typeLabel}</span>
+                        )}
+                        {packageEntry.isInstalled && (
+                            <span className="pi-installed-badge">{t('packageInfo.installed')}</span>
+                        )}
+                        {view !== 'all' && packageEntry.installedVersion && (
+                            <span className="pi-version-badge">{packageEntry.installedVersion}</span>
+                        )}
+                    </div>
+                </div>
+
+                {/* Description — skeleton while loading */}
+                {isLoading ? (
+                    <div className="pi-skel pi-skel-desc" />
+                ) : packageEntry.desc ? (
+                    <p className="pi-desc">{packageEntry.desc}</p>
+                ) : null}
+
+                {/* Meta rows — always show structure, skeleton values while loading */}
+                <div className="pi-meta">
+                    {/* Version/Status row */}
+                    {view === 'all' ? (
+                        <div className="pi-row">
+                            <span className="pi-row-label">{t('packageInfo.status')}</span>
+                            <span className={`pi-status-value ${packageEntry.isInstalled ? 'installed' : 'not-installed'}`}>
+                                {packageEntry.isInstalled ? t('packageInfo.installed') : t('packageInfo.notInstalled')}
+                            </span>
+                        </div>
+                    ) : packageEntry.latestVersion && packageEntry.latestVersion !== packageEntry.installedVersion ? (
+                        <div className="pi-row">
+                            <span className="pi-row-label">{t('packageInfo.labelLatest')}</span>
+                            <span className="pi-latest-badge standalone">→ {packageEntry.latestVersion}</span>
+                        </div>
+                    ) : null}
+
+                    {/* Homepage */}
+                    <div className="pi-row">
+                        <span className="pi-row-label">{t('packageInfo.labelHomepage')}</span>
+                        {isLoading ? (
+                            <span className="pi-skel pi-skel-url" />
+                        ) : packageEntry.homepage && isValidUrl(packageEntry.homepage) ? (
+                            <span
+                                className="pi-link"
+                                onClick={() => BrowserOpenURL(packageEntry.homepage!)}
+                                title={packageEntry.homepage}
+                            >
+                                {shortenUrl(packageEntry.homepage)}
+                                <ExternalLink size={10} className="pi-link-icon" />
+                            </span>
+                        ) : <span className="pi-row-value" style={{ opacity: 0.35 }}>--</span>}
+                    </div>
+
+                    {/* Brew page */}
+                    <div className="pi-row">
+                        <span className="pi-row-label">{t('packageInfo.labelBrewPage')}</span>
+                        {loadingAnalytics ? (
+                            <span className="pi-skel pi-skel-url" />
+                        ) : brewPageUrl ? (
+                            <span
+                                className="pi-link"
+                                onClick={() => BrowserOpenURL(brewPageUrl)}
+                                title={brewPageUrl}
+                            >
+                                {shortenUrl(brewPageUrl)}
+                                <ExternalLink size={10} className="pi-link-icon" />
+                            </span>
+                        ) : <span className="pi-row-value" style={{ opacity: 0.35 }}>--</span>}
+                    </div>
+                </div>
+
+                {/* ── Dependencies — skeleton chips while loading ── */}
+                <div className="pi-section">
+                    <div className="pi-chips-row">
+                        <span className="pi-chips-label">{t('packageInfo.labelDeps')}</span>
+                        <div className="pi-chips">
+                            {isLoading ? (
+                                <>
+                                    <span className="pi-skel pi-skel-chip" style={{ width: '52px' }} />
+                                    <span className="pi-skel pi-skel-chip" style={{ width: '72px' }} />
+                                    <span className="pi-skel pi-skel-chip" style={{ width: '40px' }} />
+                                </>
+                            ) : dependencies.length > 0 ? (
+                                dependencies.map(dep => (
+                                    onSelectDependency ? (
+                                        <span
+                                            key={dep}
+                                            className="pi-chip clickable"
+                                            onClick={() => onSelectDependency(dep)}
+                                            title={dep}
+                                        >{dep}</span>
+                                    ) : (
+                                        <span key={dep} className="pi-chip" title={dep}>{dep}</span>
+                                    )
+                                ))
+                            ) : (
+                                <span className="pi-chip" style={{ opacity: 0.35 }}>--</span>
+                            )}
+                        </div>
+                    </div>
+
+                    {!isLoading && conflicts.length > 0 && (
+                        <div className="pi-chips-row">
+                            <span className="pi-chips-label">{t('packageInfo.labelConflicts')}</span>
+                            <div className="pi-chips">
+                                {conflicts.map(c => (
+                                    onSelectDependency ? (
+                                        <span
+                                            key={c}
+                                            className="pi-chip conflict clickable"
+                                            onClick={() => onSelectDependency(c)}
+                                            title={c}
+                                        >{c}</span>
+                                    ) : (
+                                        <span key={c} className="pi-chip conflict" title={c}>{c}</span>
+                                    )
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* ── Installed deps toggle ── */}
+                {packageEntry.isInstalled && !packageEntry.isCask && (
                     <div className="installed-deps-section">
                         <button
                             className={`installed-deps-toggle${showInstalledDeps ? ' open' : ''}`}
@@ -242,45 +347,10 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                 )}
             </div>
 
+            {/* ── Right: Analytics (layout unchanged) ─────────── */}
             <div className="package-analytics">
                 {loadingAnalytics ? (
                     <div className="analytics-loading">{t('packageInfo.loadingAnalytics')}</div>
-                ) : analytics ? (
-                    <>
-                        <div className="analytics-header">
-                            <BarChart3 size={16} />
-                            <span>{t('packageInfo.downloadStatistics')}</span>
-                        </div>
-                        <div className="analytics-stats">
-                            <div className="analytics-stat">
-                                <div className="stat-icon">
-                                    <Calendar size={18} />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-label">{t('packageInfo.last30Days')}</div>
-                                    <div className="stat-value">{formatNumber(getInstallCount("30d"))}</div>
-                                </div>
-                            </div>
-                            <div className="analytics-stat">
-                                <div className="stat-icon">
-                                    <TrendingUp size={18} />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-label">{t('packageInfo.last90Days')}</div>
-                                    <div className="stat-value">{formatNumber(getInstallCount("90d"))}</div>
-                                </div>
-                            </div>
-                            <div className="analytics-stat">
-                                <div className="stat-icon">
-                                    <BarChart3 size={18} />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-label">{t('packageInfo.last365Days')}</div>
-                                    <div className="stat-value">{formatNumber(getInstallCount("365d"))}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </>
                 ) : (
                     <>
                         <div className="analytics-header">
@@ -288,33 +358,21 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                             <span>{t('packageInfo.downloadStatistics')}</span>
                         </div>
                         <div className="analytics-stats">
-                            <div className="analytics-stat analytics-stat-placeholder">
-                                <div className="stat-icon">
-                                    <Calendar size={18} />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-label">{t('packageInfo.last30Days')}</div>
-                                    <div className="stat-value">--</div>
-                                </div>
-                            </div>
-                            <div className="analytics-stat analytics-stat-placeholder">
-                                <div className="stat-icon">
-                                    <TrendingUp size={18} />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-label">{t('packageInfo.last90Days')}</div>
-                                    <div className="stat-value">--</div>
-                                </div>
-                            </div>
-                            <div className="analytics-stat analytics-stat-placeholder">
-                                <div className="stat-icon">
-                                    <BarChart3 size={18} />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-label">{t('packageInfo.last365Days')}</div>
-                                    <div className="stat-value">--</div>
-                                </div>
-                            </div>
+                            {(["30d", "90d", "365d"] as const).map((period, i) => {
+                                const count = getInstallCount(period);
+                                const isPlaceholder = !analytics;
+                                const icons = [<Calendar size={18} />, <TrendingUp size={18} />, <BarChart3 size={18} />];
+                                const labels = [t('packageInfo.last30Days'), t('packageInfo.last90Days'), t('packageInfo.last365Days')];
+                                return (
+                                    <div key={period} className={`analytics-stat${isPlaceholder ? ' analytics-stat-placeholder' : ''}`}>
+                                        <div className="stat-icon">{icons[i]}</div>
+                                        <div className="stat-content">
+                                            <div className="stat-label">{labels[i]}</div>
+                                            <div className="stat-value">{isPlaceholder ? '--' : formatNumber(count)}</div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </>
                 )}
@@ -323,4 +381,4 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     );
 };
 
-export default PackageInfo; 
+export default PackageInfo;
