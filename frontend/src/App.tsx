@@ -427,6 +427,23 @@ const WailBrewApp = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [view, allPackagesLoaded, loadingAllPackages]);
 
+    // Apply pending dependency selection once allPackages has finished loading
+    useEffect(() => {
+        if (!allPackagesLoaded || !pendingDependencyRef.current) return;
+        const name = pendingDependencyRef.current;
+        pendingDependencyRef.current = null;
+        const pkg =
+            allPackages.find(p => p.name === name) ||
+            packages.find(p => p.name === name) || {
+                name,
+                installedVersion: "",
+                isInstalled: false,
+            };
+        // Small tick to let the table render its rows before scrolling
+        setTimeout(() => handleSelect(pkg), 50);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allPackagesLoaded, allPackages]);
+
     // Load all casks when user switches to "allCasks" view
     useEffect(() => {
         if (view === "allCasks" && !allCasksLoaded && !loadingAllCasks) {
@@ -749,6 +766,9 @@ const WailBrewApp = () => {
 
     // Refs for PackageTable components to focus on Cmd+T
     const packageTableRef = useRef<import('./components/PackageTable').PackageTableRef | null>(null);
+
+    // Pending dependency selection: set when allPackages isn't loaded yet
+    const pendingDependencyRef = useRef<string | null>(null);
 
     // Global keyboard shortcuts
     useEffect(() => {
@@ -1079,30 +1099,25 @@ const WailBrewApp = () => {
         // Clear search first to ensure package is visible
         setSearchQuery("");
 
-        // Try to find the dependency in all packages
-        let pkg = allPackages.find(p => p.name === dependencyName);
-
-        // If not found in all packages, check installed packages
-        if (!pkg) {
-            pkg = packages.find(p => p.name === dependencyName);
-        }
-
-        if (!pkg) {
-            // Create a minimal package entry if not found
-            pkg = {
-                name: dependencyName,
-                installedVersion: "",
-                isInstalled: false,
-            };
-        }
-
-        // Switch to "all" view to show all packages
+        // Switch to "all" view
         setView("all");
 
-        // Use setTimeout to ensure view renders and then select & scroll to package
-        setTimeout(async () => {
-            await handleSelect(pkg!);
-        }, 200);
+        if (allPackagesLoaded) {
+            // Packages already loaded — find & select immediately
+            const pkg =
+                allPackages.find(p => p.name === dependencyName) ||
+                packages.find(p => p.name === dependencyName) || {
+                    name: dependencyName,
+                    installedVersion: "",
+                    isInstalled: false,
+                };
+            // Small tick so the table has rendered after the view switch
+            setTimeout(() => handleSelect(pkg), 50);
+        } else {
+            // allPackages not loaded yet — store name and let the effect handle it
+            // once loadAllPackages() finishes (triggered by the view === "all" effect above)
+            pendingDependencyRef.current = dependencyName;
+        }
     };
 
     const handleRemoveConfirmed = async () => {
