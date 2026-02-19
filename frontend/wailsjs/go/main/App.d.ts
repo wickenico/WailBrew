@@ -68,6 +68,8 @@ export function GetHomebrewVersion():Promise<string>;
 
 export function GetInstalledDependencies(arg1:string):Promise<Array<string>>;
 
+export function GetInstalledDependents(arg1:string):Promise<Array<string>>;
+
 export function GetMacOSReleaseName():Promise<string>;
 
 export function GetMacOSVersion():Promise<string>;

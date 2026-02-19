@@ -154,6 +154,8 @@
     "loadingAnalytics": "加载统计数据...",
     "installedDepsTitle": "已安装的依赖项",
     "installedDepsNone": "没有已安装的依赖项",
+    "installedDependentsTitle": "被使用（已安装）",
+    "installedDependentsNone": "未被任何已安装的配方使用",
     "labelHomepage": "主页",
     "labelBrewPage": "Homebrew",
     "labelDeps": "依赖",

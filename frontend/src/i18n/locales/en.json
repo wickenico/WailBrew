@@ -154,6 +154,8 @@
     "loadingAnalytics": "Loading analytics...",
     "installedDepsTitle": "Installed Dependencies",
     "installedDepsNone": "No installed dependencies",
+    "installedDependentsTitle": "Used by (installed)",
+    "installedDependentsNone": "Not used by any installed formula",
     "labelHomepage": "Homepage",
     "labelBrewPage": "Homebrew",
     "labelDeps": "Deps",

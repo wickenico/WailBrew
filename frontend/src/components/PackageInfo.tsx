@@ -1,7 +1,7 @@
 import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, TrendingUp } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GetInstalledDependencies } from "../../wailsjs/go/main/App";
+import { GetInstalledDependencies, GetInstalledDependents } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageEntry {
@@ -44,6 +44,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const [showInstalledDeps, setShowInstalledDeps] = useState(false);
     const [installedDeps, setInstalledDeps] = useState<string[]>([]);
     const [loadingInstalledDeps, setLoadingInstalledDeps] = useState(false);
+    const [showInstalledDependents, setShowInstalledDependents] = useState(false);
+    const [installedDependents, setInstalledDependents] = useState<string[]>([]);
+    const [loadingInstalledDependents, setLoadingInstalledDependents] = useState(false);
 
     const dependencies = packageEntry?.dependencies || [];
     const conflicts = packageEntry?.conflicts?.filter(Boolean) || [];
@@ -139,10 +142,12 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         fetchAnalytics();
     }, [packageEntry?.name, packageEntry?.isCask]);
 
-    // Reset installed deps when package changes
+    // Reset installed deps/dependents when package changes
     useEffect(() => {
         setShowInstalledDeps(false);
         setInstalledDeps([]);
+        setShowInstalledDependents(false);
+        setInstalledDependents([]);
     }, [packageEntry?.name]);
 
     // Fetch installed dependencies when panel is opened
@@ -154,6 +159,16 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             .catch(() => setInstalledDeps([]))
             .finally(() => setLoadingInstalledDeps(false));
     }, [showInstalledDeps, packageEntry?.name]);
+
+    // Fetch installed dependents (brew uses --installed) when panel is opened
+    useEffect(() => {
+        if (!showInstalledDependents || !packageEntry?.name) return;
+        setLoadingInstalledDependents(true);
+        GetInstalledDependents(packageEntry.name)
+            .then(deps => setInstalledDependents(deps ?? []))
+            .catch(() => setInstalledDependents([]))
+            .finally(() => setLoadingInstalledDependents(false));
+    }, [showInstalledDependents, packageEntry?.name]);
 
     const formatNumber = (num: number): string => num.toLocaleString();
 
@@ -311,38 +326,80 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                     )}
                 </div>
 
-                {/* ── Installed deps toggle ── */}
+                {/* ── Installed deps / dependents toggles ── */}
                 {packageEntry.isInstalled && !packageEntry.isCask && (
-                    <div className="installed-deps-section">
-                        <button
-                            className={`installed-deps-toggle${showInstalledDeps ? ' open' : ''}`}
-                            onClick={() => setShowInstalledDeps(prev => !prev)}
-                        >
-                            <GitBranch size={11} />
-                            <span>{t('packageInfo.installedDepsTitle')}</span>
-                            <ChevronDown size={11} className={`installed-deps-chevron${showInstalledDeps ? ' rotated' : ''}`} />
-                        </button>
+                    <div className="installed-deps-row">
+                        {/* Dependencies: brew deps --installed */}
+                        <div className="installed-deps-section">
+                            <button
+                                className={`installed-deps-toggle${showInstalledDeps ? ' open' : ''}`}
+                                onClick={() => {
+                                    setShowInstalledDeps(prev => !prev);
+                                    setShowInstalledDependents(false);
+                                }}
+                            >
+                                <GitBranch size={11} />
+                                <span>{t('packageInfo.installedDepsTitle')}</span>
+                                <ChevronDown size={11} className={`installed-deps-chevron${showInstalledDeps ? ' rotated' : ''}`} />
+                            </button>
 
-                        {showInstalledDeps && (
-                            <div className="installed-deps-list">
-                                {loadingInstalledDeps ? (
-                                    <span className="installed-dep-loading">{t('common.loading')}</span>
-                                ) : installedDeps.length === 0 ? (
-                                    <span className="installed-dep-none">{t('packageInfo.installedDepsNone')}</span>
-                                ) : (
-                                    installedDeps.map(dep => (
-                                        <span
-                                            key={dep}
-                                            className="installed-dep-chip"
-                                            onClick={() => onSelectDependency?.(dep)}
-                                            title={dep}
-                                        >
-                                            {dep}
-                                        </span>
-                                    ))
-                                )}
-                            </div>
-                        )}
+                            {showInstalledDeps && (
+                                <div className="installed-deps-list">
+                                    {loadingInstalledDeps ? (
+                                        <span className="installed-dep-loading">{t('common.loading')}</span>
+                                    ) : installedDeps.length === 0 ? (
+                                        <span className="installed-dep-none">{t('packageInfo.installedDepsNone')}</span>
+                                    ) : (
+                                        installedDeps.map(dep => (
+                                            <span
+                                                key={dep}
+                                                className="installed-dep-chip"
+                                                onClick={() => onSelectDependency?.(dep)}
+                                                title={dep}
+                                            >
+                                                {dep}
+                                            </span>
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Dependents: brew uses --installed */}
+                        <div className="installed-deps-section">
+                            <button
+                                className={`installed-deps-toggle${showInstalledDependents ? ' open' : ''}`}
+                                onClick={() => {
+                                    setShowInstalledDependents(prev => !prev);
+                                    setShowInstalledDeps(false);
+                                }}
+                            >
+                                <GitBranch size={11} style={{ transform: 'scaleY(-1)' }} />
+                                <span>{t('packageInfo.installedDependentsTitle')}</span>
+                                <ChevronDown size={11} className={`installed-deps-chevron${showInstalledDependents ? ' rotated' : ''}`} />
+                            </button>
+
+                            {showInstalledDependents && (
+                                <div className="installed-deps-list">
+                                    {loadingInstalledDependents ? (
+                                        <span className="installed-dep-loading">{t('common.loading')}</span>
+                                    ) : installedDependents.length === 0 ? (
+                                        <span className="installed-dep-none">{t('packageInfo.installedDependentsNone')}</span>
+                                    ) : (
+                                        installedDependents.map(dep => (
+                                            <span
+                                                key={dep}
+                                                className="installed-dep-chip"
+                                                onClick={() => onSelectDependency?.(dep)}
+                                                title={dep}
+                                            >
+                                                {dep}
+                                            </span>
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
             </div>

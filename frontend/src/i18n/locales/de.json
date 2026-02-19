@@ -154,6 +154,8 @@
     "loadingAnalytics": "Lade Statistiken...",
     "installedDepsTitle": "Installierte Abhängigkeiten",
     "installedDepsNone": "Keine installierten Abhängigkeiten",
+    "installedDependentsTitle": "Verwendet von (installiert)",
+    "installedDependentsNone": "Wird von keiner installierten Formel verwendet",
     "labelHomepage": "Homepage",
     "labelBrewPage": "Homebrew",
     "labelDeps": "Abhäng.",

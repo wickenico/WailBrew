@@ -154,6 +154,8 @@
     "loadingAnalytics": "טוען סטטיסטיקות...",
     "installedDepsTitle": "תלויות מותקנות",
     "installedDepsNone": "אין תלויות מותקנות",
+    "installedDependentsTitle": "בשימוש על ידי (מותקן)",
+    "installedDependentsNone": "לא בשימוש על ידי אף נוסחה מותקנת",
     "labelHomepage": "דף הבית",
     "labelBrewPage": "Homebrew",
     "labelDeps": "תלויות",

@@ -154,6 +154,8 @@
     "loadingAnalytics": "통계 로딩 중...",
     "installedDepsTitle": "설치된 의존성",
     "installedDepsNone": "설치된 의존성 없음",
+    "installedDependentsTitle": "사용 중인 패키지 (설치됨)",
+    "installedDependentsNone": "설치된 패키지에서 사용되지 않음",
     "labelHomepage": "홈페이지",
     "labelBrewPage": "Homebrew",
     "labelDeps": "의존성",

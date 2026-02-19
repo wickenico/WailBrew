@@ -3562,7 +3562,6 @@ body {
 
 .pi-main {
   min-width: 0;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
@@ -4036,14 +4035,23 @@ body {
 }
 
 /* ── Installed Dependencies ───────────────────────────────────── */
-.installed-deps-section {
+.installed-deps-row {
+  display: flex;
+  gap: 0.4rem;
   margin-top: 0.5rem;
 }
 
+.installed-deps-section {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
 .installed-deps-toggle {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.3rem;
+  width: 100%;
   background: none;
   border: 1px solid var(--glass-border);
   border-radius: 6px;
@@ -4054,6 +4062,7 @@ body {
   cursor: pointer;
   transition: all var(--transition);
   user-select: none;
+  overflow: hidden;
 }
 
 .installed-deps-toggle:hover {
@@ -4072,6 +4081,15 @@ body {
   flex-shrink: 0;
 }
 
+.installed-deps-toggle span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
 .installed-deps-chevron {
   transition: transform 0.2s ease;
 }
@@ -4081,14 +4099,19 @@ body {
 }
 
 .installed-deps-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-  margin-top: 0.4rem;
   padding: 0.4rem 0.5rem;
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--card-bg, rgba(30, 30, 40, 0.97));
   border: 1px solid var(--glass-border);
   border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   animation: deps-expand 0.15s ease;
 }
 
@@ -4131,7 +4154,8 @@ body {
 
 /* Light theme overrides */
 [data-theme='light'] .installed-deps-list {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 [data-theme='light'] .installed-dep-chip {

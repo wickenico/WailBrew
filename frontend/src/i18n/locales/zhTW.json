@@ -154,6 +154,8 @@
     "loadingAnalytics": "載入統計數據...",
     "installedDepsTitle": "已安裝的相依套件",
     "installedDepsNone": "沒有已安裝的相依套件",
+    "installedDependentsTitle": "被使用（已安裝）",
+    "installedDependentsNone": "未被任何已安裝的套件使用",
     "labelHomepage": "首頁",
     "labelBrewPage": "Homebrew",
     "labelDeps": "相依",

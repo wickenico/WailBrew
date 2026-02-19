@@ -130,6 +130,10 @@ export function GetInstalledDependencies(arg1) {
   return window['go']['main']['App']['GetInstalledDependencies'](arg1);
 }
 
+export function GetInstalledDependents(arg1) {
+  return window['go']['main']['App']['GetInstalledDependents'](arg1);
+}
+
 export function GetMacOSReleaseName() {
   return window['go']['main']['App']['GetMacOSReleaseName']();
 }

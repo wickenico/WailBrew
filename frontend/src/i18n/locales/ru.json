@@ -154,6 +154,8 @@
     "loadingAnalytics": "Загрузка статистики...",
     "installedDepsTitle": "Установленные зависимости",
     "installedDepsNone": "Нет установленных зависимостей",
+    "installedDependentsTitle": "Используется в (установленных)",
+    "installedDependentsNone": "Не используется ни одной установленной формулой",
     "labelHomepage": "Сайт",
     "labelBrewPage": "Homebrew",
     "labelDeps": "Завис.",

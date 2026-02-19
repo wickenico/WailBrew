@@ -154,6 +154,8 @@
     "loadingAnalytics": "İstatistikler yükleniyor...",
     "installedDepsTitle": "Yüklü bağımlılıklar",
     "installedDepsNone": "Yüklü bağımlılık yok",
+    "installedDependentsTitle": "Tarafından kullanılan (yüklü)",
+    "installedDependentsNone": "Yüklü hiçbir formül tarafından kullanılmıyor",
     "labelHomepage": "Anasayfa",
     "labelBrewPage": "Homebrew",
     "labelDeps": "Bağıml.",

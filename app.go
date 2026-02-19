@@ -570,6 +570,10 @@ func (a *App) GetInstalledDependencies(packageName string) []string {
 	return a.brewService.GetInstalledDependencies(packageName)
 }
 
+func (a *App) GetInstalledDependents(packageName string) []string {
+	return a.brewService.GetInstalledDependents(packageName)
+}
+
 func (a *App) RunBrewDoctor() string {
 	return a.brewService.RunBrewDoctor()
 }
