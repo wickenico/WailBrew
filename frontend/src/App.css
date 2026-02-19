@@ -4663,13 +4663,24 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  width: 100%;
+  width: min(420px, calc(100vw - 32px));
+  line-height: 1.35;
   background: var(--toast-bg);
   color: var(--toast-text);
   border: 1px solid var(--glass-border-strong);
   border-radius: 12px;
   padding: 12px;
   box-shadow: var(--glass-shadow-strong);
+}
+
+.toast-leading-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0;
 }
 
 .toast-action-btn {

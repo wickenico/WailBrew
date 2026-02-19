@@ -174,6 +174,12 @@ const WailBrewApp = () => {
     });
     const [isResizing, setIsResizing] = useState<boolean>(false);
     const sidebarRef = useRef<HTMLElement>(null);
+    const customToastStyle = {
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
+        padding: 0,
+    } as const;
 
     useEffect(() => {
         // Get app version from backend
@@ -516,6 +522,9 @@ const WailBrewApp = () => {
                 toast(
                     (t_obj) => (
                         <div className="toast-notification">
+                            <div className="toast-leading-icon">
+                                <RefreshCw size={20} color="var(--accent)" />
+                            </div>
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
                                     {newPackagesCount === 1
@@ -543,17 +552,10 @@ const WailBrewApp = () => {
                         </div>
                     ),
                     {
-                        icon: <RefreshCw size={20} color="var(--accent)" />,
+                        id: 'startup-outdated-discovered',
                         duration: 8000,
                         position: 'bottom-center',
-                        style: {
-                            background: 'transparent',
-                            borderRadius: '0',
-                            border: 'none',
-                            boxShadow: 'none',
-                            padding: 0,
-                            maxWidth: '400px',
-                        }
+                        style: customToastStyle,
                     }
                 );
             }
@@ -597,6 +599,7 @@ const WailBrewApp = () => {
         const wailbrewPackage = updatablePackages.find(pkg => pkg.name.toLowerCase() === "wailbrew");
 
         if (wailbrewPackage) {
+            toast.dismiss('startup-up-to-date');
             const upgradeCommand = 'brew update\nbrew upgrade --cask wailbrew';
 
             toast(
@@ -608,7 +611,10 @@ const WailBrewApp = () => {
                     };
 
                     return (
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                        <div className="toast-notification">
+                            <div className="toast-leading-icon">
+                                <Sparkles size={20} color="#FFD700" />
+                            </div>
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
                                 <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
@@ -718,15 +724,20 @@ const WailBrewApp = () => {
                     );
                 },
                 {
-                    icon: <Sparkles size={20} color="#FFD700" />,
+                    id: 'startup-wailbrew-update',
                     duration: 6000,
                     position: 'bottom-center',
+                    style: customToastStyle,
                 }
             );
         } else {
-            toast.success(
+            toast.dismiss('startup-wailbrew-update');
+            toast(
                 (t_obj) => (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div className="toast-notification">
+                        <div className="toast-leading-icon">
+                            <CheckSquare size={20} color="#4CAF50" />
+                        </div>
                         <span style={{ flex: 1 }}>{t('toast.upToDate')}</span>
                         <button
                             onClick={() => toast.dismiss(t_obj.id)}
@@ -756,8 +767,10 @@ const WailBrewApp = () => {
                     </div>
                 ),
                 {
+                    id: 'startup-up-to-date',
                     duration: 4000,
                     position: 'bottom-center',
+                    style: customToastStyle,
                 }
             );
         }
@@ -861,7 +874,10 @@ const WailBrewApp = () => {
 
                     toast(
                         (t_obj) => (
-                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                            <div className="toast-notification">
+                                <div className="toast-leading-icon">
+                                    <Sparkles size={20} color="#22C55E" />
+                                </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
                                         {t('toast.newPackagesDiscovered', { count: totalNew, message })}
@@ -936,9 +952,9 @@ const WailBrewApp = () => {
                         ),
                         {
                             id: 'newPackagesDiscovered',
-                            icon: <Sparkles size={20} color="#22C55E" />,
                             duration: 10000,
                             position: 'bottom-center',
+                            style: customToastStyle,
                         }
                     );
                 }
@@ -1611,7 +1627,10 @@ const WailBrewApp = () => {
 
                     toast(
                         (t_obj) => (
-                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                            <div className="toast-notification">
+                                <div className="toast-leading-icon">
+                                    <Sparkles size={20} color="#22C55E" />
+                                </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
                                         {t('toast.newPackagesDiscovered', { count: totalNew, message })}
@@ -1686,9 +1705,9 @@ const WailBrewApp = () => {
                         ),
                         {
                             id: 'newPackagesDiscovered',
-                            icon: <Sparkles size={20} color="#22C55E" />,
                             duration: 10000,
                             position: 'bottom-center',
+                            style: customToastStyle,
                         }
                     );
                 }
@@ -2684,9 +2703,13 @@ const WailBrewApp = () => {
                     position="bottom-center"
                     reverseOrder={false}
                     gutter={8}
+                    containerStyle={{
+                        bottom: 16,
+                        left: 16,
+                        right: 16,
+                    }}
                     toastOptions={{
                         duration: 4000,
-                        className: 'toast-notification',
                         style: {
                             background: 'var(--toast-bg)',
                             color: 'var(--toast-text)',
