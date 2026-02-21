@@ -1969,6 +1969,8 @@ body {
   color: var(--text-secondary);
   font-family: monospace;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-all;
   overflow-y: auto;
   min-height: 220px;
   border-radius: var(--radius);
