@@ -2484,7 +2484,10 @@ const WailBrewApp = () => {
                             setCleanupLog(t('dialogs.runningCleanup'));
                             const result = await RunBrewCleanup();
                             setCleanupLog(result);
-                            // Refresh estimate after cleanup
+                            // Clear estimate while recalculating
+                            setCleanupEstimate("");
+                            // Wait briefly for Homebrew to finish updating its state
+                            await new Promise(resolve => setTimeout(resolve, 1500));
                             try {
                                 const estimate = await GetBrewCleanupDryRun();
                                 setCleanupEstimate(estimate);
