@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "Möchten Sie \"{{name}}\" wirklich deinstallieren?",
+    "dependentsWarning": "Wird von {{count}} installierten Formeln benötigt",
     "confirmInstall": "Möchten Sie \"{{name}}\" wirklich installieren?",
     "confirmUpdate": "Möchten Sie \"{{name}}\" wirklich aktualisieren?",
     "confirmUpdateAll": "Möchten Sie wirklich alle veralteten Pakete aktualisieren?",

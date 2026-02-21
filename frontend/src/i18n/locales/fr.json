@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "Voulez-vous vraiment désinstaller \"{{name}}\" ?",
+    "dependentsWarning": "Requis par {{count}} formule installée",
     "confirmInstall": "Voulez-vous vraiment installer \"{{name}}\" ?",
     "confirmUpdate": "Voulez-vous vraiment mettre à jour \"{{name}}\" ?",
     "confirmUpdateAll": "Voulez-vous vraiment mettre à jour tous les paquets obsolètes ?",

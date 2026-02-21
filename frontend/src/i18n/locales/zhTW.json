@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "您確定要解除安裝 \"{{name}}\" 嗎？",
+    "dependentsWarning": "{{count}} 個已安裝套件需要此套件",
     "confirmInstall": "您確定要安裝 \"{{name}}\" 嗎？",
     "confirmUpdate": "您確定要更新 \"{{name}}\" 嗎？",
     "confirmUpdateAll": "您確定要更新所有可更新的套件嗎？",

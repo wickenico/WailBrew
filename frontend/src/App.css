@@ -1845,7 +1845,9 @@ body {
   border-radius: var(--radius);
   color: var(--text-main);
   text-align: center;
-  width: 340px;
+  min-width: 340px;
+  max-width: 480px;
+  width: max-content;
   box-shadow: var(--glass-shadow);
   animation: scaleIn 0.2s ease-out;
 }
@@ -1854,10 +1856,47 @@ body {
   margin: 0;
   font-size: 16px;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .confirm-box strong {
   color: var(--accent);
+}
+
+.confirm-dependents-warning {
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 8px;
+}
+
+.confirm-dependents-title {
+  font-size: 0.75rem;
+  color: #f87171;
+  font-weight: 600;
+}
+
+.confirm-dependents-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.confirm-dependent-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  color: #f87171;
+  font-family: 'SF Mono', 'Menlo', monospace;
 }
 
 .confirm-actions {

@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "정말로 \"{{name}}\"을(를) 제거하시겠습니까?",
+    "dependentsWarning": "{{count}}개의 설치된 패키지에서 사용 중",
     "confirmInstall": "정말로 \"{{name}}\"을(를) 설치하시겠습니까?",
     "confirmUpdate": "정말로 \"{{name}}\"을(를) 업데이트하시겠습니까?",
     "confirmUpdateAll": "정말로 모든 오래된 패키지를 업데이트하시겠습니까?",

@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "您确定要卸载 \"{{name}}\" 吗？",
+    "dependentsWarning": "{{count}} 个已安装配方需要此包",
     "confirmInstall": "您确定要安装 \"{{name}}\" 吗？",
     "confirmUpdate": "您确定要更新 \"{{name}}\" 吗？",
     "confirmUpdateAll": "您确定要更新所有可更新的软件包吗？",

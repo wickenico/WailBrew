@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "Você realmente deseja desinstalar \"{{name}}\"?",
+    "dependentsWarning": "Necessário por {{count}} fórmula instalada",
     "confirmInstall": "Você realmente deseja instalar \"{{name}}\"?",
     "confirmUpdate": "Você realmente deseja atualizar \"{{name}}\"?",
     "confirmUpdateAll": "Você realmente deseja atualizar todos os pacotes desatualizados?",

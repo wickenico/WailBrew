@@ -9,22 +9,35 @@ interface ConfirmDialogProps {
     confirmLabel?: string;
     cancelLabel?: string;
     destructive?: boolean;
+    dependents?: string[];
 }
 
-const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel, destructive }) => {
+const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel, destructive, dependents }) => {
     const { t } = useTranslation();
-    
+
     if (!open) return null;
-    
+
     const defaultConfirmLabel = confirmLabel || t('buttons.yes');
     const defaultCancelLabel = cancelLabel || t('buttons.cancel');
-    
+
     return (
         <div className="confirm-overlay">
             <div className="confirm-box">
                 <p>{message}</p>
+                {dependents && dependents.length > 0 && (
+                    <div className="confirm-dependents-warning">
+                        <span className="confirm-dependents-title">
+                            ⚠ {t('dialogs.dependentsWarning', { count: dependents.length })}
+                        </span>
+                        <div className="confirm-dependents-chips">
+                            {dependents.map(dep => (
+                                <span key={dep} className="confirm-dependent-chip">{dep}</span>
+                            ))}
+                        </div>
+                    </div>
+                )}
                 <div className="confirm-actions">
-                    <button 
+                    <button
                         className={destructive ? "destructive" : ""}
                         onClick={onConfirm}
                     >

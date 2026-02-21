@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "Gerçekten \"{{name}}\" paketini silmek istiyor musun?",
+    "dependentsWarning": "{{count}} yüklü formül tarafından kullanılıyor",
     "confirmInstall": "Gerçekten \"{{name}}\" paketini yüklemek istiyor musun?",
     "confirmUpdate": "Gerçekten \"{{name}}\" paketini güncellemek istiyor musun?",
     "confirmUpdateAll": "Gerçekten tüm eskimiş paketleri güncellemek istiyor musun?",

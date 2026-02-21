@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
+    "dependentsWarning": "Required by {{count}} installed formula",
     "confirmInstall": "Do you really want to install \"{{name}}\"?",
     "confirmUpdate": "Do you really want to update \"{{name}}\"?",
     "confirmUpdateAll": "Do you really want to update all outdated packages?",

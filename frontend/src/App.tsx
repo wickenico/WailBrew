@@ -16,6 +16,7 @@ import {
     GetBrewPackageInfoAsJson,
     GetBrewPackageSizes,
     GetBrewTapInfo,
+    GetInstalledDependents,
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
     GetDeprecatedFormulae,
@@ -103,6 +104,7 @@ const WailBrewApp = () => {
     const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+    const [uninstallDependents, setUninstallDependents] = useState<string[]>([]);
     const [showInstallConfirm, setShowInstallConfirm] = useState<boolean>(false);
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
     const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState<boolean>(false);
@@ -1444,8 +1446,14 @@ const WailBrewApp = () => {
         return t('dialogs.updateAllLogs');
     };
 
-    const handleUninstallPackage = (pkg: PackageEntry) => {
+    const handleUninstallPackage = async (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
+        try {
+            const dependents = await GetInstalledDependents(pkg.name);
+            setUninstallDependents(dependents ?? []);
+        } catch {
+            setUninstallDependents([]);
+        }
         setShowConfirm(true);
     };
 
@@ -2514,10 +2522,11 @@ const WailBrewApp = () => {
                 <ConfirmDialog
                     open={showConfirm}
                     message={t('dialogs.confirmUninstall', { name: selectedPackage?.name })}
-                    onConfirm={handleRemoveConfirmed}
-                    onCancel={() => setShowConfirm(false)}
+                    onConfirm={() => { setUninstallDependents([]); handleRemoveConfirmed(); }}
+                    onCancel={() => { setShowConfirm(false); setUninstallDependents([]); }}
                     confirmLabel={t('buttons.yesUninstall')}
                     destructive={true}
+                    dependents={uninstallDependents}
                 />
                 <ConfirmDialog
                     open={showInstallConfirm}

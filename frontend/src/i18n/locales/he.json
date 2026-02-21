@@ -193,6 +193,7 @@
   },
   "dialogs": {
     "confirmUninstall": "האם באמת ברצונך להסיר את \"{{name}}\"?",
+    "dependentsWarning": "נדרש על ידי {{count}} נוסחאות מותקנות",
     "confirmInstall": "האם באמת ברצונך להתקין את \"{{name}}\"?",
     "confirmUpdate": "האם באמת ברצונך לעדכן את \"{{name}}\"?",
     "confirmUpdateAll": "האם באמת ברצונך לעדכן את כל החבילות המיושנות?",
