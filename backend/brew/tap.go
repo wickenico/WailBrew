@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
+
+	"WailBrew/backend/system"
 )
 
 // TapService provides tap/untap repository functionality
@@ -39,7 +40,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName strin
 	s.eventEmitter.Emit("repositoryTapProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "tap", repositoryName)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -107,7 +108,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	s.eventEmitter.Emit("repositoryUntapProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "untap", repositoryName)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()

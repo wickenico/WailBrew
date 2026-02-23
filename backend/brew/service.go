@@ -11,6 +11,8 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"WailBrew/backend/system"
 )
 
 // Service provides a high-level interface for brew operations
@@ -548,13 +550,13 @@ func (s *serviceImpl) CheckHomebrewUpdate() (map[string]interface{}, error) {
 		gitDir := fmt.Sprintf("%s/.git", brewDir)
 		if _, err := os.Stat(gitDir); err == nil {
 			cmd := exec.Command("git", "-C", brewDir, "rev-list", "--count", "HEAD..origin/HEAD")
-			cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+			system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 			behindOutput, _ := cmd.CombinedOutput()
 
 			behindCount := strings.TrimSpace(string(behindOutput))
 			if behindCount != "" && behindCount != "0" {
 				cmd = exec.Command("git", "-C", brewDir, "describe", "--tags", "origin/HEAD")
-				cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+				system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 				latestTag, _ := cmd.CombinedOutput()
 				latestVersion := strings.TrimSpace(string(latestTag))
 
@@ -577,7 +579,7 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 	s.eventEmitter.Emit("homebrewUpdateProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "update")
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -666,7 +668,7 @@ func (s *serviceImpl) GetHomebrewCaskVersion() (string, error) {
 
 func (s *serviceImpl) ExportBrewfile(filePath string) error {
 	cmd := exec.Command(s.brewPath, "bundle", "dump", "--file="+filePath, "--force")
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {

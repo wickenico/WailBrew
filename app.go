@@ -632,11 +632,11 @@ func (a *App) OpenConfigFile() error {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "darwin":
-		cmd = exec.Command("open", "-t", configPath)
+		cmd = system.RunHostCommand("open", "-t", configPath)
 	case "linux":
-		cmd = exec.Command("xdg-open", configPath)
+		cmd = system.RunHostCommand("xdg-open", configPath)
 	case "windows":
-		cmd = exec.Command("notepad", configPath)
+		cmd = system.RunHostCommand("notepad", configPath)
 	default:
 		return fmt.Errorf("unsupported operating system: %s", runtime.GOOS)
 	}
@@ -852,7 +852,7 @@ func (a *App) SetBrewPath(path string) error {
 		return fmt.Errorf("brew path does not exist: %s", path)
 	}
 
-	cmd := exec.Command(path, "--version")
+	cmd := system.RunHostCommand(path, "--version")
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("invalid brew executable: %s", path)
 	}
@@ -982,7 +982,7 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 		return fmt.Errorf("failed to save update: %w", err)
 	}
 
-	cmd := exec.Command("unzip", "-q", zipPath, "-d", tempDir)
+	cmd := system.RunHostCommand("unzip", "-q", zipPath, "-d", tempDir)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to unzip update: %w", err)
 	}
@@ -1009,7 +1009,7 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 		osascript -e 'do shell script "rm -rf \\"%s\\" && mv \\"%s\\" \\"%s\\" && mv \\"%s\\" \\"%s\\"" with administrator privileges'
 	`, backupPath, currentAppPath, backupPath, appPath, currentAppPath)
 
-	cmd = exec.Command("sh", "-c", script)
+	cmd = system.RunHostCommand("sh", "-c", script)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to replace app: %w", err)
 	}
@@ -1033,11 +1033,11 @@ func (a *App) RestartApp() error {
 	go func() {
 		time.Sleep(500 * time.Millisecond)
 
-		cmd := exec.Command("open", "-n", currentAppPath)
+		cmd := system.RunHostCommand("open", "-n", currentAppPath)
 		err := cmd.Start()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to restart app: %v\n", err)
-			cmd = exec.Command("open", currentAppPath)
+			cmd = system.RunHostCommand("open", currentAppPath)
 			if err := cmd.Start(); err != nil {
 				fmt.Fprintf(os.Stderr, "Failed to restart app (alternative method): %v\n", err)
 			}

@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
+
+	"WailBrew/backend/system"
 )
 
 // EventEmitter handles event emission for real-time updates
@@ -59,7 +60,7 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	s.eventEmitter.Emit("packageInstallProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "install", packageName)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -127,7 +128,7 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	s.eventEmitter.Emit("packageUninstallProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "uninstall", packageName)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -197,7 +198,7 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	args = append(args, packageName)
 
 	cmd := exec.Command(s.brewPath, args...)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -314,7 +315,7 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	args = append(args, packageNames...)
 
 	cmd := exec.Command(s.brewPath, args...)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -441,7 +442,7 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	}
 	// If outdatedFlag is "none", no additional flag is added (standard mode)
 	cmd := exec.Command(s.brewPath, upgradeArgs...)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
