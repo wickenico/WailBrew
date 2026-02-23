@@ -1,0 +1,85 @@
+name: Build Flatpak
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [ "main", "feat/*" ]
+
+jobs:
+  flatpak:
+    name: Build Flatpak Bundle
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: dev.wailbrew.WailBrew.flatpak
+          manifest-path: build-flatpak/dev.wailbrew.WailBrew.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+
+      - name: Store Flatpak Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wailbrew-flatpak
+          path: dev.wailbrew.WailBrew.flatpak
+          retention-days: 7
+
+      - name: Comment PR with install instructions
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const artifactName = 'wailbrew-flatpak';
+            const nightlyLink = `https://nightly.link/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}/${artifactName}.zip`;
+            
+            const body = `### 📦 Flatpak Build Ready for Testing!
+            
+            A Flatpak bundle has been successfully compiled for this Pull Request. 
+            
+            To test these changes locally on your Linux machine, execute the following commands:
+            
+            \`\`\`bash
+            # Download and extract the built flatpak artifact
+            wget ${nightlyLink}
+            unzip ${artifactName}.zip
+            
+            # Install the bundle
+            flatpak --user install dev.wailbrew.WailBrew.flatpak -y
+            
+            # Run the application
+            flatpak run dev.wailbrew.WailBrew
+            \`\`\`
+            `;
+            
+            // Check if we already have a comment from our bot
+            const opts = github.rest.issues.listComments.endpoint.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const comments = await github.paginate(opts);
+            const maintainerComment = comments.find(comment => 
+              comment.user.type === 'Bot' && comment.body.includes('Flatpak Build Ready for Testing!')
+            );
+            
+            if (maintainerComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: maintainerComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            }
