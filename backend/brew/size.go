@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"runtime"
 	"strings"
+
+	"WailBrew/backend/system"
 )
 
 // SizeService provides package size calculation functionality
@@ -145,7 +146,7 @@ func (s *SizeService) CalculateFormulaSize(formulaName string) string {
 	}
 
 	// Use du command to get directory size
-	cmd := exec.Command("du", "-sh", cellarPath)
+	cmd := system.RunHostCommand("du", "-sh", cellarPath)
 	output, err := cmd.Output()
 	if err != nil {
 		return "Unknown"
@@ -176,7 +177,7 @@ func (s *SizeService) CalculateCaskSize(caskName string) string {
 	}
 
 	// Use du command to get directory size
-	cmd := exec.Command("du", "-sh", caskroomPath)
+	cmd := system.RunHostCommand("du", "-sh", caskroomPath)
 	output, err := cmd.Output()
 	if err != nil {
 		return "Unknown"

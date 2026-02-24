@@ -1,0 +1,76 @@
+.titlebar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 46px; /* standard libadwaita header bar height */
+    background: var(--bg-card); /* matches WailBrew dark background */
+    border-bottom: 1px solid var(--glass-border);
+    flex-shrink: 0;
+    position: relative;
+    user-select: none;
+    width: 100%;
+    z-index: 1000;
+}
+
+[data-theme='light'] .titlebar {
+    background: #f6f5f4; /* libadwaita light */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .titlebar {
+    background: #242424; /* libadwaita dark */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.titlebar-content {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.titlebar-controls {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.titlebar-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.titlebar-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-main);
+}
+
+.titlebar-btn:active {
+    background: var(--active-bg);
+}
+
+.titlebar-btn.close:hover {
+    background: #e01b24; /* Libadwaita red */
+    color: white;
+}
+
+.titlebar-btn.close:active {
+    background: #c01c28; /* Libadwaita dark red */
+    color: white;
+}

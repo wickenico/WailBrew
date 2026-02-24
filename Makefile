@@ -4,7 +4,14 @@ VERSION := $(shell ./get-version.js)
 GOPATH ?= $(shell go env GOPATH)
 WAILS := $(shell command -v wails 2> /dev/null || echo $(GOPATH)/bin/wails)
 
-.PHONY: build dev clean bump
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	SED_I := sed -i ''
+else
+	SED_I := sed -i
+endif
+
+.PHONY: build dev clean bump build-flatpak
 
 i:
 	cd frontend && pnpm install
@@ -29,9 +36,9 @@ bump:
 	NEW_PATCH=$$((PATCH + 1)); \
 	NEW_VERSION="$$MAJOR.$$MINOR.$$NEW_PATCH"; \
 	echo "Bumping version: $$CURRENT -> $$NEW_VERSION"; \
-	sed -i '' "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" frontend/package.json; \
-	sed -i '' "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" wails.json; \
-	sed -i '' "s/\"productVersion\": \"$$CURRENT\"/\"productVersion\": \"$$NEW_VERSION\"/g" wails.json; \
+	$(SED_I) "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" frontend/package.json; \
+	$(SED_I) "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" wails.json; \
+	$(SED_I) "s/\"productVersion\": \"$$CURRENT\"/\"productVersion\": \"$$NEW_VERSION\"/g" wails.json; \
 	echo "Updated frontend/package.json and wails.json to $$NEW_VERSION"
 
 clean:
@@ -40,6 +47,10 @@ clean:
 install: build
 	@echo "Installing WailBrew to /Applications"
 	cp -r build/bin/WailBrew.app /Applications/
+
+build-flatpak:
+	@echo "Building WailBrew Flatpak version: $(VERSION)"
+	flatpak run org.flatpak.Builder --repo=repo --force-clean build-dir build-flatpak/dev.wailbrew.WailBrew.yml
 
 release: build
 	@echo "==> Releasing WailBrew version: $(VERSION)"

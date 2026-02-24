@@ -1,0 +1,50 @@
+app-id: dev.wailbrew.WailBrew
+runtime: org.gnome.Platform
+runtime-version: '49'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+  - org.freedesktop.Sdk.Extension.node22
+
+command: WailBrew
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=host
+  - --talk-name=org.freedesktop.Flatpak
+
+build-options:
+  build-args:
+    - --share=network
+  append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/node22/bin:/app/bin
+  env:
+    GOPATH: /app/go
+    NPM_CONFIG_PREFIX: /app
+
+modules:
+  - name: wails
+    buildsystem: simple
+    build-commands:
+      - cd v2/cmd/wails && go build -o /app/bin/wails
+      - chmod -R u+w /app/go || true
+    sources:
+      - type: archive
+        url: https://github.com/wailsapp/wails/archive/refs/tags/v2.11.0.tar.gz
+        sha256: 3dbdf683ce67968c1319436950e6da1f27e6d64802d477105fc4d7a60be19860
+
+  - name: wailbrew
+    buildsystem: simple
+    build-commands:
+      - npm install -g pnpm
+      - pnpm config set store-dir /app/.pnpm-store
+      - /app/bin/wails build -tags webkit2_41 -ldflags "-X main.Version=0.9.14"
+      - install -Dm755 build/bin/WailBrew /app/bin/WailBrew
+      - chmod -R u+w /app/go /app/.pnpm-store || true
+    sources:
+      - type: git
+        url: https://github.com/hanthor/WailBrew
+        branch: feat/linux-flatpak-support
