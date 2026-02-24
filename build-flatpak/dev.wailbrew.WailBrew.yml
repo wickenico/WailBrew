@@ -1,10 +1,10 @@
 app-id: dev.wailbrew.WailBrew
 runtime: org.gnome.Platform
-runtime-version: '46'
+runtime-version: '49'
 sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
-  - org.freedesktop.Sdk.Extension.node20
+  - org.freedesktop.Sdk.Extension.node22
 
 command: WailBrew
 
@@ -20,7 +20,7 @@ finish-args:
 build-options:
   build-args:
     - --share=network
-  append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/node20/bin:/app/bin
+  append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/node22/bin:/app/bin
   env:
     GOPATH: /app/go
     NPM_CONFIG_PREFIX: /app
@@ -45,10 +45,6 @@ modules:
       - install -Dm755 build/bin/WailBrew /app/bin/WailBrew
       - chmod -R u+w /app/go /app/.pnpm-store || true
     sources:
-      - type: dir
-        path: ../
-        skip:
-          - .git
-          - .gitignore
-          - .github
-          - build-flatpak
+      - type: git
+        url: https://github.com/hanthor/WailBrew
+        branch: feat/linux-flatpak-support
