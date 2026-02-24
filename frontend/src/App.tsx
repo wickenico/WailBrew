@@ -59,6 +59,7 @@ import SettingsView from "./components/SettingsView";
 import ShortcutsDialog from "./components/ShortcutsDialog";
 import Sidebar from "./components/Sidebar";
 import TapInputDialog from "./components/TapInputDialog";
+import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
@@ -465,14 +466,14 @@ const WailBrewApp = () => {
         const updateBadge = async () => {
             const count = updatablePackages.length;
             console.log(`[WailBrew] Updating dock badge to: ${count}`);
-            
+
             try {
                 // Try async version first
                 await SetDockBadgeCount(count);
                 console.log(`[WailBrew] Dock badge set successfully (async)`);
             } catch (err) {
                 console.error("[WailBrew] Failed to update dock badge (async):", err);
-                
+
                 // Try sync version as fallback
                 try {
                     await SetDockBadgeCountSync(count);
@@ -482,7 +483,7 @@ const WailBrewApp = () => {
                 }
             }
         };
-        
+
         updateBadge();
     }, [updatablePackages.length]);
 
@@ -1216,11 +1217,11 @@ const WailBrewApp = () => {
 
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
-        
+
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-        
+
         setShowUpdateConfirm(false);
         setIsUpdateAllOperation(false);
         setUpdateLogs(t('dialogs.updating', { name: selectedPackage.name }));
@@ -1269,7 +1270,7 @@ const WailBrewApp = () => {
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-        
+
         setShowUpdateAllConfirm(false);
         setIsUpdateAllOperation(true);
         setCurrentlyUpdatingPackage(null);
@@ -1370,7 +1371,7 @@ const WailBrewApp = () => {
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-        
+
         setShowUpdateSelectedConfirm(false);
         setIsUpdateAllOperation(true);
 
@@ -2029,207 +2030,65 @@ const WailBrewApp = () => {
     const columnsLeaves = columnsInstalled;
 
     return (
-        <div className="wailbrew-container">
-            <Sidebar
-                view={view}
-                setView={setView}
-                packagesCount={packages.length}
-                casksCount={casks.length}
-                updatableCount={updatablePackages.length}
-                allCount={allPackagesLoaded ? allPackages.length : -1}
-                allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
-                leavesCount={leavesPackages.length}
-                repositoriesCount={repositories.length}
-                onClearSelection={clearSelection}
-                sidebarWidth={sidebarWidth}
-                sidebarRef={sidebarRef}
-                isBackgroundCheckRunning={isBackgroundCheckRunning}
-                getSecondsUntilNextCheck={getSecondsUntilNextCheck}
-            />
-            <div
-                className="sidebar-resize-handle"
-                onMouseDown={handleResizeStart}
-            />
-            <main className="content">
-                {/* Loading timer for development only */}
-                {import.meta.env.DEV && loadingStartTime !== null && (
-                    <div className="loading-timer">
-                        ⏱️ {loadingElapsedTime > 0 ? (loadingElapsedTime / 1000).toFixed(2) : '0.00'}s
-                    </div>
-                )}
-                {view === "installed" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.installedFormulas', { count: packages.length })}
-                            actions={
-                                <button
-                                    className="refresh-button"
-                                    onClick={handleRefreshPackages}
-                                    disabled={loading}
-                                    title={t('buttons.refresh')}
-                                >
-                                    <RefreshCw size={18} />
-                                </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "installed" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={handleSelect}
-                            columns={columnsInstalled}
-                            onUninstall={handleUninstallPackage}
-                            onShowInfo={handleShowPackageInfo}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.installedFormulas')}
-                            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
+            <TitleBar />
+            <div className="wailbrew-container" style={{ flex: 1, height: 'auto', minHeight: 0 }}>
+                <Sidebar
+                    view={view}
+                    setView={setView}
+                    packagesCount={packages.length}
+                    casksCount={casks.length}
+                    updatableCount={updatablePackages.length}
+                    allCount={allPackagesLoaded ? allPackages.length : -1}
+                    allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
+                    leavesCount={leavesPackages.length}
+                    repositoriesCount={repositories.length}
+                    onClearSelection={clearSelection}
+                    sidebarWidth={sidebarWidth}
+                    sidebarRef={sidebarRef}
+                    isBackgroundCheckRunning={isBackgroundCheckRunning}
+                    getSecondsUntilNextCheck={getSecondsUntilNextCheck}
+                />
+                <div
+                    className="sidebar-resize-handle"
+                    onMouseDown={handleResizeStart}
+                />
+                <main className="content">
+                    {/* Loading timer for development only */}
+                    {import.meta.env.DEV && loadingStartTime !== null && (
+                        <div className="loading-timer">
+                            ⏱️ {loadingElapsedTime > 0 ? (loadingElapsedTime / 1000).toFixed(2) : '0.00'}s
                         </div>
-                    </>
-                )}
-                {view === "casks" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.installedCasks', { count: casks.length })}
-                            actions={
-                                <button
-                                    className="refresh-button"
-                                    onClick={handleRefreshPackages}
-                                    disabled={loading}
-                                    title={t('buttons.refresh')}
-                                >
-                                    <RefreshCw size={18} />
-                                </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "casks" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={handleSelect}
-                            columns={columnsInstalled}
-                            onUninstall={handleUninstallPackage}
-                            onShowInfo={handleShowPackageInfo}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.installedCasks')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "updatable" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.outdatedFormulas', { count: updatablePackages.length })}
-                            actions={
-                                <>
-                                    {updatablePackages.length > 0 && (
-                                        <>
-                                            <button
-                                                className={multiSelectMode ? "multi-select-button active" : "multi-select-button"}
-                                                onClick={toggleMultiSelectMode}
-                                                title={multiSelectMode ? t('buttons.exitMultiSelect') : t('buttons.multiSelect')}
-                                            >
-                                                {multiSelectMode ? <CheckSquare size={20} /> : <Square size={20} />}
-                                                {multiSelectMode ? t('buttons.exitMultiSelect') : t('buttons.multiSelect')}
-                                            </button>
-                                            {multiSelectMode && selectedPackages.size > 0 && (
-                                                <button
-                                                    className="update-selected-button"
-                                                    onClick={handleUpdateSelected}
-                                                    title={t('buttons.updateSelected', { count: selectedPackages.size })}
-                                                >
-                                                    {t('buttons.updateSelected', { count: selectedPackages.size })}
-                                                </button>
-                                            )}
-                                            {!multiSelectMode && (
-                                                <button
-                                                    className="update-all-button"
-                                                    onClick={() => setShowUpdateAllConfirm(true)}
-                                                    title={t('buttons.updateAll')}
-                                                >
-                                                    {t('buttons.updateAll')}
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
-                                </>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {multiSelectMode && updatablePackages.length > 0 && (
-                            <div className="multi-select-controls">
-                                <button
-                                    className="select-control-button"
-                                    onClick={selectAllPackages}
-                                    disabled={selectedPackages.size === filteredPackages.length}
-                                >
-                                    {t('buttons.selectAll')}
-                                </button>
-                                <button
-                                    className="select-control-button"
-                                    onClick={deselectAllPackages}
-                                    disabled={selectedPackages.size === 0}
-                                >
-                                    {t('buttons.deselectAll')}
-                                </button>
-                                <span className="selection-count">
-                                    {t('multiSelect.selectedCount', { count: selectedPackages.size, total: filteredPackages.length })}
-                                </span>
-                            </div>
-                        )}
-                        {error && <div className="result error">{error}</div>}
-                        {updatablePackages.length === 0 && !loading ? (
-                            <div className="all-up-to-date">
-                                <PartyPopper size={48} strokeWidth={1.5} />
-                                <p>{t('table.allUpToDate')}</p>
-                            </div>
-                        ) : (
+                    )}
+                    {view === "installed" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.installedFormulas', { count: packages.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={handleRefreshPackages}
+                                        disabled={loading}
+                                        title={t('buttons.refresh')}
+                                    >
+                                        <RefreshCw size={18} />
+                                    </button>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
                             <PackageTable
-                                ref={view === "updatable" ? packageTableRef : null}
+                                ref={view === "installed" ? packageTableRef : null}
                                 packages={filteredPackages}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
-                                onSelect={multiSelectMode ? (pkg) => togglePackageSelection(pkg.name) : handleSelect}
-                                columns={columnsUpdatable}
-                                onUninstall={!multiSelectMode ? handleUninstallPackage : undefined}
-                                onShowInfo={!multiSelectMode ? handleShowInfoLogs : undefined}
-                                onUpdate={!multiSelectMode ? handleUpdate : undefined}
-                                multiSelectMode={multiSelectMode}
-                                selectedPackages={selectedPackages}
+                                onSelect={handleSelect}
+                                columns={columnsInstalled}
+                                onUninstall={handleUninstallPackage}
+                                onShowInfo={handleShowPackageInfo}
                             />
-                        )}
-                        {updatablePackages.length > 0 && (
                             <div className="info-footer-container">
                                 <div className="package-info">
                                     <PackageInfo
@@ -2240,506 +2099,651 @@ const WailBrewApp = () => {
                                     />
                                 </div>
                                 <div className="package-footer">
-                                    {t('footers.outdatedFormulas')}
+                                    {t('footers.installedFormulas')}
                                 </div>
                             </div>
-                        )}
-                    </>
-                )}
-                {view === "all" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.allFormulas', { count: allPackages.length })}
-                            actions={
-                                <button
-                                    className="refresh-button"
-                                    onClick={loadAllPackages}
-                                    disabled={loadingAllPackages}
-                                    title={t('buttons.refresh')}
-                                >
-                                    <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
-                                </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "all" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading || loadingAllPackages}
-                            onSelect={handleSelect}
-                            columns={columnsAll}
-                            onShowInfo={handleShowInfoLogs}
-                            onInstall={handleInstallPackage}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.allFormulas')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "allCasks" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.allCasks', { count: allCasksAll.length })}
-                            actions={
-                                <button
-                                    className="refresh-button"
-                                    onClick={loadAllCasks}
-                                    disabled={loadingAllCasks}
-                                    title={t('buttons.refresh')}
-                                >
-                                    <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
-                                </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "allCasks" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading || loadingAllCasks}
-                            onSelect={handleSelect}
-                            columns={columnsAll}
-                            onShowInfo={handleShowInfoLogs}
-                            onInstall={handleInstallPackage}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.allCasks')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "leaves" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.leaves', { count: leavesPackages.length })}
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "leaves" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={handleSelect}
-                            columns={columnsLeaves}
-                            onUninstall={handleUninstallPackage}
-                            onShowInfo={handleShowInfoLogs}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.leaves')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "repositories" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.repositories', { count: repositories.length })}
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                            actions={
-                                <button className="doctor-button" onClick={handleTapRepository}>
-                                    {t('buttons.tap')}
-                                </button>
-                            }
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <RepositoryTable
-                            repositories={filteredRepositories}
-                            selectedRepository={selectedRepository}
-                            loading={loading}
-                            onSelect={handleRepositorySelect}
-                            onUntap={handleUntapRepository}
-                            onShowInfo={handleShowRepositoryInfo}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <RepositoryInfo repository={selectedRepository} />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.repositories')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "homebrew" && (
-                    <HomebrewView
-                        homebrewLog={homebrewLog}
-                        homebrewVersion={homebrewVersion}
-                        isUpToDate={homebrewUpdateStatus.isUpToDate}
-                        latestVersion={homebrewUpdateStatus.latestVersion}
-                        onClearLog={() => setHomebrewLog("")}
-                        onUpdateHomebrew={async () => {
-                            setHomebrewLog(t('dialogs.runningHomebrewUpdate'));
-
-                            // Set up event listeners for live progress
-                            const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
-                                setHomebrewLog(prevLogs => {
-                                    if (!prevLogs) {
-                                        return `${t('dialogs.homebrewUpdateLogs')}\n${progress}`;
-                                    }
-                                    return prevLogs + '\n' + progress;
-                                });
-                            });
-
-                            const completeListener = EventsOn("homebrewUpdateComplete", async (finalMessage: string) => {
-                                setHomebrewLog(prevLogs => prevLogs + '\n' + finalMessage);
-
-                                // Refresh version after update
-                                try {
-                                    const newVersion = await GetHomebrewVersion();
-                                    setHomebrewVersion(newVersion);
-                                    const updateInfo = await CheckHomebrewUpdate();
-                                    if (updateInfo) {
-                                        setHomebrewUpdateStatus({
-                                            isUpToDate: updateInfo.isUpToDate as boolean,
-                                            latestVersion: updateInfo.latestVersion as string,
-                                        });
-                                    }
-                                } catch (error) {
-                                    console.error("Failed to refresh Homebrew version:", error);
+                        </>
+                    )}
+                    {view === "casks" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.installedCasks', { count: casks.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={handleRefreshPackages}
+                                        disabled={loading}
+                                        title={t('buttons.refresh')}
+                                    >
+                                        <RefreshCw size={18} />
+                                    </button>
                                 }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "casks" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading}
+                                onSelect={handleSelect}
+                                columns={columnsInstalled}
+                                onUninstall={handleUninstallPackage}
+                                onShowInfo={handleShowPackageInfo}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">
+                                    {t('footers.installedCasks')}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {view === "updatable" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.outdatedFormulas', { count: updatablePackages.length })}
+                                actions={
+                                    <>
+                                        {updatablePackages.length > 0 && (
+                                            <>
+                                                <button
+                                                    className={multiSelectMode ? "multi-select-button active" : "multi-select-button"}
+                                                    onClick={toggleMultiSelectMode}
+                                                    title={multiSelectMode ? t('buttons.exitMultiSelect') : t('buttons.multiSelect')}
+                                                >
+                                                    {multiSelectMode ? <CheckSquare size={20} /> : <Square size={20} />}
+                                                    {multiSelectMode ? t('buttons.exitMultiSelect') : t('buttons.multiSelect')}
+                                                </button>
+                                                {multiSelectMode && selectedPackages.size > 0 && (
+                                                    <button
+                                                        className="update-selected-button"
+                                                        onClick={handleUpdateSelected}
+                                                        title={t('buttons.updateSelected', { count: selectedPackages.size })}
+                                                    >
+                                                        {t('buttons.updateSelected', { count: selectedPackages.size })}
+                                                    </button>
+                                                )}
+                                                {!multiSelectMode && (
+                                                    <button
+                                                        className="update-all-button"
+                                                        onClick={() => setShowUpdateAllConfirm(true)}
+                                                        title={t('buttons.updateAll')}
+                                                    >
+                                                        {t('buttons.updateAll')}
+                                                    </button>
+                                                )}
+                                            </>
+                                        )}
+                                    </>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {multiSelectMode && updatablePackages.length > 0 && (
+                                <div className="multi-select-controls">
+                                    <button
+                                        className="select-control-button"
+                                        onClick={selectAllPackages}
+                                        disabled={selectedPackages.size === filteredPackages.length}
+                                    >
+                                        {t('buttons.selectAll')}
+                                    </button>
+                                    <button
+                                        className="select-control-button"
+                                        onClick={deselectAllPackages}
+                                        disabled={selectedPackages.size === 0}
+                                    >
+                                        {t('buttons.deselectAll')}
+                                    </button>
+                                    <span className="selection-count">
+                                        {t('multiSelect.selectedCount', { count: selectedPackages.size, total: filteredPackages.length })}
+                                    </span>
+                                </div>
+                            )}
+                            {error && <div className="result error">{error}</div>}
+                            {updatablePackages.length === 0 && !loading ? (
+                                <div className="all-up-to-date">
+                                    <PartyPopper size={48} strokeWidth={1.5} />
+                                    <p>{t('table.allUpToDate')}</p>
+                                </div>
+                            ) : (
+                                <PackageTable
+                                    ref={view === "updatable" ? packageTableRef : null}
+                                    packages={filteredPackages}
+                                    selectedPackage={selectedPackage}
+                                    loading={loading}
+                                    onSelect={multiSelectMode ? (pkg) => togglePackageSelection(pkg.name) : handleSelect}
+                                    columns={columnsUpdatable}
+                                    onUninstall={!multiSelectMode ? handleUninstallPackage : undefined}
+                                    onShowInfo={!multiSelectMode ? handleShowInfoLogs : undefined}
+                                    onUpdate={!multiSelectMode ? handleUpdate : undefined}
+                                    multiSelectMode={multiSelectMode}
+                                    selectedPackages={selectedPackages}
+                                />
+                            )}
+                            {updatablePackages.length > 0 && (
+                                <div className="info-footer-container">
+                                    <div className="package-info">
+                                        <PackageInfo
+                                            packageEntry={selectedPackage}
+                                            loadingDetailsFor={loadingDetailsFor}
+                                            view={view}
+                                            onSelectDependency={handleSelectDependency}
+                                        />
+                                    </div>
+                                    <div className="package-footer">
+                                        {t('footers.outdatedFormulas')}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                    {view === "all" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.allFormulas', { count: allPackages.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={loadAllPackages}
+                                        disabled={loadingAllPackages}
+                                        title={t('buttons.refresh')}
+                                    >
+                                        <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
+                                    </button>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "all" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading || loadingAllPackages}
+                                onSelect={handleSelect}
+                                columns={columnsAll}
+                                onShowInfo={handleShowInfoLogs}
+                                onInstall={handleInstallPackage}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">
+                                    {t('footers.allFormulas')}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {view === "allCasks" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.allCasks', { count: allCasksAll.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={loadAllCasks}
+                                        disabled={loadingAllCasks}
+                                        title={t('buttons.refresh')}
+                                    >
+                                        <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
+                                    </button>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "allCasks" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading || loadingAllCasks}
+                                onSelect={handleSelect}
+                                columns={columnsAll}
+                                onShowInfo={handleShowInfoLogs}
+                                onInstall={handleInstallPackage}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">
+                                    {t('footers.allCasks')}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {view === "leaves" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.leaves', { count: leavesPackages.length })}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "leaves" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading}
+                                onSelect={handleSelect}
+                                columns={columnsLeaves}
+                                onUninstall={handleUninstallPackage}
+                                onShowInfo={handleShowInfoLogs}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">
+                                    {t('footers.leaves')}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {view === "repositories" && (
+                        <>
+                            <HeaderRow
+                                title={t('headers.repositories', { count: repositories.length })}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                                actions={
+                                    <button className="doctor-button" onClick={handleTapRepository}>
+                                        {t('buttons.tap')}
+                                    </button>
+                                }
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <RepositoryTable
+                                repositories={filteredRepositories}
+                                selectedRepository={selectedRepository}
+                                loading={loading}
+                                onSelect={handleRepositorySelect}
+                                onUntap={handleUntapRepository}
+                                onShowInfo={handleShowRepositoryInfo}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <RepositoryInfo repository={selectedRepository} />
+                                </div>
+                                <div className="package-footer">
+                                    {t('footers.repositories')}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {view === "homebrew" && (
+                        <HomebrewView
+                            homebrewLog={homebrewLog}
+                            homebrewVersion={homebrewVersion}
+                            isUpToDate={homebrewUpdateStatus.isUpToDate}
+                            latestVersion={homebrewUpdateStatus.latestVersion}
+                            onClearLog={() => setHomebrewLog("")}
+                            onUpdateHomebrew={async () => {
+                                setHomebrewLog(t('dialogs.runningHomebrewUpdate'));
 
-                                // Clean up event listeners
-                                progressListener();
-                                completeListener();
-                            });
+                                // Set up event listeners for live progress
+                                const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
+                                    setHomebrewLog(prevLogs => {
+                                        if (!prevLogs) {
+                                            return `${t('dialogs.homebrewUpdateLogs')}\n${progress}`;
+                                        }
+                                        return prevLogs + '\n' + progress;
+                                    });
+                                });
 
-                            // Start the update process
-                            await UpdateHomebrew();
-                        }}
-                    />
-                )}
-                {view === "doctor" && (
-                    <DoctorView
-                        doctorLog={doctorLog}
-                        deprecatedFormulae={deprecatedFormulae}
-                        onClearLog={() => {
-                            setDoctorLog("");
-                            setDeprecatedFormulae([]);
-                        }}
-                        onRunDoctor={async () => {
-                            setDoctorLog(t('dialogs.runningDoctor'));
-                            setDeprecatedFormulae([]);
-                            const result = await RunBrewDoctor();
-                            setDoctorLog(result);
-                            // Parse deprecated formulae from the output
-                            const deprecated = await GetDeprecatedFormulae(result);
-                            setDeprecatedFormulae(deprecated || []);
-                        }}
-                        onUninstallDeprecated={async (formula: string) => {
-                            setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
-                            setShowConfirm(true);
-                        }}
-                    />
-                )}
-                {view === "cleanup" && (
-                    <CleanupView
-                        cleanupLog={cleanupLog}
-                        cleanupEstimate={cleanupEstimate}
-                        onClearLog={() => setCleanupLog("")}
-                        onRunDryRun={async () => {
-                            setCleanupLog(t('dialogs.runningDryRun'));
-                            const result = await RunBrewCleanupDryRun();
-                            setCleanupLog(result);
-                            // Refresh estimate after dry run
-                            try {
-                                const estimate = await GetBrewCleanupDryRun();
-                                setCleanupEstimate(estimate);
-                            } catch (error) {
-                                console.error("Failed to get cleanup estimate:", error);
-                            }
-                        }}
-                        onRunCleanup={async () => {
-                            setCleanupLog(t('dialogs.runningCleanup'));
-                            const result = await RunBrewCleanup();
-                            setCleanupLog(result);
-                            // Clear estimate while recalculating
-                            setCleanupEstimate("");
-                            // Wait briefly for Homebrew to finish updating its state
-                            await new Promise(resolve => setTimeout(resolve, 1500));
-                            try {
-                                const estimate = await GetBrewCleanupDryRun();
-                                setCleanupEstimate(estimate);
-                            } catch (error) {
-                                console.error("Failed to get cleanup estimate:", error);
-                            }
-                        }}
-                        onCheckEstimate={async () => {
-                            try {
-                                const estimate = await GetBrewCleanupDryRun();
-                                setCleanupEstimate(estimate);
-                            } catch (error) {
-                                console.error("Failed to get cleanup estimate:", error);
+                                const completeListener = EventsOn("homebrewUpdateComplete", async (finalMessage: string) => {
+                                    setHomebrewLog(prevLogs => prevLogs + '\n' + finalMessage);
+
+                                    // Refresh version after update
+                                    try {
+                                        const newVersion = await GetHomebrewVersion();
+                                        setHomebrewVersion(newVersion);
+                                        const updateInfo = await CheckHomebrewUpdate();
+                                        if (updateInfo) {
+                                            setHomebrewUpdateStatus({
+                                                isUpToDate: updateInfo.isUpToDate as boolean,
+                                                latestVersion: updateInfo.latestVersion as string,
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error("Failed to refresh Homebrew version:", error);
+                                    }
+
+                                    // Clean up event listeners
+                                    progressListener();
+                                    completeListener();
+                                });
+
+                                // Start the update process
+                                await UpdateHomebrew();
+                            }}
+                        />
+                    )}
+                    {view === "doctor" && (
+                        <DoctorView
+                            doctorLog={doctorLog}
+                            deprecatedFormulae={deprecatedFormulae}
+                            onClearLog={() => {
+                                setDoctorLog("");
+                                setDeprecatedFormulae([]);
+                            }}
+                            onRunDoctor={async () => {
+                                setDoctorLog(t('dialogs.runningDoctor'));
+                                setDeprecatedFormulae([]);
+                                const result = await RunBrewDoctor();
+                                setDoctorLog(result);
+                                // Parse deprecated formulae from the output
+                                const deprecated = await GetDeprecatedFormulae(result);
+                                setDeprecatedFormulae(deprecated || []);
+                            }}
+                            onUninstallDeprecated={async (formula: string) => {
+                                setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
+                                setShowConfirm(true);
+                            }}
+                        />
+                    )}
+                    {view === "cleanup" && (
+                        <CleanupView
+                            cleanupLog={cleanupLog}
+                            cleanupEstimate={cleanupEstimate}
+                            onClearLog={() => setCleanupLog("")}
+                            onRunDryRun={async () => {
+                                setCleanupLog(t('dialogs.runningDryRun'));
+                                const result = await RunBrewCleanupDryRun();
+                                setCleanupLog(result);
+                                // Refresh estimate after dry run
+                                try {
+                                    const estimate = await GetBrewCleanupDryRun();
+                                    setCleanupEstimate(estimate);
+                                } catch (error) {
+                                    console.error("Failed to get cleanup estimate:", error);
+                                }
+                            }}
+                            onRunCleanup={async () => {
+                                setCleanupLog(t('dialogs.runningCleanup'));
+                                const result = await RunBrewCleanup();
+                                setCleanupLog(result);
+                                // Clear estimate while recalculating
                                 setCleanupEstimate("");
+                                // Wait briefly for Homebrew to finish updating its state
+                                await new Promise(resolve => setTimeout(resolve, 1500));
+                                try {
+                                    const estimate = await GetBrewCleanupDryRun();
+                                    setCleanupEstimate(estimate);
+                                } catch (error) {
+                                    console.error("Failed to get cleanup estimate:", error);
+                                }
+                            }}
+                            onCheckEstimate={async () => {
+                                try {
+                                    const estimate = await GetBrewCleanupDryRun();
+                                    setCleanupEstimate(estimate);
+                                } catch (error) {
+                                    console.error("Failed to get cleanup estimate:", error);
+                                    setCleanupEstimate("");
+                                }
+                            }}
+                        />
+                    )}
+                    {view === "settings" && (
+                        <SettingsView
+                            onRefreshPackages={handleRefreshPackages}
+                        />
+                    )}
+                    <ConfirmDialog
+                        open={showConfirm}
+                        message={t('dialogs.confirmUninstall', { name: selectedPackage?.name })}
+                        onConfirm={() => { setUninstallDependents([]); handleRemoveConfirmed(); }}
+                        onCancel={() => { setShowConfirm(false); setUninstallDependents([]); }}
+                        confirmLabel={t('buttons.yesUninstall')}
+                        destructive={true}
+                        dependents={uninstallDependents}
+                    />
+                    <ConfirmDialog
+                        open={showInstallConfirm}
+                        message={t('dialogs.confirmInstall', { name: selectedPackage?.name })}
+                        onConfirm={handleInstallConfirmed}
+                        onCancel={() => setShowInstallConfirm(false)}
+                        confirmLabel={t('buttons.yesInstall')}
+                    />
+                    <ConfirmDialog
+                        open={showUpdateConfirm}
+                        message={t('dialogs.confirmUpdate', { name: selectedPackage?.name })}
+                        onConfirm={handleUpdateConfirmed}
+                        onCancel={() => setShowUpdateConfirm(false)}
+                        confirmLabel={t('buttons.yesUpdate')}
+                    />
+                    <ConfirmDialog
+                        open={showUpdateAllConfirm}
+                        message={t('dialogs.confirmUpdateAll')}
+                        onConfirm={handleUpdateAllConfirmed}
+                        onCancel={() => setShowUpdateAllConfirm(false)}
+                        confirmLabel={t('buttons.yesUpdateAll')}
+                    />
+                    <ConfirmDialog
+                        open={showUpdateSelectedConfirm}
+                        message={t('dialogs.confirmUpdateSelected', { count: selectedPackages.size })}
+                        onConfirm={handleUpdateSelectedConfirmed}
+                        onCancel={() => setShowUpdateSelectedConfirm(false)}
+                        confirmLabel={t('buttons.yesUpdateSelected', { count: selectedPackages.size })}
+                    />
+                    <ConfirmDialog
+                        open={showUntapConfirm}
+                        message={t('dialogs.confirmUntap', { name: selectedRepository?.name })}
+                        onConfirm={handleUntapConfirmed}
+                        onCancel={() => setShowUntapConfirm(false)}
+                        confirmLabel={t('buttons.yesUntap')}
+                        destructive={true}
+                    />
+                    <LogDialog
+                        open={updateLogs !== null}
+                        title={getUpdateLogTitle()}
+                        log={updateLogs}
+                        isRunning={isUpdateRunning}
+                        onClose={async () => {
+                            // Clean up any pending event listeners (prevents duplicate listeners bug)
+                            if (updateListenersRef.current.progress) updateListenersRef.current.progress();
+                            if (updateListenersRef.current.complete) updateListenersRef.current.complete();
+                            updateListenersRef.current = { progress: null, complete: null };
+
+                            setUpdateLogs(null);
+                            setIsUpdateRunning(false);
+                            setCurrentlyUpdatingPackage(null);
+                            // Refresh packages if this was an update all operation
+                            if (isUpdateAllOperation) {
+                                setIsUpdateAllOperation(false);
+                                await handleRefreshPackages();
                             }
                         }}
                     />
-                )}
-                {view === "settings" && (
-                    <SettingsView
-                        onRefreshPackages={handleRefreshPackages}
+                    <LogDialog
+                        open={installLogs !== null}
+                        title={selectedPackage ? t('dialogs.installLogs', { name: selectedPackage.name }) : t('dialogs.installLogs')}
+                        log={installLogs}
+                        isRunning={isInstallRunning}
+                        onClose={() => {
+                            setInstallLogs(null);
+                            setIsInstallRunning(false);
+                        }}
                     />
-                )}
-                <ConfirmDialog
-                    open={showConfirm}
-                    message={t('dialogs.confirmUninstall', { name: selectedPackage?.name })}
-                    onConfirm={() => { setUninstallDependents([]); handleRemoveConfirmed(); }}
-                    onCancel={() => { setShowConfirm(false); setUninstallDependents([]); }}
-                    confirmLabel={t('buttons.yesUninstall')}
-                    destructive={true}
-                    dependents={uninstallDependents}
-                />
-                <ConfirmDialog
-                    open={showInstallConfirm}
-                    message={t('dialogs.confirmInstall', { name: selectedPackage?.name })}
-                    onConfirm={handleInstallConfirmed}
-                    onCancel={() => setShowInstallConfirm(false)}
-                    confirmLabel={t('buttons.yesInstall')}
-                />
-                <ConfirmDialog
-                    open={showUpdateConfirm}
-                    message={t('dialogs.confirmUpdate', { name: selectedPackage?.name })}
-                    onConfirm={handleUpdateConfirmed}
-                    onCancel={() => setShowUpdateConfirm(false)}
-                    confirmLabel={t('buttons.yesUpdate')}
-                />
-                <ConfirmDialog
-                    open={showUpdateAllConfirm}
-                    message={t('dialogs.confirmUpdateAll')}
-                    onConfirm={handleUpdateAllConfirmed}
-                    onCancel={() => setShowUpdateAllConfirm(false)}
-                    confirmLabel={t('buttons.yesUpdateAll')}
-                />
-                <ConfirmDialog
-                    open={showUpdateSelectedConfirm}
-                    message={t('dialogs.confirmUpdateSelected', { count: selectedPackages.size })}
-                    onConfirm={handleUpdateSelectedConfirmed}
-                    onCancel={() => setShowUpdateSelectedConfirm(false)}
-                    confirmLabel={t('buttons.yesUpdateSelected', { count: selectedPackages.size })}
-                />
-                <ConfirmDialog
-                    open={showUntapConfirm}
-                    message={t('dialogs.confirmUntap', { name: selectedRepository?.name })}
-                    onConfirm={handleUntapConfirmed}
-                    onCancel={() => setShowUntapConfirm(false)}
-                    confirmLabel={t('buttons.yesUntap')}
-                    destructive={true}
-                />
-                <LogDialog
-                    open={updateLogs !== null}
-                    title={getUpdateLogTitle()}
-                    log={updateLogs}
-                    isRunning={isUpdateRunning}
-                    onClose={async () => {
-                        // Clean up any pending event listeners (prevents duplicate listeners bug)
-                        if (updateListenersRef.current.progress) updateListenersRef.current.progress();
-                        if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-                        updateListenersRef.current = { progress: null, complete: null };
-                        
-                        setUpdateLogs(null);
-                        setIsUpdateRunning(false);
-                        setCurrentlyUpdatingPackage(null);
-                        // Refresh packages if this was an update all operation
-                        if (isUpdateAllOperation) {
-                            setIsUpdateAllOperation(false);
-                            await handleRefreshPackages();
-                        }
-                    }}
-                />
-                <LogDialog
-                    open={installLogs !== null}
-                    title={selectedPackage ? t('dialogs.installLogs', { name: selectedPackage.name }) : t('dialogs.installLogs')}
-                    log={installLogs}
-                    isRunning={isInstallRunning}
-                    onClose={() => {
-                        setInstallLogs(null);
-                        setIsInstallRunning(false);
-                    }}
-                />
-                <LogDialog
-                    open={uninstallLogs !== null}
-                    title={selectedPackage ? t('dialogs.uninstallLogs', { name: selectedPackage.name }) : t('dialogs.uninstallLogs')}
-                    log={uninstallLogs}
-                    isRunning={isUninstallRunning}
-                    onClose={() => {
-                        setUninstallLogs(null);
-                        setIsUninstallRunning(false);
-                    }}
-                />
-                <LogDialog
-                    open={untapLogs !== null}
-                    title={selectedRepository ? t('dialogs.untapLogs', { name: selectedRepository.name }) : t('dialogs.untapLogs')}
-                    log={untapLogs}
-                    isRunning={false}
-                    clickablePackages={untapLogPackages}
-                    onPackageClick={handleUntapPackageClick}
-                    onClose={() => {
-                        setUntapLogs(null);
-                        setUntapLogPackages([]);
-                    }}
-                />
-                <LogDialog
-                    open={tapLogs !== null}
-                    title={tappingRepository ? t('dialogs.tapLogs', { name: tappingRepository }) : t('dialogs.tapLogs')}
-                    log={tapLogs}
-                    isRunning={false}
-                    onClose={() => {
-                        setTapLogs(null);
-                        setTappingRepository(null);
-                    }}
-                />
-                <TapInputDialog
-                    open={showTapInput}
-                    onConfirm={handleTapConfirmed}
-                    onCancel={() => setShowTapInput(false)}
-                />
-                <LogDialog
-                    open={!!infoLogs}
-                    title={t('dialogs.packageInfo', { name: infoPackage?.name })}
-                    log={infoLogs}
-                    onClose={() => {
-                        // Invalidate any pending info request (prevents dialog from reopening)
-                        infoRequestIdRef.current++;
-                        setInfoLogs(null);
-                        setInfoPackage(null);
-                    }}
-                />
-                <LogDialog
-                    open={showRepositoryInfo}
-                    title={t('dialogs.repositoryInfo', { name: selectedRepository?.name || '' })}
-                    log={repositoryInfoLogs}
-                    onClose={() => {
-                        setRepositoryInfoLogs(null);
-                        setShowRepositoryInfo(false);
-                    }}
-                    isRunning={false}
-                />
-                <LogDialog
-                    open={showSessionLogs}
-                    title={t('dialogs.sessionLogs')}
-                    log={sessionLogs}
-                    onClose={() => {
-                        setShowSessionLogs(false);
-                        setSessionLogs("");
-                    }}
-                />
-                <AboutDialog
-                    open={showAbout}
-                    onClose={() => setShowAbout(false)}
-                    appVersion={appVersion}
-                />
-                <UpdateDialog
-                    isOpen={showUpdate}
-                    onClose={() => setShowUpdate(false)}
-                />
-                <RestartDialog
-                    isOpen={showRestart}
-                    onClose={() => setShowRestart(false)}
-                />
-                <ShortcutsDialog
-                    open={showShortcuts}
-                    onClose={() => setShowShortcuts(false)}
-                />
-                <CommandPalette
-                    open={showCommandPalette}
-                    onClose={() => setShowCommandPalette(false)}
-                    packages={allPackages}
-                    casks={casks}
-                    repositories={repositories}
-                    onSelectPackage={async (pkg) => {
-                        const fullPkg: PackageEntry = {
-                            name: pkg.name,
-                            installedVersion: pkg.installedVersion || '',
-                            latestVersion: pkg.latestVersion,
-                            size: pkg.size,
-                            desc: pkg.desc,
-                            homepage: pkg.homepage,
-                            dependencies: pkg.dependencies,
-                            conflicts: pkg.conflicts,
-                            isInstalled: pkg.isInstalled,
-                            warning: pkg.warning,
-                        };
-                        await handleSelect(fullPkg);
-                    }}
-                    onSelectRepository={(repo) => {
-                        const repoEntry = repositories.find(r => r.name === repo.name);
-                        if (repoEntry) {
-                            setSelectedRepository(repoEntry);
-                            setSelectedPackage(null);
-                        }
-                    }}
-                    onNavigateToView={(view) => {
-                        setView(view as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
-                    }}
-                />
-                <Toaster
-                    position="bottom-center"
-                    reverseOrder={false}
-                    gutter={8}
-                    containerStyle={{
-                        bottom: 16,
-                        left: 16,
-                        right: 16,
-                    }}
-                    toastOptions={{
-                        duration: 4000,
-                        style: {
-                            background: 'var(--toast-bg)',
-                            color: 'var(--toast-text)',
-                            border: '1px solid var(--glass-border-strong)',
-                            borderRadius: '12px',
-                            backdropFilter: 'blur(12px)',
-                            WebkitBackdropFilter: 'blur(12px)',
-                            boxShadow: 'var(--glass-shadow-strong)',
-                        },
-                        success: {
-                            iconTheme: {
-                                primary: '#4CAF50',
-                                secondary: '#fff',
+                    <LogDialog
+                        open={uninstallLogs !== null}
+                        title={selectedPackage ? t('dialogs.uninstallLogs', { name: selectedPackage.name }) : t('dialogs.uninstallLogs')}
+                        log={uninstallLogs}
+                        isRunning={isUninstallRunning}
+                        onClose={() => {
+                            setUninstallLogs(null);
+                            setIsUninstallRunning(false);
+                        }}
+                    />
+                    <LogDialog
+                        open={untapLogs !== null}
+                        title={selectedRepository ? t('dialogs.untapLogs', { name: selectedRepository.name }) : t('dialogs.untapLogs')}
+                        log={untapLogs}
+                        isRunning={false}
+                        clickablePackages={untapLogPackages}
+                        onPackageClick={handleUntapPackageClick}
+                        onClose={() => {
+                            setUntapLogs(null);
+                            setUntapLogPackages([]);
+                        }}
+                    />
+                    <LogDialog
+                        open={tapLogs !== null}
+                        title={tappingRepository ? t('dialogs.tapLogs', { name: tappingRepository }) : t('dialogs.tapLogs')}
+                        log={tapLogs}
+                        isRunning={false}
+                        onClose={() => {
+                            setTapLogs(null);
+                            setTappingRepository(null);
+                        }}
+                    />
+                    <TapInputDialog
+                        open={showTapInput}
+                        onConfirm={handleTapConfirmed}
+                        onCancel={() => setShowTapInput(false)}
+                    />
+                    <LogDialog
+                        open={!!infoLogs}
+                        title={t('dialogs.packageInfo', { name: infoPackage?.name })}
+                        log={infoLogs}
+                        onClose={() => {
+                            // Invalidate any pending info request (prevents dialog from reopening)
+                            infoRequestIdRef.current++;
+                            setInfoLogs(null);
+                            setInfoPackage(null);
+                        }}
+                    />
+                    <LogDialog
+                        open={showRepositoryInfo}
+                        title={t('dialogs.repositoryInfo', { name: selectedRepository?.name || '' })}
+                        log={repositoryInfoLogs}
+                        onClose={() => {
+                            setRepositoryInfoLogs(null);
+                            setShowRepositoryInfo(false);
+                        }}
+                        isRunning={false}
+                    />
+                    <LogDialog
+                        open={showSessionLogs}
+                        title={t('dialogs.sessionLogs')}
+                        log={sessionLogs}
+                        onClose={() => {
+                            setShowSessionLogs(false);
+                            setSessionLogs("");
+                        }}
+                    />
+                    <AboutDialog
+                        open={showAbout}
+                        onClose={() => setShowAbout(false)}
+                        appVersion={appVersion}
+                    />
+                    <UpdateDialog
+                        isOpen={showUpdate}
+                        onClose={() => setShowUpdate(false)}
+                    />
+                    <RestartDialog
+                        isOpen={showRestart}
+                        onClose={() => setShowRestart(false)}
+                    />
+                    <ShortcutsDialog
+                        open={showShortcuts}
+                        onClose={() => setShowShortcuts(false)}
+                    />
+                    <CommandPalette
+                        open={showCommandPalette}
+                        onClose={() => setShowCommandPalette(false)}
+                        packages={allPackages}
+                        casks={casks}
+                        repositories={repositories}
+                        onSelectPackage={async (pkg) => {
+                            const fullPkg: PackageEntry = {
+                                name: pkg.name,
+                                installedVersion: pkg.installedVersion || '',
+                                latestVersion: pkg.latestVersion,
+                                size: pkg.size,
+                                desc: pkg.desc,
+                                homepage: pkg.homepage,
+                                dependencies: pkg.dependencies,
+                                conflicts: pkg.conflicts,
+                                isInstalled: pkg.isInstalled,
+                                warning: pkg.warning,
+                            };
+                            await handleSelect(fullPkg);
+                        }}
+                        onSelectRepository={(repo) => {
+                            const repoEntry = repositories.find(r => r.name === repo.name);
+                            if (repoEntry) {
+                                setSelectedRepository(repoEntry);
+                                setSelectedPackage(null);
+                            }
+                        }}
+                        onNavigateToView={(view) => {
+                            setView(view as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
+                        }}
+                    />
+                    <Toaster
+                        position="bottom-center"
+                        reverseOrder={false}
+                        gutter={8}
+                        containerStyle={{
+                            bottom: 16,
+                            left: 16,
+                            right: 16,
+                        }}
+                        toastOptions={{
+                            duration: 4000,
+                            style: {
+                                background: 'var(--toast-bg)',
+                                color: 'var(--toast-text)',
+                                border: '1px solid var(--glass-border-strong)',
+                                borderRadius: '12px',
+                                backdropFilter: 'blur(12px)',
+                                WebkitBackdropFilter: 'blur(12px)',
+                                boxShadow: 'var(--glass-shadow-strong)',
                             },
-                        },
-                    }}
-                />
-            </main>
+                            success: {
+                                iconTheme: {
+                                    primary: '#4CAF50',
+                                    secondary: '#fff',
+                                },
+                            },
+                        }}
+                    />
+                </main>
+            </div>
         </div>
     );
 };
