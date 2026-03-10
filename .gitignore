@@ -24,3 +24,8 @@ Thumbs.db
 
 /.cursor/
 .cursorrules
+
+# Linux/Flatpak related files
+repo/
+.flatpak-builder/
+.flatpak-builder-tools/
