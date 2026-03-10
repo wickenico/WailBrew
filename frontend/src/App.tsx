@@ -51,6 +51,7 @@ import HeaderRow from "./components/HeaderRow";
 import HomebrewView from "./components/HomebrewView";
 import LogDialog from "./components/LogDialog";
 import PackageInfo from "./components/PackageInfo";
+import PackageInfoDialog from "./components/PackageInfoDialog";
 import PackageTable from "./components/PackageTable";
 import RepositoryInfo from "./components/RepositoryInfo";
 import RepositoryTable from "./components/RepositoryTable";
@@ -2753,7 +2754,7 @@ const WailBrewApp = () => {
                     onConfirm={handleTapConfirmed}
                     onCancel={() => setShowTapInput(false)}
                 />
-                <LogDialog
+                <PackageInfoDialog
                     open={!!infoLogs}
                     title={t('dialogs.packageInfo', { name: infoPackage?.name })}
                     log={infoLogs}

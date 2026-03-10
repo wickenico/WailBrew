@@ -2315,6 +2315,114 @@ body {
   margin-bottom: 0;
 }
 
+.package-info-tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.package-info-tab {
+  border: 1px solid var(--glass-border-strong);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.package-info-tab:hover {
+  border-color: var(--accent);
+  color: var(--text-main);
+}
+
+.package-info-tab.active {
+  background: var(--accent-light);
+  border-color: rgba(80, 180, 255, 0.5);
+  color: var(--accent);
+}
+
+.package-info-beta-badge {
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.package-info-parsed {
+  padding-bottom: 20px;
+}
+
+.package-info-parsed-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.package-info-parsed-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.package-info-parsed-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.package-info-parsed-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.package-info-parsed-link {
+  color: var(--accent);
+  font-size: 13px;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.package-info-parsed-link:hover {
+  text-decoration: underline;
+}
+
+.package-info-parsed-list {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+  gap: 10px 14px;
+}
+
+.package-info-parsed-row {
+  display: contents;
+}
+
+.package-info-parsed-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.package-info-parsed-value {
+  color: var(--text-main);
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .log-dialog-btn {
   background: transparent !important;
   border: 1px solid var(--glass-border-strong) !important;
