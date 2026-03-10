@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "Установленные пакеты",
     "installedCasks": "Установленные приложения",
-    "outdatedFormulas": "Устаревшие пакеты",
+    "outdatedFormulas": "Устаревшие формулы и cask-пакеты",
     "allFormulas": "Все пакеты",
     "allCasks": "Все Casks",
     "leaves": "Листья",

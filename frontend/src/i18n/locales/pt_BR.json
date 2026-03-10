@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "Fórmulas Instaladas",
     "installedCasks": "Casks Instalados",
-    "outdatedFormulas": "Fórmulas Desatualizadas",
+    "outdatedFormulas": "Fórmulas e Casks Desatualizados",
     "allFormulas": "Fórmulas",
     "allCasks": "Todos os Casks",
     "leaves": "Leaves",

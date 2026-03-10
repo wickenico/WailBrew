@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "Programas CLI instalados",
     "installedCasks": "Programs GUI instalados",
-    "outdatedFormulas": "Programas CLI actualizables",
+    "outdatedFormulas": "Programas CLI y Casks actualizables",
     "allFormulas": "Todos los programas CLI",
     "allCasks": "Todos los programas GUI",
     "leaves": "Instalados manualmente",

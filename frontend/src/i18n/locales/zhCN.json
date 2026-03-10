@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "已安装的 Formulae",
     "installedCasks": "已安装的 Casks",
-    "outdatedFormulas": "可更新的 Formulae",
+    "outdatedFormulas": "可更新的 Formulae 和 Casks",
     "allFormulas": "Formulae",
     "allCasks": "所有 Casks",
     "leaves": "独立包",

@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "Yüklü Formüller",
     "installedCasks": "Kurulu Fıçılar",
-    "outdatedFormulas": "Eski Formüller",
+    "outdatedFormulas": "Eski Formüller ve Cask'ler",
     "allFormulas": "Formül",
     "allCasks": "Tüm Casks",
     "leaves": "Yaprak",

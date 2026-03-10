@@ -1,4 +1,4 @@
-import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Square, X } from 'lucide-react';
+import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, X } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from "react-i18next";
@@ -126,7 +126,6 @@ const WailBrewApp = () => {
     const [showRepositoryInfo, setShowRepositoryInfo] = useState<boolean>(false);
     const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
     const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
-    const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false);
     const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
@@ -1439,16 +1438,6 @@ const WailBrewApp = () => {
         }
     };
 
-    // Multi-select handlers
-    const toggleMultiSelectMode = () => {
-        setMultiSelectMode(!multiSelectMode);
-        setSelectedPackages(new Set());
-        if (multiSelectMode) {
-            // Exiting multi-select mode, restore normal selection
-            setSelectedPackage(null);
-        }
-    };
-
     const togglePackageSelection = (packageName: string) => {
         const newSelected = new Set(selectedPackages);
         if (newSelected.has(packageName)) {
@@ -1503,7 +1492,6 @@ const WailBrewApp = () => {
 
             // Clear selections after successful update
             setSelectedPackages(new Set());
-            setMultiSelectMode(false);
 
             // Clean up event listeners
             updateListenersRef.current.progress?.();
@@ -1542,8 +1530,7 @@ const WailBrewApp = () => {
         setShowInstallConfirm(false);
         setShowUpdateConfirm(false);
 
-        // Clear multi-select state when changing views
-        setMultiSelectMode(false);
+        // Clear selected package set when changing views
         setSelectedPackages(new Set());
         setShowUpdateAllConfirm(false);
 
@@ -2308,15 +2295,7 @@ const WailBrewApp = () => {
                                     </button>
                                     {updatablePackages.length > 0 && (
                                         <>
-                                            <button
-                                                className={multiSelectMode ? "multi-select-button active" : "multi-select-button"}
-                                                onClick={toggleMultiSelectMode}
-                                                title={multiSelectMode ? t('buttons.exitMultiSelect') : t('buttons.multiSelect')}
-                                            >
-                                                {multiSelectMode ? <CheckSquare size={20} /> : <Square size={20} />}
-                                                {multiSelectMode ? t('buttons.exitMultiSelect') : t('buttons.multiSelect')}
-                                            </button>
-                                            {multiSelectMode && selectedPackages.size > 0 && (
+                                            {selectedPackages.size > 0 ? (
                                                 <button
                                                     className="update-selected-button"
                                                     onClick={handleUpdateSelected}
@@ -2324,8 +2303,7 @@ const WailBrewApp = () => {
                                                 >
                                                     {t('buttons.updateSelected', { count: selectedPackages.size })}
                                                 </button>
-                                            )}
-                                            {!multiSelectMode && (
+                                            ) : (
                                                 <button
                                                     className="update-all-button"
                                                     onClick={() => setShowUpdateAllConfirm(true)}
@@ -2342,27 +2320,6 @@ const WailBrewApp = () => {
                             onSearchChange={setSearchQuery}
                             onClearSearch={() => setSearchQuery("")}
                         />
-                        {multiSelectMode && updatablePackages.length > 0 && (
-                            <div className="multi-select-controls">
-                                <button
-                                    className="select-control-button"
-                                    onClick={selectAllPackages}
-                                    disabled={selectedPackages.size === filteredPackages.length}
-                                >
-                                    {t('buttons.selectAll')}
-                                </button>
-                                <button
-                                    className="select-control-button"
-                                    onClick={deselectAllPackages}
-                                    disabled={selectedPackages.size === 0}
-                                >
-                                    {t('buttons.deselectAll')}
-                                </button>
-                                <span className="selection-count">
-                                    {t('multiSelect.selectedCount', { count: selectedPackages.size, total: filteredPackages.length })}
-                                </span>
-                            </div>
-                        )}
                         {error && <div className="result error">{error}</div>}
                         {updatablePackages.length === 0 && !loading ? (
                             <div className="all-up-to-date">
@@ -2375,13 +2332,16 @@ const WailBrewApp = () => {
                                 packages={filteredPackages}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
-                                onSelect={multiSelectMode ? (pkg) => togglePackageSelection(pkg.name) : handleSelect}
+                                onSelect={handleSelect}
                                 columns={columnsUpdatable}
-                                onUninstall={!multiSelectMode ? handleUninstallPackage : undefined}
-                                onShowInfo={!multiSelectMode ? handleShowInfoLogs : undefined}
-                                onUpdate={!multiSelectMode ? handleUpdate : undefined}
-                                multiSelectMode={multiSelectMode}
+                                onUninstall={handleUninstallPackage}
+                                onShowInfo={handleShowInfoLogs}
+                                onUpdate={handleUpdate}
+                                multiSelectMode={true}
                                 selectedPackages={selectedPackages}
+                                onTogglePackageSelect={togglePackageSelection}
+                                onSelectAllPackages={selectAllPackages}
+                                onDeselectAllPackages={deselectAllPackages}
                             />
                         )}
                         {updatablePackages.length > 0 && (

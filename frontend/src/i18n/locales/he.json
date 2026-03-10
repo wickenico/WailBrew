@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "נוסחאות מותקנות",
     "installedCasks": "Casks מותקנים",
-    "outdatedFormulas": "נוסחאות מיושנות",
+    "outdatedFormulas": "נוסחאות ו-Casks מיושנים",
     "allFormulas": "נוסחאות",
     "allCasks": "כל ה-Casks",
     "leaves": "עלים",

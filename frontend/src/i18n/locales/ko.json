@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "설치된 Formulae",
     "installedCasks": "설치된 Casks",
-    "outdatedFormulas": "업데이트 필요한 Formulae",
+    "outdatedFormulas": "업데이트 필요한 Formulae 및 Casks",
     "allFormulas": "Formulae",
     "allCasks": "모든 Casks",
     "leaves": "Leaves",

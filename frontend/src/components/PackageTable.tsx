@@ -28,6 +28,9 @@ interface PackageTableProps {
     onInstall?: (pkg: PackageEntry) => void;
     multiSelectMode?: boolean;
     selectedPackages?: Set<string>;
+    onTogglePackageSelect?: (packageName: string) => void;
+    onSelectAllPackages?: () => void;
+    onDeselectAllPackages?: () => void;
 }
 
 export interface PackageTableRef {
@@ -67,6 +70,9 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
     onInstall,
     multiSelectMode = false,
     selectedPackages = new Set(),
+    onTogglePackageSelect,
+    onSelectAllPackages,
+    onDeselectAllPackages,
 }, ref) => {
     const { t } = useTranslation();
     const selectedRowRef = useRef<HTMLTableRowElement>(null);
@@ -169,6 +175,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
             return sortDirection === 'asc' ? comparison : -comparison;
         });
     }, [packages, sortKey, sortDirection]);
+    const allVisibleSelected = multiSelectMode && sortedPackages.length > 0 && sortedPackages.every(pkg => selectedPackages.has(pkg.name));
 
     // Scroll to selected row when selectedPackage changes (but not during keyboard navigation)
     const prevSelectedPackageRef = useRef<PackageEntry | null>(null);
@@ -311,9 +318,21 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                             <tr>
                                 {multiSelectMode && (
                                     <th style={{ textAlign: 'center' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <CheckSquare size={16} style={{ opacity: 0.6 }} />
-                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (allVisibleSelected) {
+                                                    onDeselectAllPackages?.();
+                                                } else {
+                                                    onSelectAllPackages?.();
+                                                }
+                                            }}
+                                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', margin: '0 auto', padding: 0 }}
+                                            title={allVisibleSelected ? t('buttons.deselectAll') : t('buttons.selectAll')}
+                                        >
+                                            {allVisibleSelected ? <CheckSquare size={16} /> : <Square size={16} style={{ opacity: 0.7 }} />}
+                                        </button>
                                     </th>
                                 )}
                                 {columns.map(col => {
@@ -400,13 +419,21 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                                         >
                                             {multiSelectMode && (
                                                 <td style={{ textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onTogglePackageSelect?.(pkg.name);
+                                                        }}
+                                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', margin: '0 auto', padding: 0 }}
+                                                        title={selectedPackages.has(pkg.name) ? t('buttons.deselectAll') : t('buttons.selectAll')}
+                                                    >
                                                         {selectedPackages.has(pkg.name) ? (
                                                             <CheckSquare size={20} color={isSelected ? "#ffffff" : "#4fc3f7"} />
                                                         ) : (
                                                             <Square size={20} color={isSelected ? "#ffffff" : undefined} style={{ opacity: isSelected ? 0.8 : 0.6 }} />
                                                         )}
-                                                    </div>
+                                                    </button>
                                                 </td>
                                             )}
                                             {columns.map(col => (

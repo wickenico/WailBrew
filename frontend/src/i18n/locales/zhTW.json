@@ -23,7 +23,7 @@
   "headers": {
     "installedFormulas": "已安裝套件",
     "installedCasks": "已安裝應用程式",
-    "outdatedFormulas": "可更新套件",
+    "outdatedFormulas": "可更新 Formulae 與 Casks",
     "allFormulas": "全部套件",
     "allCasks": "所有 Casks",
     "leaves": "獨立套件",
