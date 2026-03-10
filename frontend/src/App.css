@@ -1428,6 +1428,9 @@ body {
   text-align: left;
   padding: 12px 14px;
   border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Make name column shorter when status column is present (all formulas view) */

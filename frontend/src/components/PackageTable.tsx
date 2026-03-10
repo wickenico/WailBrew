@@ -123,6 +123,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
     // Helper function to get column width based on key
     const getColumnWidth = (key: string): string => {
         if (key === 'name') return '30%';
+        if (key === 'installedVersion') return '160px';
+        if (key === 'latestVersion') return '160px';
         if (key === 'actions') return '120px';
         if (key === 'size') return '100px';
         return 'auto';
@@ -293,6 +295,10 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                 );
             }
             return pkg.name;
+        }
+        if (col.key === "installedVersion" || col.key === "latestVersion" || col.key === "size") {
+            const value = ((pkg as any)[col.key] ?? "") as string;
+            return <span title={value}>{value}</span>;
         }
         return (pkg as any)[col.key];
     };
