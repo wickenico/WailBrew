@@ -2298,6 +2298,14 @@ const WailBrewApp = () => {
                             title={t('headers.outdatedFormulas', { count: updatablePackages.length })}
                             actions={
                                 <>
+                                    <button
+                                        className="refresh-button"
+                                        onClick={handleRefreshPackages}
+                                        disabled={loading}
+                                        title={t('buttons.refresh')}
+                                    >
+                                        <RefreshCw size={18} />
+                                    </button>
                                     {updatablePackages.length > 0 && (
                                         <>
                                             <button
