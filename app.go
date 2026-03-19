@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -200,6 +201,17 @@ func (a *App) getBrewEnv() []string {
 		brewEnvLang,
 		brewEnvLCAll,
 		brewEnvNoAutoUpdate,
+	}
+
+	// Add proxy environment variables if configured
+	if a.config.Proxy != "" {
+		proxy := a.config.Proxy
+		env = append(env, fmt.Sprintf("http_proxy=%s", proxy))
+		env = append(env, fmt.Sprintf("https_proxy=%s", proxy))
+		env = append(env, fmt.Sprintf("all_proxy=%s", proxy))
+		env = append(env, fmt.Sprintf("HTTP_PROXY=%s", proxy))
+		env = append(env, fmt.Sprintf("HTTPS_PROXY=%s", proxy))
+		env = append(env, fmt.Sprintf("ALL_PROXY=%s", proxy))
 	}
 
 	// Add SUDO_ASKPASS if askpass helper is available
@@ -649,6 +661,59 @@ func (a *App) OpenConfigFile() error {
 }
 
 // CONFIG OPERATIONS - Simple delegation to config
+
+func (a *App) GetProxy() string {
+	return a.config.Proxy
+}
+
+func (a *App) SetProxy(proxy string) error {
+	a.config.Proxy = strings.TrimSpace(proxy)
+	if err := a.config.Save(); err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	// Update brew executor with new environment
+	if a.brewExecutor != nil {
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+	}
+
+	return nil
+}
+
+func (a *App) TestProxyConnection(proxyStr, targetUrl string) (string, error) {
+	proxyStr = strings.TrimSpace(proxyStr)
+	targetUrl = strings.TrimSpace(targetUrl)
+
+	if proxyStr == "" {
+		return "", fmt.Errorf("proxy URL is empty")
+	}
+	if targetUrl == "" {
+		return "", fmt.Errorf("target URL is empty")
+	}
+
+	proxyURL, err := url.Parse(proxyStr)
+	if err != nil {
+		return "", fmt.Errorf("invalid proxy URL: %v", err)
+	}
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(proxyURL),
+		},
+		Timeout: 10 * time.Second,
+	}
+
+	resp, err := client.Get(targetUrl)
+	if err != nil {
+		return "", fmt.Errorf("connection failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		return fmt.Sprintf("Success: HTTP %d", resp.StatusCode), nil
+	}
+	return fmt.Sprintf("Failed: HTTP %d", resp.StatusCode), fmt.Errorf("server returned error code: %d", resp.StatusCode)
+}
 
 func (a *App) GetMirrorSource() map[string]string {
 	return map[string]string{

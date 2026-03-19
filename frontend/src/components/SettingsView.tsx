@@ -14,9 +14,10 @@ import {
     Info,
     Sparkles,
     Code2,
-    Shield
+    Shield,
+    Network
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -58,6 +59,14 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [macOSReleaseName, setMacOSReleaseName] = useState<string>("");
     const [systemArchitecture, setSystemArchitecture] = useState<string>("");
 
+    const [proxy, setProxy] = useState<string>("");
+    const [newProxy, setNewProxy] = useState<string>("");
+    const [savingProxy, setSavingProxy] = useState<boolean>(false);
+    const [isProxyExpanded, setIsProxyExpanded] = useState<boolean>(false);
+    const [testProxyUrl, setTestProxyUrl] = useState<string>("https://brew.sh");
+    const [testingProxy, setTestingProxy] = useState<boolean>(false);
+    const [testProxyResult, setTestProxyResult] = useState<{success: boolean, message: string} | null>(null);
+
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
@@ -67,6 +76,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadCustomOutdatedArgs();
         loadAdminUsername();
         loadSystemInfo();
+        loadCurrentProxy();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -136,6 +146,72 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
 
         toast.error(t('settings.errors.autoDetectionFailed'));
+    };
+
+    const loadCurrentProxy = async () => {
+        try {
+            const currentProxy = await GetProxy();
+            setProxy(currentProxy);
+            setNewProxy(currentProxy);
+        } catch (error) {
+            console.error("Failed to get proxy:", error);
+        }
+    };
+
+    const handleSaveProxy = async () => {
+        const trimmedProxy = newProxy.trim();
+        if (trimmedProxy === proxy) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+
+        try {
+            setSavingProxy(true);
+            await SetProxy(trimmedProxy);
+            setProxy(trimmedProxy);
+            setNewProxy(trimmedProxy);
+            toast.success(t('settings.messages.proxyUpdated'));
+            onRefreshPackages();
+        } catch (error) {
+            console.error("Failed to set proxy:", error);
+            toast.error(t('settings.errors.failedToSetProxy'));
+            setNewProxy(proxy);
+        } finally {
+            setSavingProxy(false);
+        }
+    };
+
+    const handleResetProxy = () => {
+        setNewProxy(proxy);
+    };
+
+    const handleTestProxy = async () => {
+        if (!testProxyUrl.trim()) {
+            toast.error(t('settings.errors.emptyTestUrl'));
+            return;
+        }
+        
+        try {
+            setTestingProxy(true);
+            setTestProxyResult(null);
+            
+            const proxyToTest = newProxy.trim() || proxy;
+            if (!proxyToTest) {
+                toast.error(t('settings.errors.emptyProxyForTest'));
+                setTestingProxy(false);
+                return;
+            }
+
+            const result = await TestProxyConnection(proxyToTest, testProxyUrl.trim());
+            setTestProxyResult({ success: true, message: result });
+            toast.success(t('settings.messages.proxyTestSuccess'));
+        } catch (error: any) {
+            console.error("Proxy test failed:", error);
+            setTestProxyResult({ success: false, message: error.message || String(error) });
+            toast.error(t('settings.errors.proxyTestFailed'));
+        } finally {
+            setTestingProxy(false);
+        }
     };
 
     const loadCurrentMirrorSource = async () => {
@@ -703,6 +779,114 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             >
                                 {savingMirror ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
                                 {savingMirror ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Proxy Card */}
+                <div className={`settings-card ${isProxyExpanded ? 'expanded' : ''}`}>
+                    <button 
+                        className="settings-card-header"
+                        onClick={() => setIsProxyExpanded(!isProxyExpanded)}
+                        aria-expanded={isProxyExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <Network size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.proxy.title')}</h3>
+                            <span className="settings-card-value">
+                                {proxy ? proxy : t('settings.proxy.none', 'None')}
+                            </span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isProxyExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+                    
+                    <div className={`settings-card-content ${isProxyExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.proxy.description')}
+                        </p>
+                        
+                        <div className="settings-input-group">
+                            <label>{t('settings.proxy.currentProxy')}</label>
+                            <input
+                                type="text"
+                                value={newProxy}
+                                onChange={(e) => {
+                                    setNewProxy(e.target.value);
+                                    setTestProxyResult(null);
+                                }}
+                                placeholder={t('settings.proxy.placeholder')}
+                                disabled={savingProxy || testingProxy}
+                            />
+                        </div>
+
+                        <div className="settings-input-group" style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--wails-border, #eee)' }}>
+                            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span>{t('settings.proxy.testConnection')}</span>
+                            </label>
+                            <div className="settings-input-row">
+                                <input
+                                    type="text"
+                                    value={testProxyUrl}
+                                    onChange={(e) => setTestProxyUrl(e.target.value)}
+                                    placeholder={t('settings.proxy.testUrlPlaceholder')}
+                                    disabled={savingProxy || testingProxy}
+                                />
+                                <button
+                                    className="settings-btn-secondary"
+                                    onClick={handleTestProxy}
+                                    disabled={savingProxy || testingProxy || !testProxyUrl.trim()}
+                                    style={{ whiteSpace: 'nowrap' }}
+                                    title={t('settings.proxy.testButton')}
+                                >
+                                    {testingProxy ? <Loader2 className="spin" size={16} /> : <Globe size={16} />}
+                                    <span style={{marginLeft: '6px'}}>{testingProxy ? t('settings.proxy.testing') : t('settings.proxy.testButton')}</span>
+                                </button>
+                            </div>
+                            {testProxyResult && (
+                                <div style={{ 
+                                    marginTop: '12px', 
+                                    padding: '10px 12px', 
+                                    borderRadius: '6px', 
+                                    fontSize: '13px',
+                                    color: testProxyResult.success ? 'var(--success-color, #10b981)' : 'var(--error-color, #ef4444)',
+                                    backgroundColor: testProxyResult.success ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: '8px'
+                                }}>
+                                    {testProxyResult.success ? 
+                                        <Check size={16} style={{flexShrink: 0, marginTop: '1px'}} /> : 
+                                        <Info size={16} style={{flexShrink: 0, marginTop: '1px'}} />
+                                    }
+                                    <span style={{wordBreak: 'break-all', lineHeight: '1.4'}}>{testProxyResult.message}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="settings-info-box" style={{ marginTop: '16px' }}>
+                            <Info size={16} />
+                            <span>{t('settings.proxy.note')}</span>
+                        </div>
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetProxy}
+                                disabled={savingProxy || testingProxy || newProxy === proxy}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveProxy}
+                                disabled={savingProxy || testingProxy || newProxy === proxy}
+                            >
+                                {savingProxy ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingProxy ? t('settings.buttons.saving') : t('settings.buttons.save')}
                             </button>
                         </div>
                     </div>

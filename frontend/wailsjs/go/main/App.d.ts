@@ -78,6 +78,8 @@ export function GetMirrorSource():Promise<Record<string, string>>;
 
 export function GetOutdatedFlag():Promise<string>;
 
+export function GetProxy():Promise<string>;
+
 export function GetSessionLogs():Promise<string>;
 
 export function GetStartupData():Promise<brew.StartupData>;
@@ -132,7 +134,11 @@ export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
 
 export function SetOutdatedFlag(arg1:string):Promise<void>;
 
+export function SetProxy(arg1:string):Promise<void>;
+
 export function TapBrewRepository(arg1:string):Promise<string>;
+
+export function TestProxyConnection(arg1:string,arg2:string):Promise<string>;
 
 export function UntapBrewRepository(arg1:string):Promise<string>;
 
