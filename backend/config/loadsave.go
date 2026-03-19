@@ -18,6 +18,7 @@ type Config struct {
 	CustomCaskOpts     string `json:"customCaskOpts"`     // Additional cask options (e.g., "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook")
 	CustomOutdatedArgs string `json:"customOutdatedArgs"` // Additional outdated command arguments (e.g., "--verbose --formula")
 	AdminUsername      string `json:"adminUsername"`      // Admin username for sudo operations (defaults to current user)
+	Proxy              string `json:"proxy"`              // Global proxy setting (e.g., "http://127.0.0.1:7890" or "http://user:pass@127.0.0.1:7890")
 }
 
 // GetConfigPath returns the path to the config file

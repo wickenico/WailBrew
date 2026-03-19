@@ -448,7 +448,9 @@
       "caskAppDirReset": "Cask app directory reset to current value.",
       "customCaskOptsUpdated": "Custom cask options updated successfully!",
       "customOutdatedArgsUpdated": "Custom outdated arguments updated successfully!",
-      "adminUsernameUpdated": "Admin username updated successfully!"
+      "adminUsernameUpdated": "Admin username updated successfully!",
+      "proxyUpdated": "Proxy settings updated successfully!",
+      "proxyTestSuccess": "Proxy connection test successful!"
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "Failed to select directory.",
       "failedToSetCustomCaskOpts": "Failed to set custom cask options. Please check your input.",
       "failedToSetCustomOutdatedArgs": "Failed to set custom outdated arguments. Please check your input.",
-      "failedToSetAdminUsername": "Failed to update admin username"
+      "failedToSetAdminUsername": "Failed to update admin username",
+      "failedToSetProxy": "Failed to set proxy connection. Please check your input.",
+      "emptyTestUrl": "Please enter a test URL.",
+      "emptyProxyForTest": "Please enter a proxy URL to test.",
+      "proxyTestFailed": "Proxy connection test failed."
     },
     "mirrorSource": {
       "title": "Homebrew Mirror Source",
@@ -514,6 +520,18 @@
       "placeholder": "Enter admin username",
       "currentUser": "Current user",
       "info": "This username will be used when Homebrew operations require administrator privileges. Leave empty to use your current user account."
+    },
+    "proxy": {
+      "title": "Proxy Settings",
+      "none": "None",
+      "description": "Configure an HTTP proxy for Homebrew. Supports username and password (e.g. http://user:pass@127.0.0.1:7890).",
+      "currentProxy": "Current Proxy",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "A restart might be required for some changes to take effect fully, but most brew commands will pick this up immediately.",
+      "testConnection": "Test Connection",
+      "testUrlPlaceholder": "https://google.com or https://brew.sh",
+      "testButton": "Test",
+      "testing": "Testing..."
     },
     "advancedOptions": {
       "title": "Advanced Options",
