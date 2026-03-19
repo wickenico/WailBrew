@@ -150,6 +150,10 @@ export function GetOutdatedFlag() {
   return window['go']['main']['App']['GetOutdatedFlag']();
 }
 
+export function GetProxy() {
+  return window['go']['main']['App']['GetProxy']();
+}
+
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
 }
@@ -258,8 +262,16 @@ export function SetOutdatedFlag(arg1) {
   return window['go']['main']['App']['SetOutdatedFlag'](arg1);
 }
 
+export function SetProxy(arg1) {
+  return window['go']['main']['App']['SetProxy'](arg1);
+}
+
 export function TapBrewRepository(arg1) {
   return window['go']['main']['App']['TapBrewRepository'](arg1);
+}
+
+export function TestProxyConnection(arg1, arg2) {
+  return window['go']['main']['App']['TestProxyConnection'](arg1, arg2);
 }
 
 export function UntapBrewRepository(arg1) {

@@ -448,7 +448,9 @@
       "caskAppDirReset": "Cask 应用程序目录设置重置为当前值。",
       "customCaskOptsUpdated": "自定义 Cask 选项更新成功！",
       "customOutdatedArgsUpdated": "自定义 outdated 参数更新成功！",
-      "adminUsernameUpdated": "Admin username updated successfully!"
+      "adminUsernameUpdated": "Admin username updated successfully!",
+      "proxyUpdated": "代理设置更新成功！",
+      "proxyTestSuccess": "代理连接测试成功！"
     },
     "errors": {
       "failedToGetPath": "无法获取当前 brew 的路径。",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "选择目录失败。",
       "failedToSetCustomCaskOpts": "设置自定义 Cask 选项失败。请检查您的输入。",
       "failedToSetCustomOutdatedArgs": "设置自定义 outdated 参数失败。请检查您的输入。",
-      "failedToSetAdminUsername": "更新管理员用户名失败"
+      "failedToSetAdminUsername": "更新管理员用户名失败",
+      "failedToSetProxy": "代理设置失败，请检查输入。",
+      "emptyTestUrl": "请输入用于测试的目标 URL。",
+      "emptyProxyForTest": "请输入要测试的代理地址。",
+      "proxyTestFailed": "代理连接测试失败。"
     },
     "mirrorSource": {
       "title": "Homebrew 镜像源",
@@ -514,6 +520,18 @@
       "placeholder": "输入管理员用户名",
       "currentUser": "当前用户",
       "info": "当 Homebrew 操作需要管理员权限时，将使用此用户名。留空则使用您当前的用户账户。"
+    },
+    "proxy": {
+      "title": "代理设置",
+      "none": "无代理",
+      "description": "为软件及其调用的所有网络流量配置全局代理，支持包含用户名和密码格式（示例：http://user:pass@127.0.0.1:7890）。",
+      "currentProxy": "配置代理",
+      "placeholder": "例如：http://127.0.0.1:7890",
+      "note": "大部分网络请求将会立即自动应用该代理设置，极个别操作可能需要重启客户端生效。",
+      "testConnection": "连通性测试",
+      "testUrlPlaceholder": "测试目标 URL（例：https://brew.sh）",
+      "testButton": "一键测试",
+      "testing": "测试中..."
     },
     "advancedOptions": {
       "title": "高级选项",
