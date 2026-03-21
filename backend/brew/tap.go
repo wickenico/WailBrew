@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 // TapService provides tap/untap repository functionality
@@ -64,7 +65,11 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName strin
 	}
 
 	// Read and emit output in real-time
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -75,6 +80,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName strin
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -84,7 +90,8 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName strin
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 	if err != nil {
 		errorMsg := s.getBackendMsg("tapFailed", map[string]string{"name": repositoryName, "error": err.Error()})
@@ -132,7 +139,11 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	}
 
 	// Read and emit output in real-time
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -143,6 +154,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -152,7 +164,8 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 	if err != nil {
 		errorMsg := s.getBackendMsg("untapFailed", map[string]string{"name": repositoryName, "error": err.Error()})

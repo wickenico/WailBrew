@@ -1124,7 +1124,7 @@ const WailBrewApp = () => {
             conflicts: (info["conflicts_with"] as string[]) || [],
         };
 
-        setPackageCache(new Map(packageCache.set(pkg.name, enriched)));
+        setPackageCache(prev => new Map(prev).set(pkg.name, enriched));
         setSelectedPackage(enriched);
         setLoadingDetailsFor(null);
     };
