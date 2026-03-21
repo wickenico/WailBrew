@@ -448,7 +448,9 @@
       "caskAppDirReset": "Cask 애플리케이션 디렉토리 설정이 현재 값으로 초기화되었습니다.",
       "customCaskOptsUpdated": "사용자 정의 Cask 옵션이 성공적으로 업데이트되었습니다!",
       "customOutdatedArgsUpdated": "사용자 정의 outdated 인수가 성공적으로 업데이트되었습니다!",
-      "adminUsernameUpdated": "관리자 사용자 이름이 성공적으로 업데이트되었습니다!"
+      "adminUsernameUpdated": "관리자 사용자 이름이 성공적으로 업데이트되었습니다!",
+      "proxyUpdated": "프록시 설정이 성공적으로 업데이트되었습니다!",
+      "proxyTestSuccess": "프록시 연결 테스트에 성공했습니다!"
     },
     "errors": {
       "failedToGetPath": "현재 brew 경로를 가져오지 못했습니다.",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "디렉토리 선택에 실패했습니다.",
       "failedToSetCustomCaskOpts": "사용자 정의 Cask 옵션 설정에 실패했습니다. 입력을 확인해 주세요.",
       "failedToSetCustomOutdatedArgs": "사용자 정의 outdated 인수 설정에 실패했습니다. 입력을 확인해 주세요.",
-      "failedToSetAdminUsername": "관리자 사용자 이름 업데이트에 실패했습니다"
+      "failedToSetAdminUsername": "관리자 사용자 이름 업데이트에 실패했습니다",
+      "failedToSetProxy": "프록시 연결 설정에 실패했습니다. 입력을 확인해 주세요.",
+      "emptyTestUrl": "테스트 URL을 입력해 주세요.",
+      "emptyProxyForTest": "테스트할 프록시 URL을 입력해 주세요.",
+      "proxyTestFailed": "프록시 연결 테스트에 실패했습니다."
     },
     "mirrorSource": {
       "title": "Homebrew 미러 소스",
@@ -514,6 +520,18 @@
       "placeholder": "관리자 사용자 이름 입력",
       "currentUser": "현재 사용자",
       "info": "Homebrew 작업에 관리자 권한이 필요할 때 이 사용자 이름이 사용됩니다. 현재 사용자 계정을 사용하려면 비워 두세요."
+    },
+    "proxy": {
+      "title": "프록시 설정",
+      "none": "없음",
+      "description": "Homebrew용 HTTP 프록시를 구성합니다. 사용자 이름과 비밀번호를 지원합니다 (예: http://user:pass@127.0.0.1:7890).",
+      "currentProxy": "현재 프록시",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "일부 변경 사항이 완전히 적용되려면 재시작이 필요할 수 있지만, 대부분의 brew 명령은 즉시 적용됩니다.",
+      "testConnection": "연결 테스트",
+      "testUrlPlaceholder": "https://google.com 또는 https://brew.sh",
+      "testButton": "테스트",
+      "testing": "테스트 중..."
     },
     "advancedOptions": {
       "title": "고급 옵션",

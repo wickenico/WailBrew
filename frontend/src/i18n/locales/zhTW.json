@@ -448,7 +448,9 @@
       "caskAppDirReset": "Cask 應用程式目錄設定已重設為目前值。",
       "customCaskOptsUpdated": "自訂 Cask 選項更新成功！",
       "customOutdatedArgsUpdated": "自訂 outdated 參數更新成功！",
-      "adminUsernameUpdated": "管理員使用者名稱已成功更新！"
+      "adminUsernameUpdated": "管理員使用者名稱已成功更新！",
+      "proxyUpdated": "代理設定更新成功！",
+      "proxyTestSuccess": "代理連線測試成功！"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "選擇目錄失敗。",
       "failedToSetCustomCaskOpts": "設定自訂 Cask 選項失敗。請檢查您的輸入。",
       "failedToSetCustomOutdatedArgs": "設定自訂 outdated 參數失敗。請檢查您的輸入。",
-      "failedToSetAdminUsername": "更新管理員使用者名稱失敗"
+      "failedToSetAdminUsername": "更新管理員使用者名稱失敗",
+      "failedToSetProxy": "設定代理連線失敗。請檢查您的輸入。",
+      "emptyTestUrl": "請輸入測試 URL。",
+      "emptyProxyForTest": "請輸入要測試的代理 URL。",
+      "proxyTestFailed": "代理連線測試失敗。"
     },
     "mirrorSource": {
       "title": "Homebrew 鏡像源",
@@ -514,6 +520,18 @@
       "placeholder": "輸入管理員使用者名稱",
       "currentUser": "目前使用者",
       "info": "當 Homebrew 操作需要管理員權限時，將使用此使用者名稱。留空則使用您目前的使用者帳戶。"
+    },
+    "proxy": {
+      "title": "代理設定",
+      "none": "無",
+      "description": "為 Homebrew 設定 HTTP 代理。支援使用者名稱和密碼（例如 http://user:pass@127.0.0.1:7890）。",
+      "currentProxy": "目前代理",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "部分變更可能需要重新啟動才能完全生效，但大多數 brew 指令會立即套用。",
+      "testConnection": "測試連線",
+      "testUrlPlaceholder": "https://google.com 或 https://brew.sh",
+      "testButton": "測試",
+      "testing": "測試中..."
     },
     "advancedOptions": {
       "title": "進階選項",

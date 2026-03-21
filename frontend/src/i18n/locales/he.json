@@ -448,7 +448,9 @@
       "caskAppDirReset": "תיקיית יישומי Cask אופסה לערך הנוכחי.",
       "customCaskOptsUpdated": "אפשרויות cask מותאמות עודכנו בהצלחה!",
       "customOutdatedArgsUpdated": "ארגומנטים מותאמים למיושנים עודכנו בהצלחה!",
-      "adminUsernameUpdated": "שם משתמש מנהל עודכן בהצלחה!"
+      "adminUsernameUpdated": "שם משתמש מנהל עודכן בהצלחה!",
+      "proxyUpdated": "הגדרות הפרוקסי עודכנו בהצלחה!",
+      "proxyTestSuccess": "בדיקת חיבור הפרוקסי הצליחה!"
     },
     "errors": {
       "failedToGetPath": "נכשל בקבלת נתיב brew הנוכחי.",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "נכשל בבחירת תיקייה.",
       "failedToSetCustomCaskOpts": "נכשל בהגדרת אפשרויות cask מותאמות. אנא בדוק את הקלט.",
       "failedToSetCustomOutdatedArgs": "נכשל בהגדרת ארגומנטים מותאמים למיושנים. אנא בדוק את הקלט.",
-      "failedToSetAdminUsername": "נכשל בעדכון שם משתמש מנהל"
+      "failedToSetAdminUsername": "נכשל בעדכון שם משתמש מנהל",
+      "failedToSetProxy": "נכשל בהגדרת חיבור הפרוקסי. אנא בדוק את הקלט.",
+      "emptyTestUrl": "אנא הזן כתובת URL לבדיקה.",
+      "emptyProxyForTest": "אנא הזן כתובת URL של פרוקסי לבדיקה.",
+      "proxyTestFailed": "בדיקת חיבור הפרוקסי נכשלה."
     },
     "mirrorSource": {
       "title": "מקור מראה של Homebrew",
@@ -514,6 +520,18 @@
       "placeholder": "הזן שם משתמש מנהל",
       "currentUser": "משתמש נוכחי",
       "info": "שם משתמש זה ישמש כאשר פעולות Homebrew דורשות הרשאות מנהל. השאר ריק כדי להשתמש בחשבון המשתמש הנוכחי שלך."
+    },
+    "proxy": {
+      "title": "הגדרות פרוקסי",
+      "none": "ללא",
+      "description": "הגדר פרוקסי HTTP עבור Homebrew. תומך בשם משתמש וסיסמה (למשל http://user:pass@127.0.0.1:7890).",
+      "currentProxy": "פרוקסי נוכחי",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "ייתכן שיידרש הפעלה מחדש כדי שחלק מהשינויים ייכנסו לתוקף במלואם, אך רוב פקודות brew יזהו זאת מיד.",
+      "testConnection": "בדוק חיבור",
+      "testUrlPlaceholder": "https://google.com או https://brew.sh",
+      "testButton": "בדוק",
+      "testing": "בודק..."
     },
     "advancedOptions": {
       "title": "אפשרויות מתקדמות",

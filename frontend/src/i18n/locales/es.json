@@ -448,7 +448,9 @@
       "caskAppDirReset": "Directorio de aplicaciones GUI restablecido al valor actual.",
       "customCaskOptsUpdated": "Opciones personalizadas de cask actualizadas exitosamente!",
       "customOutdatedArgsUpdated": "Argumentos personalizados de actualización actualizados exitosamente!",
-      "adminUsernameUpdated": "Nombre de usuario administrador actualizado exitosamente!"
+      "adminUsernameUpdated": "Nombre de usuario administrador actualizado exitosamente!",
+      "proxyUpdated": "¡Configuración del proxy actualizada exitosamente!",
+      "proxyTestSuccess": "¡Prueba de conexión del proxy exitosa!"
     },
     "errors": {
       "failedToGetPath": "No se pudo obtener el path actual de Homebrew.",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "No se pudo seleccionar el directorio.",
       "failedToSetCustomCaskOpts": "No se pudo establecer las opciones personalizadas de programa GUI. Por favor verifique su entrada.",
       "failedToSetCustomOutdatedArgs": "No se pudo establecer los argumentos personalizados de actualización. Por favor verifique su entrada.",
-      "failedToSetAdminUsername": "No se pudo actualizar el nombre de usuario administrador"
+      "failedToSetAdminUsername": "No se pudo actualizar el nombre de usuario administrador",
+      "failedToSetProxy": "No se pudo establecer la conexión del proxy. Por favor verifique su entrada.",
+      "emptyTestUrl": "Por favor ingrese una URL de prueba.",
+      "emptyProxyForTest": "Por favor ingrese una URL de proxy para probar.",
+      "proxyTestFailed": "La prueba de conexión del proxy falló."
     },
     "mirrorSource": {
       "title": "Homebrew servidores",
@@ -514,6 +520,18 @@
       "placeholder": "Enter admin username",
       "currentUser": "Usuario actual",
       "info": "Este nombre de usuario se utilizará cuando las operaciones de Homebrew requieran privilegios de administrador. Dejar en blanco para usar su cuenta de usuario actual."
+    },
+    "proxy": {
+      "title": "Configuración de Proxy",
+      "none": "Ninguno",
+      "description": "Configure un proxy HTTP para Homebrew. Soporta nombre de usuario y contraseña (ej. http://user:pass@127.0.0.1:7890).",
+      "currentProxy": "Proxy actual",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "Puede ser necesario reiniciar para que algunos cambios surtan efecto completamente, pero la mayoría de los comandos brew lo detectarán inmediatamente.",
+      "testConnection": "Probar conexión",
+      "testUrlPlaceholder": "https://google.com o https://brew.sh",
+      "testButton": "Probar",
+      "testing": "Probando..."
     },
     "advancedOptions": {
       "title": "Opciones avanzadas",

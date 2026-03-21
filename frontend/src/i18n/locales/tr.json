@@ -448,7 +448,9 @@
       "caskAppDirReset": "Cask uygulama dizini ayarı güncel değerine sıfırlandı.",
       "customCaskOptsUpdated": "Özel Cask seçenekleri başarıyla güncellendi!",
       "customOutdatedArgsUpdated": "Özel outdated argümanları başarıyla güncellendi!",
-      "adminUsernameUpdated": "Yönetici kullanıcı adı başarıyla güncellendi!"
+      "adminUsernameUpdated": "Yönetici kullanıcı adı başarıyla güncellendi!",
+      "proxyUpdated": "Proxy ayarları başarıyla güncellendi!",
+      "proxyTestSuccess": "Proxy bağlantı testi başarılı!"
     },
     "errors": {
       "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
@@ -461,7 +463,11 @@
       "failedToSelectDirectory": "Dizin seçilemedi.",
       "failedToSetCustomCaskOpts": "Özel Cask seçenekleri ayarlanamadı. Lütfen girişinizi kontrol edin.",
       "failedToSetCustomOutdatedArgs": "Özel outdated argümanları ayarlanamadı. Lütfen girişinizi kontrol edin.",
-      "failedToSetAdminUsername": "Yönetici kullanıcı adı güncellenemedi"
+      "failedToSetAdminUsername": "Yönetici kullanıcı adı güncellenemedi",
+      "failedToSetProxy": "Proxy bağlantısı ayarlanamadı. Lütfen girişinizi kontrol edin.",
+      "emptyTestUrl": "Lütfen bir test URL'si girin.",
+      "emptyProxyForTest": "Lütfen test etmek için bir proxy URL'si girin.",
+      "proxyTestFailed": "Proxy bağlantı testi başarısız oldu."
     },
     "mirrorSource": {
       "title": "Homebrew Ayna Kaynağı",
@@ -514,6 +520,18 @@
       "placeholder": "Yönetici kullanıcı adını girin",
       "currentUser": "Mevcut kullanıcı",
       "info": "Homebrew işlemleri yönetici ayrıcalıkları gerektirdiğinde bu kullanıcı adı kullanılacaktır. Mevcut kullanıcı hesabınızı kullanmak için boş bırakın."
+    },
+    "proxy": {
+      "title": "Proxy Ayarları",
+      "none": "Yok",
+      "description": "Homebrew için bir HTTP proxy yapılandırın. Kullanıcı adı ve şifreyi destekler (ör. http://user:pass@127.0.0.1:7890).",
+      "currentProxy": "Mevcut Proxy",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "Bazı değişikliklerin tam olarak geçerli olması için yeniden başlatma gerekebilir, ancak çoğu brew komutu bunu hemen algılayacaktır.",
+      "testConnection": "Bağlantıyı Test Et",
+      "testUrlPlaceholder": "https://google.com veya https://brew.sh",
+      "testButton": "Test Et",
+      "testing": "Test ediliyor..."
     },
     "advancedOptions": {
       "title": "Gelişmiş Seçenekler",
