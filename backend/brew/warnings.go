@@ -51,6 +51,11 @@ func ParseWarnings(warnings string) map[string]string {
 		// Check if line contains a formula/cask file path
 		// Format: /path/to/Taps/username/homebrew-tap/Formula/package-name.rb:12
 		if strings.Contains(line, "/Formula/") || strings.Contains(line, "/Casks/") {
+			// Save accumulated warning for the previous package before switching
+			if currentPackage != "" {
+				warningMap[currentPackage] = strings.TrimSpace(currentWarning.String())
+			}
+
 			// Extract package name from file path
 			var formulaPath string
 			if idx := strings.Index(line, "/Formula/"); idx != -1 {
@@ -69,6 +74,7 @@ func ParseWarnings(warnings string) map[string]string {
 					packageName = packageName[:idx]
 				}
 				currentPackage = packageName
+				currentWarning.Reset()
 			}
 		}
 
@@ -77,7 +83,7 @@ func ParseWarnings(warnings string) map[string]string {
 		currentWarning.WriteString("\n")
 	}
 
-	// Store the warning for the package
+	// Store the warning for the last package
 	if currentPackage != "" {
 		warningMap[currentPackage] = strings.TrimSpace(currentWarning.String())
 	}
