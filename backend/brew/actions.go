@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 // EventEmitter handles event emission for real-time updates
@@ -87,7 +88,11 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	}
 
 	// Read and emit output in real-time
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -98,6 +103,7 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -107,7 +113,8 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 	if err != nil {
 		errorMsg := s.getBackendMsg("installFailed", map[string]string{"name": packageName, "error": err.Error()})
@@ -158,7 +165,11 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	}
 
 	// Read and emit output in real-time
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -169,6 +180,7 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -178,7 +190,8 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 	if err != nil {
 		errorMsg := s.getBackendMsg("uninstallFailed", map[string]string{"name": packageName, "error": err.Error()})
@@ -229,9 +242,12 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 
 	// Capture stderr for error detection
 	var stderrOutput strings.Builder
+	var wg sync.WaitGroup
+	wg.Add(2)
 
 	// Read and emit output in real-time
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -242,6 +258,7 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -253,7 +270,8 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 
 	if err != nil {
@@ -354,9 +372,12 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	// Track which packages were updated (especially wailbrew)
 	updatedPackages := make(map[string]bool)
 	var stderrOutput strings.Builder
+	var wg sync.WaitGroup
+	wg.Add(2)
 
 	// Read and emit output in real-time
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -386,6 +407,7 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -397,7 +419,8 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 
 	var finalMessage string
@@ -491,9 +514,12 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 
 	// Track which packages are being updated
 	updatedPackages := make(map[string]bool)
+	var wg sync.WaitGroup
+	wg.Add(2)
 
 	// Read and emit output in real-time
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -523,6 +549,7 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -532,7 +559,8 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 		}
 	}()
 
-	// Wait for command to complete
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 
 	var finalMessage string

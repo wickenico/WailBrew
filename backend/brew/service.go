@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -599,7 +600,11 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 		return errorMsg
 	}
 
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -610,6 +615,7 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 	}()
 
 	go func() {
+		defer wg.Done()
 		scanner := bufio.NewScanner(stderr)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -619,6 +625,8 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 		}
 	}()
 
+	// Wait for scanners to drain before calling cmd.Wait()
+	wg.Wait()
 	err = cmd.Wait()
 	var finalMessage string
 	if err != nil {
