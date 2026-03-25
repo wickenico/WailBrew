@@ -17,7 +17,6 @@
     "cleanup": "Очистка",
     "settings": "Настройки",
     "refresh": "Обновить",
-    "commandPalette": "Палитра команд",
     "sponsor": "Поддержать"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "Недавние поиски",
     "removeFromHistory": "Удалить \"{{item}}\" из истории"
   },
-  "commandPalette": {
-    "placeholder": "Поиск пакетов, casks, репозиториев или переход к представлениям...",
-    "noResults": "Результаты не найдены",
-    "toSelect": "для выбора",
-    "toNavigate": "для навигации",
-    "toClose": "для закрытия"
-  },
   "shortcuts": {
     "title": "Горячие клавиши",
     "menu": {
       "title": "Меню",
-      "commandPalette": "Палитра команд",
       "shortcuts": "Горячие клавиши",
       "settings": "Настройки",
       "quit": "Выход"
@@ -311,7 +302,6 @@
       "doctor": "Диагностика",
       "cleanup": "Очистка",
       "settings": "Настройки",
-      "commandPalette": "Палитра команд...",
       "shortcuts": "Горячие клавиши..."
     },
     "tools": {

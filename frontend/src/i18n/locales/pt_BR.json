@@ -17,7 +17,6 @@
     "cleanup": "Limpeza",
     "settings": "Configurações",
     "refresh": "Atualizar",
-    "commandPalette": "Paleta de Comandos",
     "sponsor": "Patrocinar"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "Buscas Recentes",
     "removeFromHistory": "Remover \"{{item}}\" do histórico"
   },
-  "commandPalette": {
-    "placeholder": "Buscar pacotes, casks, repositórios ou navegar para visualizações...",
-    "noResults": "Nenhum resultado encontrado",
-    "toSelect": "para selecionar",
-    "toNavigate": "para navegar",
-    "toClose": "para fechar"
-  },
   "shortcuts": {
     "title": "Atalhos de Teclado",
     "menu": {
       "title": "Menu",
-      "commandPalette": "Paleta de Comandos",
       "shortcuts": "Atalhos de Teclado",
       "settings": "Configurações",
       "quit": "Sair"
@@ -311,7 +302,6 @@
       "doctor": "Diagnóstico",
       "cleanup": "Limpeza",
       "settings": "Configurações",
-      "commandPalette": "Paleta de Comandos...",
       "shortcuts": "Atalhos de Teclado..."
     },
     "tools": {

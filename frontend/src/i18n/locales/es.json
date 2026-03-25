@@ -17,7 +17,6 @@
     "cleanup": "Limpiar",
     "settings": "Ajustes",
     "refresh": "Refrescar",
-    "commandPalette": "Paleta de comandos",
     "sponsor": "Patrocinador"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "Búsquedas recientes",
     "removeFromHistory": "Eliminar \"{{item}}\" del historial"
   },
-  "commandPalette": {
-    "placeholder": "Buscar paquetes, programas GUI, repositorios, o navegar a vistas...",
-    "noResults": "No se encontraron resultados",
-    "toSelect": "para seleccionar",
-    "toNavigate": "para navegar",
-    "toClose": "para cerrar"
-  },
   "shortcuts": {
     "title": "Atajos de teclado",
     "menu": {
       "title": "Menu",
-      "commandPalette": "Paleta de comandos",
       "shortcuts": "Atajos de teclado",
       "settings": "Ajustes",
       "quit": "Salir"
@@ -311,7 +302,6 @@
       "doctor": "Auditar",
       "cleanup": "Limpieza",
       "settings": "Configuración",
-      "commandPalette": "Paleta de comandos...",
       "shortcuts": "Atajos de teclado..."
     },
     "tools": {

@@ -17,7 +17,6 @@
     "cleanup": "Temizlik",
     "settings": "Ayarlar",
     "refresh": "Yenile",
-    "commandPalette": "Komut Paleti",
     "sponsor": "Destekle"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "Son Aramalar",
     "removeFromHistory": "\"{{item}}\" geçmişten kaldır"
   },
-  "commandPalette": {
-    "placeholder": "Paketler, casks, depoları ara veya görünümlere git...",
-    "noResults": "Sonuç bulunamadı",
-    "toSelect": "seçmek için",
-    "toNavigate": "gezinmek için",
-    "toClose": "kapatmak için"
-  },
   "shortcuts": {
     "title": "Klavye Kısayolları",
     "menu": {
       "title": "Menü",
-      "commandPalette": "Komut Paleti",
       "shortcuts": "Klavye Kısayolları",
       "settings": "Ayarlar",
       "quit": "Çıkış"
@@ -311,7 +302,6 @@
       "doctor": "Doktor",
       "cleanup": "Temizlik",
       "settings": "Ayarlar",
-      "commandPalette": "Komut Paleti...",
       "shortcuts": "Klavye Kısayolları..."
     },
     "tools": {

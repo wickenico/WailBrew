@@ -256,10 +256,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <span className="keyboard-hint-label">{t('sidebar.refresh')}</span>
                     <span className="keyboard-hint-shortcut">{cmdKey}⇧R</span>
                 </div>
-                <div className="keyboard-hint">
-                    <span className="keyboard-hint-label">{t('sidebar.commandPalette')}</span>
-                    <span className="keyboard-hint-shortcut">{cmdKey}K</span>
-                </div>
             </div>
             <div className="sidebar-section language-switcher">
                 <div className="language-dropdown-wrapper">

@@ -45,7 +45,6 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
         {
             title: t('shortcuts.menu.title'),
             shortcuts: [
-                { action: t('shortcuts.menu.commandPalette'), keys: `${cmdKey}K` },
                 { action: t('shortcuts.menu.shortcuts'), keys: `${cmdKey}${shiftKey}S` },
                 { action: t('shortcuts.menu.settings'), keys: `${cmdKey},` },
                 { action: t('shortcuts.menu.quit'), keys: `${cmdKey}Q` },

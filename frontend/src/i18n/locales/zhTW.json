@@ -17,7 +17,6 @@
     "cleanup": "清理",
     "settings": "設定",
     "refresh": "重新整理",
-    "commandPalette": "命令面板",
     "sponsor": "贊助"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "最近搜尋",
     "removeFromHistory": "從歷史記錄中刪除\"{{item}}\""
   },
-  "commandPalette": {
-    "placeholder": "搜尋套件、casks、儲存庫或導航至檢視...",
-    "noResults": "找不到結果",
-    "toSelect": "選擇",
-    "toNavigate": "導航",
-    "toClose": "關閉"
-  },
   "shortcuts": {
     "title": "鍵盤快捷鍵",
     "menu": {
       "title": "選單",
-      "commandPalette": "命令面板",
       "shortcuts": "鍵盤快捷鍵",
       "settings": "設定",
       "quit": "結束"
@@ -311,7 +302,6 @@
       "doctor": "診斷",
       "cleanup": "清理",
       "settings": "設定",
-      "commandPalette": "指令面板...",
       "shortcuts": "鍵盤快捷鍵..."
     },
     "tools": {

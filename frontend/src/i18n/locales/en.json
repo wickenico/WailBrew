@@ -17,7 +17,6 @@
     "cleanup": "Cleanup",
     "settings": "Settings",
     "refresh": "Refresh",
-    "commandPalette": "Command Palette",
     "sponsor": "Sponsor"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "Recent Searches",
     "removeFromHistory": "Remove \"{{item}}\" from history"
   },
-  "commandPalette": {
-    "placeholder": "Search packages, casks, repositories, or navigate to views...",
-    "noResults": "No results found",
-    "toSelect": "to select",
-    "toNavigate": "to navigate",
-    "toClose": "to close"
-  },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
     "menu": {
       "title": "Menu",
-      "commandPalette": "Command Palette",
       "shortcuts": "Keyboard Shortcuts",
       "settings": "Settings",
       "quit": "Quit"
@@ -311,7 +302,6 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "settings": "Settings",
-      "commandPalette": "Command Palette...",
       "shortcuts": "Keyboard Shortcuts..."
     },
     "tools": {

@@ -41,9 +41,6 @@ func Build(app AppInterface) *menu.Menu {
 	AppSubmenu.AddText(getT("menu.view.settings"), keys.CmdOrCtrl(","), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "settings")
 	})
-	AppSubmenu.AddText(getT("menu.view.commandPalette"), keys.CmdOrCtrl("k"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "showCommandPalette")
-	})
 	AppSubmenu.AddText(getT("menu.view.shortcuts"), keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "showShortcuts")
 	})

@@ -44,7 +44,6 @@ import "./style.css";
 
 import AboutDialog from "./components/AboutDialog";
 import CleanupView from "./components/CleanupView";
-import CommandPalette from "./components/CommandPalette";
 import ConfirmDialog from "./components/ConfirmDialog";
 import DoctorView from "./components/DoctorView";
 import HeaderRow from "./components/HeaderRow";
@@ -126,7 +125,6 @@ const WailBrewApp = () => {
     const [isInfoRunning, setIsInfoRunning] = useState<boolean>(false);
     const [repositoryInfoLogs, setRepositoryInfoLogs] = useState<string | null>(null);
     const [showRepositoryInfo, setShowRepositoryInfo] = useState<boolean>(false);
-    const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
     const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
     const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
@@ -765,11 +763,6 @@ const WailBrewApp = () => {
     // Global keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux) - Command Palette
-            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-                event.preventDefault();
-                setShowCommandPalette(prev => !prev);
-            }
             // Check for Cmd+Shift+S (Mac) or Ctrl+Shift+S (Windows/Linux) - Shortcuts
             if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === 'S') {
                 event.preventDefault();
@@ -814,9 +807,6 @@ const WailBrewApp = () => {
         });
         const unlistenWailbrewUpdated = EventsOn("wailbrewUpdated", () => {
             setShowRestart(true);
-        });
-        const unlistenCommandPalette = EventsOn("showCommandPalette", () => {
-            setShowCommandPalette(prev => !prev);
         });
         const unlistenShortcuts = EventsOn("showShortcuts", () => {
             setShowShortcuts(prev => !prev);
@@ -947,7 +937,6 @@ const WailBrewApp = () => {
             unlistenAbout();
             unlistenUpdate();
             unlistenWailbrewUpdated();
-            unlistenCommandPalette();
             unlistenShortcuts();
             unlistenSessionLogs();
             unlistenNewPackages();
@@ -2765,38 +2754,6 @@ const WailBrewApp = () => {
                 <ShortcutsDialog
                     open={showShortcuts}
                     onClose={() => setShowShortcuts(false)}
-                />
-                <CommandPalette
-                    open={showCommandPalette}
-                    onClose={() => setShowCommandPalette(false)}
-                    packages={allPackages}
-                    casks={casks}
-                    repositories={repositories}
-                    onSelectPackage={async (pkg) => {
-                        const fullPkg: PackageEntry = {
-                            name: pkg.name,
-                            installedVersion: pkg.installedVersion || '',
-                            latestVersion: pkg.latestVersion,
-                            size: pkg.size,
-                            desc: pkg.desc,
-                            homepage: pkg.homepage,
-                            dependencies: pkg.dependencies,
-                            conflicts: pkg.conflicts,
-                            isInstalled: pkg.isInstalled,
-                            warning: pkg.warning,
-                        };
-                        await handleSelect(fullPkg);
-                    }}
-                    onSelectRepository={(repo) => {
-                        const repoEntry = repositories.find(r => r.name === repo.name);
-                        if (repoEntry) {
-                            setSelectedRepository(repoEntry);
-                            setSelectedPackage(null);
-                        }
-                    }}
-                    onNavigateToView={(view) => {
-                        setView(view as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
-                    }}
                 />
                 <Toaster
                     position="bottom-center"

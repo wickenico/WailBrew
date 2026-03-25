@@ -17,7 +17,6 @@
     "cleanup": "Cleanup",
     "settings": "설정",
     "refresh": "새로고침",
-    "commandPalette": "명령 팔레트",
     "sponsor": "후원"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "최근 검색",
     "removeFromHistory": "\"{{item}}\" 기록에서 삭제"
   },
-  "commandPalette": {
-    "placeholder": "패키지, Casks, Repositories 검색 또는 화면 이동...",
-    "noResults": "결과 없음",
-    "toSelect": "선택",
-    "toNavigate": "이동",
-    "toClose": "닫기"
-  },
   "shortcuts": {
     "title": "키보드 단축키",
     "menu": {
       "title": "메뉴",
-      "commandPalette": "명령 팔레트",
       "shortcuts": "키보드 단축키",
       "settings": "설정",
       "quit": "종료"
@@ -311,7 +302,6 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "settings": "설정",
-      "commandPalette": "명령 팔레트...",
       "shortcuts": "키보드 단축키..."
     },
     "tools": {

@@ -17,7 +17,6 @@
     "cleanup": "ניקוי",
     "settings": "הגדרות",
     "refresh": "רענון",
-    "commandPalette": "לוח פקודות",
     "sponsor": "תמיכה"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "חיפושים אחרונים",
     "removeFromHistory": "הסר את \"{{item}}\" מההיסטוריה"
   },
-  "commandPalette": {
-    "placeholder": "חפש חבילות, casks, מאגרים, או נווט לתצוגות...",
-    "noResults": "לא נמצאו תוצאות",
-    "toSelect": "לבחירה",
-    "toNavigate": "לניווט",
-    "toClose": "לסגירה"
-  },
   "shortcuts": {
     "title": "קיצורי מקלדת",
     "menu": {
       "title": "תפריט",
-      "commandPalette": "לוח פקודות",
       "shortcuts": "קיצורי מקלדת",
       "settings": "הגדרות",
       "quit": "יציאה"
@@ -311,7 +302,6 @@
       "doctor": "דוקטור",
       "cleanup": "ניקוי",
       "settings": "הגדרות",
-      "commandPalette": "לוח פקודות...",
       "shortcuts": "קיצורי מקלדת..."
     },
     "tools": {

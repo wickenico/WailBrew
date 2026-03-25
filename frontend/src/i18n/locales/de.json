@@ -17,7 +17,6 @@
     "cleanup": "Cleanup",
     "settings": "Einstellungen",
     "refresh": "Aktualisieren",
-    "commandPalette": "Befehls-Palette",
     "sponsor": "Unterstützen"
   },
   "headers": {
@@ -39,18 +38,10 @@
     "recentSearches": "Letzte Suchen",
     "removeFromHistory": "\"{{item}}\" aus Verlauf entfernen"
   },
-  "commandPalette": {
-    "placeholder": "Pakete, Casks, Repositories suchen oder zu Ansichten navigieren...",
-    "noResults": "Keine Ergebnisse gefunden",
-    "toSelect": "zum Auswählen",
-    "toNavigate": "zum Navigieren",
-    "toClose": "zum Schließen"
-  },
   "shortcuts": {
     "title": "Tastenkürzel",
     "menu": {
       "title": "Menü",
-      "commandPalette": "Befehls-Palette",
       "shortcuts": "Tastenkürzel",
       "settings": "Einstellungen",
       "quit": "Beenden"
@@ -311,7 +302,6 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "settings": "Einstellungen",
-      "commandPalette": "Befehls-Palette...",
       "shortcuts": "Tastenkürzel..."
     },
     "tools": {
