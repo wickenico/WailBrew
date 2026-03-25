@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"sync"
 )
 
 // SizeService provides package size calculation functionality
@@ -14,6 +15,7 @@ type SizeService struct {
 	executor    *Executor
 	logFunc     func(string)
 	extractJSON func(string) (string, string, error)
+	cache       sync.Map // key: cellar/caskroom path → string size
 }
 
 // NewSizeService creates a new size service
@@ -25,7 +27,29 @@ func NewSizeService(executor *Executor, logFunc func(string), extractJSON func(s
 	}
 }
 
-// GetPackageSizes fetches size information for packages with chunking support
+// ClearCache invalidates all cached size entries (call after install/uninstall)
+func (s *SizeService) ClearCache() {
+	s.cache.Range(func(k, _ any) bool {
+		s.cache.Delete(k)
+		return true
+	})
+}
+
+const sizeWorkers = 10
+
+type sizeJob struct {
+	name   string
+	isCask bool
+}
+
+type sizeResult struct {
+	name string
+	size string
+}
+
+// GetPackageSizes fetches size information for packages with chunking support.
+// du calls are dispatched to a worker pool of sizeWorkers goroutines and results
+// are cached by path so subsequent calls skip the subprocess entirely.
 func (s *SizeService) GetPackageSizes(packageNames []string, isCask bool) map[string]string {
 	sizes := make(map[string]string)
 
@@ -36,6 +60,9 @@ func (s *SizeService) GetPackageSizes(packageNames []string, isCask bool) map[st
 	// Chunk size: process packages in batches to avoid command line length limits
 	const chunkSize = 50
 
+	// Collect all names that need du measurement after brew info JSON parsing
+	var toMeasure []string
+
 	for i := 0; i < len(packageNames); i += chunkSize {
 		end := i + chunkSize
 		if end > len(packageNames) {
@@ -43,7 +70,6 @@ func (s *SizeService) GetPackageSizes(packageNames []string, isCask bool) map[st
 		}
 		chunk := packageNames[i:end]
 
-		// Build brew info command for this chunk
 		args := []string{"info", "--json=v2"}
 		if isCask {
 			args = append(args, "--cask")
@@ -52,71 +78,91 @@ func (s *SizeService) GetPackageSizes(packageNames []string, isCask bool) map[st
 
 		output, err := s.executor.Run(args...)
 		if err != nil {
-			// If chunk fails, mark these packages as unknown and continue
 			for _, name := range chunk {
 				sizes[name] = "Unknown"
 			}
 			continue
 		}
 
-		// Extract JSON portion from output (handling potential Homebrew warnings)
 		outputStr := strings.TrimSpace(string(output))
 		jsonOutput, warnings, err := s.extractJSON(outputStr)
 		if err != nil {
-			// If JSON extraction fails, mark chunk as unknown and continue
 			for _, name := range chunk {
 				sizes[name] = "Unknown"
 			}
 			continue
 		}
 
-		// Log warnings if any were detected
 		if warnings != "" && s.logFunc != nil {
 			s.logFunc(fmt.Sprintf("Homebrew warnings in package sizes: %s", warnings))
 		}
 
-		// Parse JSON response
 		var brewInfo struct {
 			Formulae []struct {
-				Name      string `json:"name"`
-				Installed []struct {
-					InstalledOnDemand bool  `json:"installed_on_demand"`
-					UsedOptions       []any `json:"used_options"`
-					BuiltAsBottle     bool  `json:"built_as_bottle"`
-					Poured            bool  `json:"poured_from_bottle"`
-					Time              int64 `json:"time"`
-					RuntimeDeps       []any `json:"runtime_dependencies"`
-					InstalledAsDep    bool  `json:"installed_as_dependency"`
-					InstalledWithOpts []any `json:"installed_with_options"`
-				} `json:"installed"`
+				Name string `json:"name"`
 			} `json:"formulae"`
 			Casks []struct {
-				Token     string `json:"token"`
-				Installed string `json:"installed"`
+				Token string `json:"token"`
 			} `json:"casks"`
 		}
 
 		if err := json.Unmarshal([]byte(jsonOutput), &brewInfo); err != nil {
-			// If JSON parsing fails, mark chunk as unknown and continue
 			for _, name := range chunk {
 				sizes[name] = "Unknown"
 			}
 			continue
 		}
 
-		// For formulae, calculate size from cellar
 		if !isCask {
 			for _, formula := range brewInfo.Formulae {
-				size := s.CalculateFormulaSize(formula.Name)
-				sizes[formula.Name] = size
+				toMeasure = append(toMeasure, formula.Name)
 			}
 		} else {
-			// For casks, calculate size from caskroom
 			for _, cask := range brewInfo.Casks {
-				size := s.CalculateCaskSize(cask.Token)
-				sizes[cask.Token] = size
+				toMeasure = append(toMeasure, cask.Token)
 			}
 		}
+	}
+
+	if len(toMeasure) == 0 {
+		for _, name := range packageNames {
+			if _, exists := sizes[name]; !exists {
+				sizes[name] = "Unknown"
+			}
+		}
+		return sizes
+	}
+
+	// Dispatch du calls to a bounded worker pool
+	jobs := make(chan sizeJob, len(toMeasure))
+	results := make(chan sizeResult, len(toMeasure))
+
+	var wg sync.WaitGroup
+	for range sizeWorkers {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for job := range jobs {
+				var size string
+				if job.isCask {
+					size = s.CalculateCaskSize(job.name)
+				} else {
+					size = s.CalculateFormulaSize(job.name)
+				}
+				results <- sizeResult{job.name, size}
+			}
+		}()
+	}
+
+	for _, name := range toMeasure {
+		jobs <- sizeJob{name: name, isCask: isCask}
+	}
+	close(jobs)
+	wg.Wait()
+	close(results)
+
+	for r := range results {
+		sizes[r.name] = r.size
 	}
 
 	// Fill in any missing sizes
@@ -129,64 +175,71 @@ func (s *SizeService) GetPackageSizes(packageNames []string, isCask bool) map[st
 	return sizes
 }
 
-// CalculateFormulaSize calculates the disk size of an installed formula
+// CalculateFormulaSize calculates the disk size of an installed formula.
+// Results are cached by path to avoid redundant du subprocess calls.
 func (s *SizeService) CalculateFormulaSize(formulaName string) string {
-	// Get formula path in cellar
-	cellarPath := ""
-	if runtime.GOOS == "darwin" {
-		// Check for Workbrew first (enterprise users)
-		if _, err := os.Stat("/opt/workbrew/Cellar"); err == nil {
-			cellarPath = fmt.Sprintf("/opt/workbrew/Cellar/%s", formulaName)
-		} else if runtime.GOARCH == "arm64" {
-			cellarPath = fmt.Sprintf("/opt/homebrew/Cellar/%s", formulaName)
-		} else {
-			cellarPath = fmt.Sprintf("/usr/local/Cellar/%s", formulaName)
-		}
-	}
-
-	// Use du command to get directory size
-	cmd := exec.Command("du", "-sh", cellarPath)
-	output, err := cmd.Output()
-	if err != nil {
-		return "Unknown"
-	}
-
-	// Parse du output (format: "SIZE	PATH")
-	parts := strings.Fields(string(output))
-	if len(parts) >= 1 {
-		return parts[0]
-	}
-
-	return "Unknown"
+	cellarPath := s.cellarPath(formulaName)
+	return s.duSize(cellarPath)
 }
 
-// CalculateCaskSize calculates the disk size of an installed cask
+// CalculateCaskSize calculates the disk size of an installed cask.
+// Results are cached by path to avoid redundant du subprocess calls.
 func (s *SizeService) CalculateCaskSize(caskName string) string {
-	// Get cask path in caskroom
-	caskroomPath := ""
-	if runtime.GOOS == "darwin" {
-		// Check for Workbrew first (enterprise users)
-		if _, err := os.Stat("/opt/workbrew/Caskroom"); err == nil {
-			caskroomPath = fmt.Sprintf("/opt/workbrew/Caskroom/%s", caskName)
-		} else if runtime.GOARCH == "arm64" {
-			caskroomPath = fmt.Sprintf("/opt/homebrew/Caskroom/%s", caskName)
-		} else {
-			caskroomPath = fmt.Sprintf("/usr/local/Caskroom/%s", caskName)
-		}
-	}
+	caskroomPath := s.caskroomPath(caskName)
+	return s.duSize(caskroomPath)
+}
 
-	// Use du command to get directory size
-	cmd := exec.Command("du", "-sh", caskroomPath)
-	output, err := cmd.Output()
-	if err != nil {
+// cellarPath returns the Cellar path for a formula, respecting Workbrew and architecture.
+func (s *SizeService) cellarPath(formulaName string) string {
+	if runtime.GOOS != "darwin" {
+		return ""
+	}
+	if _, err := os.Stat("/opt/workbrew/Cellar"); err == nil {
+		return fmt.Sprintf("/opt/workbrew/Cellar/%s", formulaName)
+	}
+	if runtime.GOARCH == "arm64" {
+		return fmt.Sprintf("/opt/homebrew/Cellar/%s", formulaName)
+	}
+	return fmt.Sprintf("/usr/local/Cellar/%s", formulaName)
+}
+
+// caskroomPath returns the Caskroom path for a cask, respecting Workbrew and architecture.
+func (s *SizeService) caskroomPath(caskName string) string {
+	if runtime.GOOS != "darwin" {
+		return ""
+	}
+	if _, err := os.Stat("/opt/workbrew/Caskroom"); err == nil {
+		return fmt.Sprintf("/opt/workbrew/Caskroom/%s", caskName)
+	}
+	if runtime.GOARCH == "arm64" {
+		return fmt.Sprintf("/opt/homebrew/Caskroom/%s", caskName)
+	}
+	return fmt.Sprintf("/usr/local/Caskroom/%s", caskName)
+}
+
+// duSize runs `du -sh` on the given path, using a cached result when available.
+func (s *SizeService) duSize(path string) string {
+	if path == "" {
 		return "Unknown"
 	}
 
-	// Parse du output (format: "SIZE	PATH")
-	parts := strings.Fields(string(output))
-	if len(parts) >= 1 {
-		return parts[0]
+	if cached, ok := s.cache.Load(path); ok {
+		return cached.(string)
 	}
 
-	return "Unknown"
+	cmd := exec.Command("du", "-sh", path)
+	output, err := cmd.Output()
+	if err != nil {
+		s.cache.Store(path, "Unknown")
+		return "Unknown"
+	}
+
+	parts := strings.Fields(string(output))
+	size := "Unknown"
+	if len(parts) >= 1 {
+		size = parts[0]
+	}
+
+	s.cache.Store(path, size)
+	return size
 }

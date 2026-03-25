@@ -61,6 +61,7 @@ import ShortcutsDialog from "./components/ShortcutsDialog";
 import Sidebar from "./components/Sidebar";
 import TapInputDialog from "./components/TapInputDialog";
 import UpdateDialog from "./components/UpdateDialog";
+import { LoadingTimer } from "./components/LoadingTimer";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 
 interface PackageEntry {
@@ -153,11 +154,8 @@ const WailBrewApp = () => {
     const lastSyncedLanguage = useRef<string>("en");
     const isInitialLoad = useRef<boolean>(true);
 
-    // Loading timer for development
+    // Loading timer for development (DEV only — isolated to LoadingTimer component)
     const [loadingStartTime, setLoadingStartTime] = useState<number | null>(null);
-    const [loadingElapsedTime, setLoadingElapsedTime] = useState<number>(0);
-    const loadingTimerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-    const loadingStartTimeRef = useRef<number | null>(null);
 
     // Background update checking state
     const [isBackgroundCheckRunning, setIsBackgroundCheckRunning] = useState<boolean>(false);
@@ -197,18 +195,8 @@ const WailBrewApp = () => {
         });
 
         setLoading(true);
-        // Start loading timer
-        const startTime = Date.now();
-        loadingStartTimeRef.current = startTime;
-        setLoadingStartTime(startTime);
-        setLoadingElapsedTime(0);
-
-        // Update timer every 100ms
-        loadingTimerInterval.current = setInterval(() => {
-            if (loadingStartTimeRef.current) {
-                setLoadingElapsedTime(Date.now() - loadingStartTimeRef.current);
-            }
-        }, 100);
+        // Start loading timer (DEV only)
+        setLoadingStartTime(Date.now());
 
         // Use single optimized startup call with database update for fresh outdated packages
         // Database update runs in parallel with other fetches to minimize startup time
@@ -290,16 +278,6 @@ const WailBrewApp = () => {
                 setRepositories(reposFormatted);
                 // Note: allPackages are loaded lazily when user switches to "all" view
 
-                // Stop loading timer
-                if (loadingTimerInterval.current) {
-                    clearInterval(loadingTimerInterval.current);
-                    loadingTimerInterval.current = null;
-                }
-                if (loadingStartTimeRef.current) {
-                    const finalTime = Date.now() - loadingStartTimeRef.current;
-                    setLoadingElapsedTime(finalTime);
-                    loadingStartTimeRef.current = null;
-                }
 
                 setLoading(false);
 
@@ -380,16 +358,6 @@ const WailBrewApp = () => {
 
                 setError(errorMessage);
 
-                // Stop loading timer on error
-                if (loadingTimerInterval.current) {
-                    clearInterval(loadingTimerInterval.current);
-                    loadingTimerInterval.current = null;
-                }
-                if (loadingStartTimeRef.current) {
-                    const finalTime = Date.now() - loadingStartTimeRef.current;
-                    setLoadingElapsedTime(finalTime);
-                    loadingStartTimeRef.current = null;
-                }
 
                 setLoading(false);
 
@@ -406,9 +374,6 @@ const WailBrewApp = () => {
         return () => {
             if (backgroundCheckInterval.current) {
                 clearInterval(backgroundCheckInterval.current);
-            }
-            if (loadingTimerInterval.current) {
-                clearInterval(loadingTimerInterval.current);
             }
         };
     }, []);
@@ -2170,9 +2135,7 @@ const WailBrewApp = () => {
             <main className="content">
                 {/* Loading timer for development only */}
                 {import.meta.env.DEV && loadingStartTime !== null && (
-                    <div className="loading-timer">
-                        ⏱️ {loadingElapsedTime > 0 ? (loadingElapsedTime / 1000).toFixed(2) : '0.00'}s
-                    </div>
+                    <LoadingTimer startTime={loadingStartTime} />
                 )}
                 {view === "installed" && (
                     <>
