@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { CircleCheckBig, CircleX, ArrowUp, ArrowDown, Info } from "lucide-react";
 
@@ -44,6 +44,42 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
         if (key === 'actions') return '100px';
         return 'auto';
     };
+
+    // Column resizing
+    const resizingRef = useRef<{ colKey: string; startX: number; startWidth: number } | null>(null);
+    const [columnWidths, setColumnWidths] = useState<Record<string, string>>(() => {
+        const widths: Record<string, string> = {};
+        columns.forEach(col => { widths[col.key] = getColumnWidth(col.key); });
+        return widths;
+    });
+
+    const handleResizeMouseDown = useCallback((e: React.MouseEvent, colKey: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const th = (e.currentTarget as HTMLElement).parentElement as HTMLElement;
+        const startWidth = th.getBoundingClientRect().width;
+        resizingRef.current = { colKey, startX: e.clientX, startWidth };
+
+        const onMouseMove = (moveEvent: MouseEvent) => {
+            if (!resizingRef.current) return;
+            const delta = moveEvent.clientX - resizingRef.current.startX;
+            const newWidth = Math.max(60, resizingRef.current.startWidth + delta);
+            setColumnWidths(prev => ({ ...prev, [resizingRef.current!.colKey]: `${newWidth}px` }));
+        };
+
+        const onMouseUp = () => {
+            resizingRef.current = null;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        };
+
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    }, []);
 
     // Handle column header click for sorting
     const handleSort = (key: string, sortable: boolean = true) => {
@@ -136,7 +172,7 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                 <table className="package-table package-table-header">
                     <colgroup>
                         {columns.map((col) => (
-                            <col key={`header-col-${col.key}`} style={{ width: getColumnWidth(col.key) }} />
+                            <col key={`header-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
                         ))}
                     </colgroup>
                     <thead>
@@ -151,7 +187,8 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                                         onClick={() => handleSort(col.key, isSortable)}
                                         style={{ 
                                             cursor: isSortable ? 'pointer' : 'default',
-                                            userSelect: 'none'
+                                            userSelect: 'none',
+                                            position: 'relative',
                                         }}
                                     >
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -168,6 +205,12 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                                                 <ArrowDown size={14} />
                                             )}
                                         </div>
+                                        {col.key !== 'actions' && (
+                                            <div
+                                                className="col-resize-handle"
+                                                onMouseDown={(e) => handleResizeMouseDown(e, col.key)}
+                                            />
+                                        )}
                                     </th>
                                 );
                             })}
@@ -178,7 +221,7 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                     <table className="package-table package-table-body">
                         <colgroup>
                             {columns.map((col) => (
-                                <col key={`body-col-${col.key}`} style={{ width: getColumnWidth(col.key) }} />
+                                <col key={`body-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
                             ))}
                         </colgroup>
                         <tbody>

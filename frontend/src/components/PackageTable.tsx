@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, ArrowUpCircle, CheckSquare, CircleCheckBig, CirclePlus, CircleX, Info, Square, TriangleAlert } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface PackageEntry {
@@ -80,9 +80,65 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
     const isKeyboardNavigating = useRef<boolean>(false);
+
+    // Helper function to get column width based on key
+    const getColumnWidth = (key: string): string => {
+        if (key === 'name') return '30%';
+        if (key === 'installedVersion') return '160px';
+        if (key === 'latestVersion') return '160px';
+        if (key === 'actions') return '120px';
+        if (key === 'size') return '100px';
+        return 'auto';
+    };
+
     const [sortKey, setSortKey] = useState<string | null>('name'); // Default sort by name
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const [focusedRowIndex, setFocusedRowIndex] = useState<number | null>(null);
+
+    // Column resizing
+    const resizingRef = useRef<{ colKey: string; startX: number; startWidth: number } | null>(null);
+    const [columnWidths, setColumnWidths] = useState<Record<string, string>>(() => {
+        const widths: Record<string, string> = {};
+        columns.forEach(col => { widths[col.key] = getColumnWidth(col.key); });
+        return widths;
+    });
+
+    // Reset column widths when the column set changes (e.g. switching views)
+    const columnsKey = columns.map(c => c.key).join(',');
+    useEffect(() => {
+        const widths: Record<string, string> = {};
+        columns.forEach(col => { widths[col.key] = getColumnWidth(col.key); });
+        setColumnWidths(widths);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [columnsKey]);
+
+    const handleResizeMouseDown = useCallback((e: React.MouseEvent, colKey: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const th = (e.currentTarget as HTMLElement).parentElement as HTMLElement;
+        const startWidth = th.getBoundingClientRect().width;
+        resizingRef.current = { colKey, startX: e.clientX, startWidth };
+
+        const onMouseMove = (moveEvent: MouseEvent) => {
+            if (!resizingRef.current) return;
+            const delta = moveEvent.clientX - resizingRef.current.startX;
+            const newWidth = Math.max(60, resizingRef.current.startWidth + delta);
+            setColumnWidths(prev => ({ ...prev, [resizingRef.current!.colKey]: `${newWidth}px` }));
+        };
+
+        const onMouseUp = () => {
+            resizingRef.current = null;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        };
+
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    }, []);
 
     // Expose focus method via ref
     React.useImperativeHandle(ref, () => ({
@@ -118,16 +174,6 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
         setTimeout(() => {
             isKeyboardNavigating.current = false;
         }, 300);
-    };
-
-    // Helper function to get column width based on key
-    const getColumnWidth = (key: string): string => {
-        if (key === 'name') return '30%';
-        if (key === 'installedVersion') return '160px';
-        if (key === 'latestVersion') return '160px';
-        if (key === 'actions') return '120px';
-        if (key === 'size') return '100px';
-        return 'auto';
     };
 
     // Handle column header click for sorting
@@ -317,7 +363,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                         <colgroup>
                             {multiSelectMode && <col style={{ width: '50px' }} />}
                             {columns.map((col) => (
-                                <col key={`header-col-${col.key}`} style={{ width: getColumnWidth(col.key) }} />
+                                <col key={`header-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
                             ))}
                         </colgroup>
                         <thead>
@@ -351,7 +397,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                                             onClick={() => handleSort(col.key, isSortable)}
                                             style={{
                                                 cursor: isSortable ? 'pointer' : 'default',
-                                                userSelect: 'none'
+                                                userSelect: 'none',
+                                                position: 'relative',
                                             }}
                                         >
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -368,6 +415,12 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                                                     <ArrowDown size={14} />
                                                 )}
                                             </div>
+                                            {col.key !== 'actions' && (
+                                                <div
+                                                    className="col-resize-handle"
+                                                    onMouseDown={(e) => handleResizeMouseDown(e, col.key)}
+                                                />
+                                            )}
                                         </th>
                                     );
                                 })}
@@ -379,7 +432,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                             <colgroup>
                                 {multiSelectMode && <col style={{ width: '50px' }} />}
                                 {columns.map((col) => (
-                                    <col key={`body-col-${col.key}`} style={{ width: getColumnWidth(col.key) }} />
+                                    <col key={`body-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
                                 ))}
                             </colgroup>
                             <tbody>

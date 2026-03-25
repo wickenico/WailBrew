@@ -1179,6 +1179,25 @@ body {
   letter-spacing: 0.5px;
   border-bottom: 2px solid var(--glass-border-strong);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+/* Column resize handle */
+.col-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 2;
+  border-right: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.col-resize-handle:hover,
+.col-resize-handle:active {
+  border-right-color: var(--accent);
 }
 
 /* Rounded top corners for header */
