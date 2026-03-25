@@ -400,13 +400,16 @@ const WailBrewApp = () => {
         };
     }, [i18n.language, i18n.resolvedLanguage]);
 
-    // Load all packages when user switches to "all" view
+    // Load all packages when user switches to "all" view.
+    // Wait for the initial startup (which runs brew update) to complete before
+    // calling brew formulae - otherwise the API cache may not be populated yet
+    // on a fresh Homebrew installation, resulting in an empty package list.
     useEffect(() => {
-        if (view === "all" && !allPackagesLoaded && !loadingAllPackages) {
+        if (view === "all" && !loading && !allPackagesLoaded && !loadingAllPackages) {
             loadAllPackages();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [view, allPackagesLoaded, loadingAllPackages]);
+    }, [view, loading, allPackagesLoaded, loadingAllPackages]);
 
     // Apply pending dependency selection once allPackages has finished loading
     useEffect(() => {
@@ -425,13 +428,14 @@ const WailBrewApp = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allPackagesLoaded, allPackages]);
 
-    // Load all casks when user switches to "allCasks" view
+    // Load all casks when user switches to "allCasks" view.
+    // Same guard as above: wait for initial startup to finish first.
     useEffect(() => {
-        if (view === "allCasks" && !allCasksLoaded && !loadingAllCasks) {
+        if (view === "allCasks" && !loading && !allCasksLoaded && !loadingAllCasks) {
             loadAllCasks();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [view, allCasksLoaded, loadingAllCasks]);
+    }, [view, loading, allCasksLoaded, loadingAllCasks]);
 
     // Update Dock badge when updatable packages count changes
     useEffect(() => {
