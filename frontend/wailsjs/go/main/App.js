@@ -266,6 +266,10 @@ export function SetProxy(arg1) {
   return window['go']['main']['App']['SetProxy'](arg1);
 }
 
+export function SetWindowTheme(arg1) {
+  return window['go']['main']['App']['SetWindowTheme'](arg1);
+}
+
 export function TapBrewRepository(arg1) {
   return window['go']['main']['App']['TapBrewRepository'](arg1);
 }

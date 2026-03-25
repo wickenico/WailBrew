@@ -385,6 +385,15 @@ func (a *App) OpenURL(url string) {
 	rt.BrowserOpenURL(a.ctx, url)
 }
 
+// SetWindowTheme updates the native macOS window title bar appearance to match the app theme
+func (a *App) SetWindowTheme(isDark bool) {
+	if isDark {
+		system.SetAppearanceDark()
+	} else {
+		system.SetAppearanceLight()
+	}
+}
+
 // SetLanguage updates the current language and rebuilds the menu
 func (a *App) SetLanguage(language string) {
 	a.currentLanguage = language

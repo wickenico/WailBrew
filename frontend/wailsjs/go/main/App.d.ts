@@ -136,6 +136,8 @@ export function SetOutdatedFlag(arg1:string):Promise<void>;
 
 export function SetProxy(arg1:string):Promise<void>;
 
+export function SetWindowTheme(arg1:boolean):Promise<void>;
+
 export function TapBrewRepository(arg1:string):Promise<string>;
 
 export function TestProxyConnection(arg1:string,arg2:string):Promise<string>;

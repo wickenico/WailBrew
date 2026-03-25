@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { SetWindowTheme } from '../../wailsjs/go/main/App';
 
 type Theme = 'dark' | 'light';
 
@@ -18,6 +19,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
+        SetWindowTheme(theme === 'dark').catch(() => {});
     }, [theme]);
 
     const toggleTheme = () => {

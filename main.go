@@ -42,7 +42,7 @@ func main() {
 				UseToolbar:                 false,
 				HideToolbarSeparator:       false,
 			},
-			Appearance:           mac.NSAppearanceNameDarkAqua,
+			Appearance:           mac.DefaultAppearance,
 			WebviewIsTransparent: false,
 			WindowIsTranslucent:  false,
 		},

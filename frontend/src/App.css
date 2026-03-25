@@ -163,7 +163,7 @@ body {
 .wailbrew-container {
   display: flex;
   height: 100vh;
-  background: #181b20;
+  background: var(--bg-main);
   position: relative;
 }
 
