@@ -411,6 +411,11 @@
     "categories": {
       "general": "通用"
     },
+    "landingTab": {
+      "title": "启动标签页",
+      "description": "选择 WailBrew 启动时显示的标签页。",
+      "label": "启动时显示"
+    },
     "brewPath": {
       "title": "Homebrew 路径配置",
       "description": "指定 Homebrew 安装路径。WailBrew 将使用此路径执行所有 Homebrew 命令。",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "自定义 outdated 参数更新成功！",
       "adminUsernameUpdated": "Admin username updated successfully!",
       "proxyUpdated": "代理设置更新成功！",
-      "proxyTestSuccess": "代理连接测试成功！"
+      "proxyTestSuccess": "代理连接测试成功！",
+      "landingTabUpdated": "启动标签页更新成功！",
+      "landingTabReset": "启动标签页已重置为当前值。"
     },
     "errors": {
       "failedToGetPath": "无法获取当前 brew 的路径。",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "代理设置失败，请检查输入。",
       "emptyTestUrl": "请输入用于测试的目标 URL。",
       "emptyProxyForTest": "请输入要测试的代理地址。",
-      "proxyTestFailed": "代理连接测试失败。"
+      "proxyTestFailed": "代理连接测试失败。",
+      "failedToSetLandingTab": "无法设置启动标签页。请检查您的配置。"
     },
     "mirrorSource": {
       "title": "Homebrew 镜像源",

@@ -411,6 +411,11 @@
     "categories": {
       "general": "כללי"
     },
+    "landingTab": {
+      "title": "לשונית פתיחה",
+      "description": "בחר איזו לשונית תוצג כאשר WailBrew מופעל.",
+      "label": "התחל ב"
+    },
     "brewPath": {
       "title": "הגדרת נתיב Homebrew",
       "description": "ציין את הנתיב להתקנת Homebrew שלך. WailBrew ישתמש בנתיב זה להפעלת כל פקודות Homebrew.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "ארגומנטים מותאמים למיושנים עודכנו בהצלחה!",
       "adminUsernameUpdated": "שם משתמש מנהל עודכן בהצלחה!",
       "proxyUpdated": "הגדרות הפרוקסי עודכנו בהצלחה!",
-      "proxyTestSuccess": "בדיקת חיבור הפרוקסי הצליחה!"
+      "proxyTestSuccess": "בדיקת חיבור הפרוקסי הצליחה!",
+      "landingTabUpdated": "לשונית הפתיחה עודכנה בהצלחה!",
+      "landingTabReset": "לשונית הפתיחה אופסה לערך הנוכחי."
     },
     "errors": {
       "failedToGetPath": "נכשל בקבלת נתיב brew הנוכחי.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "נכשל בהגדרת חיבור הפרוקסי. אנא בדוק את הקלט.",
       "emptyTestUrl": "אנא הזן כתובת URL לבדיקה.",
       "emptyProxyForTest": "אנא הזן כתובת URL של פרוקסי לבדיקה.",
-      "proxyTestFailed": "בדיקת חיבור הפרוקסי נכשלה."
+      "proxyTestFailed": "בדיקת חיבור הפרוקסי נכשלה.",
+      "failedToSetLandingTab": "לא ניתן להגדיר את לשונית הפתיחה. אנא בדוק את ההגדרות."
     },
     "mirrorSource": {
       "title": "מקור מראה של Homebrew",

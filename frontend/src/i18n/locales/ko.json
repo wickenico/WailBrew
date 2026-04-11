@@ -411,6 +411,11 @@
     "categories": {
       "general": "일반"
     },
+    "landingTab": {
+      "title": "시작 탭",
+      "description": "WailBrew 시작 시 표시할 탭을 선택하세요.",
+      "label": "시작 탭"
+    },
     "brewPath": {
       "title": "Homebrew 경로 설정",
       "description": "Homebrew 설치 경로를 지정하세요. WailBrew는 이 경로를 사용하여 모든 Homebrew 명령을 실행합니다.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "사용자 정의 outdated 인수가 성공적으로 업데이트되었습니다!",
       "adminUsernameUpdated": "관리자 사용자 이름이 성공적으로 업데이트되었습니다!",
       "proxyUpdated": "프록시 설정이 성공적으로 업데이트되었습니다!",
-      "proxyTestSuccess": "프록시 연결 테스트에 성공했습니다!"
+      "proxyTestSuccess": "프록시 연결 테스트에 성공했습니다!",
+      "landingTabUpdated": "시작 탭이 성공적으로 업데이트되었습니다!",
+      "landingTabReset": "시작 탭이 현재 값으로 재설정되었습니다."
     },
     "errors": {
       "failedToGetPath": "현재 brew 경로를 가져오지 못했습니다.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "프록시 연결 설정에 실패했습니다. 입력을 확인해 주세요.",
       "emptyTestUrl": "테스트 URL을 입력해 주세요.",
       "emptyProxyForTest": "테스트할 프록시 URL을 입력해 주세요.",
-      "proxyTestFailed": "프록시 연결 테스트에 실패했습니다."
+      "proxyTestFailed": "프록시 연결 테스트에 실패했습니다.",
+      "failedToSetLandingTab": "시작 탭을 설정하지 못했습니다. 구성을 확인하세요."
     },
     "mirrorSource": {
       "title": "Homebrew 미러 소스",

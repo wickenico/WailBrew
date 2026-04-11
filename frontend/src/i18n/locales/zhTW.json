@@ -411,6 +411,11 @@
     "categories": {
       "general": "一般"
     },
+    "landingTab": {
+      "title": "啟動分頁",
+      "description": "選擇 WailBrew 啟動時顯示的分頁。",
+      "label": "啟動時顯示"
+    },
     "brewPath": {
       "title": "Homebrew 路徑設定",
       "description": "指定您的 Homebrew 安裝路徑。WailBrew 將使用此路徑來執行所有 Homebrew 指令。",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "自訂 outdated 參數更新成功！",
       "adminUsernameUpdated": "管理員使用者名稱已成功更新！",
       "proxyUpdated": "代理設定更新成功！",
-      "proxyTestSuccess": "代理連線測試成功！"
+      "proxyTestSuccess": "代理連線測試成功！",
+      "landingTabUpdated": "啟動分頁更新成功！",
+      "landingTabReset": "啟動分頁已重設為目前值。"
     },
     "errors": {
       "failedToGetPath": "取得目前 brew 路徑失敗。",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "設定代理連線失敗。請檢查您的輸入。",
       "emptyTestUrl": "請輸入測試 URL。",
       "emptyProxyForTest": "請輸入要測試的代理 URL。",
-      "proxyTestFailed": "代理連線測試失敗。"
+      "proxyTestFailed": "代理連線測試失敗。",
+      "failedToSetLandingTab": "無法設定啟動分頁。請檢查您的設定。"
     },
     "mirrorSource": {
       "title": "Homebrew 鏡像源",

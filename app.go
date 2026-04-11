@@ -671,6 +671,35 @@ func (a *App) OpenConfigFile() error {
 
 // CONFIG OPERATIONS - Simple delegation to config
 
+var validLandingTabs = map[string]bool{
+	"installed":    true,
+	"casks":        true,
+	"updatable":    true,
+	"all":          true,
+	"allCasks":     true,
+	"leaves":       true,
+	"repositories": true,
+	"homebrew":     true,
+	"doctor":       true,
+	"cleanup":      true,
+}
+
+func (a *App) GetLandingTab() string {
+	if a.config.LandingTab == "" {
+		return "installed"
+	}
+	return a.config.LandingTab
+}
+
+func (a *App) SetLandingTab(tab string) error {
+	tab = strings.TrimSpace(tab)
+	if !validLandingTabs[tab] {
+		return fmt.Errorf("invalid landing tab: %s", tab)
+	}
+	a.config.LandingTab = tab
+	return a.config.Save()
+}
+
 func (a *App) GetProxy() string {
 	return a.config.Proxy
 }

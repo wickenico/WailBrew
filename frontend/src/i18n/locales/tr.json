@@ -411,6 +411,11 @@
     "categories": {
       "general": "Genel"
     },
+    "landingTab": {
+      "title": "Başlangıç Sekmesi",
+      "description": "WailBrew başladığında hangi sekmenin gösterileceğini seçin.",
+      "label": "Başlangıç"
+    },
     "brewPath": {
       "title": "Homebrew Yol Konfigürasyonu",
       "description": "Homebrew kurulumun için bir yol tanımla. WailBrew bu yolu kullanarak tüm Homebrew komutlarını çalıştıracak.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "Özel outdated argümanları başarıyla güncellendi!",
       "adminUsernameUpdated": "Yönetici kullanıcı adı başarıyla güncellendi!",
       "proxyUpdated": "Proxy ayarları başarıyla güncellendi!",
-      "proxyTestSuccess": "Proxy bağlantı testi başarılı!"
+      "proxyTestSuccess": "Proxy bağlantı testi başarılı!",
+      "landingTabUpdated": "Başlangıç sekmesi başarıyla güncellendi!",
+      "landingTabReset": "Başlangıç sekmesi mevcut değere sıfırlandı."
     },
     "errors": {
       "failedToGetPath": "Güncel brew yolu alınırken hata oluştu.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "Proxy bağlantısı ayarlanamadı. Lütfen girişinizi kontrol edin.",
       "emptyTestUrl": "Lütfen bir test URL'si girin.",
       "emptyProxyForTest": "Lütfen test etmek için bir proxy URL'si girin.",
-      "proxyTestFailed": "Proxy bağlantı testi başarısız oldu."
+      "proxyTestFailed": "Proxy bağlantı testi başarısız oldu.",
+      "failedToSetLandingTab": "Başlangıç sekmesi ayarlanamadı. Lütfen yapılandırmanızı kontrol edin."
     },
     "mirrorSource": {
       "title": "Homebrew Ayna Kaynağı",

@@ -15,9 +15,10 @@ import {
     Sparkles,
     Code2,
     Shield,
-    Network
+    Network,
+    Home
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -67,6 +68,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [testingProxy, setTestingProxy] = useState<boolean>(false);
     const [testProxyResult, setTestProxyResult] = useState<{success: boolean, message: string} | null>(null);
 
+    const [landingTab, setLandingTab] = useState<string>("installed");
+    const [newLandingTab, setNewLandingTab] = useState<string>("installed");
+    const [savingLandingTab, setSavingLandingTab] = useState<boolean>(false);
+    const [isLandingTabExpanded, setIsLandingTabExpanded] = useState<boolean>(false);
+
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
@@ -77,6 +83,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadAdminUsername();
         loadSystemInfo();
         loadCurrentProxy();
+        loadLandingTab();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -553,6 +560,53 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const landingTabOptions = [
+        { id: "installed", label: t('sidebar.installed') },
+        { id: "casks", label: t('sidebar.casks') },
+        { id: "updatable", label: t('sidebar.outdated') },
+        { id: "leaves", label: t('sidebar.leaves') },
+        { id: "repositories", label: t('sidebar.repositories') },
+        { id: "all", label: t('sidebar.allFormulae') },
+        { id: "allCasks", label: t('sidebar.allCasks') },
+        { id: "homebrew", label: t('sidebar.homebrew') },
+        { id: "doctor", label: t('sidebar.doctor') },
+        { id: "cleanup", label: t('sidebar.cleanup') },
+    ];
+
+    const loadLandingTab = async () => {
+        try {
+            const tab = await GetLandingTab();
+            setLandingTab(tab);
+            setNewLandingTab(tab);
+        } catch (error) {
+            console.error("Failed to get landing tab:", error);
+        }
+    };
+
+    const handleSaveLandingTab = async () => {
+        if (newLandingTab === landingTab) {
+            toast.success(t('settings.messages.noChanges'));
+            return;
+        }
+        try {
+            setSavingLandingTab(true);
+            await SetLandingTab(newLandingTab);
+            setLandingTab(newLandingTab);
+            toast.success(t('settings.messages.landingTabUpdated'));
+        } catch (error) {
+            console.error("Failed to set landing tab:", error);
+            toast.error(t('settings.errors.failedToSetLandingTab'));
+            setNewLandingTab(landingTab);
+        } finally {
+            setSavingLandingTab(false);
+        }
+    };
+
+    const handleResetLandingTab = () => {
+        setNewLandingTab(landingTab);
+        toast.success(t('settings.messages.landingTabReset'));
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t('settings.mirrorSource.mirrors.official');
@@ -623,6 +677,66 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             </div>
 
             <div className="settings-cards-container">
+                {/* Landing Tab Card */}
+                <div className={`settings-card ${isLandingTabExpanded ? 'expanded' : ''}`}>
+                    <button
+                        className="settings-card-header"
+                        onClick={() => setIsLandingTabExpanded(!isLandingTabExpanded)}
+                        aria-expanded={isLandingTabExpanded}
+                    >
+                        <div className="settings-card-icon">
+                            <Home size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.landingTab.title')}</h3>
+                            <span className="settings-card-value">
+                                {landingTabOptions.find(o => o.id === landingTab)?.label || landingTab}
+                            </span>
+                        </div>
+                        <ChevronRight className={`settings-card-chevron ${isLandingTabExpanded ? 'rotated' : ''}`} size={20} />
+                    </button>
+
+                    <div className={`settings-card-content ${isLandingTabExpanded ? 'show' : ''}`}>
+                        <p className="settings-card-description">
+                            {t('settings.landingTab.description')}
+                        </p>
+
+                        <div className="settings-input-group">
+                            <label>{t('settings.landingTab.label')}</label>
+                            <select
+                                value={newLandingTab}
+                                onChange={(e) => setNewLandingTab(e.target.value)}
+                                disabled={savingLandingTab}
+                            >
+                                {landingTabOptions.map(option => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="settings-card-actions">
+                            <button
+                                className="settings-btn-secondary"
+                                onClick={handleResetLandingTab}
+                                disabled={savingLandingTab || newLandingTab === landingTab}
+                            >
+                                <RotateCcw size={16} />
+                                {t('settings.buttons.reset')}
+                            </button>
+                            <button
+                                className="settings-btn-primary"
+                                onClick={handleSaveLandingTab}
+                                disabled={savingLandingTab || newLandingTab === landingTab}
+                            >
+                                {savingLandingTab ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
+                                {savingLandingTab ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Brew Path Card */}
                 <div className={`settings-card ${isBrewPathExpanded ? 'expanded' : ''}`}>
                     <button 

@@ -411,6 +411,11 @@
     "categories": {
       "general": "General"
     },
+    "landingTab": {
+      "title": "Pestaña de inicio",
+      "description": "Elige qué pestaña se muestra cuando WailBrew se inicia.",
+      "label": "Iniciar en"
+    },
     "brewPath": {
       "title": "Configuración del path de Homebrew",
       "description": "Especifique el path de su instalación de Homebrew. WailBrew usará esta ruta para ejecutar todos los comandos de Homebrew.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "Argumentos personalizados de actualización actualizados exitosamente!",
       "adminUsernameUpdated": "Nombre de usuario administrador actualizado exitosamente!",
       "proxyUpdated": "¡Configuración del proxy actualizada exitosamente!",
-      "proxyTestSuccess": "¡Prueba de conexión del proxy exitosa!"
+      "proxyTestSuccess": "¡Prueba de conexión del proxy exitosa!",
+      "landingTabUpdated": "¡Pestaña de inicio actualizada con éxito!",
+      "landingTabReset": "Pestaña de inicio restablecida al valor actual."
     },
     "errors": {
       "failedToGetPath": "No se pudo obtener el path actual de Homebrew.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "No se pudo establecer la conexión del proxy. Por favor verifique su entrada.",
       "emptyTestUrl": "Por favor ingrese una URL de prueba.",
       "emptyProxyForTest": "Por favor ingrese una URL de proxy para probar.",
-      "proxyTestFailed": "La prueba de conexión del proxy falló."
+      "proxyTestFailed": "La prueba de conexión del proxy falló.",
+      "failedToSetLandingTab": "No se pudo establecer la pestaña de inicio. Verifica tu configuración."
     },
     "mirrorSource": {
       "title": "Homebrew servidores",

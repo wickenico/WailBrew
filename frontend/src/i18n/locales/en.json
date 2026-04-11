@@ -411,6 +411,11 @@
     "categories": {
       "general": "General"
     },
+    "landingTab": {
+      "title": "Landing Tab",
+      "description": "Choose which tab is displayed when WailBrew starts.",
+      "label": "Start on"
+    },
     "brewPath": {
       "title": "Homebrew Path Configuration",
       "description": "Specify the path to your Homebrew installation. WailBrew will use this path to execute all Homebrew commands.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "Custom outdated arguments updated successfully!",
       "adminUsernameUpdated": "Admin username updated successfully!",
       "proxyUpdated": "Proxy settings updated successfully!",
-      "proxyTestSuccess": "Proxy connection test successful!"
+      "proxyTestSuccess": "Proxy connection test successful!",
+      "landingTabUpdated": "Landing tab updated successfully!",
+      "landingTabReset": "Landing tab reset to current value."
     },
     "errors": {
       "failedToGetPath": "Failed to get current brew path.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "Failed to set proxy connection. Please check your input.",
       "emptyTestUrl": "Please enter a test URL.",
       "emptyProxyForTest": "Please enter a proxy URL to test.",
-      "proxyTestFailed": "Proxy connection test failed."
+      "proxyTestFailed": "Proxy connection test failed.",
+      "failedToSetLandingTab": "Failed to set landing tab. Please check your configuration."
     },
     "mirrorSource": {
       "title": "Homebrew Mirror Source",

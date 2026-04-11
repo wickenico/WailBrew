@@ -134,6 +134,10 @@ export function GetInstalledDependents(arg1) {
   return window['go']['main']['App']['GetInstalledDependents'](arg1);
 }
 
+export function GetLandingTab() {
+  return window['go']['main']['App']['GetLandingTab']();
+}
+
 export function GetMacOSReleaseName() {
   return window['go']['main']['App']['GetMacOSReleaseName']();
 }
@@ -248,6 +252,10 @@ export function SetDockBadgeCountSync(arg1) {
 
 export function SetDockBadgeSync(arg1) {
   return window['go']['main']['App']['SetDockBadgeSync'](arg1);
+}
+
+export function SetLandingTab(arg1) {
+  return window['go']['main']['App']['SetLandingTab'](arg1);
 }
 
 export function SetLanguage(arg1) {

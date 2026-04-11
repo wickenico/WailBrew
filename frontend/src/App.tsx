@@ -17,6 +17,7 @@ import {
     GetBrewPackageSizes,
     GetBrewTapInfo,
     GetInstalledDependents,
+    GetLandingTab,
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
     GetDeprecatedFormulae,
@@ -183,6 +184,12 @@ const WailBrewApp = () => {
         boxShadow: 'none',
         padding: 0,
     } as const;
+
+    useEffect(() => {
+        GetLandingTab().then((tab) => {
+            if (tab) setView(tab as typeof view);
+        }).catch(() => {});
+    }, []);
 
     useEffect(() => {
         // Get app version from backend

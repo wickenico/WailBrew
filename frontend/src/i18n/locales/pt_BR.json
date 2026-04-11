@@ -411,6 +411,11 @@
     "categories": {
       "general": "Geral"
     },
+    "landingTab": {
+      "title": "Aba Inicial",
+      "description": "Escolha qual aba será exibida quando o WailBrew iniciar.",
+      "label": "Iniciar em"
+    },
     "brewPath": {
       "title": "Configuração do Caminho do Homebrew",
       "description": "Especifique o caminho da sua instalação do Homebrew. O WailBrew usará este caminho para executar todos os comandos do Homebrew.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "Argumentos outdated personalizados atualizados com sucesso!",
       "adminUsernameUpdated": "Nome de usuário administrador atualizado com sucesso!",
       "proxyUpdated": "Configurações de proxy atualizadas com sucesso!",
-      "proxyTestSuccess": "Teste de conexão do proxy bem-sucedido!"
+      "proxyTestSuccess": "Teste de conexão do proxy bem-sucedido!",
+      "landingTabUpdated": "Aba inicial atualizada com sucesso!",
+      "landingTabReset": "Aba inicial redefinida para o valor atual."
     },
     "errors": {
       "failedToGetPath": "Falha ao obter o caminho atual do brew.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "Falha ao definir a conexão do proxy. Verifique sua entrada.",
       "emptyTestUrl": "Por favor, insira uma URL de teste.",
       "emptyProxyForTest": "Por favor, insira uma URL de proxy para testar.",
-      "proxyTestFailed": "O teste de conexão do proxy falhou."
+      "proxyTestFailed": "O teste de conexão do proxy falhou.",
+      "failedToSetLandingTab": "Falha ao definir a aba inicial. Verifique sua configuração."
     },
     "mirrorSource": {
       "title": "Fonte de Espelho Homebrew",

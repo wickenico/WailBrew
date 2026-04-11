@@ -411,6 +411,11 @@
     "categories": {
       "general": "Général"
     },
+    "landingTab": {
+      "title": "Onglet de démarrage",
+      "description": "Choisissez l'onglet affiché au lancement de WailBrew.",
+      "label": "Démarrer sur"
+    },
     "brewPath": {
       "title": "Configuration du chemin Homebrew",
       "description": "Spécifiez le chemin vers votre installation Homebrew. WailBrew utilisera ce chemin pour exécuter toutes les commandes Homebrew.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "Arguments outdated personnalisés mis à jour avec succès !",
       "adminUsernameUpdated": "Nom d'utilisateur administrateur mis à jour avec succès !",
       "proxyUpdated": "Paramètres du proxy mis à jour avec succès !",
-      "proxyTestSuccess": "Test de connexion du proxy réussi !"
+      "proxyTestSuccess": "Test de connexion du proxy réussi !",
+      "landingTabUpdated": "Onglet de démarrage mis à jour avec succès !",
+      "landingTabReset": "Onglet de démarrage réinitialisé à la valeur actuelle."
     },
     "errors": {
       "failedToGetPath": "Échec de la récupération du chemin brew actuel.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "Échec de la configuration du proxy. Veuillez vérifier votre saisie.",
       "emptyTestUrl": "Veuillez entrer une URL de test.",
       "emptyProxyForTest": "Veuillez entrer une URL de proxy à tester.",
-      "proxyTestFailed": "Le test de connexion du proxy a échoué."
+      "proxyTestFailed": "Le test de connexion du proxy a échoué.",
+      "failedToSetLandingTab": "Impossible de définir l'onglet de démarrage. Vérifiez votre configuration."
     },
     "mirrorSource": {
       "title": "Source miroir Homebrew",

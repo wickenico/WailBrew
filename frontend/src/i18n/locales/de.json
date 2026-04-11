@@ -411,6 +411,11 @@
     "categories": {
       "general": "Allgemein"
     },
+    "landingTab": {
+      "title": "Start-Tab",
+      "description": "Wählen Sie, welcher Tab beim Start von WailBrew angezeigt wird.",
+      "label": "Starten mit"
+    },
     "brewPath": {
       "title": "Homebrew-Pfad-Konfiguration",
       "description": "Geben Sie den Pfad zu Ihrer Homebrew-Installation an. WailBrew verwendet diesen Pfad, um alle Homebrew-Befehle auszuführen.",
@@ -440,7 +445,9 @@
       "customOutdatedArgsUpdated": "Benutzerdefinierte Outdated-Argumente erfolgreich aktualisiert!",
       "adminUsernameUpdated": "Administrator-Benutzername erfolgreich aktualisiert!",
       "proxyUpdated": "Proxy-Einstellungen erfolgreich aktualisiert!",
-      "proxyTestSuccess": "Proxy-Verbindungstest erfolgreich!"
+      "proxyTestSuccess": "Proxy-Verbindungstest erfolgreich!",
+      "landingTabUpdated": "Start-Tab erfolgreich aktualisiert!",
+      "landingTabReset": "Start-Tab auf aktuellen Wert zurückgesetzt."
     },
     "errors": {
       "failedToGetPath": "Aktueller Brew-Pfad konnte nicht abgerufen werden.",
@@ -457,7 +464,8 @@
       "failedToSetProxy": "Proxy-Verbindung konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Eingabe.",
       "emptyTestUrl": "Bitte geben Sie eine Test-URL ein.",
       "emptyProxyForTest": "Bitte geben Sie eine Proxy-URL zum Testen ein.",
-      "proxyTestFailed": "Proxy-Verbindungstest fehlgeschlagen."
+      "proxyTestFailed": "Proxy-Verbindungstest fehlgeschlagen.",
+      "failedToSetLandingTab": "Start-Tab konnte nicht gesetzt werden. Bitte überprüfen Sie Ihre Konfiguration."
     },
     "mirrorSource": {
       "title": "Homebrew Spiegelquelle",
