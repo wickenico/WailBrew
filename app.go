@@ -78,7 +78,7 @@ type UpdateInfo struct {
 // NewPackagesInfo contains information about newly discovered packages
 type NewPackagesInfo = brew.NewPackagesInfo
 
-// Config represents the application configuration stored in ~/.wailbrew/config.json
+// Config represents the application configuration (see config.GetConfigPath for location)
 type Config = config.Config
 
 // App struct - minimal orchestrator
@@ -636,7 +636,7 @@ func (a *App) ExportBrewfile(filePath string) error {
 }
 
 func (a *App) OpenConfigFile() error {
-	configPath, err := config.GetConfigPath()
+	configPath, err := a.config.ResolvedPath()
 	if err != nil {
 		return fmt.Errorf("failed to get config path: %w", err)
 	}
