@@ -416,6 +416,10 @@
       "description": "選擇 WailBrew 啟動時顯示的分頁。",
       "label": "啟動時顯示"
     },
+    "noQuarantine": {
+      "title": "跳過 Cask 隔離檢疫",
+      "description": "安裝或升級 Cask 時自動移除 macOS 隔離檢疫屬性。防止首次啟動時出現「應用程式已損壞」或 Gatekeeper 警告。"
+    },
     "brewPath": {
       "title": "Homebrew 路徑設定",
       "description": "指定您的 Homebrew 安裝路徑。WailBrew 將使用此路徑來執行所有 Homebrew 指令。",

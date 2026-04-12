@@ -4314,6 +4314,50 @@ body {
   transform: rotate(90deg);
 }
 
+.settings-toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.settings-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.settings-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.settings-toggle.active::after {
+  left: 22px;
+  background: white;
+}
+
+[data-theme='light'] .settings-toggle {
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .settings-toggle::after {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 .settings-badge {
   display: inline-flex;
   align-items: center;

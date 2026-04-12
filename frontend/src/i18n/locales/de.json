@@ -416,6 +416,10 @@
       "description": "Wählen Sie, welcher Tab beim Start von WailBrew angezeigt wird.",
       "label": "Starten mit"
     },
+    "noQuarantine": {
+      "title": "Quarantäne für Casks überspringen",
+      "description": "Entfernt automatisch das macOS-Quarantäne-Attribut beim Installieren oder Aktualisieren von Casks. Verhindert die Warnung 'App ist beschädigt' oder Gatekeeper-Meldung beim ersten Start."
+    },
     "brewPath": {
       "title": "Homebrew-Pfad-Konfiguration",
       "description": "Geben Sie den Pfad zu Ihrer Homebrew-Installation an. WailBrew verwendet diesen Pfad, um alle Homebrew-Befehle auszuführen.",

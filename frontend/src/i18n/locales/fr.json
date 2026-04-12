@@ -416,6 +416,10 @@
       "description": "Choisissez l'onglet affiché au lancement de WailBrew.",
       "label": "Démarrer sur"
     },
+    "noQuarantine": {
+      "title": "Ignorer la quarantaine pour les casks",
+      "description": "Supprime automatiquement l'attribut de quarantaine macOS lors de l'installation ou la mise à jour des casks. Empêche l'avertissement « l'application est endommagée » ou Gatekeeper au premier lancement."
+    },
     "brewPath": {
       "title": "Configuration du chemin Homebrew",
       "description": "Spécifiez le chemin vers votre installation Homebrew. WailBrew utilisera ce chemin pour exécuter toutes les commandes Homebrew.",

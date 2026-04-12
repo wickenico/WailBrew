@@ -18,7 +18,7 @@ import {
     Network,
     Home
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -73,6 +73,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [savingLandingTab, setSavingLandingTab] = useState<boolean>(false);
     const [isLandingTabExpanded, setIsLandingTabExpanded] = useState<boolean>(false);
 
+    const [noQuarantine, setNoQuarantine] = useState<boolean>(false);
+
     useEffect(() => {
         loadCurrentBrewPath();
         loadCurrentMirrorSource();
@@ -84,6 +86,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadSystemInfo();
         loadCurrentProxy();
         loadLandingTab();
+        loadNoQuarantine();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -607,6 +610,26 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         toast.success(t('settings.messages.landingTabReset'));
     };
 
+    const loadNoQuarantine = async () => {
+        try {
+            const val = await GetNoQuarantine();
+            setNoQuarantine(val);
+        } catch (error) {
+            console.error("Failed to get no-quarantine setting:", error);
+        }
+    };
+
+    const handleToggleNoQuarantine = async () => {
+        const newVal = !noQuarantine;
+        try {
+            await SetNoQuarantine(newVal);
+            setNoQuarantine(newVal);
+        } catch (error) {
+            console.error("Failed to set no-quarantine:", error);
+            toast.error(String(error));
+        }
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t('settings.mirrorSource.mirrors.official');
@@ -734,6 +757,27 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 {savingLandingTab ? t('settings.buttons.saving') : t('settings.buttons.save')}
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                {/* No Quarantine Toggle Card */}
+                <div className={`settings-card ${noQuarantine ? 'expanded' : ''}`}>
+                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                        <div className="settings-card-icon">
+                            <Shield size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.noQuarantine.title')}</h3>
+                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
+                                {t('settings.noQuarantine.description')}
+                            </span>
+                        </div>
+                        <button
+                            className={`settings-toggle ${noQuarantine ? 'active' : ''}`}
+                            onClick={handleToggleNoQuarantine}
+                            aria-checked={noQuarantine}
+                            role="switch"
+                        />
                     </div>
                 </div>
 

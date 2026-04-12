@@ -243,6 +243,10 @@ func (a *App) getBrewEnv() []string {
 func (a *App) buildCaskOpts() string {
 	var opts []string
 
+	if a.config.NoQuarantine {
+		opts = append(opts, "--no-quarantine")
+	}
+
 	// Add UI-configured appdir if set
 	if a.config.CaskAppDir != "" {
 		opts = append(opts, fmt.Sprintf("--appdir=%s", a.config.CaskAppDir))
@@ -697,6 +701,15 @@ func (a *App) SetLandingTab(tab string) error {
 		return fmt.Errorf("invalid landing tab: %s", tab)
 	}
 	a.config.LandingTab = tab
+	return a.config.Save()
+}
+
+func (a *App) GetNoQuarantine() bool {
+	return a.config.NoQuarantine
+}
+
+func (a *App) SetNoQuarantine(val bool) error {
+	a.config.NoQuarantine = val
 	return a.config.Save()
 }
 

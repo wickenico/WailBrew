@@ -416,6 +416,10 @@
       "description": "WailBrew başladığında hangi sekmenin gösterileceğini seçin.",
       "label": "Başlangıç"
     },
+    "noQuarantine": {
+      "title": "Cask'lar için karantinayı atla",
+      "description": "Cask yüklerken veya güncellerken macOS karantina özniteliğini otomatik olarak kaldırır. İlk açılışta \"uygulama hasarlı\" veya Gatekeeper uyarısını önler."
+    },
     "brewPath": {
       "title": "Homebrew Yol Konfigürasyonu",
       "description": "Homebrew kurulumun için bir yol tanımla. WailBrew bu yolu kullanarak tüm Homebrew komutlarını çalıştıracak.",

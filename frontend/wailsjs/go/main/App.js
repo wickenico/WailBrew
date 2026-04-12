@@ -150,6 +150,10 @@ export function GetMirrorSource() {
   return window['go']['main']['App']['GetMirrorSource']();
 }
 
+export function GetNoQuarantine() {
+  return window['go']['main']['App']['GetNoQuarantine']();
+}
+
 export function GetOutdatedFlag() {
   return window['go']['main']['App']['GetOutdatedFlag']();
 }
@@ -264,6 +268,10 @@ export function SetLanguage(arg1) {
 
 export function SetMirrorSource(arg1, arg2) {
   return window['go']['main']['App']['SetMirrorSource'](arg1, arg2);
+}
+
+export function SetNoQuarantine(arg1) {
+  return window['go']['main']['App']['SetNoQuarantine'](arg1);
 }
 
 export function SetOutdatedFlag(arg1) {

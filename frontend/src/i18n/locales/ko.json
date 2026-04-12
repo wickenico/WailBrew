@@ -416,6 +416,10 @@
       "description": "WailBrew 시작 시 표시할 탭을 선택하세요.",
       "label": "시작 탭"
     },
+    "noQuarantine": {
+      "title": "Cask 격리 건너뛰기",
+      "description": "Cask 설치 또는 업그레이드 시 macOS 격리 속성을 자동으로 제거합니다. 첫 실행 시 '앱이 손상되었습니다' 또는 Gatekeeper 경고를 방지합니다."
+    },
     "brewPath": {
       "title": "Homebrew 경로 설정",
       "description": "Homebrew 설치 경로를 지정하세요. WailBrew는 이 경로를 사용하여 모든 Homebrew 명령을 실행합니다.",

@@ -416,6 +416,10 @@
       "description": "Choose which tab is displayed when WailBrew starts.",
       "label": "Start on"
     },
+    "noQuarantine": {
+      "title": "Skip Quarantine for Casks",
+      "description": "Automatically remove the macOS quarantine attribute when installing or upgrading casks. This prevents the \"app is damaged\" or Gatekeeper warning on first launch."
+    },
     "brewPath": {
       "title": "Homebrew Path Configuration",
       "description": "Specify the path to your Homebrew installation. WailBrew will use this path to execute all Homebrew commands.",

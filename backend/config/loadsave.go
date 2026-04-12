@@ -18,6 +18,7 @@ type Config struct {
 	AdminUsername      string `json:"adminUsername"`      // Admin username for sudo operations (defaults to current user)
 	Proxy              string `json:"proxy"`              // Global proxy setting (e.g., "http://127.0.0.1:7890" or "http://user:pass@127.0.0.1:7890")
 	LandingTab         string `json:"landingTab"`         // Tab to focus on startup (default: "installed")
+	NoQuarantine       bool   `json:"noQuarantine"`       // Skip quarantine attribute on cask installs (--no-quarantine)
 
 	resolvedPath string // internal: remembers which file was loaded so Save() writes back to the same location
 }

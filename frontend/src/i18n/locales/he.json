@@ -416,6 +416,10 @@
       "description": "בחר איזו לשונית תוצג כאשר WailBrew מופעל.",
       "label": "התחל ב"
     },
+    "noQuarantine": {
+      "title": "דלג על הסגר עבור casks",
+      "description": "מסיר אוטומטית את תכונת ההסגר של macOS בעת התקנה או עדכון של casks. מונע את אזהרת \"האפליקציה פגומה\" או Gatekeeper בהפעלה הראשונה."
+    },
     "brewPath": {
       "title": "הגדרת נתיב Homebrew",
       "description": "ציין את הנתיב להתקנת Homebrew שלך. WailBrew ישתמש בנתיב זה להפעלת כל פקודות Homebrew.",

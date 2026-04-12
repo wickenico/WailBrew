@@ -416,6 +416,10 @@
       "description": "Elige qué pestaña se muestra cuando WailBrew se inicia.",
       "label": "Iniciar en"
     },
+    "noQuarantine": {
+      "title": "Omitir cuarentena para casks",
+      "description": "Elimina automáticamente el atributo de cuarentena de macOS al instalar o actualizar casks. Evita la advertencia de \"app dañada\" o Gatekeeper en el primer inicio."
+    },
     "brewPath": {
       "title": "Configuración del path de Homebrew",
       "description": "Especifique el path de su instalación de Homebrew. WailBrew usará esta ruta para ejecutar todos los comandos de Homebrew.",
