@@ -354,16 +354,68 @@ func (a *App) startup(ctx context.Context) {
 		brew.ExtractJSONFromOutput,
 		brew.ParseWarnings,
 	)
+
+	// Restore last-known window position. Width/Height (and maximized state)
+	// are already applied via options.App in main.go to avoid first-frame
+	// flicker; Wails v2 has no initial-position option, so position is
+	// restored here. Only restore if values look sane — protects against
+	// disconnected external monitors leaving the window off-screen.
+	if a.config.WindowX != 0 || a.config.WindowY != 0 {
+		if isOnScreen(a.config.WindowX, a.config.WindowY) {
+			rt.WindowSetPosition(ctx, a.config.WindowX, a.config.WindowY)
+		}
+	}
+}
+
+// isOnScreen sanity-checks saved window coordinates so a disconnected
+// external monitor cannot leave the window stranded off-screen. We avoid
+// enumerating displays (not exposed by Wails v2) and use a generous bounds
+// check; anything obviously absurd is rejected and the OS default is used.
+func isOnScreen(x, y int) bool {
+	const minCoord, maxCoord = -200, 10000
+	return x >= minCoord && y >= minCoord && x < maxCoord && y < maxCoord
 }
 
 // shutdown cleans up resources when the application exits
 func (a *App) shutdown(ctx context.Context) {
+	// Persist current window geometry so the next launch can restore it.
+	// Skip when minimized — those bounds aren't meaningful. When maximized,
+	// keep the last "restored" bounds so unmaximizing on next launch returns
+	// to a sensible size.
+	if a.ctx != nil && !rt.WindowIsMinimised(a.ctx) {
+		a.config.WindowMaximized = rt.WindowIsMaximised(a.ctx)
+		if !a.config.WindowMaximized {
+			w, h := rt.WindowGetSize(a.ctx)
+			x, y := rt.WindowGetPosition(a.ctx)
+			if w > 0 && h > 0 {
+				a.config.WindowWidth, a.config.WindowHeight = w, h
+				a.config.WindowX, a.config.WindowY = x, y
+			}
+		}
+		if err := a.config.Save(); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to save window geometry: %v\n", err)
+		}
+	}
+
 	if a.askpassManager != nil {
 		a.askpassManager.Cleanup()
 	}
 	if a.sessionLogManager != nil {
 		a.sessionLogManager.Clear()
 	}
+}
+
+// SaveWindowGeometry persists the current window size, position and
+// maximized state. Called from the frontend (debounced) on resize/move so
+// the window geometry survives force-quits and crashes where shutdown()
+// would not run.
+func (a *App) SaveWindowGeometry(width, height, x, y int, maximized bool) error {
+	a.config.WindowMaximized = maximized
+	if !maximized && width > 0 && height > 0 {
+		a.config.WindowWidth, a.config.WindowHeight = width, height
+		a.config.WindowX, a.config.WindowY = x, y
+	}
+	return a.config.Save()
 }
 
 // menu builds the application menu using the UI module

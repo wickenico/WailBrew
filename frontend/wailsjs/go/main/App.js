@@ -218,6 +218,10 @@ export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
 }
 
+export function SaveWindowGeometry(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['SaveWindowGeometry'](arg1, arg2, arg3, arg4, arg5);
+}
+
 export function SelectCaskAppDir() {
   return window['go']['main']['App']['SelectCaskAppDir']();
 }

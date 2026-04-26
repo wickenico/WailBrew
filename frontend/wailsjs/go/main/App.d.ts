@@ -112,6 +112,8 @@ export function RunBrewCleanupDryRun():Promise<string>;
 
 export function RunBrewDoctor():Promise<string>;
 
+export function SaveWindowGeometry(arg1:number,arg2:number,arg3:number,arg4:number,arg5:boolean):Promise<void>;
+
 export function SelectCaskAppDir():Promise<string>;
 
 export function SetAdminUsername(arg1:string):Promise<void>;

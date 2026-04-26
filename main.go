@@ -16,13 +16,29 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
+	// Restore last-known window size from config (NewApp already loaded it).
+	// Width/Height are applied here so the window opens at the correct size on
+	// the very first frame, avoiding a visible resize after open. Position is
+	// restored later via runtime.WindowSetPosition in startup() because Wails v2
+	// has no initial-position option.
+	width, height := 1024, 768
+	if app.config.WindowWidth >= 600 && app.config.WindowHeight >= 450 {
+		width = app.config.WindowWidth
+		height = app.config.WindowHeight
+	}
+	startState := options.Normal
+	if app.config.WindowMaximized {
+		startState = options.Maximised
+	}
+
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:     "WailBrew",
-		Width:     1024,
-		Height:    768,
-		MinWidth:  600,
-		MinHeight: 450,
+		Title:            "WailBrew",
+		Width:            width,
+		Height:           height,
+		MinWidth:         600,
+		MinHeight:        450,
+		WindowStartState: startState,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

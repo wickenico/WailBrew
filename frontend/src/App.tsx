@@ -29,6 +29,7 @@ import {
     RunBrewCleanup,
     RunBrewCleanupDryRun,
     RunBrewDoctor,
+    SaveWindowGeometry,
     SetDockBadgeCount,
     SetDockBadgeCountSync,
     SetLanguage,
@@ -39,7 +40,12 @@ import {
     UpdateHomebrew,
     UpdateSelectedBrewPackages
 } from "../wailsjs/go/main/App";
-import { EventsOn } from "../wailsjs/runtime";
+import {
+    EventsOn,
+    WindowGetPosition,
+    WindowGetSize,
+    WindowIsMaximised,
+} from "../wailsjs/runtime";
 import "./App.css";
 import "./style.css";
 
@@ -189,6 +195,33 @@ const WailBrewApp = () => {
         GetLandingTab().then((tab) => {
             if (tab) setView(tab as typeof view);
         }).catch(() => {});
+    }, []);
+
+    // Persist window geometry on resize/move so it survives force-quits and
+    // crashes (where the Go shutdown hook may not run). Debounced to avoid
+    // flooding the config writer during a drag.
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        const persist = () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(async () => {
+                try {
+                    const [size, pos, maximised] = await Promise.all([
+                        WindowGetSize(),
+                        WindowGetPosition(),
+                        WindowIsMaximised(),
+                    ]);
+                    await SaveWindowGeometry(size.w, size.h, pos.x, pos.y, maximised);
+                } catch (err) {
+                    console.error("Failed to persist window geometry:", err);
+                }
+            }, 500);
+        };
+        window.addEventListener("resize", persist);
+        return () => {
+            window.removeEventListener("resize", persist);
+            if (timer) clearTimeout(timer);
+        };
     }, []);
 
     useEffect(() => {

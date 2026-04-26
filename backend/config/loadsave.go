@@ -20,6 +20,15 @@ type Config struct {
 	LandingTab         string `json:"landingTab"`         // Tab to focus on startup (default: "installed")
 	NoQuarantine       bool   `json:"noQuarantine"`       // Skip quarantine attribute on cask installs (--no-quarantine)
 
+	// Window geometry — persisted across launches so the window opens where it
+	// was last left. Zero values mean "not yet captured" and the app falls back
+	// to its built-in defaults.
+	WindowWidth     int  `json:"windowWidth,omitempty"`
+	WindowHeight    int  `json:"windowHeight,omitempty"`
+	WindowX         int  `json:"windowX,omitempty"`
+	WindowY         int  `json:"windowY,omitempty"`
+	WindowMaximized bool `json:"windowMaximized,omitempty"`
+
 	resolvedPath string // internal: remembers which file was loaded so Save() writes back to the same location
 }
 
