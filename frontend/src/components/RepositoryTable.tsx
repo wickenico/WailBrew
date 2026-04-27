@@ -41,7 +41,7 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
     const getColumnWidth = (key: string): string => {
         if (key === 'name') return 'auto';
         if (key === 'status') return '150px';
-        if (key === 'actions') return '100px';
+        if (key === 'actions') return '110px';
         return 'auto';
     };
 
@@ -180,10 +180,11 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
         )}
         {repositories.length > 0 && (
             <div className="table-split-wrapper">
-                <table className="package-table package-table-header">
+                <div className="table-scroll-x">
+                <table className="package-table">
                     <colgroup>
                         {columns.map((col) => (
-                            <col key={`header-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
+                            <col key={`col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
                         ))}
                     </colgroup>
                     <thead>
@@ -199,7 +200,6 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                                         style={{ 
                                             cursor: isSortable ? 'pointer' : 'default',
                                             userSelect: 'none',
-                                            position: 'relative',
                                         }}
                                     >
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -227,30 +227,22 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                             })}
                         </tr>
                     </thead>
+                    <tbody>
+                        {sortedRepositories.map(repo => (
+                            <tr
+                                key={repo.name}
+                                className={selectedRepository?.name === repo.name ? "selected" : ""}
+                                onClick={() => onSelect(repo)}
+                            >
+                                {columns.map(col => (
+                                    <td key={col.key}>
+                                        {renderCellContent(repo, col)}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
-                <div className="table-body-scroll">
-                    <table className="package-table package-table-body">
-                        <colgroup>
-                            {columns.map((col) => (
-                                <col key={`body-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
-                            ))}
-                        </colgroup>
-                        <tbody>
-                            {sortedRepositories.map(repo => (
-                                <tr
-                                    key={repo.name}
-                                    className={selectedRepository?.name === repo.name ? "selected" : ""}
-                                    onClick={() => onSelect(repo)}
-                                >
-                                    {columns.map(col => (
-                                        <td key={col.key}>
-                                            {renderCellContent(repo, col)}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
                 </div>
                 <div className="table-footer">
                     <div className="table-footer-content">

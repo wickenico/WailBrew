@@ -86,7 +86,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
         if (key === 'name') return '30%';
         if (key === 'installedVersion') return '160px';
         if (key === 'latestVersion') return '160px';
-        if (key === 'actions') return '120px';
+        if (key === 'actions') return '150px';
         if (key === 'size') return '100px';
         return 'auto';
     };
@@ -370,11 +370,12 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
             )}
             {packages.length > 0 && (
                 <div className="table-split-wrapper">
-                    <table className="package-table package-table-header">
+                    <div className="table-scroll-x">
+                    <table className="package-table">
                         <colgroup>
                             {multiSelectMode && <col style={{ width: '50px' }} />}
                             {columns.map((col) => (
-                                <col key={`header-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
+                                <col key={`col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
                             ))}
                         </colgroup>
                         <thead>
@@ -409,7 +410,6 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                                             style={{
                                                 cursor: isSortable ? 'pointer' : 'default',
                                                 userSelect: 'none',
-                                                position: 'relative',
                                             }}
                                         >
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -437,17 +437,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                                 })}
                             </tr>
                         </thead>
-                    </table>
-                    <div className="table-body-scroll">
-                        <table className="package-table package-table-body">
-                            <colgroup>
-                                {multiSelectMode && <col style={{ width: '50px' }} />}
-                                {columns.map((col) => (
-                                    <col key={`body-col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
-                                ))}
-                            </colgroup>
-                            <tbody>
-                                {sortedPackages.map((pkg, index) => {
+                        <tbody>
+                            {sortedPackages.map((pkg, index) => {
                                     const isSelected = multiSelectMode ? selectedPackages.has(pkg.name) : selectedPackage?.name === pkg.name;
                                     const isFocused = focusedRowIndex === index;
                                     return (

@@ -1068,42 +1068,48 @@ body {
   overflow: hidden;
 }
 
-.package-table-header {
-  flex-shrink: 0;
-}
-
-.table-body-scroll {
+/* Single scroll container for both header and body. Sticky thead keeps the
+   header pinned vertically while the table can scroll horizontally as a
+   single unit, eliminating dual-table desync. */
+.table-scroll-x {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
+  min-height: 0;
+  min-width: 0;
   position: relative;
 }
 
-/* Custom scrollbar styling for table body */
-.table-body-scroll::-webkit-scrollbar {
+/* Custom scrollbar styling for the shared scroll container */
+.table-scroll-x::-webkit-scrollbar {
   width: 14px;
+  height: 14px;
   background: transparent;
 }
 
-.table-body-scroll::-webkit-scrollbar-track {
+.table-scroll-x::-webkit-scrollbar-track {
   background: rgba(30, 34, 40, 0.6);
   border-radius: 8px;
-  margin: 4px 4px 4px 0;
+  margin: 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.table-body-scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
+.table-scroll-x::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--accent) 0%, rgba(79, 195, 247, 0.8) 100%);
   border-radius: 8px;
   border: 3px solid rgba(30, 34, 40, 0.6);
   transition: all var(--transition);
+  min-width: 40px;
   min-height: 40px;
 }
 
-.table-body-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+.table-scroll-x::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
   border-width: 2px;
   box-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
+}
+
+.table-scroll-x::-webkit-scrollbar-corner {
+  background: rgba(30, 34, 40, 0.6);
 }
 
 /* Table footer */
@@ -1179,7 +1185,9 @@ body {
   letter-spacing: 0.5px;
   border-bottom: 2px solid var(--glass-border-strong);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 /* Column resize handle */
@@ -1201,17 +1209,12 @@ body {
 }
 
 /* Rounded top corners for header */
-.package-table-header thead tr th:first-child {
+.package-table thead tr th:first-child {
   border-top-left-radius: calc(var(--radius) - 2px);
 }
 
-.package-table-header thead tr th:last-child {
+.package-table thead tr th:last-child {
   border-top-right-radius: calc(var(--radius) - 2px);
-}
-
-/* Ensure body table columns match header */
-.package-table-body {
-  margin-top: -2px;
 }
 
 .package-table tbody tr {
@@ -2193,19 +2196,23 @@ body {
   border-right-color: rgba(0, 0, 0, 0.1) !important;
 }
 
-[data-theme='light'] .table-body-scroll::-webkit-scrollbar-track {
+[data-theme='light'] .table-scroll-x::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-theme='light'] .table-body-scroll::-webkit-scrollbar-thumb {
+[data-theme='light'] .table-scroll-x::-webkit-scrollbar-thumb {
   background: var(--accent);
   border: 3px solid rgba(0, 0, 0, 0.04);
 }
 
-[data-theme='light'] .table-body-scroll::-webkit-scrollbar-thumb:hover {
+[data-theme='light'] .table-scroll-x::-webkit-scrollbar-thumb:hover {
   background: var(--accent-hover);
   box-shadow: 0 0 12px rgba(2, 136, 209, 0.4);
+}
+
+[data-theme='light'] .table-scroll-x::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 /* About Dialog Styles */
