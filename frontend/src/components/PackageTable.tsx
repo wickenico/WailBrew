@@ -97,6 +97,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
 
     // Column resizing
     const resizingRef = useRef<{ colKey: string; startX: number; startWidth: number } | null>(null);
+    const didDragRef = useRef<boolean>(false);
+    const suppressNextClickRef = useRef<boolean>(false);
     const [columnWidths, setColumnWidths] = useState<Record<string, string>>(() => {
         const widths: Record<string, string> = {};
         columns.forEach(col => { widths[col.key] = getColumnWidth(col.key); });
@@ -122,16 +124,23 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
         const onMouseMove = (moveEvent: MouseEvent) => {
             if (!resizingRef.current) return;
             const delta = moveEvent.clientX - resizingRef.current.startX;
+            if (Math.abs(delta) > 2) didDragRef.current = true;
             const newWidth = Math.max(60, resizingRef.current.startWidth + delta);
             setColumnWidths(prev => ({ ...prev, [resizingRef.current!.colKey]: `${newWidth}px` }));
         };
 
         const onMouseUp = () => {
+            const dragged = didDragRef.current;
             resizingRef.current = null;
+            didDragRef.current = false;
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
             document.body.style.cursor = '';
             document.body.style.userSelect = '';
+            if (dragged) {
+                suppressNextClickRef.current = true;
+                setTimeout(() => { suppressNextClickRef.current = false; }, 0);
+            }
         };
 
         document.body.style.cursor = 'col-resize';
@@ -180,6 +189,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
     const handleSort = (key: string, sortable: boolean = true) => {
         // Don't sort on non-sortable columns
         if (!sortable) return;
+        // Ignore the synthetic click that follows a column-resize drag
+        if (suppressNextClickRef.current) return;
 
         if (sortKey === key) {
             // Toggle direction if same column
