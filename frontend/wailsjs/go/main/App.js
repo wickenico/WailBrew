@@ -290,8 +290,8 @@ export function SetWindowTheme(arg1) {
   return window['go']['main']['App']['SetWindowTheme'](arg1);
 }
 
-export function TapBrewRepository(arg1) {
-  return window['go']['main']['App']['TapBrewRepository'](arg1);
+export function TapBrewRepository(arg1, arg2) {
+  return window['go']['main']['App']['TapBrewRepository'](arg1, arg2);
 }
 
 export function TestProxyConnection(arg1, arg2) {

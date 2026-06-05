@@ -53,7 +53,7 @@ type Service interface {
 	UpdateAllBrewPackages(ctx context.Context) string
 
 	// Tap operations
-	TapBrewRepository(ctx context.Context, repositoryName string) string
+	TapBrewRepository(ctx context.Context, repositoryName, repositoryURL string) string
 	UntapBrewRepository(ctx context.Context, repositoryName string) string
 
 	// Package info
@@ -298,8 +298,8 @@ func (s *serviceImpl) UpdateAllBrewPackages(ctx context.Context) string {
 }
 
 // Tap methods
-func (s *serviceImpl) TapBrewRepository(ctx context.Context, repositoryName string) string {
-	return s.tapService.TapBrewRepository(ctx, repositoryName)
+func (s *serviceImpl) TapBrewRepository(ctx context.Context, repositoryName, repositoryURL string) string {
+	return s.tapService.TapBrewRepository(ctx, repositoryName, repositoryURL)
 }
 
 func (s *serviceImpl) UntapBrewRepository(ctx context.Context, repositoryName string) string {

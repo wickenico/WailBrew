@@ -33,13 +33,18 @@ func NewTapService(
 	}
 }
 
-// TapBrewRepository taps a repository with live progress updates
-func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName string) string {
+// TapBrewRepository taps a repository with live progress updates.
+// repositoryURL is optional; when provided it is passed as the second argument to brew tap.
+func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repositoryURL string) string {
 	// Emit initial progress
 	startMessage := s.getBackendMsg("tapStart", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryTapProgress", startMessage)
 
-	cmd := exec.Command(s.brewPath, "tap", repositoryName)
+	args := []string{"tap", repositoryName}
+	if url := strings.TrimSpace(repositoryURL); url != "" {
+		args = append(args, url)
+	}
+	cmd := exec.Command(s.brewPath, args...)
 	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
 
 	// Create pipes for real-time output

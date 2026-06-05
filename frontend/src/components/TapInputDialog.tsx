@@ -3,53 +3,70 @@ import { useTranslation } from "react-i18next";
 
 interface TapInputDialogProps {
     open: boolean;
-    onConfirm: (tapName: string) => void;
+    onConfirm: (tapName: string, tapURL: string) => void;
     onCancel: () => void;
 }
+
+const tapNamePattern = /^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?\/[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$/;
+const tapURLPattern = /^(https?:\/\/|git@|ssh:\/\/|git:\/\/|rsync:\/\/).+/;
+
+const inputStyle = (hasError: boolean): React.CSSProperties => ({
+    width: '100%',
+    padding: '0.5rem',
+    fontSize: '1rem',
+    border: hasError ? '2px solid #dc2626' : '1px solid #444',
+    borderRadius: '4px',
+    backgroundColor: '#1e293b',
+    color: '#fff',
+    outline: 'none',
+});
 
 const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCancel }) => {
     const { t } = useTranslation();
     const [tapName, setTapName] = useState("");
-    const [error, setError] = useState<string | null>(null);
+    const [tapURL, setTapURL] = useState("");
+    const [nameError, setNameError] = useState<string | null>(null);
+    const [urlError, setUrlError] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Focus input when dialog opens
     useEffect(() => {
         if (open && inputRef.current) {
             inputRef.current.focus();
         }
     }, [open]);
 
-    // Reset state when dialog closes
     useEffect(() => {
         if (!open) {
             setTapName("");
-            setError(null);
+            setTapURL("");
+            setNameError(null);
+            setUrlError(null);
         }
     }, [open]);
 
-    const validateTapName = (name: string): boolean => {
-        // Tap name should be in format: user/repo
-        // Examples: homebrew/cask, user/tap-name
-        const tapPattern = /^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?\/[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$/;
-        return tapPattern.test(name);
-    };
-
     const handleConfirm = () => {
         const trimmedName = tapName.trim();
-        
+        const trimmedURL = tapURL.trim();
+
+        setNameError(null);
+        setUrlError(null);
+
         if (!trimmedName) {
-            setError(t('dialogs.tapInputEmpty'));
+            setNameError(t('dialogs.tapInputEmpty'));
             return;
         }
 
-        if (!validateTapName(trimmedName)) {
-            setError(t('dialogs.tapInputInvalid'));
+        if (!tapNamePattern.test(trimmedName)) {
+            setNameError(t('dialogs.tapInputInvalid'));
             return;
         }
 
-        setError(null);
-        onConfirm(trimmedName);
+        if (trimmedURL && !tapURLPattern.test(trimmedURL)) {
+            setUrlError(t('dialogs.tapInputUrlInvalid'));
+            return;
+        }
+
+        onConfirm(trimmedName, trimmedURL);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -93,29 +110,49 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
                         value={tapName}
                         onChange={(e) => {
                             setTapName(e.target.value);
-                            setError(null);
+                            setNameError(null);
                         }}
                         onKeyDown={handleKeyDown}
                         placeholder={t('dialogs.tapInputPlaceholder')}
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            fontSize: '1rem',
-                            border: error ? '2px solid #dc2626' : '1px solid #444',
-                            borderRadius: '4px',
-                            backgroundColor: '#1e293b',
-                            color: '#fff',
-                            outline: 'none',
-                        }}
+                        style={inputStyle(!!nameError)}
                     />
-                    {error && (
+                    {nameError && (
                         <p style={{ 
                             color: '#dc2626', 
                             fontSize: '0.875rem', 
                             marginTop: '0.5rem',
                             marginBottom: 0
                         }}>
-                            {error}
+                            {nameError}
+                        </p>
+                    )}
+                    <p style={{ 
+                        fontSize: '0.75rem', 
+                        color: '#888', 
+                        marginTop: '0.5rem',
+                        marginBottom: '0.75rem'
+                    }}>
+                        {t('dialogs.tapInputHint')}
+                    </p>
+                    <input
+                        type="text"
+                        value={tapURL}
+                        onChange={(e) => {
+                            setTapURL(e.target.value);
+                            setUrlError(null);
+                        }}
+                        onKeyDown={handleKeyDown}
+                        placeholder={t('dialogs.tapInputUrlPlaceholder')}
+                        style={inputStyle(!!urlError)}
+                    />
+                    {urlError && (
+                        <p style={{ 
+                            color: '#dc2626', 
+                            fontSize: '0.875rem', 
+                            marginTop: '0.5rem',
+                            marginBottom: 0
+                        }}>
+                            {urlError}
                         </p>
                     )}
                     <p style={{ 
@@ -124,7 +161,7 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
                         marginTop: '0.5rem',
                         marginBottom: 0
                     }}>
-                        {t('dialogs.tapInputHint')}
+                        {t('dialogs.tapInputUrlHint')}
                     </p>
                 </div>
                 <div className="confirm-actions">
@@ -139,4 +176,3 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
 };
 
 export default TapInputDialog;
-

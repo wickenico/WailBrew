@@ -1675,7 +1675,7 @@ const WailBrewApp = () => {
         }
     };
 
-    const handleTapConfirmed = async (tapName: string) => {
+    const handleTapConfirmed = async (tapName: string, tapURL: string) => {
         setShowTapInput(false);
         setTappingRepository(tapName);
         setTapLogs(t('dialogs.tapping', { name: tapName }));
@@ -1839,7 +1839,7 @@ const WailBrewApp = () => {
         });
 
         // Start the tap process
-        await TapBrewRepository(tapName);
+        await TapBrewRepository(tapName, tapURL);
     };
 
     const handleInstallPackage = (pkg: PackageEntry) => {

@@ -627,8 +627,8 @@ func (a *App) UpdateAllBrewPackages() string {
 	return a.brewService.UpdateAllBrewPackages(a.ctx)
 }
 
-func (a *App) TapBrewRepository(repositoryName string) string {
-	return a.brewService.TapBrewRepository(a.ctx, repositoryName)
+func (a *App) TapBrewRepository(repositoryName, repositoryURL string) string {
+	return a.brewService.TapBrewRepository(a.ctx, repositoryName, repositoryURL)
 }
 
 func (a *App) UntapBrewRepository(repositoryName string) string {
