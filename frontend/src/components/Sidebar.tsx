@@ -101,7 +101,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     // Language options with flags
     const languageOptions = {
-        en: { flag: '🇺🇸', name: t('language.english') },
+        en: { flag: '🇬🇧', name: t('language.english') },
         de: { flag: '🇩🇪', name: t('language.german') },
         fr: { flag: '🇫🇷', name: t('language.french') },
         tr: { flag: '🇹🇷', name: t('language.turkish') },
