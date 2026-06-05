@@ -8,6 +8,11 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 1
+      semver-major-days: 1
+      semver-minor-days: 1
+      semver-patch-days: 1
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

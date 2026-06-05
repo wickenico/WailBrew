@@ -23,7 +23,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v5
         with:
-          version: 9
+          version: 11.5.2
 
       - name: Setup pnpm cache
         uses: actions/cache@v5
