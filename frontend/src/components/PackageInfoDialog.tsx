@@ -2,6 +2,7 @@ import { Copy } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 
 interface PackageInfoDialogProps {
     open: boolean;
@@ -176,14 +177,20 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
                                             <div className="package-info-parsed-subtitle">{parsed.description}</div>
                                         )}
                                         {parsed.homepage && (
-                                            <a
-                                                href={parsed.homepage}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
+                                            <span
                                                 className="package-info-parsed-link"
+                                                onClick={() => BrowserOpenURL(parsed.homepage!)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        BrowserOpenURL(parsed.homepage!);
+                                                    }
+                                                }}
+                                                role="link"
+                                                tabIndex={0}
                                             >
                                                 {parsed.homepage}
-                                            </a>
+                                            </span>
                                         )}
                                     </div>
                                     <div className="package-info-parsed-list">

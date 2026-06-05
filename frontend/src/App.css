@@ -2144,6 +2144,7 @@ body {
   font-size: 13px;
   text-decoration: none;
   word-break: break-all;
+  cursor: pointer;
 }
 
 .package-info-parsed-link:hover {
