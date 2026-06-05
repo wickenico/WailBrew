@@ -140,6 +140,7 @@ const WailBrewApp = () => {
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [selectedDeprecatedPackage, setSelectedDeprecatedPackage] = useState<PackageEntry | null>(null);
     const [updatableError, setUpdatableError] = useState<string>("");
+    const [leavesError, setLeavesError] = useState<string>("");
     const [installedFilter, setInstalledFilter] = useState<"all" | "on_request" | "dependency">("all");
     const [homebrewLog, setHomebrewLog] = useState<string>("");
     const [homebrewVersion, setHomebrewVersion] = useState<string>("");
@@ -258,9 +259,10 @@ const WailBrewApp = () => {
                     safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error"
                         ? `${t('errors.failedUpdatablePackages')}: ${safeUpdatable[0][1]}`
                         : "";
-                if (safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")) {
-                    throw new Error(`${t('errors.failedLeaves')}: ${safeLeaves[0]}`);
-                }
+                const leavesErrorMessage =
+                    safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")
+                        ? `${t('errors.failedLeaves')}: ${safeLeaves[0]}`
+                        : "";
                 if (safeRepos.length === 1 && safeRepos[0][0] === "Error") {
                     throw new Error(`${t('errors.failedRepositories')}: ${safeRepos[0][1]}`);
                 }
@@ -291,15 +293,17 @@ const WailBrewApp = () => {
                     }));
                 // Format leaves packages with their versions and sizes from installed packages
                 const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, { installedVersion: pkg.installedVersion, size: pkg.size }]));
-                const leavesFormatted = safeLeaves.map((name) => {
-                    const data = installedMap.get(name);
-                    return {
-                        name,
-                        installedVersion: data?.installedVersion || t('common.notAvailable'),
-                        size: data?.size,
-                        isInstalled: true,
-                    };
-                });
+                const leavesFormatted = leavesErrorMessage
+                    ? []
+                    : safeLeaves.map((name) => {
+                        const data = installedMap.get(name);
+                        return {
+                            name,
+                            installedVersion: data?.installedVersion || t('common.notAvailable'),
+                            size: data?.size,
+                            isInstalled: true,
+                        };
+                    });
 
                 // Format repositories
                 const reposFormatted = safeRepos.map(([name, status]) => ({
@@ -312,6 +316,7 @@ const WailBrewApp = () => {
                 setCasks(casksFormatted);
                 setUpdatablePackages(updatableFormatted);
                 setUpdatableError(updatableErrorMessage);
+                setLeavesError(leavesErrorMessage);
                 setLeavesPackages(leavesFormatted);
                 setRepositories(reposFormatted);
                 // Note: allPackages are loaded lazily when user switches to "all" view
@@ -1974,6 +1979,7 @@ const WailBrewApp = () => {
         setLoading(true);
         setError("");
         setUpdatableError("");
+        setLeavesError("");
 
         // Clear existing data to show clean loading state
         setPackages([]);
@@ -2089,8 +2095,9 @@ const WailBrewApp = () => {
 
             // Note: allPackages are loaded lazily when user switches to "all" view
 
-            if (safeLeaves.length === 1 && safeLeaves[0] === "Error") {
+            if (safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")) {
                 setLeavesPackages([]);
+                setLeavesError(`${t('errors.failedLeaves')}: ${safeLeaves[0]}`);
             } else {
                 const installedMap = new Map(safeInstalled.map(([name, installedVersion, size]) => [name, { installedVersion, size }]));
                 const formatted = safeLeaves.map((name) => {
@@ -2103,6 +2110,7 @@ const WailBrewApp = () => {
                     };
                 });
                 setLeavesPackages(formatted);
+                setLeavesError("");
             }
 
             if (safeRepos.length === 1 && safeRepos[0][0] === "Error") {
@@ -2455,6 +2463,7 @@ const WailBrewApp = () => {
                             onClearSearch={() => setSearchQuery("")}
                         />
                         {error && <div className="result error">{error}</div>}
+                        {leavesError && <div className="result error">{leavesError}</div>}
                         <PackageTable
                             ref={view === "leaves" ? packageTableRef : null}
                             packages={filteredPackages}

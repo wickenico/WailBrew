@@ -76,14 +76,16 @@ func (e *Executor) RunWithTimeout(timeout time.Duration, args ...string) ([]byte
 	// Execute the command
 	output, err := e.runActual(timeout, args...)
 
-	// Store in cache (write lock)
-	e.cacheMux.Lock()
-	e.cache[cacheKey] = &cacheEntry{
-		output:    output,
-		err:       err,
-		expiresAt: time.Now().Add(e.cacheTTL),
+	// Cache successful results only so transient failures (e.g. timeouts) can be retried
+	if err == nil {
+		e.cacheMux.Lock()
+		e.cache[cacheKey] = &cacheEntry{
+			output:    output,
+			err:       err,
+			expiresAt: time.Now().Add(e.cacheTTL),
+		}
+		e.cacheMux.Unlock()
 	}
-	e.cacheMux.Unlock()
 
 	return output, err
 }

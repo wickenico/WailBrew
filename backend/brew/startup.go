@@ -39,9 +39,8 @@ func (s *StartupService) GetStartupData() *StartupData {
 	var wg sync.WaitGroup
 	result := &StartupData{}
 
-	// Run all data fetches in parallel
-	// The executor's cache will deduplicate any overlapping brew commands
-	wg.Add(5)
+	// Run data fetches in parallel; leaves runs afterward to avoid Homebrew lock contention
+	wg.Add(4)
 
 	go func() {
 		defer wg.Done()
@@ -61,15 +60,11 @@ func (s *StartupService) GetStartupData() *StartupData {
 
 	go func() {
 		defer wg.Done()
-		result.Leaves = s.listService.GetBrewLeaves()
-	}()
-
-	go func() {
-		defer wg.Done()
 		result.Taps = s.listService.GetBrewTaps()
 	}()
 
 	wg.Wait()
+	result.Leaves = s.listService.GetBrewLeaves()
 	return result
 }
 
@@ -90,7 +85,7 @@ func (s *StartupService) GetStartupDataWithUpdate() *StartupData {
 	}()
 
 	// Fetch other data in parallel (these don't require fresh database)
-	wg.Add(4)
+	wg.Add(3)
 
 	go func() {
 		defer wg.Done()
@@ -104,20 +99,16 @@ func (s *StartupService) GetStartupDataWithUpdate() *StartupData {
 
 	go func() {
 		defer wg.Done()
-		result.Leaves = s.listService.GetBrewLeaves()
-	}()
-
-	go func() {
-		defer wg.Done()
 		result.Taps = s.listService.GetBrewTaps()
 	}()
 
 	// Wait for database update and other data to complete
 	wg.Wait()
 
-	// Now fetch outdated packages AFTER database update completes
-	// This ensures we get fresh outdated data based on updated repository information
+	// Fetch outdated packages and leaves after parallel brew commands finish
+	// to avoid Homebrew lock contention causing false timeouts
 	result.Updatable = s.outdatedService.GetBrewUpdatablePackages()
+	result.Leaves = s.listService.GetBrewLeaves()
 
 	return result
 }

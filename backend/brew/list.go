@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 )
 
 // ListService provides package listing functionality
@@ -283,7 +284,7 @@ func (s *ListService) GetAllBrewCasks() [][]string {
 
 // GetBrewLeaves retrieves the list of leaf packages
 func (s *ListService) GetBrewLeaves() []string {
-	output, err := s.executor.Run("leaves")
+	output, err := s.executor.RunWithTimeout(90*time.Second, "leaves")
 	if err != nil {
 		return []string{fmt.Sprintf("Error: %v", err)}
 	}
