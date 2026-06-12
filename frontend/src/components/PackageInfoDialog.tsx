@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { parseInfoLog } from "../utils/parseInfoLog";
 
 interface PackageInfoDialogProps {
     open: boolean;
@@ -13,69 +14,6 @@ interface PackageInfoDialogProps {
 }
 
 type InfoTab = "log" | "parsed";
-
-interface ParsedInfo {
-    headline: string;
-    description?: string;
-    homepage?: string;
-    entries: Array<{ label: string; value: string }>;
-}
-
-const parseInfoLog = (log: string | null): ParsedInfo | null => {
-    if (!log) return null;
-
-    const lines = log.split("\n").map((line) => line.trim()).filter(Boolean);
-    if (lines.length === 0) return null;
-
-    const entries: Array<{ label: string; value: string }> = [];
-    let headline = "";
-    let description = "";
-    let homepage = "";
-
-    for (const line of lines) {
-        if (!headline && line.startsWith("==>")) {
-            headline = line.replace(/^==>\s*/, "");
-            continue;
-        }
-
-        if (!homepage && /^https?:\/\//i.test(line)) {
-            homepage = line;
-            continue;
-        }
-
-        if (!description && !line.includes(":") && !line.startsWith("/")) {
-            description = line;
-            continue;
-        }
-
-        const match = line.match(/^([^:]+):\s*(.+)$/);
-        if (match) {
-            entries.push({
-                label: match[1].trim(),
-                value: match[2].trim(),
-            });
-            continue;
-        }
-
-        if (line.startsWith("/")) {
-            entries.push({ label: "Path", value: line });
-            continue;
-        }
-
-        if (line.startsWith("==>")) {
-            entries.push({
-                label: "Section",
-                value: line.replace(/^==>\s*/, ""),
-            });
-        }
-    }
-
-    if (!headline && entries.length === 0 && !description && !homepage) {
-        return null;
-    }
-
-    return { headline: headline || "Package Information", description, homepage, entries };
-};
 
 const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
     open,

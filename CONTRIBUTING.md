@@ -72,6 +72,29 @@ make clean   # Clean build directory
 make install # Build and install to /Applications
 ```
 
+## 🧪 Testing
+
+Frontend utility functions are tested with [Vitest](https://vitest.dev/), which shares the same Vite configuration used for development builds.
+
+```bash
+# Run all tests once
+cd frontend && pnpm test
+
+# Run in watch mode during development
+cd frontend && pnpm test:watch
+```
+
+Tests live alongside the code they cover under `__tests__/` directories:
+
+```
+frontend/src/utils/
+├── parseInfoLog.ts
+└── __tests__/
+    └── parseInfoLog.test.ts
+```
+
+Pure utility functions (no Wails bindings, no DOM) use `environment: 'node'` and need no extra setup.
+
 ## 🛠️ Development
 
 ### Live Development
