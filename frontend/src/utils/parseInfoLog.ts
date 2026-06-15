@@ -50,6 +50,8 @@ export function parseInfoLog(log: string | null): ParsedInfo | null {
             continue;
         }
 
+        if (line.startsWith("Installed ")) continue;
+
         const match = line.match(/^([^:]+):\s*(.+)$/);
         if (match) {
             entries.push({ label: match[1].trim(), value: match[2].trim() });
