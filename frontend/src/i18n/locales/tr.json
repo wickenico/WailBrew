@@ -108,6 +108,8 @@
     "yesUpdateAll": "Evet, tümünü güncelle",
     "yesUpdateSelected": "Evet, {{count}} seçiliyi güncelle",
     "yesUntap": "Evet, kaldır",
+    "yesTrust": "Evet, güven",
+    "trustRepository": "\"{{name}}\" güven",
     "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Kapat",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "Gerçekten tüm eskimiş paketleri güncellemek istiyor musun?",
     "confirmUpdateSelected": "Gerçekten {{count}} seçili paketi güncellemek istiyor musun?",
     "confirmUntap": "Gerçekten \"{{name}}\" deposunu kaldırmak istiyor musun?",
+    "confirmTrustTap": "\"{{name}}\" tap'ı Homebrew tarafından güvenilir değil. Güvenmek, Homebrew'in bu tap'tan kod çalıştırmasına izin verir. Güvenip devam etmek istiyor musunuz?",
+    "trustFailed": "\"{{name}}\" güvenilir yapılamadı: {{error}}",
     "updateLogs": "{{name}} için günlükleri güncelle",
     "updateAllLogs": "Tüm paketler için günlükleri güncelle",
     "updateSelectedLogs": "Seçili paketler için güncelleme günlükleri",
@@ -341,6 +345,11 @@
     "noSelection": "Hiçbir depo seçilmedi",
     "status": "Durum",
     "description": "Açıklama",
+    "trusted": "Güvenilir",
+    "untrusted": "Güvenilmeyen",
+    "trustedYes": "Evet",
+    "trustedNo": "Hayır",
+    "trustedUnknown": "Bilinmiyor",
     "defaultDescription": "Homebrew Tap Deposu",
     "active": "Aktif"
   },
@@ -593,6 +602,11 @@
       "success": "✅ '{{name}}' için tap başarıyla tamamlandı!",
       "failed": "❌ '{{name}}' için tap başarısız: {{error}}"
     },
+    "trust": {
+      "start": "🔄 '{{name}}' tap'ına güveniliyor...",
+      "success": "✅ '{{name}}' tap'ı artık güvenilir!",
+      "failed": "❌ '{{name}}' tap'ına güvenme başarısız: {{error}}"
+    },
     "untap": {
       "start": "🔄 '{{name}}' için untap başlatılıyor...",
       "success": "✅ '{{name}}' için untap başarıyla tamamlandı!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Kaldırma başlatılırken hata: {{error}}",
       "startingTap": "❌ Tap başlatılırken hata: {{error}}",
       "startingUntap": "❌ Untap başlatılırken hata: {{error}}",
+      "startingTrust": "❌ Güvenme başlatılırken hata: {{error}}",
       "startingHomebrewUpdate": "❌ Homebrew güncelleme başlatılırken hata: {{error}}"
     }
   },

@@ -108,6 +108,8 @@
     "yesUpdateAll": "Sí, actualizar todo",
     "yesUpdateSelected": "Sí, actualizar {{count}} seleccionados",
     "yesUntap": "Si, remover repositorio",
+    "yesTrust": "Sí, confiar",
+    "trustRepository": "Confiar en \"{{name}}\"",
     "yesUninstallAndUntap": "Si, desinstalar y remover repositorio",
     "ok": "Ok",
     "close": "Cerrar",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "¿Realmente desea actualizar todos los paquetes actualizados?",
     "confirmUpdateSelected": "¿Realmente desea actualizar {{count}} paquetes seleccionados?",
     "confirmUntap": "¿Realmente desea remover \"{{name}}\"?",
+    "confirmTrustTap": "Homebrew no confía en el tap \"{{name}}\". Confiar en él permite que Homebrew ejecute código de este tap. ¿Quieres confiar en él y continuar?",
+    "trustFailed": "No se pudo confiar en \"{{name}}\": {{error}}",
     "updateLogs": "Logs de actualización para {{name}}",
     "updateAllLogs": "Logs de actualización para todos los paquetes",
     "updateSelectedLogs": "Logs de actualización para paquetes seleccionados",
@@ -341,6 +345,11 @@
     "noSelection": "No se seleccionó repositorio",
     "status": "Estado",
     "description": "Descripción",
+    "trusted": "De confianza",
+    "untrusted": "No confiable",
+    "trustedYes": "Sí",
+    "trustedNo": "No",
+    "trustedUnknown": "Desconocido",
     "defaultDescription": "Repositorio de Homebrew",
     "active": "Activo"
   },
@@ -593,6 +602,11 @@
       "success": "✅ Registro para '{{name}}' completado exitosamente!",
       "failed": "❌ Registro para '{{name}}' fallido: {{error}}"
     },
+    "trust": {
+      "start": "🔄 Confiando en el tap '{{name}}'...",
+      "success": "✅ ¡Ahora se confía en el tap '{{name}}'!",
+      "failed": "❌ No se pudo confiar en el tap '{{name}}': {{error}}"
+    },
     "untap": {
       "start": "🔄 Iniciando desregistro para '{{name}}'...",
       "success": "✅ Desregistro para '{{name}}' completado exitosamente!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Error iniciando desinstalación: {{error}}",
       "startingTap": "❌ Error iniciando registro: {{error}}",
       "startingUntap": "❌ Error iniciando desregistro: {{error}}",
+      "startingTrust": "❌ Error al iniciar la confianza: {{error}}",
       "startingHomebrewUpdate": "❌ Error iniciando actualización de Homebrew: {{error}}"
     }
   },

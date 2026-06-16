@@ -154,7 +154,7 @@ func (s *DatabaseService) CheckForNewPackages() (*NewPackagesInfo, error) {
 	formulaeLines := strings.Split(strings.TrimSpace(string(allFormulae)), "\n")
 	for _, line := range formulaeLines {
 		name := strings.TrimSpace(line)
-		if name != "" {
+		if isPackageNameLine(name) {
 			currentPackages["formula:"+name] = true
 		}
 	}
@@ -162,7 +162,7 @@ func (s *DatabaseService) CheckForNewPackages() (*NewPackagesInfo, error) {
 	caskLines := strings.Split(strings.TrimSpace(string(allCasks)), "\n")
 	for _, line := range caskLines {
 		name := strings.TrimSpace(line)
-		if name != "" {
+		if isPackageNameLine(name) {
 			currentPackages["cask:"+name] = true
 		}
 	}

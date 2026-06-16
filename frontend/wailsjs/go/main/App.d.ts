@@ -152,6 +152,8 @@ export function TapBrewRepository(arg1:string,arg2:string):Promise<string>;
 
 export function TestProxyConnection(arg1:string,arg2:string):Promise<string>;
 
+export function TrustBrewTap(arg1:string):Promise<string>;
+
 export function UntapBrewRepository(arg1:string):Promise<string>;
 
 export function UpdateAllBrewPackages():Promise<string>;

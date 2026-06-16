@@ -108,6 +108,8 @@
     "yesUpdateAll": "כן, עדכן הכל",
     "yesUpdateSelected": "כן, עדכן {{count}} נבחרים",
     "yesUntap": "כן, הסר מאגר",
+    "yesTrust": "כן, תן אמון",
+    "trustRepository": "תן אמון ב-\"{{name}}\"",
     "yesUninstallAndUntap": "כן, הסר ונתק מאגר",
     "ok": "אישור",
     "close": "סגור",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "האם באמת ברצונך לעדכן את כל החבילות המיושנות?",
     "confirmUpdateSelected": "האם באמת ברצונך לעדכן {{count}} חבילות נבחרות?",
     "confirmUntap": "האם באמת ברצונך להסיר את המאגר \"{{name}}\"?",
+    "confirmTrustTap": "‏Homebrew אינו נותן אמון ב-tap ‏\"{{name}}\"‏. מתן אמון יאפשר ל-Homebrew להריץ קוד מ-tap זה. האם לתת אמון ולהמשיך?",
+    "trustFailed": "מתן אמון ל-\"{{name}}\" נכשל: {{error}}",
     "updateLogs": "יומן עדכון עבור {{name}}",
     "updateAllLogs": "יומן עדכון עבור כל החבילות",
     "updateSelectedLogs": "יומן עדכון עבור חבילות נבחרות",
@@ -341,6 +345,11 @@
     "noSelection": "לא נבחר מאגר",
     "status": "מצב",
     "description": "תיאור",
+    "trusted": "מהימן",
+    "untrusted": "לא מהימן",
+    "trustedYes": "כן",
+    "trustedNo": "לא",
+    "trustedUnknown": "לא ידוע",
     "defaultDescription": "מאגר Homebrew Tap",
     "active": "פעיל"
   },
@@ -593,6 +602,11 @@
       "success": "✅ הוספת מאגר עבור '{{name}}' הושלמה בהצלחה!",
       "failed": "❌ הוספת מאגר עבור '{{name}}' נכשלה: {{error}}"
     },
+    "trust": {
+      "start": "🔄 נותן אמון ל-tap '{{name}}'...",
+      "success": "✅ ל-tap '{{name}}' ניתן כעת אמון!",
+      "failed": "❌ מתן אמון ל-tap '{{name}}' נכשל: {{error}}"
+    },
     "untap": {
       "start": "🔄 מתחיל הסרת מאגר עבור '{{name}}'...",
       "success": "✅ הסרת מאגר עבור '{{name}}' הושלמה בהצלחה!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ שגיאה בהתחלת הסרה: {{error}}",
       "startingTap": "❌ שגיאה בהתחלת הוספת מאגר: {{error}}",
       "startingUntap": "❌ שגיאה בהתחלת הסרת מאגר: {{error}}",
+      "startingTrust": "❌ שגיאה בהפעלת מתן האמון: {{error}}",
       "startingHomebrewUpdate": "❌ שגיאה בהתחלת עדכון Homebrew: {{error}}"
     }
   },

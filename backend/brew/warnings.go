@@ -12,10 +12,22 @@ import (
 func ExtractJSONFromOutput(output string) (jsonOutput string, warnings string, err error) {
 	outputStr := strings.TrimSpace(output)
 
-	// Find the start of JSON (either object or array)
-	jsonStart := strings.Index(outputStr, "{")
-	if jsonStart == -1 {
-		jsonStart = strings.Index(outputStr, "[")
+	// Find the start of JSON, using whichever of '{' (object) or '[' (array)
+	// appears first. Some commands (e.g. `brew tap-info --json=v1`) return a
+	// top-level array, so we must not unconditionally prefer '{' or we would
+	// strip the leading '[' and produce malformed JSON.
+	braceIdx := strings.Index(outputStr, "{")
+	bracketIdx := strings.Index(outputStr, "[")
+	jsonStart := -1
+	switch {
+	case braceIdx == -1:
+		jsonStart = bracketIdx
+	case bracketIdx == -1:
+		jsonStart = braceIdx
+	case braceIdx < bracketIdx:
+		jsonStart = braceIdx
+	default:
+		jsonStart = bracketIdx
 	}
 
 	if jsonStart == -1 {

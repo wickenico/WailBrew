@@ -298,6 +298,10 @@ export function TestProxyConnection(arg1, arg2) {
   return window['go']['main']['App']['TestProxyConnection'](arg1, arg2);
 }
 
+export function TrustBrewTap(arg1) {
+  return window['go']['main']['App']['TrustBrewTap'](arg1);
+}
+
 export function UntapBrewRepository(arg1) {
   return window['go']['main']['App']['UntapBrewRepository'](arg1);
 }

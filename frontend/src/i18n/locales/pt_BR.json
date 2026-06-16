@@ -108,6 +108,8 @@
     "yesUpdateAll": "Sim, atualizar tudo",
     "yesUpdateSelected": "Sim, atualizar {{count}} selecionado(s)",
     "yesUntap": "Sim, remover repositório",
+    "yesTrust": "Sim, confiar",
+    "trustRepository": "Confiar em \"{{name}}\"",
     "yesUninstallAndUntap": "Sim, desinstalar e remover repositório",
     "ok": "Ok",
     "close": "Fechar",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "Você realmente deseja atualizar todos os pacotes desatualizados?",
     "confirmUpdateSelected": "Você realmente deseja atualizar {{count}} pacote(s) selecionado(s)?",
     "confirmUntap": "Você realmente deseja desconectar \"{{name}}\"?",
+    "confirmTrustTap": "O tap \"{{name}}\" não é confiável para o Homebrew. Confiar nele permite que o Homebrew execute código deste tap. Deseja confiar nele e continuar?",
+    "trustFailed": "Falha ao confiar em \"{{name}}\": {{error}}",
     "updateLogs": "Logs de atualização de {{name}}",
     "updateAllLogs": "Logs de atualização de todos os pacotes",
     "updateSelectedLogs": "Logs de atualização de pacotes selecionados",
@@ -341,6 +345,11 @@
     "noSelection": "Nenhum repositório selecionado",
     "status": "Status",
     "description": "Descrição",
+    "trusted": "Confiável",
+    "untrusted": "Não confiável",
+    "trustedYes": "Sim",
+    "trustedNo": "Não",
+    "trustedUnknown": "Desconhecido",
     "defaultDescription": "Repositório Tap do Homebrew",
     "active": "Ativo"
   },
@@ -593,6 +602,11 @@
       "success": "✅ A adição do repositório '{{name}}' foi concluída com sucesso!",
       "failed": "❌ A adição do repositório '{{name}}' falhou: {{error}}"
     },
+    "trust": {
+      "start": "🔄 Confiando no tap '{{name}}'...",
+      "success": "✅ O tap '{{name}}' agora é confiável!",
+      "failed": "❌ Falha ao confiar no tap '{{name}}': {{error}}"
+    },
     "untap": {
       "start": "🔄 Iniciando a remoção do repositório '{{name}}'...",
       "success": "✅ A remoção do repositório '{{name}}' foi concluída com sucesso!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Erro ao iniciar a desinstalação: {{error}}",
       "startingTap": "❌ Erro ao iniciar a adição: {{error}}",
       "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}",
+      "startingTrust": "❌ Erro ao iniciar a confiança: {{error}}",
       "startingHomebrewUpdate": "❌ Erro ao iniciar atualização do Homebrew: {{error}}"
     }
   },

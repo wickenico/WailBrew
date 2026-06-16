@@ -108,6 +108,8 @@
     "yesUpdateAll": "Да, обновить всё",
     "yesUpdateSelected": "Да, обновить {{count}} выбранных",
     "yesUntap": "Да, отключить",
+    "yesTrust": "Да, доверять",
+    "trustRepository": "Доверять \"{{name}}\"",
     "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "ОК",
     "close": "Закрыть",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "Вы действительно хотите обновить все устаревшие пакеты?",
     "confirmUpdateSelected": "Вы действительно хотите обновить {{count}} выбранных пакетов?",
     "confirmUntap": "Вы действительно хотите отключить \"{{name}}\"?",
+    "confirmTrustTap": "Tap \"{{name}}\" не является доверенным для Homebrew. Доверие позволит Homebrew выполнять код из этого tap. Доверять ему и продолжить?",
+    "trustFailed": "Не удалось добавить \"{{name}}\" в доверенные: {{error}}",
     "updateLogs": "Журнал обновления {{name}}",
     "updateAllLogs": "Журнал обновления всех пакетов",
     "updateSelectedLogs": "Журнал обновления выбранных пакетов",
@@ -341,6 +345,11 @@
     "noSelection": "Репозиторий не выбран",
     "status": "Статус",
     "description": "Описание",
+    "trusted": "Доверенный",
+    "untrusted": "Недоверенный",
+    "trustedYes": "Да",
+    "trustedNo": "Нет",
+    "trustedUnknown": "Неизвестно",
     "defaultDescription": "Репозиторий Homebrew Tap",
     "active": "Активен"
   },
@@ -593,6 +602,11 @@
       "success": "✅ Tap для '{{name}}' успешно завершен!",
       "failed": "❌ Tap для '{{name}}' не удался: {{error}}"
     },
+    "trust": {
+      "start": "🔄 Добавление tap '{{name}}' в доверенные...",
+      "success": "✅ Tap '{{name}}' теперь доверенный!",
+      "failed": "❌ Не удалось добавить tap '{{name}}' в доверенные: {{error}}"
+    },
     "untap": {
       "start": "🔄 Начало untap для '{{name}}'...",
       "success": "✅ Untap для '{{name}}' успешно завершен!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Ошибка запуска удаления: {{error}}",
       "startingTap": "❌ Ошибка запуска tap: {{error}}",
       "startingUntap": "❌ Ошибка запуска untap: {{error}}",
+      "startingTrust": "❌ Ошибка при запуске добавления в доверенные: {{error}}",
       "startingHomebrewUpdate": "❌ Ошибка запуска обновления Homebrew: {{error}}"
     }
   },

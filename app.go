@@ -38,6 +38,12 @@ const brewEnvLang = "LANG=en_US.UTF-8"
 const brewEnvLCAll = "LC_ALL=en_US.UTF-8"
 const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 
+// brewEnvNonInteractive makes brew never prompt for input. WailBrew runs brew with
+// streaming pipes and no stdin, so any prompt (Homebrew 6 ask mode, cask quit, etc.)
+// would block forever. The user-initiated GUI action is itself the confirmation, and
+// sudo passwords are still supplied via SUDO_ASKPASS.
+const brewEnvNonInteractive = "NONINTERACTIVE=1"
+
 // wailsEventEmitter implements brew.EventEmitter for Wails
 // It stores the exact context from Wails lifecycle hooks
 type wailsEventEmitter struct {
@@ -201,6 +207,7 @@ func (a *App) getBrewEnv() []string {
 		brewEnvLang,
 		brewEnvLCAll,
 		brewEnvNoAutoUpdate,
+		brewEnvNonInteractive,
 	}
 
 	// Add proxy environment variables if configured
@@ -633,6 +640,11 @@ func (a *App) TapBrewRepository(repositoryName, repositoryURL string) string {
 
 func (a *App) UntapBrewRepository(repositoryName string) string {
 	return a.brewService.UntapBrewRepository(a.ctx, repositoryName)
+}
+
+// TrustBrewTap trusts a non-official tap so Homebrew 6 will load/install from it.
+func (a *App) TrustBrewTap(tapName string) string {
+	return a.brewService.TrustBrewTap(a.ctx, tapName)
 }
 
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {

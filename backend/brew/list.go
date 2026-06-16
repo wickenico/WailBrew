@@ -7,6 +7,31 @@ import (
 	"time"
 )
 
+// isBrewDiagnosticLine reports whether a line is Homebrew diagnostic output
+// (e.g. "Warning: Skipping <tap> ... because it is not trusted", "Error: ...",
+// "==> ...") that gets merged into command output via combined stdout/stderr.
+// Homebrew 6 prints such warnings for untrusted taps and they must not be
+// treated as package, cask or tap names.
+func isBrewDiagnosticLine(line string) bool {
+	lower := strings.ToLower(strings.TrimSpace(line))
+	return strings.HasPrefix(lower, "warning:") ||
+		strings.HasPrefix(lower, "error:") ||
+		strings.HasPrefix(lower, "==>")
+}
+
+// isPackageNameLine reports whether a trimmed line looks like a single
+// package/cask/tap name. Such names never contain whitespace, so any line with
+// spaces (e.g. Homebrew warnings) is rejected.
+func isPackageNameLine(line string) bool {
+	if line == "" {
+		return false
+	}
+	if strings.ContainsAny(line, " \t") {
+		return false
+	}
+	return !isBrewDiagnosticLine(line)
+}
+
 // ListService provides package listing functionality
 type ListService struct {
 	executor      *Executor
@@ -49,7 +74,7 @@ func (s *ListService) GetAllBrewPackages() [][]string {
 		// First time - initialize with current packages
 		for _, line := range lines {
 			line = strings.TrimSpace(line)
-			if line != "" {
+			if isPackageNameLine(line) {
 				knownPkgs["formula:"+line] = true
 			}
 		}
@@ -59,7 +84,7 @@ func (s *ListService) GetAllBrewPackages() [][]string {
 			caskLines := strings.Split(strings.TrimSpace(string(caskOutput)), "\n")
 			for _, line := range caskLines {
 				line = strings.TrimSpace(line)
-				if line != "" {
+				if isPackageNameLine(line) {
 					knownPkgs["cask:"+line] = true
 				}
 			}
@@ -69,7 +94,7 @@ func (s *ListService) GetAllBrewPackages() [][]string {
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line != "" {
+		if isPackageNameLine(line) {
 			// For all packages (not installed), we don't have version or size yet
 			results = append(results, []string{line, "", ""})
 		}
@@ -102,7 +127,7 @@ func (s *ListService) GetBrewPackages() [][]string {
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line == "" {
+		if line == "" || isBrewDiagnosticLine(line) {
 			continue
 		}
 
@@ -123,7 +148,7 @@ func (s *ListService) GetBrewPackages() [][]string {
 			Formulae []struct {
 				Name      string `json:"name"`
 				Installed []struct {
-					InstalledOnRequest   bool `json:"installed_on_request"`
+					InstalledOnRequest    bool `json:"installed_on_request"`
 					InstalledAsDependency bool `json:"installed_as_dependency"`
 				} `json:"installed"`
 			} `json:"formulae"`
@@ -181,7 +206,7 @@ func (s *ListService) GetBrewCasks() [][]string {
 	var caskNames []string
 	for _, line := range lines {
 		caskName := strings.TrimSpace(line)
-		if caskName != "" {
+		if isPackageNameLine(caskName) {
 			caskNames = append(caskNames, caskName)
 		}
 	}
@@ -274,7 +299,7 @@ func (s *ListService) GetAllBrewCasks() [][]string {
 	var results [][]string
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line != "" {
+		if isPackageNameLine(line) {
 			results = append(results, []string{line, "", ""})
 		}
 	}
@@ -298,7 +323,7 @@ func (s *ListService) GetBrewLeaves() []string {
 	var results []string
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line != "" {
+		if isPackageNameLine(line) {
 			results = append(results, line)
 		}
 	}
@@ -318,16 +343,60 @@ func (s *ListService) GetBrewTaps() [][]string {
 		return [][]string{}
 	}
 
+	trustMap := s.getTapTrustMap()
+
 	lines := strings.Split(outputStr, "\n")
 	var taps [][]string
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line != "" {
-			taps = append(taps, []string{line, "Active"})
+		if isPackageNameLine(line) {
+			trusted := ""
+			if v, ok := trustMap[line]; ok {
+				if v {
+					trusted = "true"
+				} else {
+					trusted = "false"
+				}
+			}
+			taps = append(taps, []string{line, "Active", trusted})
 		}
 	}
 
 	return taps
+}
+
+// getTapTrustMap returns a map of tap name -> trusted state using the Homebrew 6
+// `brew tap-info` trusted field. Taps absent from the map have unknown trust
+// (e.g. on older Homebrew versions that don't expose the field), in which case
+// the UI omits any trust indicator.
+func (s *ListService) getTapTrustMap() map[string]bool {
+	trustMap := make(map[string]bool)
+
+	output, err := s.executor.Run("tap-info", "--installed", "--json=v1")
+	if err != nil {
+		return trustMap
+	}
+
+	jsonOutput, _, err := ExtractJSONFromOutput(string(output))
+	if err != nil {
+		return trustMap
+	}
+
+	var taps []struct {
+		Name    string `json:"name"`
+		Trusted *bool  `json:"trusted"`
+	}
+	if err := json.Unmarshal([]byte(jsonOutput), &taps); err != nil {
+		return trustMap
+	}
+
+	for _, tap := range taps {
+		if tap.Name != "" && tap.Trusted != nil {
+			trustMap[tap.Name] = *tap.Trusted
+		}
+	}
+
+	return trustMap
 }
 
 // GetBrewTapInfo retrieves information about a tapped repository

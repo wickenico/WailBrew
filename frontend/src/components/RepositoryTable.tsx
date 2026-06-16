@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { CircleCheckBig, CircleX, ArrowUp, ArrowDown, Info } from "lucide-react";
+import { CircleCheckBig, CircleX, ArrowUp, ArrowDown, Info, ShieldCheck, ShieldAlert } from "lucide-react";
 
 interface RepositoryEntry {
     name: string;
     status: string;
     desc?: string;
+    trusted?: boolean;
 }
 
 interface RepositoryTableProps {
@@ -15,6 +16,7 @@ interface RepositoryTableProps {
     onSelect: (repo: RepositoryEntry) => void;
     onUntap?: (repo: RepositoryEntry) => void;
     onShowInfo?: (repo: RepositoryEntry) => void;
+    onTrust?: (repo: RepositoryEntry) => void;
 }
 
 const RepositoryTable: React.FC<RepositoryTableProps> = ({
@@ -24,6 +26,7 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
     onSelect,
     onUntap,
     onShowInfo,
+    onTrust,
 }) => {
     const { t } = useTranslation();
     const [sortKey, setSortKey] = useState<string | null>('name'); // Default sort by name
@@ -132,6 +135,18 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
         if (col.key === "actions") {
             return (
                 <div className="action-buttons">
+                    {onTrust && repo.trusted === false && (
+                        <button
+                            className="action-button install-button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onTrust(repo);
+                            }}
+                            title={t('buttons.trustRepository', { name: repo.name })}
+                        >
+                            <ShieldCheck size={20} />
+                        </button>
+                    )}
                     {onShowInfo && (
                         <button
                             className="action-button info-button"
@@ -161,9 +176,22 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
         }
         if (col.key === "status") {
             return (
-                <span style={{ color: "green", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                    <CircleCheckBig size={16} />
-                    {t('repository.active')}
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+                    <span style={{ color: "green", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <CircleCheckBig size={16} />
+                        {t('repository.active')}
+                    </span>
+                    {repo.trusted === false && (
+                        <span style={{ color: "#e0a000", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                            <ShieldAlert size={16} />
+                            {t('repository.untrusted')}
+                        </span>
+                    )}
+                    {repo.trusted === true && (
+                        <span style={{ color: "#3ba55d", display: "inline-flex", alignItems: "center", gap: "4px" }} title={t('repository.trusted')}>
+                            <ShieldCheck size={16} />
+                        </span>
+                    )}
                 </span>
             );
         }

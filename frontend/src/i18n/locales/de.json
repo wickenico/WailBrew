@@ -108,6 +108,8 @@
     "yesUpdateAll": "Ja, alle aktualisieren",
     "yesUpdateSelected": "Ja, {{count}} ausgewählte aktualisieren",
     "yesUntap": "Ja, enttappen",
+    "yesTrust": "Ja, vertrauen",
+    "trustRepository": "\"{{name}}\" vertrauen",
     "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Schließen",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "Möchten Sie wirklich alle veralteten Pakete aktualisieren?",
     "confirmUpdateSelected": "Möchten Sie wirklich {{count}} ausgewählte(s) Paket(e) aktualisieren?",
     "confirmUntap": "Möchten Sie \"{{name}}\" wirklich enttappen?",
+    "confirmTrustTap": "Dem Tap \"{{name}}\" wird von Homebrew nicht vertraut. Wenn du ihm vertraust, darf Homebrew Code aus diesem Tap ausführen. Möchtest du ihm vertrauen und fortfahren?",
+    "trustFailed": "Vertrauen für \"{{name}}\" fehlgeschlagen: {{error}}",
     "updateLogs": "Update-Logs für {{name}}",
     "updateAllLogs": "Update-Logs für alle Pakete",
     "updateSelectedLogs": "Update-Logs für ausgewählte Pakete",
@@ -341,6 +345,11 @@
     "noSelection": "Kein Repository ausgewählt",
     "status": "Status",
     "description": "Beschreibung",
+    "trusted": "Vertrauenswürdig",
+    "untrusted": "Nicht vertrauenswürdig",
+    "trustedYes": "Ja",
+    "trustedNo": "Nein",
+    "trustedUnknown": "Unbekannt",
     "defaultDescription": "Homebrew Tap Repository",
     "active": "Aktiv"
   },
@@ -593,6 +602,11 @@
       "success": "✅ Tap für '{{name}}' erfolgreich abgeschlossen!",
       "failed": "❌ Tap für '{{name}}' fehlgeschlagen: {{error}}"
     },
+    "trust": {
+      "start": "🔄 Vertraue Tap '{{name}}'...",
+      "success": "✅ Tap '{{name}}' wird jetzt vertraut!",
+      "failed": "❌ Vertrauen für Tap '{{name}}' fehlgeschlagen: {{error}}"
+    },
     "untap": {
       "start": "🔄 Starte Untap für '{{name}}'...",
       "success": "✅ Untap für '{{name}}' erfolgreich abgeschlossen!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Fehler beim Starten der Deinstallation: {{error}}",
       "startingTap": "❌ Fehler beim Starten des Taps: {{error}}",
       "startingUntap": "❌ Fehler beim Starten des Untaps: {{error}}",
+      "startingTrust": "❌ Fehler beim Starten des Vertrauens: {{error}}",
       "startingHomebrewUpdate": "❌ Fehler beim Starten der Homebrew-Aktualisierung: {{error}}"
     }
   },

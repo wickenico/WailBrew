@@ -34,6 +34,7 @@ import {
     SetDockBadgeCountSync,
     SetLanguage,
     TapBrewRepository,
+    TrustBrewTap,
     UntapBrewRepository,
     UpdateAllBrewPackages,
     UpdateBrewPackage,
@@ -89,6 +90,8 @@ interface RepositoryEntry {
     name: string;
     status: string;
     desc?: string;
+    // Homebrew 6 tap trust: true = trusted, false = untrusted, undefined = unknown
+    trusted?: boolean;
 }
 
 const WailBrewApp = () => {
@@ -128,6 +131,9 @@ const WailBrewApp = () => {
     const [untapLogs, setUntapLogs] = useState<string | null>(null);
     const [tapLogs, setTapLogs] = useState<string | null>(null);
     const [tappingRepository, setTappingRepository] = useState<string | null>(null);
+    // Homebrew 6 tap trust: when a tap/install is blocked because the tap is not
+    // trusted, we prompt the user to trust it and then retry the original action.
+    const [trustPrompt, setTrustPrompt] = useState<{ tap: string; retry: () => void | Promise<void> } | null>(null);
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [isInfoRunning, setIsInfoRunning] = useState<boolean>(false);
     const [repositoryInfoLogs, setRepositoryInfoLogs] = useState<string | null>(null);
@@ -306,10 +312,11 @@ const WailBrewApp = () => {
                     });
 
                 // Format repositories
-                const reposFormatted = safeRepos.map(([name, status]) => ({
+                const reposFormatted = safeRepos.map(([name, status, trusted]) => ({
                     name,
                     status,
                     desc: t('common.notAvailable'),
+                    trusted: trusted === "true" ? true : trusted === "false" ? false : undefined,
                 }));
 
                 setPackages(installedFormatted);
@@ -1569,6 +1576,14 @@ const WailBrewApp = () => {
         setShowUntapConfirm(true);
     };
 
+    const handleTrustRepository = (repo: RepositoryEntry) => {
+        setSelectedRepository(repo);
+        setTrustPrompt({
+            tap: repo.name,
+            retry: () => handleRefreshPackages(),
+        });
+    };
+
     const handleUntapConfirmed = async () => {
         if (!selectedRepository) return;
         setShowUntapConfirm(false);
@@ -1696,6 +1711,14 @@ const WailBrewApp = () => {
                     return `${t('dialogs.tapLogs', { name: tapName })}\n${progress}`;
                 }
                 return prevLogs + '\n' + progress;
+            });
+        });
+
+        // Homebrew 6: tap blocked because it is not trusted -> offer to trust and retry
+        const trustListener = EventsOn("repositoryTapTrustRequired", (tap: string) => {
+            setTrustPrompt({
+                tap: tap || tapName,
+                retry: () => handleTapConfirmed(tapName, tapURL),
             });
         });
 
@@ -1836,6 +1859,7 @@ const WailBrewApp = () => {
             // Clean up event listeners
             progressListener();
             completeListener();
+            trustListener();
         });
 
         // Start the tap process
@@ -1864,6 +1888,22 @@ const WailBrewApp = () => {
             });
         });
 
+        // Homebrew 6: install blocked because the package's tap is not trusted
+        const trustListener = EventsOn("packageInstallTrustRequired", (payload: string) => {
+            let tap = "";
+            try {
+                tap = (JSON.parse(payload) as { tap?: string }).tap || "";
+            } catch {
+                tap = "";
+            }
+            if (tap) {
+                setTrustPrompt({
+                    tap,
+                    retry: () => handleInstallConfirmed(),
+                });
+            }
+        });
+
         const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
             // Update the package list after successful install
             await handleRefreshPackages();
@@ -1873,6 +1913,7 @@ const WailBrewApp = () => {
             // Clean up event listeners
             progressListener();
             completeListener();
+            trustListener();
         });
 
         // Start the install process
@@ -1884,6 +1925,21 @@ const WailBrewApp = () => {
             setIsInstallRunning(false);
             progressListener();
             completeListener();
+            trustListener();
+        }
+    };
+
+    const handleTrustConfirmed = async () => {
+        if (!trustPrompt) return;
+        const { tap, retry } = trustPrompt;
+        setTrustPrompt(null);
+        try {
+            if (tap) {
+                await TrustBrewTap(tap);
+            }
+            await retry();
+        } catch (error) {
+            toast.error(t('dialogs.trustFailed', { name: tap, error: String(error) }));
         }
     };
 
@@ -2116,9 +2172,10 @@ const WailBrewApp = () => {
             if (safeRepos.length === 1 && safeRepos[0][0] === "Error") {
                 setRepositories([]);
             } else {
-                const formatted = safeRepos.map(([name, status]) => ({
+                const formatted = safeRepos.map(([name, status, trusted]) => ({
                     name,
                     status,
+                    trusted: trusted === "true" ? true : trusted === "false" ? false : undefined,
                 }));
                 setRepositories(formatted);
             }
@@ -2510,6 +2567,7 @@ const WailBrewApp = () => {
                             onSelect={handleRepositorySelect}
                             onUntap={handleUntapRepository}
                             onShowInfo={handleShowRepositoryInfo}
+                            onTrust={handleTrustRepository}
                         />
                         <div className="info-footer-container">
                             <div className="package-info">
@@ -2690,6 +2748,13 @@ const WailBrewApp = () => {
                     onCancel={() => setShowUntapConfirm(false)}
                     confirmLabel={t('buttons.yesUntap')}
                     destructive={true}
+                />
+                <ConfirmDialog
+                    open={trustPrompt !== null}
+                    message={t('dialogs.confirmTrustTap', { name: trustPrompt?.tap })}
+                    onConfirm={handleTrustConfirmed}
+                    onCancel={() => setTrustPrompt(null)}
+                    confirmLabel={t('buttons.yesTrust')}
                 />
                 <LogDialog
                     open={updateLogs !== null}

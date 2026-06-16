@@ -3,6 +3,7 @@ package brew
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -88,6 +89,7 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	}
 
 	// Read and emit output in real-time
+	var stderrOutput strings.Builder
 	var wg sync.WaitGroup
 	wg.Add(2)
 
@@ -108,6 +110,8 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
 			if line != "" {
+				stderrOutput.WriteString(line)
+				stderrOutput.WriteString("\n")
 				s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("⚠️ %s", line))
 			}
 		}
@@ -117,6 +121,15 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	wg.Wait()
 	err = cmd.Wait()
 	if err != nil {
+		stderrStr := stderrOutput.String()
+		// Homebrew 6: install can be blocked because the package's tap is not
+		// trusted. Surface a distinct event so the UI can offer to trust + retry.
+		if IsUntrustedTapError(stderrStr) {
+			tapName := ExtractUntrustedTap(stderrStr)
+			if payload, jerr := json.Marshal(map[string]string{"package": packageName, "tap": tapName}); jerr == nil {
+				s.eventEmitter.Emit("packageInstallTrustRequired", string(payload))
+			}
+		}
 		errorMsg := s.getBackendMsg("installFailed", map[string]string{"name": packageName, "error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)

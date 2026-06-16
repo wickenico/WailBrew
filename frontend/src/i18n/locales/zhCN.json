@@ -108,6 +108,8 @@
     "yesUpdateAll": "是，更新所有",
     "yesUpdateSelected": "是，更新 {{count}} 个已选",
     "yesUntap": "是，取消连接",
+    "yesTrust": "是，信任",
+    "trustRepository": "信任 “{{name}}”",
     "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "关闭",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "您确定要更新所有可更新的软件包吗？",
     "confirmUpdateSelected": "您确定要更新 {{count}} 个已选软件包吗？",
     "confirmUntap": "您确定要取消连接 \"{{name}}\" 吗？",
+    "confirmTrustTap": "Homebrew 不信任 tap “{{name}}”。信任它将允许 Homebrew 运行该 tap 中的代码。是否信任并继续？",
+    "trustFailed": "信任 “{{name}}” 失败：{{error}}",
     "updateLogs": "{{name}} 的更新日志",
     "updateAllLogs": "所有可更新软件包的更新日志",
     "updateSelectedLogs": "已选软件包的更新日志",
@@ -341,6 +345,11 @@
     "noSelection": "未选择软件源",
     "status": "状态",
     "description": "描述",
+    "trusted": "受信任",
+    "untrusted": "不受信任",
+    "trustedYes": "是",
+    "trustedNo": "否",
+    "trustedUnknown": "未知",
     "defaultDescription": "软件源",
     "active": "可用"
   },
@@ -593,6 +602,11 @@
       "success": "✅ '{{name}}' 的 tap 已成功完成！",
       "failed": "❌ '{{name}}' 的 tap 失败：{{error}}"
     },
+    "trust": {
+      "start": "🔄 正在信任 tap '{{name}}'...",
+      "success": "✅ tap '{{name}}' 现已信任！",
+      "failed": "❌ 信任 tap '{{name}}' 失败：{{error}}"
+    },
     "untap": {
       "start": "🔄 正在为 '{{name}}' 开始 untap...",
       "success": "✅ '{{name}}' 的 untap 已成功完成！",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ 启动卸载时出错：{{error}}",
       "startingTap": "❌ 启动 tap 时出错：{{error}}",
       "startingUntap": "❌ 启动 untap 时出错：{{error}}",
+      "startingTrust": "❌ 启动信任时出错：{{error}}",
       "startingHomebrewUpdate": "❌ 启动 Homebrew 更新时出错：{{error}}"
     }
   },

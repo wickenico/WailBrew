@@ -55,6 +55,7 @@ type Service interface {
 	// Tap operations
 	TapBrewRepository(ctx context.Context, repositoryName, repositoryURL string) string
 	UntapBrewRepository(ctx context.Context, repositoryName string) string
+	TrustBrewTap(ctx context.Context, tapName string) string
 
 	// Package info
 	GetBrewPackageInfoAsJson(packageName string) map[string]interface{}
@@ -304,6 +305,10 @@ func (s *serviceImpl) TapBrewRepository(ctx context.Context, repositoryName, rep
 
 func (s *serviceImpl) UntapBrewRepository(ctx context.Context, repositoryName string) string {
 	return s.tapService.UntapBrewRepository(ctx, repositoryName)
+}
+
+func (s *serviceImpl) TrustBrewTap(ctx context.Context, tapName string) string {
+	return s.tapService.TrustBrewTap(ctx, tapName)
 }
 
 // Package info methods - these can be extracted to a separate module later

@@ -108,6 +108,8 @@
     "yesUpdateAll": "Oui, tout mettre à jour",
     "yesUpdateSelected": "Oui, mettre à jour {{count}} sélectionné(s)",
     "yesUntap": "Oui, détapper",
+    "yesTrust": "Oui, approuver",
+    "trustRepository": "Approuver « {{name}} »",
     "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Fermer",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "Voulez-vous vraiment mettre à jour tous les paquets obsolètes ?",
     "confirmUpdateSelected": "Voulez-vous vraiment mettre à jour {{count}} paquet(s) sélectionné(s) ?",
     "confirmUntap": "Voulez-vous vraiment détapper \"{{name}}\" ?",
+    "confirmTrustTap": "Le tap « {{name}} » n'est pas approuvé par Homebrew. L'approuver permet à Homebrew d'exécuter du code provenant de ce tap. Voulez-vous l'approuver et continuer ?",
+    "trustFailed": "Échec de l'approbation de « {{name}} » : {{error}}",
     "updateLogs": "Journaux de mise à jour pour {{name}}",
     "updateAllLogs": "Journaux de mise à jour pour tous les paquets",
     "updateSelectedLogs": "Journaux de mise à jour pour les paquets sélectionnés",
@@ -341,6 +345,11 @@
     "noSelection": "Aucun dépôt sélectionné",
     "status": "Statut",
     "description": "Description",
+    "trusted": "Approuvé",
+    "untrusted": "Non approuvé",
+    "trustedYes": "Oui",
+    "trustedNo": "Non",
+    "trustedUnknown": "Inconnu",
     "defaultDescription": "Dépôt Tap Homebrew",
     "active": "Actif"
   },
@@ -593,6 +602,11 @@
       "success": "✅ Tap pour '{{name}}' terminé avec succès !",
       "failed": "❌ Échec du tap pour '{{name}}' : {{error}}"
     },
+    "trust": {
+      "start": "🔄 Approbation du tap '{{name}}'...",
+      "success": "✅ Le tap '{{name}}' est maintenant approuvé !",
+      "failed": "❌ Échec de l'approbation du tap '{{name}}' : {{error}}"
+    },
     "untap": {
       "start": "🔄 Démarrage de l'untap pour '{{name}}'...",
       "success": "✅ Untap pour '{{name}}' terminé avec succès !",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Erreur lors du démarrage de la désinstallation : {{error}}",
       "startingTap": "❌ Erreur lors du démarrage du tap : {{error}}",
       "startingUntap": "❌ Erreur lors du démarrage de l'untap : {{error}}",
+      "startingTrust": "❌ Erreur lors du démarrage de l'approbation : {{error}}",
       "startingHomebrewUpdate": "❌ Erreur lors du démarrage de la mise à jour Homebrew : {{error}}"
     }
   },

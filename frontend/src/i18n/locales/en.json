@@ -108,6 +108,8 @@
     "yesUpdateAll": "Yes, update all",
     "yesUpdateSelected": "Yes, update {{count}} selected",
     "yesUntap": "Yes, untap",
+    "yesTrust": "Yes, trust",
+    "trustRepository": "Trust \"{{name}}\"",
     "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Close",
@@ -196,6 +198,8 @@
     "confirmUpdateAll": "Do you really want to update all outdated packages?",
     "confirmUpdateSelected": "Do you really want to update {{count}} selected package(s)?",
     "confirmUntap": "Do you really want to untap \"{{name}}\"?",
+    "confirmTrustTap": "The tap \"{{name}}\" is not trusted by Homebrew. Trusting it allows Homebrew to run code from this tap. Do you want to trust it and continue?",
+    "trustFailed": "Failed to trust \"{{name}}\": {{error}}",
     "updateLogs": "Update logs for {{name}}",
     "updateAllLogs": "Update logs for all packages",
     "updateSelectedLogs": "Update logs for selected packages",
@@ -341,6 +345,11 @@
     "noSelection": "No repository selected",
     "status": "Status",
     "description": "Description",
+    "trusted": "Trusted",
+    "untrusted": "Untrusted",
+    "trustedYes": "Yes",
+    "trustedNo": "No",
+    "trustedUnknown": "Unknown",
     "defaultDescription": "Homebrew Tap Repository",
     "active": "Active"
   },
@@ -593,6 +602,11 @@
       "success": "✅ Tap for '{{name}}' completed successfully!",
       "failed": "❌ Tap for '{{name}}' failed: {{error}}"
     },
+    "trust": {
+      "start": "🔄 Trusting tap '{{name}}'...",
+      "success": "✅ Tap '{{name}}' is now trusted!",
+      "failed": "❌ Trusting tap '{{name}}' failed: {{error}}"
+    },
     "untap": {
       "start": "🔄 Starting untap for '{{name}}'...",
       "success": "✅ Untap for '{{name}}' completed successfully!",
@@ -607,6 +621,7 @@
       "startingUninstall": "❌ Error starting uninstallation: {{error}}",
       "startingTap": "❌ Error starting tap: {{error}}",
       "startingUntap": "❌ Error starting untap: {{error}}",
+      "startingTrust": "❌ Error starting trust: {{error}}",
       "startingHomebrewUpdate": "❌ Error starting Homebrew update: {{error}}"
     }
   },
