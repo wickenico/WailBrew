@@ -19,13 +19,13 @@ jobs:
 
     steps:
       - name: Checkout WailBrew
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
 
       - name: Checkout homebrew-wailbrew tap
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: wickenico/homebrew-wailbrew
           path: homebrew-wailbrew
