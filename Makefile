@@ -4,7 +4,7 @@ VERSION := $(shell ./get-version.js)
 GOPATH ?= $(shell go env GOPATH)
 WAILS := $(shell command -v wails 2> /dev/null || echo $(GOPATH)/bin/wails)
 
-.PHONY: build dev clean bump
+.PHONY: build dev clean bump update-deps
 
 i:
 	cd frontend && pnpm install
@@ -33,6 +33,10 @@ bump:
 	sed -i '' "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" wails.json; \
 	sed -i '' "s/\"productVersion\": \"$$CURRENT\"/\"productVersion\": \"$$NEW_VERSION\"/g" wails.json; \
 	echo "Updated frontend/package.json and wails.json to $$NEW_VERSION"
+
+update-deps:
+	@echo "Updating Go dependencies"
+	go get -u ./... && go mod tidy
 
 clean:
 	rm -rf build/
