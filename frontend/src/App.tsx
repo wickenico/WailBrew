@@ -1241,6 +1241,17 @@ const WailBrewApp = () => {
             // Update the package list after successful uninstall
             await handleRefreshPackages();
 
+            // Clear stale selection and cached details for the removed package
+            setSelectedPackage(prev => (prev?.name === packageName ? null : prev));
+            setSelectedDeprecatedPackage(prev => (prev?.name === packageName ? null : prev));
+            setPackageCache(prev => {
+                if (!prev.has(packageName)) return prev;
+                const next = new Map(prev);
+                next.delete(packageName);
+                return next;
+            });
+            setLoadingDetailsFor(prev => (prev === packageName ? null : prev));
+
             // If we're on the doctor view, refresh deprecated formulae
             if (view === "doctor" && doctorLog) {
                 const deprecated = await GetDeprecatedFormulae(doctorLog);
