@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 	"sync"
+
+	"WailBrew/backend/system"
 )
 
 // SizeService provides package size calculation functionality
@@ -227,7 +228,7 @@ func (s *SizeService) duSize(path string) string {
 		return cached.(string)
 	}
 
-	cmd := exec.Command("du", "-sh", path)
+	cmd := system.RunHostCommand("du", "-sh", path)
 	output, err := cmd.Output()
 	if err != nil {
 		s.cache.Store(path, "Unknown")

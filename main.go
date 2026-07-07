@@ -2,8 +2,10 @@ package main
 
 import (
 	"embed"
+	"runtime"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
@@ -39,13 +41,19 @@ func main() {
 		MinWidth:         600,
 		MinHeight:        450,
 		WindowStartState: startState,
+		Frameless:        runtime.GOOS == "linux",
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.startup,
 		OnShutdown:       app.shutdown,
-		Menu:             app.menu(),
+		Menu: func() *menu.Menu {
+			if runtime.GOOS == "linux" {
+				return nil
+			}
+			return app.menu()
+		}(),
 		Bind: []interface{}{
 			app,
 		},

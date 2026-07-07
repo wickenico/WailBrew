@@ -67,6 +67,7 @@ import SettingsView from "./components/SettingsView";
 import ShortcutsDialog from "./components/ShortcutsDialog";
 import Sidebar from "./components/Sidebar";
 import TapInputDialog from "./components/TapInputDialog";
+import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import { LoadingTimer } from "./components/LoadingTimer";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
@@ -2243,7 +2244,9 @@ const WailBrewApp = () => {
     const columnsLeaves = columnsInstalled;
 
     return (
-        <div className="wailbrew-container">
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
+            <TitleBar />
+            <div className="wailbrew-container" style={{ flex: 1, height: 'auto', minHeight: 0 }}>
             <Sidebar
                 view={view}
                 setView={setView}
@@ -2936,6 +2939,7 @@ const WailBrewApp = () => {
                     }}
                 />
             </main>
+            </div>
         </div>
     );
 };

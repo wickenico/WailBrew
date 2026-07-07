@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"WailBrew/backend/system"
 )
 
 // cacheEntry holds a cached command result
@@ -132,7 +134,7 @@ func (e *Executor) runActual(timeout time.Duration, stdoutOnly bool, args ...str
 	}
 
 	cmd := exec.CommandContext(ctx, e.brewPath, args...)
-	cmd.Env = append(os.Environ(), e.brewEnv...)
+	system.ApplyEnvironment(cmd, e.brewEnv)
 
 	var output []byte
 	var err error

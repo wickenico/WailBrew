@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"regexp"
 	"strings"
 	"sync"
+
+	"WailBrew/backend/system"
 )
 
 // untrustedTapRe matches an "owner/repo" tap token in Homebrew trust error output.
@@ -81,7 +82,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 		args = append(args, url)
 	}
 	cmd := exec.Command(s.brewPath, args...)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -168,7 +169,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	s.eventEmitter.Emit("repositoryUntapProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "untap", repositoryName)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
 	stdout, err := cmd.StdoutPipe()
@@ -242,7 +243,7 @@ func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
 	s.eventEmitter.Emit("repositoryTrustProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "trust", tapName)
-	cmd.Env = append(os.Environ(), s.getBrewEnvFunc()...)
+	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
