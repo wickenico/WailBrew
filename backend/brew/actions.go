@@ -223,6 +223,16 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 // RunUpdateCommand executes the brew upgrade command and returns the result
 func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (finalMessage string, wailbrewUpdated bool, shouldRetry bool) {
 	args := []string{"upgrade"}
+
+	if s.isPackageCask(packageName) {
+		outdatedFlag := s.getOutdatedFlag()
+		if outdatedFlag == "greedy" {
+			args = append(args, "--greedy")
+		} else if outdatedFlag == "greedy-auto-updates" {
+			args = append(args, "--greedy-auto-updates")
+		}
+	}
+
 	if useForce {
 		args = append(args, "--force")
 	}

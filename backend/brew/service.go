@@ -149,6 +149,7 @@ func NewService(
 		},
 		getOutdatedFlag,
 		getCustomOutdatedArgs,
+		getBackendMsg,
 	)
 
 	// Create actions service

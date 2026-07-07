@@ -623,6 +623,9 @@
       "startingUntap": "❌ שגיאה בהתחלת הסרת מאגר: {{error}}",
       "startingTrust": "❌ שגיאה בהפעלת מתן האמון: {{error}}",
       "startingHomebrewUpdate": "❌ שגיאה בהתחלת עדכון Homebrew: {{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "ייתכן שהאפליקציה הזו עם עדכון אוטומטי כבר מעודכנת. גרסת ההתקנה ש-Homebrew מתעד עלולה להישאר מאחורי גרסת האפליקציה בפועל."
     }
   },
   "view": {

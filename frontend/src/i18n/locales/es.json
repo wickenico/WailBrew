@@ -623,6 +623,9 @@
       "startingUntap": "❌ Error iniciando desregistro: {{error}}",
       "startingTrust": "❌ Error al iniciar la confianza: {{error}}",
       "startingHomebrewUpdate": "❌ Error iniciando actualización de Homebrew: {{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "Es posible que esta aplicación con actualización automática ya esté actualizada. La versión de instalación registrada por Homebrew puede quedar detrás de la versión real de la aplicación."
     }
   },
   "view": {

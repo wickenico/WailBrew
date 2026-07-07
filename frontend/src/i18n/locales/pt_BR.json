@@ -623,6 +623,9 @@
       "startingUntap": "❌ Erro ao iniciar a remoção: {{error}}",
       "startingTrust": "❌ Erro ao iniciar a confiança: {{error}}",
       "startingHomebrewUpdate": "❌ Erro ao iniciar atualização do Homebrew: {{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "Este aplicativo com atualização automática pode já estar atualizado. A versão de instalação registrada pelo Homebrew pode ficar atrás da versão real do aplicativo."
     }
   },
   "view": {

@@ -623,6 +623,9 @@
       "startingUntap": "❌ Untap başlatılırken hata: {{error}}",
       "startingTrust": "❌ Güvenme başlatılırken hata: {{error}}",
       "startingHomebrewUpdate": "❌ Homebrew güncelleme başlatılırken hata: {{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "Bu otomatik güncellenen uygulama zaten güncel olabilir. Homebrew'un kayıtlı kurulum sürümü gerçek uygulama sürümünün gerisinde kalabilir."
     }
   },
   "view": {

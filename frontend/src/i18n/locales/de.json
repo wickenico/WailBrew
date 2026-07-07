@@ -623,6 +623,9 @@
       "startingUntap": "❌ Fehler beim Starten des Untaps: {{error}}",
       "startingTrust": "❌ Fehler beim Starten des Vertrauens: {{error}}",
       "startingHomebrewUpdate": "❌ Fehler beim Starten der Homebrew-Aktualisierung: {{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "Diese App aktualisiert sich selbst und ist möglicherweise bereits aktuell. Die von Homebrew gespeicherte Installationsversion kann hinter der tatsächlichen App-Version zurückbleiben."
     }
   },
   "view": {

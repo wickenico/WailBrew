@@ -533,12 +533,9 @@ const WailBrewApp = () => {
 
             const currentCount = updatable.length;
             const previousCount = lastKnownOutdatedCount.current;
+            const countChanged = currentCount !== previousCount;
 
-            // If there are new outdated packages (increase in count)
-            if (currentCount > previousCount) {
-                const newPackagesCount = currentCount - previousCount;
-
-                // Update the state
+            if (countChanged) {
                 const formatted = updatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                     name,
                     installedVersion,
@@ -550,6 +547,11 @@ const WailBrewApp = () => {
                 }));
                 setUpdatablePackages(formatted);
                 setUpdatableError("");
+            }
+
+            // Show toast only when new outdated packages are discovered
+            if (currentCount > previousCount) {
+                const newPackagesCount = currentCount - previousCount;
 
                 // Show toast notification
                 toast(
@@ -1327,9 +1329,12 @@ const WailBrewApp = () => {
         });
 
         const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
-            // Clear cache and update the package list after successful update
+            // Clear cache and update the package lists after successful update
             await ClearBrewCache();
-            const updated = await GetBrewUpdatablePackages();
+            const [updated, installedCasks] = await Promise.all([
+                GetBrewUpdatablePackages(),
+                GetBrewCasks(),
+            ]);
             const formatted = updated.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                 name,
                 installedVersion,
@@ -1340,6 +1345,16 @@ const WailBrewApp = () => {
                 isCask: type === "cask",
             }));
             setUpdatablePackages(formatted);
+
+            if (!(installedCasks.length === 1 && installedCasks[0][0] === "Error")) {
+                setCasks(installedCasks.map(([name, installedVersion, size]) => ({
+                    name,
+                    installedVersion,
+                    size,
+                    isInstalled: true,
+                })));
+            }
+
             setIsUpdateRunning(false);
 
             // Clean up event listeners

@@ -76,6 +76,7 @@ func (m *Manager) GetBackendMessage(key string, params map[string]string) string
 		"homebrewUpdateOutput":        "backend.homebrewUpdate.output",
 		"homebrewUpdateWarning":       "backend.homebrewUpdate.warning",
 		"errorStartingHomebrewUpdate": "backend.errors.startingHomebrewUpdate",
+		"autoUpdateCaskWarning":       "backend.outdated.autoUpdateCask",
 	}
 
 	// Convert old key to new key format

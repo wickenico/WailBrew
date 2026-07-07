@@ -623,6 +623,9 @@
       "startingUntap": "❌ 啟動 untap 時發生錯誤：{{error}}",
       "startingTrust": "❌ 啟動信任時發生錯誤：{{error}}",
       "startingHomebrewUpdate": "❌ 啟動 Homebrew 更新時發生錯誤：{{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "此自動更新應用程式可能已是最新版本。Homebrew 記錄的安裝版本可能落後於應用程式的實際版本。"
     }
   },
   "view": {

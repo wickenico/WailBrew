@@ -184,6 +184,78 @@ func (s *ListService) GetBrewPackages() [][]string {
 	return packages
 }
 
+// extractCaskInstalledVersion reads the installed version from brew info JSON.
+// The field may be a version string, an array of strings, or null.
+func extractCaskInstalledVersion(installed json.RawMessage) string {
+	if len(installed) == 0 || string(installed) == "null" {
+		return ""
+	}
+
+	var version string
+	if err := json.Unmarshal(installed, &version); err == nil && version != "" {
+		return version
+	}
+
+	var versions []string
+	if err := json.Unmarshal(installed, &versions); err == nil && len(versions) > 0 {
+		return versions[0]
+	}
+
+	return ""
+}
+
+func (s *ListService) fillCaskInstalledVersions(caskNames []string, versionMap map[string]string) {
+	args := []string{"info", "--cask", "--json=v2"}
+	args = append(args, caskNames...)
+
+	infoOutput, err := s.executor.Run(args...)
+	if err != nil {
+		for _, caskName := range caskNames {
+			s.fillSingleCaskInstalledVersion(caskName, versionMap)
+		}
+		return
+	}
+
+	var caskInfo struct {
+		Casks []struct {
+			Token     string          `json:"token"`
+			Installed json.RawMessage `json:"installed"`
+		} `json:"casks"`
+	}
+
+	if err := json.Unmarshal(infoOutput, &caskInfo); err != nil {
+		for _, caskName := range caskNames {
+			s.fillSingleCaskInstalledVersion(caskName, versionMap)
+		}
+		return
+	}
+
+	for _, cask := range caskInfo.Casks {
+		if version := extractCaskInstalledVersion(cask.Installed); version != "" {
+			versionMap[cask.Token] = version
+		}
+	}
+}
+
+func (s *ListService) fillSingleCaskInstalledVersion(caskName string, versionMap map[string]string) {
+	infoOutput, err := s.executor.Run("info", "--cask", "--json=v2", caskName)
+	if err != nil {
+		return
+	}
+
+	var caskInfo struct {
+		Casks []struct {
+			Installed json.RawMessage `json:"installed"`
+		} `json:"casks"`
+	}
+
+	if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
+		if version := extractCaskInstalledVersion(caskInfo.Casks[0].Installed); version != "" {
+			versionMap[caskName] = version
+		}
+	}
+}
+
 // GetBrewCasks retrieves the list of installed Homebrew casks
 func (s *ListService) GetBrewCasks() [][]string {
 	// Validate brew installation first
@@ -191,8 +263,7 @@ func (s *ListService) GetBrewCasks() [][]string {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
-	// Get list of cask names only (more reliable than --versions)
-	output, err := s.executor.Run("list", "--cask")
+	output, err := s.executor.Run("list", "--cask", "--versions")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
 	}
@@ -204,10 +275,21 @@ func (s *ListService) GetBrewCasks() [][]string {
 
 	lines := strings.Split(outputStr, "\n")
 	var caskNames []string
+	versionMap := make(map[string]string)
+
 	for _, line := range lines {
-		caskName := strings.TrimSpace(line)
-		if isPackageNameLine(caskName) {
-			caskNames = append(caskNames, caskName)
+		line = strings.TrimSpace(line)
+		if line == "" || isBrewDiagnosticLine(line) {
+			continue
+		}
+
+		parts := strings.Fields(line)
+		if len(parts) >= 2 {
+			caskNames = append(caskNames, parts[0])
+			versionMap[parts[0]] = parts[1]
+		} else if len(parts) == 1 && isPackageNameLine(parts[0]) {
+			caskNames = append(caskNames, parts[0])
+			versionMap[parts[0]] = ""
 		}
 	}
 
@@ -215,63 +297,17 @@ func (s *ListService) GetBrewCasks() [][]string {
 		return [][]string{}
 	}
 
+	var missingVersion []string
+	for _, name := range caskNames {
+		if versionMap[name] == "" {
+			missingVersion = append(missingVersion, name)
+		}
+	}
+	if len(missingVersion) > 0 {
+		s.fillCaskInstalledVersions(missingVersion, versionMap)
+	}
+
 	var casks [][]string
-	versionMap := make(map[string]string)
-
-	// Try to get all cask info at once first
-	args := []string{"info", "--cask", "--json=v2"}
-	args = append(args, caskNames...)
-
-	infoOutput, err := s.executor.Run(args...)
-	if err == nil {
-		// Parse JSON to get versions
-		var caskInfo struct {
-			Casks []struct {
-				Token   string `json:"token"`
-				Version string `json:"version"`
-			} `json:"casks"`
-		}
-
-		if err := json.Unmarshal(infoOutput, &caskInfo); err == nil {
-			// Create a map for easy lookup
-			for _, cask := range caskInfo.Casks {
-				version := cask.Version
-				if version == "" {
-					version = "Unknown"
-				}
-				versionMap[cask.Token] = version
-			}
-		}
-	}
-
-	// If batch fetch fails, try individually
-	if len(versionMap) == 0 {
-		for _, caskName := range caskNames {
-			infoOutput, err := s.executor.Run("info", "--cask", "--json=v2", caskName)
-			if err != nil {
-				versionMap[caskName] = "Unknown"
-				continue
-			}
-
-			var caskInfo struct {
-				Casks []struct {
-					Version string `json:"version"`
-				} `json:"casks"`
-			}
-
-			if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
-				version := caskInfo.Casks[0].Version
-				if version == "" {
-					version = "Unknown"
-				}
-				versionMap[caskName] = version
-			} else {
-				versionMap[caskName] = "Unknown"
-			}
-		}
-	}
-
-	// Build result array with name, version, and empty size (lazy loaded)
 	for _, name := range caskNames {
 		version := versionMap[name]
 		if version == "" {
