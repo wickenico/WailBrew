@@ -1990,6 +1990,10 @@ const WailBrewApp = () => {
                 setError(`${t('errors.failedAllPackages')}: ${safeAll[0][1]}`);
                 setAllPackages([]);
                 setAllPackagesLoaded(false);
+            } else if (safeAll.length === 0) {
+                setError(t('errors.failedAllPackages'));
+                setAllPackages([]);
+                setAllPackagesLoaded(false);
             } else {
                 const installedNames = new Set(
                     (installed || [])
@@ -2030,6 +2034,10 @@ const WailBrewApp = () => {
 
             if (safeAll.length === 1 && safeAll[0][0] === "Error") {
                 setError(`${t('errors.failedAllCasks')}: ${safeAll[0][1]}`);
+                setAllCasksAll([]);
+                setAllCasksLoaded(false);
+            } else if (safeAll.length === 0) {
+                setError(t('errors.failedAllCasks'));
                 setAllCasksAll([]);
                 setAllCasksLoaded(false);
             } else {

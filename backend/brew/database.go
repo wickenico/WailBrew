@@ -138,12 +138,12 @@ func (s *DatabaseService) ParseNewPackagesFromUpdateOutput(output string) *NewPa
 // CheckForNewPackages checks for new packages and returns information about newly discovered ones
 func (s *DatabaseService) CheckForNewPackages() (*NewPackagesInfo, error) {
 	// Get current list of all packages
-	allFormulae, err := s.executor.Run("formulae")
+	allFormulae, err := s.executor.RunStdoutOnly("formulae")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get formulae list: %w", err)
 	}
 
-	allCasks, err := s.executor.Run("casks")
+	allCasks, err := s.executor.RunStdoutOnly("casks")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get casks list: %w", err)
 	}

@@ -9,9 +9,8 @@ import (
 
 // isBrewDiagnosticLine reports whether a line is Homebrew diagnostic output
 // (e.g. "Warning: Skipping <tap> ... because it is not trusted", "Error: ...",
-// "==> ...") that gets merged into command output via combined stdout/stderr.
-// Homebrew 6 prints such warnings for untrusted taps and they must not be
-// treated as package, cask or tap names.
+// "==> ..."). Name-list commands use stdout-only capture, but some diagnostics
+// can still appear on stdout and must not be treated as package/cask/tap names.
 func isBrewDiagnosticLine(line string) bool {
 	lower := strings.ToLower(strings.TrimSpace(line))
 	return strings.HasPrefix(lower, "warning:") ||
@@ -30,6 +29,57 @@ func isPackageNameLine(line string) bool {
 		return false
 	}
 	return !isBrewDiagnosticLine(line)
+}
+
+func parseNameListOutput(output []byte) [][]string {
+	outputStr := strings.TrimSpace(string(output))
+	if outputStr == "" {
+		return nil
+	}
+
+	lines := strings.Split(outputStr, "\n")
+	var results [][]string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if isPackageNameLine(line) {
+			results = append(results, []string{line, "", ""})
+		}
+	}
+	return results
+}
+
+func emptyCatalogError(kind string) [][]string {
+	return [][]string{{"Error", fmt.Sprintf(
+		"brew %s returned no entries. Homebrew may still be updating — try refreshing in a minute, or check Session Logs for warnings.",
+		kind,
+	)}}
+}
+
+func (s *ListService) fetchCatalogNames(kind string, args ...string) [][]string {
+	output, err := s.executor.RunStdoutOnly(args...)
+	if err != nil {
+		return [][]string{{"Error", fmt.Sprintf(
+			"Failed to fetch all %s: %v. This often happens on fresh Homebrew installations. Try refreshing after a few minutes.",
+			kind, err,
+		)}}
+	}
+
+	results := parseNameListOutput(output)
+	if len(results) > 0 {
+		return results
+	}
+
+	// Retry once without cache in case a transient empty response was cached.
+	output, err = s.executor.RunNoCacheStdoutOnly(args...)
+	if err != nil {
+		return emptyCatalogError(kind)
+	}
+
+	results = parseNameListOutput(output)
+	if len(results) == 0 {
+		return emptyCatalogError(kind)
+	}
+	return results
 }
 
 // ListService provides package listing functionality
@@ -54,51 +104,27 @@ func NewListService(executor *Executor, validateFunc func() error, knownPackages
 
 // GetAllBrewPackages retrieves all available brew packages
 func (s *ListService) GetAllBrewPackages() [][]string {
-	output, err := s.executor.Run("formulae")
-	if err != nil {
-		return [][]string{{"Error", fmt.Sprintf("Failed to fetch all packages: %v. This often happens on fresh Homebrew installations. Try refreshing after a few minutes.", err)}}
+	results := s.fetchCatalogNames("formulae", "formulae")
+	if len(results) == 1 && results[0][0] == "Error" {
+		return results
 	}
-
-	outputStr := strings.TrimSpace(string(output))
-	if outputStr == "" {
-		return [][]string{}
-	}
-
-	lines := strings.Split(outputStr, "\n")
-	var results [][]string
 
 	// Initialize known packages on first call
 	s.lockKnown()
 	knownPkgs := s.knownPackages()
 	if len(knownPkgs) == 0 {
-		// First time - initialize with current packages
-		for _, line := range lines {
-			line = strings.TrimSpace(line)
-			if isPackageNameLine(line) {
-				knownPkgs["formula:"+line] = true
-			}
+		for _, entry := range results {
+			knownPkgs["formula:"+entry[0]] = true
 		}
 		// Also add casks
-		caskOutput, err := s.executor.Run("casks")
+		caskOutput, err := s.executor.RunStdoutOnly("casks")
 		if err == nil {
-			caskLines := strings.Split(strings.TrimSpace(string(caskOutput)), "\n")
-			for _, line := range caskLines {
-				line = strings.TrimSpace(line)
-				if isPackageNameLine(line) {
-					knownPkgs["cask:"+line] = true
-				}
+			for _, entry := range parseNameListOutput(caskOutput) {
+				knownPkgs["cask:"+entry[0]] = true
 			}
 		}
 	}
 	s.unlockKnown()
-
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if isPackageNameLine(line) {
-			// For all packages (not installed), we don't have version or size yet
-			results = append(results, []string{line, "", ""})
-		}
-	}
 
 	return results
 }
@@ -110,7 +136,7 @@ func (s *ListService) GetBrewPackages() [][]string {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
-	output, err := s.executor.Run("list", "--formula", "--versions")
+	output, err := s.executor.RunStdoutOnly("list", "--formula", "--versions")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed packages: %v", err)}}
 	}
@@ -263,7 +289,7 @@ func (s *ListService) GetBrewCasks() [][]string {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
 
-	output, err := s.executor.Run("list", "--cask", "--versions")
+	output, err := s.executor.RunStdoutOnly("list", "--cask", "--versions")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
 	}
@@ -321,31 +347,12 @@ func (s *ListService) GetBrewCasks() [][]string {
 
 // GetAllBrewCasks retrieves all available brew casks
 func (s *ListService) GetAllBrewCasks() [][]string {
-	output, err := s.executor.Run("casks")
-	if err != nil {
-		return [][]string{{"Error", fmt.Sprintf("Failed to fetch all casks: %v. This often happens on fresh Homebrew installations. Try refreshing after a few minutes.", err)}}
-	}
-
-	outputStr := strings.TrimSpace(string(output))
-	if outputStr == "" {
-		return [][]string{}
-	}
-
-	lines := strings.Split(outputStr, "\n")
-	var results [][]string
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if isPackageNameLine(line) {
-			results = append(results, []string{line, "", ""})
-		}
-	}
-
-	return results
+	return s.fetchCatalogNames("casks", "casks")
 }
 
 // GetBrewLeaves retrieves the list of leaf packages
 func (s *ListService) GetBrewLeaves() []string {
-	output, err := s.executor.RunWithTimeout(90*time.Second, "leaves")
+	output, err := s.executor.RunWithTimeoutStdoutOnly(90*time.Second, "leaves")
 	if err != nil {
 		return []string{fmt.Sprintf("Error: %v", err)}
 	}
@@ -369,7 +376,7 @@ func (s *ListService) GetBrewLeaves() []string {
 
 // GetBrewTaps retrieves the list of tapped repositories
 func (s *ListService) GetBrewTaps() [][]string {
-	output, err := s.executor.Run("tap")
+	output, err := s.executor.RunStdoutOnly("tap")
 	if err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch repositories: %v", err)}}
 	}

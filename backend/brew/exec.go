@@ -53,12 +53,42 @@ func (e *Executor) ClearCache() {
 
 // Run executes a brew command and returns output and error (with caching)
 func (e *Executor) Run(args ...string) ([]byte, error) {
-	return e.RunWithTimeout(30*time.Second, args...)
+	return e.runWithTimeout(30*time.Second, false, args...)
 }
 
 // RunWithTimeout executes a brew command with a timeout (with caching)
 func (e *Executor) RunWithTimeout(timeout time.Duration, args ...string) ([]byte, error) {
+	return e.runWithTimeout(timeout, false, args...)
+}
+
+// RunStdoutOnly executes a brew command and returns stdout only (with caching).
+// Use this for name-list commands (formulae, casks, tap, leaves) so Homebrew 6
+// diagnostic output on stderr is not merged into the parsed result.
+func (e *Executor) RunStdoutOnly(args ...string) ([]byte, error) {
+	return e.runWithTimeout(30*time.Second, true, args...)
+}
+
+// RunWithTimeoutStdoutOnly executes a brew command with stdout-only capture.
+func (e *Executor) RunWithTimeoutStdoutOnly(timeout time.Duration, args ...string) ([]byte, error) {
+	return e.runWithTimeout(timeout, true, args...)
+}
+
+// RunNoCache executes a brew command without using the cache
+// Use this for commands that modify state (install, remove, update, etc.)
+func (e *Executor) RunNoCache(args ...string) ([]byte, error) {
+	return e.runActual(30*time.Second, false, args...)
+}
+
+// RunNoCacheStdoutOnly executes a brew command without cache, stdout only.
+func (e *Executor) RunNoCacheStdoutOnly(args ...string) ([]byte, error) {
+	return e.runActual(30*time.Second, true, args...)
+}
+
+func (e *Executor) runWithTimeout(timeout time.Duration, stdoutOnly bool, args ...string) ([]byte, error) {
 	cacheKey := strings.Join(args, "\x00") // Use null byte separator for unique key
+	if stdoutOnly {
+		cacheKey = "stdout\x00" + cacheKey
+	}
 
 	// Check cache first (read lock)
 	e.cacheMux.RLock()
@@ -74,7 +104,7 @@ func (e *Executor) RunWithTimeout(timeout time.Duration, args ...string) ([]byte
 	e.cacheMux.RUnlock()
 
 	// Execute the command
-	output, err := e.runActual(timeout, args...)
+	output, err := e.runActual(timeout, stdoutOnly, args...)
 
 	// Cache successful results only so transient failures (e.g. timeouts) can be retried
 	if err == nil {
@@ -90,14 +120,8 @@ func (e *Executor) RunWithTimeout(timeout time.Duration, args ...string) ([]byte
 	return output, err
 }
 
-// RunNoCache executes a brew command without using the cache
-// Use this for commands that modify state (install, remove, update, etc.)
-func (e *Executor) RunNoCache(args ...string) ([]byte, error) {
-	return e.runActual(30*time.Second, args...)
-}
-
 // runActual performs the actual command execution
-func (e *Executor) runActual(timeout time.Duration, args ...string) ([]byte, error) {
+func (e *Executor) runActual(timeout time.Duration, stdoutOnly bool, args ...string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -110,7 +134,13 @@ func (e *Executor) runActual(timeout time.Duration, args ...string) ([]byte, err
 	cmd := exec.CommandContext(ctx, e.brewPath, args...)
 	cmd.Env = append(os.Environ(), e.brewEnv...)
 
-	output, err := cmd.CombinedOutput()
+	var output []byte
+	var err error
+	if stdoutOnly {
+		output, err = cmd.Output()
+	} else {
+		output, err = cmd.CombinedOutput()
+	}
 
 	// Check if the error was due to timeout
 	if ctx.Err() == context.DeadlineExceeded {
@@ -124,7 +154,7 @@ func (e *Executor) runActual(timeout time.Duration, args ...string) ([]byte, err
 	// Log result asynchronously (non-blocking, won't affect command execution)
 	if e.logCallback != nil {
 		if err != nil {
-			outputStr := string(output)
+			outputStr := brewCommandErrorOutput(output, err)
 			if len(outputStr) > 500 {
 				outputStr = outputStr[:500] + "... (truncated)"
 			}
@@ -135,6 +165,13 @@ func (e *Executor) runActual(timeout time.Duration, args ...string) ([]byte, err
 	}
 
 	return output, err
+}
+
+func brewCommandErrorOutput(stdout []byte, err error) string {
+	if exitErr, ok := err.(*exec.ExitError); ok && len(exitErr.Stderr) > 0 {
+		return string(exitErr.Stderr)
+	}
+	return string(stdout)
 }
 
 // ValidateInstallation checks if brew is working properly (cached after first success)
