@@ -13,7 +13,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         
       - name: Install Flatpak Dependencies
         run: |
@@ -21,7 +21,11 @@ jobs:
           sudo apt-get install -y flatpak flatpak-builder
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install -y flathub org.gnome.Sdk//49 org.gnome.Platform//49 org.freedesktop.Sdk.Extension.golang org.freedesktop.Sdk.Extension.node22
+          sudo flatpak install -y flathub \
+            org.gnome.Sdk//49 \
+            org.gnome.Platform//49 \
+            org.freedesktop.Sdk.Extension.golang//25.08 \
+            org.freedesktop.Sdk.Extension.node22//25.08
         
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
