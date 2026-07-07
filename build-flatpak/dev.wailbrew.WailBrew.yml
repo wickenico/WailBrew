@@ -3,8 +3,8 @@ runtime: org.gnome.Platform
 runtime-version: '49'
 sdk: org.gnome.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.golang
-  - org.freedesktop.Sdk.Extension.node22
+  - org.freedesktop.Sdk.Extension.golang//25.08
+  - org.freedesktop.Sdk.Extension.node22//25.08
 
 command: WailBrew
 
@@ -24,12 +24,13 @@ build-options:
   env:
     GOPATH: /app/go
     NPM_CONFIG_PREFIX: /app
+    GOWORK: off
 
 modules:
   - name: wails
     buildsystem: simple
     build-commands:
-      - cd v2/cmd/wails && go build -o /app/bin/wails
+      - cd v2/cmd/wails && GOWORK=off go build -o /app/bin/wails
       - chmod -R u+w /app/go || true
     sources:
       - type: archive
