@@ -3,8 +3,8 @@ runtime: org.gnome.Platform
 runtime-version: '49'
 sdk: org.gnome.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.golang//25.08
-  - org.freedesktop.Sdk.Extension.node22//25.08
+  - org.freedesktop.Sdk.Extension.golang
+  - org.freedesktop.Sdk.Extension.node22
 
 command: WailBrew
 
