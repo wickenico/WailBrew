@@ -1,0 +1,5 @@
+packages:
+  - '.'
+
+overrides:
+  std-env: 4.1.0
