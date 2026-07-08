@@ -35,7 +35,7 @@ jobs:
           cache-key: flatpak-builder-${{ github.sha }}
 
       - name: Store Flatpak Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wailbrew-flatpak
           path: dev.wailbrew.WailBrew.flatpak
