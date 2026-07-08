@@ -42,7 +42,7 @@ jobs:
           retention-days: 7
 
       - name: Comment PR with install instructions
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         if: github.event_name == 'pull_request'
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
