@@ -11,7 +11,7 @@ else
 	SED_I := sed -i
 endif
 
-.PHONY: build dev clean bump update-deps build-flatpak
+.PHONY: build dev clean bump update-deps
 
 i:
 	cd frontend && pnpm install
@@ -51,10 +51,6 @@ clean:
 install: build
 	@echo "Installing WailBrew to /Applications"
 	cp -r build/bin/WailBrew.app /Applications/
-
-build-flatpak:
-	@echo "Building WailBrew Flatpak version: $(VERSION)"
-	flatpak run org.flatpak.Builder --repo=repo --force-clean build-dir build-flatpak/dev.wailbrew.WailBrew.yml
 
 release: build
 	@echo "==> Releasing WailBrew version: $(VERSION)"

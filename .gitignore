@@ -27,8 +27,3 @@ Thumbs.db
 
 # Project analysis
 TODO.md
-
-# Linux/Flatpak related files
-repo/
-.flatpak-builder/
-.flatpak-builder-tools/
