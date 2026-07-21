@@ -18,7 +18,7 @@ import {
     Network,
     Home
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -74,6 +74,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [isLandingTabExpanded, setIsLandingTabExpanded] = useState<boolean>(false);
 
     const [noQuarantine, setNoQuarantine] = useState<boolean>(false);
+    const [autoRelaunch, setAutoRelaunch] = useState<boolean>(true);
 
     useEffect(() => {
         loadCurrentBrewPath();
@@ -87,6 +88,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadCurrentProxy();
         loadLandingTab();
         loadNoQuarantine();
+        loadAutoRelaunch();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -630,6 +632,26 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const loadAutoRelaunch = async () => {
+        try {
+            const val = await GetAutoRelaunch();
+            setAutoRelaunch(val);
+        } catch (error) {
+            console.error("Failed to get auto-relaunch setting:", error);
+        }
+    };
+
+    const handleToggleAutoRelaunch = async () => {
+        const newVal = !autoRelaunch;
+        try {
+            await SetAutoRelaunch(newVal);
+            setAutoRelaunch(newVal);
+        } catch (error) {
+            console.error("Failed to set auto-relaunch:", error);
+            toast.error(String(error));
+        }
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t('settings.mirrorSource.mirrors.official');
@@ -777,6 +799,28 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             onClick={handleToggleNoQuarantine}
                             aria-checked={noQuarantine}
                             role="switch"
+                        />
+                    </div>
+                </div>
+
+                {/* Auto-Relaunch Toggle Card */}
+                <div className={`settings-card ${autoRelaunch ? 'expanded' : ''}`}>
+                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                        <div className="settings-card-icon">
+                            <RefreshCw size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.autoRelaunch.title')}</h3>
+                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
+                                {t('settings.autoRelaunch.description')}
+                            </span>
+                        </div>
+                        <button
+                            className={`settings-toggle ${autoRelaunch ? 'active' : ''}`}
+                            onClick={handleToggleAutoRelaunch}
+                            aria-checked={autoRelaunch}
+                            role="switch"
+                            id="settings-auto-relaunch-toggle"
                         />
                     </div>
                 </div>

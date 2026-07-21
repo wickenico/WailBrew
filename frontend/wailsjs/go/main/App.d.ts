@@ -78,6 +78,8 @@ export function GetMacOSVersion():Promise<string>;
 
 export function GetMirrorSource():Promise<Record<string, string>>;
 
+export function GetAutoRelaunch():Promise<boolean>;
+
 export function GetNoQuarantine():Promise<boolean>;
 
 export function GetOutdatedFlag():Promise<string>;
@@ -139,6 +141,8 @@ export function SetLandingTab(arg1:string):Promise<void>;
 export function SetLanguage(arg1:string):Promise<void>;
 
 export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
+
+export function SetAutoRelaunch(arg1:boolean):Promise<void>;
 
 export function SetNoQuarantine(arg1:boolean):Promise<void>;
 

@@ -18,7 +18,10 @@ type Config struct {
 	AdminUsername      string `json:"adminUsername"`      // Admin username for sudo operations (defaults to current user)
 	Proxy              string `json:"proxy"`              // Global proxy setting (e.g., "http://127.0.0.1:7890" or "http://user:pass@127.0.0.1:7890")
 	LandingTab         string `json:"landingTab"`         // Tab to focus on startup (default: "installed")
-	NoQuarantine       bool   `json:"noQuarantine"`       // Skip quarantine attribute on cask installs (--no-quarantine)
+	NoQuarantine       bool   `json:"noQuarantine"`       // Remove com.apple.quarantine xattr after cask install/upgrade via xattr(1).
+	// Note: does NOT use the deprecated --no-quarantine Homebrew flag (deprecated Sep 2025,
+	// see https://github.com/orgs/Homebrew/discussions/6537).
+	AutoRelaunch bool `json:"autoRelaunch"` // Quit the running app before upgrade and relaunch after quarantine removal
 
 	// Window geometry — persisted across launches so the window opens where it
 	// was last left. Zero values mean "not yet captured" and the app falls back
@@ -82,6 +85,12 @@ func (c *Config) ResolvedPath() (string, error) {
 
 // Load reads the configuration from the resolved config path.
 func (c *Config) Load() error {
+	// Seed defaults before reading. json.Unmarshal only overwrites keys that are
+	// actually present in the file, so a config that predates these fields (or no
+	// config file at all) keeps the intended default, while an explicit value in
+	// the file still wins.
+	c.AutoRelaunch = true // relaunch a running app after an upgrade by default
+
 	configPath, err := GetConfigPath()
 	if err != nil {
 		return err

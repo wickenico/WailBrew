@@ -429,8 +429,8 @@
       "label": "啟動時顯示"
     },
     "noQuarantine": {
-      "title": "跳過 Cask 隔離檢疫",
-      "description": "安裝或升級 Cask 時自動移除 macOS 隔離檢疫屬性。防止首次啟動時出現「應用程式已損壞」或 Gatekeeper 警告。"
+      "title": "Remove Quarantine Attribute for Casks",
+      "description": "After installing or upgrading a cask, automatically remove the macOS quarantine attribute via xattr. This prevents the \"app is damaged\" or Gatekeeper warning on first launch. Does not use the deprecated --no-quarantine Homebrew flag."
     },
     "brewPath": {
       "title": "Homebrew 路徑設定",
@@ -565,6 +565,10 @@
         "hint": "'brew outdated' 指令的額外參數。例如：--verbose、--formula、--cask。這些將附加到上面界面設定的 outdated 旗標。",
         "preview": "新參數"
       }
+    },
+    "autoRelaunch": {
+      "title": "Auto-Relaunch After Upgrade",
+      "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
     }
   },
   "backend": {
@@ -626,6 +630,17 @@
     },
     "outdated": {
       "autoUpdateCask": "此自動更新應用程式可能已是最新版本。Homebrew 記錄的安裝版本可能落後於應用程式的實際版本。"
+    },
+    "quarantine": {
+      "removing": "🔒 Removing quarantine attribute from {{path}}…",
+      "removed": "🔒 Quarantine attribute removed from {{path}}",
+      "removeFailed": "⚠️ Failed to remove quarantine from {{path}}: {{error}}",
+      "skippedPkg": "ℹ️ Quarantine removal skipped: {{name}} installs via .pkg (not a plain .app bundle)",
+      "resolveFailed": "⚠️ Could not resolve installed app path for {{name}}: {{error}}",
+      "quitting": "⏹ Quitting {{name}} before upgrade…",
+      "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
+      "relaunching": "🚀 Relaunching {{name}}…",
+      "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
     }
   },
   "view": {

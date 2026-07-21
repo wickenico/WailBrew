@@ -429,8 +429,12 @@
       "label": "Start on"
     },
     "noQuarantine": {
-      "title": "Skip Quarantine for Casks",
-      "description": "Automatically remove the macOS quarantine attribute when installing or upgrading casks. This prevents the \"app is damaged\" or Gatekeeper warning on first launch."
+      "title": "Remove Quarantine Attribute for Casks",
+      "description": "After installing or upgrading a cask, automatically remove the macOS quarantine attribute via xattr. This prevents the \"app is damaged\" or Gatekeeper warning on first launch. Does not use the deprecated --no-quarantine Homebrew flag."
+    },
+    "autoRelaunch": {
+      "title": "Auto-Relaunch After Upgrade",
+      "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
     },
     "brewPath": {
       "title": "Homebrew Path Configuration",
@@ -626,6 +630,17 @@
     },
     "outdated": {
       "autoUpdateCask": "This auto-updating app may already be up to date. Homebrew's recorded install version can lag behind the actual app version."
+    },
+    "quarantine": {
+      "removing": "🔒 Removing quarantine attribute from {{path}}…",
+      "removed": "🔒 Quarantine attribute removed from {{path}}",
+      "removeFailed": "⚠️ Failed to remove quarantine from {{path}}: {{error}}",
+      "skippedPkg": "ℹ️ Quarantine removal skipped: {{name}} installs via .pkg (not a plain .app bundle)",
+      "resolveFailed": "⚠️ Could not resolve installed app path for {{name}}: {{error}}",
+      "quitting": "⏹ Quitting {{name}} before upgrade…",
+      "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
+      "relaunching": "🚀 Relaunching {{name}}…",
+      "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
     }
   },
   "view": {

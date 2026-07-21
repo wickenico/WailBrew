@@ -123,6 +123,8 @@ func NewService(
 	getCustomOutdatedArgs func() string,
 	extractJSON func(string) (string, string, error),
 	parseWarnings func(string) map[string]string,
+	getNoQuarantine func() bool,
+	getAutoRelaunch func() bool,
 ) Service {
 	// Create database service first (needs executor)
 	databaseService := NewDatabaseService(executor)
@@ -165,6 +167,8 @@ func NewService(
 		outdatedService.ExtractFailedPackagesFromError,
 		validateFunc,
 		getOutdatedFlag,
+		getNoQuarantine,
+		getAutoRelaunch,
 	)
 
 	// Create tap service

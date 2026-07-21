@@ -429,8 +429,8 @@
       "label": "시작 탭"
     },
     "noQuarantine": {
-      "title": "Cask 격리 건너뛰기",
-      "description": "Cask 설치 또는 업그레이드 시 macOS 격리 속성을 자동으로 제거합니다. 첫 실행 시 '앱이 손상되었습니다' 또는 Gatekeeper 경고를 방지합니다."
+      "title": "Remove Quarantine Attribute for Casks",
+      "description": "After installing or upgrading a cask, automatically remove the macOS quarantine attribute via xattr. This prevents the \"app is damaged\" or Gatekeeper warning on first launch. Does not use the deprecated --no-quarantine Homebrew flag."
     },
     "brewPath": {
       "title": "Homebrew 경로 설정",
@@ -565,6 +565,10 @@
         "hint": "'brew outdated' 명령에 대한 추가 인수. 예: --verbose, --formula, --cask. 위의 UI에서 구성된 outdated 플래그에 추가됩니다.",
         "preview": "새 인수"
       }
+    },
+    "autoRelaunch": {
+      "title": "Auto-Relaunch After Upgrade",
+      "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
     }
   },
   "backend": {
@@ -626,6 +630,17 @@
     },
     "outdated": {
       "autoUpdateCask": "이 자동 업데이트 앱은 이미 최신 상태일 수 있습니다. Homebrew에 기록된 설치 버전이 실제 앱 버전보다 늦을 수 있습니다."
+    },
+    "quarantine": {
+      "removing": "🔒 Removing quarantine attribute from {{path}}…",
+      "removed": "🔒 Quarantine attribute removed from {{path}}",
+      "removeFailed": "⚠️ Failed to remove quarantine from {{path}}: {{error}}",
+      "skippedPkg": "ℹ️ Quarantine removal skipped: {{name}} installs via .pkg (not a plain .app bundle)",
+      "resolveFailed": "⚠️ Could not resolve installed app path for {{name}}: {{error}}",
+      "quitting": "⏹ Quitting {{name}} before upgrade…",
+      "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
+      "relaunching": "🚀 Relaunching {{name}}…",
+      "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
     }
   },
   "view": {
