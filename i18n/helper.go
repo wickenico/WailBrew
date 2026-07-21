@@ -77,6 +77,15 @@ func (m *Manager) GetBackendMessage(key string, params map[string]string) string
 		"homebrewUpdateWarning":       "backend.homebrewUpdate.warning",
 		"errorStartingHomebrewUpdate": "backend.errors.startingHomebrewUpdate",
 		"autoUpdateCaskWarning":       "backend.outdated.autoUpdateCask",
+		"quarantine.removing":         "backend.quarantine.removing",
+		"quarantine.removed":          "backend.quarantine.removed",
+		"quarantine.removeFailed":     "backend.quarantine.removeFailed",
+		"quarantine.skippedPkg":       "backend.quarantine.skippedPkg",
+		"quarantine.resolveFailed":    "backend.quarantine.resolveFailed",
+		"quarantine.quitting":         "backend.quarantine.quitting",
+		"quarantine.quitFailed":       "backend.quarantine.quitFailed",
+		"quarantine.relaunching":      "backend.quarantine.relaunching",
+		"quarantine.relaunchFailed":   "backend.quarantine.relaunchFailed",
 	}
 
 	// Convert old key to new key format

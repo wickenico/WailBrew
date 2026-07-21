@@ -429,8 +429,8 @@
       "label": "Starten mit"
     },
     "noQuarantine": {
-      "title": "Quarantäne für Casks überspringen",
-      "description": "Entfernt automatisch das macOS-Quarantäne-Attribut beim Installieren oder Aktualisieren von Casks. Verhindert die Warnung 'App ist beschädigt' oder Gatekeeper-Meldung beim ersten Start."
+      "title": "Remove Quarantine Attribute for Casks",
+      "description": "After installing or upgrading a cask, automatically remove the macOS quarantine attribute via xattr. This prevents the \"app is damaged\" or Gatekeeper warning on first launch. Does not use the deprecated --no-quarantine Homebrew flag."
     },
     "brewPath": {
       "title": "Homebrew-Pfad-Konfiguration",
@@ -565,6 +565,10 @@
         "hint": "Zusätzliche Argumente für den 'brew outdated' Befehl. Beispiel: --verbose, --formula, --cask. Diese werden an das oben konfigurierte Outdated-Flag angehängt.",
         "preview": "Neue Argumente"
       }
+    },
+    "autoRelaunch": {
+      "title": "Auto-Relaunch After Upgrade",
+      "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
     }
   },
   "backend": {
@@ -626,6 +630,17 @@
     },
     "outdated": {
       "autoUpdateCask": "Diese App aktualisiert sich selbst und ist möglicherweise bereits aktuell. Die von Homebrew gespeicherte Installationsversion kann hinter der tatsächlichen App-Version zurückbleiben."
+    },
+    "quarantine": {
+      "removing": "🔒 Removing quarantine attribute from {{path}}…",
+      "removed": "🔒 Quarantine attribute removed from {{path}}",
+      "removeFailed": "⚠️ Failed to remove quarantine from {{path}}: {{error}}",
+      "skippedPkg": "ℹ️ Quarantine removal skipped: {{name}} installs via .pkg (not a plain .app bundle)",
+      "resolveFailed": "⚠️ Could not resolve installed app path for {{name}}: {{error}}",
+      "quitting": "⏹ Quitting {{name}} before upgrade…",
+      "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
+      "relaunching": "🚀 Relaunching {{name}}…",
+      "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
     }
   },
   "view": {

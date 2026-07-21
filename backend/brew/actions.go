@@ -28,6 +28,9 @@ type ActionsService struct {
 	extractFailed    func(string) []string
 	validateFunc     func() error
 	getOutdatedFlag  func() string
+	getNoQuarantine  func() bool
+	getAutoRelaunch  func() bool
+	getCaskAppDir    func() string
 }
 
 // NewActionsService creates a new actions service
@@ -41,6 +44,8 @@ func NewActionsService(
 	extractFailed func(string) []string,
 	validateFunc func() error,
 	getOutdatedFlag func() string,
+	getNoQuarantine func() bool,
+	getAutoRelaunch func() bool,
 ) *ActionsService {
 	return &ActionsService{
 		brewPath:         brewPath,
@@ -52,6 +57,97 @@ func NewActionsService(
 		extractFailed:    extractFailed,
 		validateFunc:     validateFunc,
 		getOutdatedFlag:  getOutdatedFlag,
+		getNoQuarantine:  getNoQuarantine,
+		getAutoRelaunch:  getAutoRelaunch,
+		// getCaskAppDir is populated separately — the App-level setting is not
+		// available at construction time in the current wiring, so we use a
+		// safe no-op default that resolves to /Applications.
+		getCaskAppDir: func() string { return "" },
+	}
+}
+
+// postInstallCask runs quarantine removal (and optional quit/relaunch) for a
+// successfully installed or upgraded cask. Errors are emitted as warnings but
+// never fail the overall operation — the cask itself was already installed.
+func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
+	if s.getNoQuarantine == nil || !s.getNoQuarantine() {
+		return
+	}
+
+	appDir := ""
+	if s.getCaskAppDir != nil {
+		appDir = s.getCaskAppDir()
+	}
+
+	// Resolve the installed .app path from brew info
+	appPath, isPkg, err := system.ResolveCaskAppPath(s.brewPath, packageName, appDir)
+	if err != nil {
+		warnMsg := s.getBackendMsg("quarantine.resolveFailed", map[string]string{
+			"name":  packageName,
+			"error": err.Error(),
+		})
+		s.eventEmitter.Emit(progressEvent, warnMsg)
+		return
+	}
+
+	// .pkg-based cask — skip with informational message
+	if isPkg {
+		infoMsg := s.getBackendMsg("quarantine.skippedPkg", map[string]string{
+			"name": packageName,
+		})
+		s.eventEmitter.Emit(progressEvent, infoMsg)
+		return
+	}
+
+	appName := system.AppNameFromPath(appPath)
+	wasRunning := false
+
+	// Quit the app gracefully if it is running and auto-relaunch is enabled
+	if s.getAutoRelaunch != nil && s.getAutoRelaunch() && system.IsAppRunning(appName) {
+		quitMsg := s.getBackendMsg("quarantine.quitting", map[string]string{"name": appName})
+		s.eventEmitter.Emit(progressEvent, quitMsg)
+
+		if err := system.QuitAppGracefully(appName); err != nil {
+			warnMsg := s.getBackendMsg("quarantine.quitFailed", map[string]string{
+				"name":  appName,
+				"error": err.Error(),
+			})
+			s.eventEmitter.Emit(progressEvent, warnMsg)
+			// Proceed with quarantine removal even if quit failed
+		} else {
+			wasRunning = true
+		}
+	}
+
+	// Remove the quarantine attribute
+	removeMsg := s.getBackendMsg("quarantine.removing", map[string]string{"path": appPath})
+	s.eventEmitter.Emit(progressEvent, removeMsg)
+
+	if err := system.RemoveQuarantine(appPath); err != nil {
+		warnMsg := s.getBackendMsg("quarantine.removeFailed", map[string]string{
+			"path":  appPath,
+			"error": err.Error(),
+		})
+		s.eventEmitter.Emit(progressEvent, warnMsg)
+		// Still try to relaunch even if xattr had issues (attribute may not have
+		// been set at all, which xattr treats as a non-fatal error).
+	} else {
+		removedMsg := s.getBackendMsg("quarantine.removed", map[string]string{"path": appPath})
+		s.eventEmitter.Emit(progressEvent, removedMsg)
+	}
+
+	// Relaunch the app if it was running before the upgrade
+	if wasRunning {
+		relaunchMsg := s.getBackendMsg("quarantine.relaunching", map[string]string{"name": appName})
+		s.eventEmitter.Emit(progressEvent, relaunchMsg)
+
+		if err := system.LaunchApp(appPath); err != nil {
+			warnMsg := s.getBackendMsg("quarantine.relaunchFailed", map[string]string{
+				"name":  appName,
+				"error": err.Error(),
+			})
+			s.eventEmitter.Emit(progressEvent, warnMsg)
+		}
 	}
 }
 
@@ -140,6 +236,12 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	// Success
 	successMsg := s.getBackendMsg("installSuccess", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageInstallProgress", successMsg)
+
+	// Post-install: remove quarantine attribute for casks
+	if s.isPackageCask(packageName) {
+		s.postInstallCask(packageName, "packageInstallProgress")
+	}
+
 	s.eventEmitter.Emit("packageInstallComplete", successMsg)
 	return successMsg
 }
@@ -312,6 +414,11 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	finalMessage = s.getBackendMsg("updateSuccess", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 
+	// Post-upgrade: remove quarantine attribute for casks
+	if s.isPackageCask(packageName) {
+		s.postInstallCask(packageName, "packageUpdateProgress")
+	}
+
 	// Check if WailBrew itself was updated
 	if strings.ToLower(packageName) == "wailbrew" {
 		wailbrewUpdated = true
@@ -480,6 +587,16 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	} else {
 		finalMessage = fmt.Sprintf("✅ Successfully updated %d selected package(s)", len(packageNames))
 		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
+
+		// Post-upgrade: run quarantine removal for each upgraded cask.
+		// UpdateSelectedBrewPackages uses a single bulk brew command, so
+		// postInstallCask is NOT triggered transitively via RunUpdateCommand.
+		// We must loop here explicitly.
+		for _, pkg := range packageNames {
+			if s.isPackageCask(pkg) {
+				s.postInstallCask(pkg, "packageUpdateProgress")
+			}
+		}
 	}
 
 	// Signal completion

@@ -166,13 +166,13 @@ func NewApp() *App {
 	brewPath := detectBrewPath()
 	cfg := &config.Config{}
 	cfg.Load() // Load config early to get admin username
-	
+
 	// Get admin username from config, or current user as fallback
 	adminUsername := cfg.AdminUsername
 	if adminUsername == "" {
 		adminUsername = os.Getenv("USER")
 	}
-	
+
 	app := &App{
 		brewPath:          brewPath,
 		currentLanguage:   "en",
@@ -246,13 +246,11 @@ func (a *App) getBrewEnv() []string {
 	return env
 }
 
-// buildCaskOpts builds HOMEBREW_CASK_OPTS by merging UI-configured options with custom options
+// buildCaskOpts builds HOMEBREW_CASK_OPTS by merging UI-configured options with custom options.
+// Note: --no-quarantine is intentionally NOT added here; it is deprecated by Homebrew (Sep 2025).
+// Quarantine removal is handled post-install via xattr(1) when NoQuarantine is enabled.
 func (a *App) buildCaskOpts() string {
 	var opts []string
-
-	if a.config.NoQuarantine {
-		opts = append(opts, "--no-quarantine")
-	}
 
 	// Add UI-configured appdir if set
 	if a.config.CaskAppDir != "" {
@@ -360,6 +358,8 @@ func (a *App) startup(ctx context.Context) {
 		func() string { return a.GetCustomOutdatedArgs() },
 		brew.ExtractJSONFromOutput,
 		brew.ParseWarnings,
+		func() bool { return a.GetNoQuarantine() },
+		func() bool { return a.GetAutoRelaunch() },
 	)
 
 	// Restore last-known window position. Width/Height (and maximized state)
@@ -774,6 +774,18 @@ func (a *App) GetNoQuarantine() bool {
 
 func (a *App) SetNoQuarantine(val bool) error {
 	a.config.NoQuarantine = val
+	return a.config.Save()
+}
+
+// GetAutoRelaunch returns the current auto-relaunch setting.
+// When true (the default), WailBrew will quit a running cask app before upgrading
+// it and relaunch it after quarantine removal completes.
+func (a *App) GetAutoRelaunch() bool {
+	return a.config.AutoRelaunch
+}
+
+func (a *App) SetAutoRelaunch(val bool) error {
+	a.config.AutoRelaunch = val
 	return a.config.Save()
 }
 
