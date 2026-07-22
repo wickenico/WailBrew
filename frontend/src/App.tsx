@@ -15,6 +15,9 @@ import {
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
     GetBrewPackageSizes,
+    GetBrewServices,
+    GetBrewServiceInfo,
+    GetBrewServicePid,
     GetBrewTapInfo,
     GetInstalledDependents,
     GetAutoCleanupAfterUpgrade,
@@ -28,14 +31,18 @@ import {
     GetStartupDataWithUpdate,
     InstallBrewPackage,
     RemoveBrewPackage,
+    RestartBrewService,
     RunBrewCleanup,
     RunBrewCleanupDryRun,
     RunBrewDoctor,
+    RunBrewService,
     SaveWindowGeometry,
     SetBrewPath,
     SetDockBadgeCount,
     SetDockBadgeCountSync,
     SetLanguage,
+    StartBrewService,
+    StopBrewService,
     TapBrewRepository,
     TrustBrewTap,
     UntapBrewRepository,
@@ -65,6 +72,8 @@ import PackageInfoDialog from "./components/PackageInfoDialog";
 import PackageTable from "./components/PackageTable";
 import RepositoryInfo from "./components/RepositoryInfo";
 import RepositoryTable from "./components/RepositoryTable";
+import ServiceInfo from "./components/ServiceInfo";
+import ServicesTable, { ServiceEntry } from "./components/ServicesTable";
 import RestartDialog from "./components/RestartDialog";
 import SettingsView from "./components/SettingsView";
 import ShortcutsDialog from "./components/ShortcutsDialog";
@@ -111,11 +120,19 @@ const WailBrewApp = () => {
     const [loadingAllCasks, setLoadingAllCasks] = useState<boolean>(false);
     const [leavesPackages, setLeavesPackages] = useState<PackageEntry[]>([]);
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
+    const [services, setServices] = useState<ServiceEntry[]>([]);
+    const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+    const [loadingServices, setLoadingServices] = useState<boolean>(false);
+    const [selectedService, setSelectedService] = useState<ServiceEntry | null>(null);
+    const [serviceActionLogs, setServiceActionLogs] = useState<string | null>(null);
+    const [isServiceActionRunning, setIsServiceActionRunning] = useState<boolean>(false);
+    const [serviceInfoLogs, setServiceInfoLogs] = useState<string | null>(null);
+    const [showServiceInfo, setShowServiceInfo] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [brewLocationSuggestion, setBrewLocationSuggestion] = useState<{ current: string; suggested: string } | null>(null);
     const [switchingBrewPath, setSwitchingBrewPath] = useState<boolean>(false);
-    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
+    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -476,6 +493,14 @@ const WailBrewApp = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [view, loading, allPackagesLoaded, loadingAllPackages]);
+
+    // Load services when user switches to "services" view.
+    useEffect(() => {
+        if (view === "services" && !loading && !servicesLoaded && !loadingServices) {
+            loadServices();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [view, loading, servicesLoaded, loadingServices]);
 
     // Apply pending dependency selection once allPackages has finished loading
     useEffect(() => {
@@ -862,7 +887,7 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         const unlisten = EventsOn("setView", (data: string) => {
-            setView(data as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings");
+            setView(data as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings");
             clearSelection();
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {
@@ -1126,6 +1151,9 @@ const WailBrewApp = () => {
 
     const filteredRepositories = activeRepositories.filter((repo) =>
         repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const filteredServices = services.filter((service) =>
+        service.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     const installedOnRequestCount = packages.filter(pkg => pkg.installReason === "on_request").length;
     const installedDependencyCount = packages.filter(pkg => pkg.installReason === "dependency").length;
@@ -1595,6 +1623,7 @@ const WailBrewApp = () => {
     const clearSelection = () => {
         setSelectedPackage(null);
         setSelectedRepository(null);
+        setSelectedService(null);
 
         // Close contextual dialogs when navigating to a different view
         // Info logs are specific to a package in a view, so close them
@@ -2012,6 +2041,114 @@ const WailBrewApp = () => {
         handleShowInfoLogs(pkg);
     };
 
+    // Load Homebrew-managed services (lazy loaded when the view opens).
+    const loadServices = async () => {
+        if (loadingServices) return;
+        setLoadingServices(true);
+        try {
+            const rows = await GetBrewServices();
+            const safeRows = (rows || []) as string[][];
+            if (safeRows.length === 1 && safeRows[0][0] === "Error") {
+                setError(safeRows[0][1]);
+                setServices([]);
+            } else {
+                const formatted: ServiceEntry[] = safeRows.map(([name, status, user]) => ({
+                    name,
+                    status,
+                    user,
+                }));
+                setServices(formatted);
+            }
+            setServicesLoaded(true);
+        } catch (err) {
+            console.error("Error loading services:", err);
+            setServices([]);
+        } finally {
+            setLoadingServices(false);
+        }
+    };
+
+    const handleServiceSelect = async (service: ServiceEntry) => {
+        setSelectedService(service);
+        // Fetch the PID for running services (the list JSON doesn't include it).
+        if (service.status === "started") {
+            try {
+                const pid = await GetBrewServicePid(service.name);
+                setSelectedService(prev =>
+                    prev && prev.name === service.name ? { ...prev, pid: pid > 0 ? pid : undefined } : prev
+                );
+            } catch (err) {
+                console.error("Failed to load service PID:", err);
+            }
+        }
+    };
+
+    const handleShowServiceInfo = async (service: ServiceEntry) => {
+        setSelectedService(service);
+        setShowServiceInfo(true);
+        setServiceInfoLogs(t('dialogs.gettingInfo', { name: service.name }));
+        try {
+            const info = await GetBrewServiceInfo(service.name);
+            setServiceInfoLogs(info);
+        } catch (error) {
+            setServiceInfoLogs(t('dialogs.packageInfo') + `\nError: ${error}`);
+        }
+    };
+
+    // Run a service action (start/stop/restart/run) while streaming live output.
+    const runServiceAction = async (
+        service: ServiceEntry,
+        action: (name: string) => Promise<string>,
+    ) => {
+        setSelectedService(service);
+        setIsServiceActionRunning(true);
+        const initialLog = t('dialogs.serviceActionLogs', { name: service.name });
+        setServiceActionLogs(initialLog);
+
+        // Accumulate logs in a ref so we can inspect them for known failure
+        // patterns once the action completes (state updates are async).
+        const logsRef = { current: initialLog };
+
+        const progressListener = EventsOn("serviceActionProgress", (progress: string) => {
+            setServiceActionLogs(prevLogs => {
+                const next = prevLogs ? prevLogs + '\n' + progress : progress;
+                logsRef.current = next;
+                return next;
+            });
+        });
+
+        const completeListener = EventsOn("serviceActionComplete", async () => {
+            // Surface a friendly hint when launchd refuses to bootstrap the
+            // service (already loaded, or needs root for privileged ports).
+            const bootstrapFailure = /bootstrap failed: 5|input\/output error|exited with 5|as root for richer|re-running the command as root/i;
+            if (bootstrapFailure.test(logsRef.current)) {
+                setServiceActionLogs(prevLogs =>
+                    (prevLogs ?? '') + '\n\n' + t('services.hints.bootstrapFailed', { name: service.name })
+                );
+            }
+
+            setIsServiceActionRunning(false);
+            progressListener();
+            completeListener();
+            // Refresh the services list to reflect the new status
+            setServicesLoaded(false);
+            await loadServices();
+        });
+
+        await action(service.name);
+    };
+
+    // Starting a service that is in an "error" state (or otherwise still
+    // registered with launchd) fails with "Bootstrap failed: 5". Route those
+    // through restart (stop + start) so the action self-heals.
+    const handleStartService = (service: ServiceEntry) =>
+        service.status === "error"
+            ? runServiceAction(service, RestartBrewService)
+            : runServiceAction(service, StartBrewService);
+    const handleStopService = (service: ServiceEntry) => runServiceAction(service, StopBrewService);
+    const handleRestartService = (service: ServiceEntry) => runServiceAction(service, RestartBrewService);
+    const handleRunService = (service: ServiceEntry) => runServiceAction(service, RunBrewService);
+
     // Function to load all packages (lazy loaded)
     const loadAllPackages = async () => {
         if (loadingAllPackages) return; // Prevent duplicate loads
@@ -2156,6 +2293,8 @@ const WailBrewApp = () => {
         setAllCasksLoaded(false);
         setLeavesPackages([]);
         setRepositories([]);
+        setServices([]);
+        setServicesLoaded(false);
 
         try {
             // Clear cache to ensure fresh data on manual refresh
@@ -2338,6 +2477,7 @@ const WailBrewApp = () => {
                 allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
                 leavesCount={leavesPackages.length}
                 repositoriesCount={repositories.length}
+                servicesCount={services.length}
                 onClearSelection={clearSelection}
                 sidebarWidth={sidebarWidth}
                 sidebarRef={sidebarRef}
@@ -2726,6 +2866,47 @@ const WailBrewApp = () => {
                         </div>
                     </>
                 )}
+                {view === "services" && (
+                    <>
+                        <HeaderRow
+                            title={t('headers.services', { count: services.length })}
+                            searchQuery={searchQuery}
+                            onSearchChange={setSearchQuery}
+                            onClearSearch={() => setSearchQuery("")}
+                            actions={
+                                <button
+                                    className="doctor-button"
+                                    onClick={async () => {
+                                        setServicesLoaded(false);
+                                        await loadServices();
+                                    }}
+                                >
+                                    {t('buttons.refresh')}
+                                </button>
+                            }
+                        />
+                        {error && <div className="result error">{error}</div>}
+                        <ServicesTable
+                            services={filteredServices}
+                            selectedService={selectedService}
+                            loading={loadingServices}
+                            onSelect={handleServiceSelect}
+                            onStart={handleStartService}
+                            onStop={handleStopService}
+                            onRestart={handleRestartService}
+                            onRun={handleRunService}
+                            onShowInfo={handleShowServiceInfo}
+                        />
+                        <div className="info-footer-container">
+                            <div className="package-info">
+                                <ServiceInfo service={selectedService} />
+                            </div>
+                            <div className="package-footer">
+                                {t('footers.services')}
+                            </div>
+                        </div>
+                    </>
+                )}
                 {view === "homebrew" && (
                     <HomebrewView
                         homebrewLog={homebrewLog}
@@ -2991,6 +3172,26 @@ const WailBrewApp = () => {
                     onClose={() => {
                         setRepositoryInfoLogs(null);
                         setShowRepositoryInfo(false);
+                    }}
+                    isRunning={false}
+                />
+                <LogDialog
+                    open={serviceActionLogs !== null}
+                    title={selectedService ? t('dialogs.serviceActionLogs', { name: selectedService.name }) : t('dialogs.serviceActionLogs')}
+                    log={serviceActionLogs}
+                    isRunning={isServiceActionRunning}
+                    onClose={() => {
+                        setServiceActionLogs(null);
+                        setIsServiceActionRunning(false);
+                    }}
+                />
+                <LogDialog
+                    open={showServiceInfo}
+                    title={t('dialogs.serviceInfo', { name: selectedService?.name || '' })}
+                    log={serviceInfoLogs}
+                    onClose={() => {
+                        setServiceInfoLogs(null);
+                        setShowServiceInfo(false);
                     }}
                     isRunning={false}
                 />

@@ -25,7 +25,8 @@
     "cleanup": "清理",
     "settings": "設定",
     "refresh": "重新整理",
-    "sponsor": "贊助"
+    "sponsor": "贊助",
+    "services": "服務"
   },
   "headers": {
     "installedFormulas": "已安裝套件",
@@ -38,7 +39,8 @@
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew 診斷",
     "homebrewCleanup": "Homebrew 清理",
-    "deprecatedFormulae": "已棄用的套件"
+    "deprecatedFormulae": "已棄用的套件",
+    "services": "服務"
   },
   "search": {
     "placeholder": "搜尋...",
@@ -187,7 +189,8 @@
     "repositories": "軟體庫是套件的來源。除了標準軟體庫外，還包含額外的套件。",
     "homebrew": "管理和更新 Homebrew 本身。檢查已安裝的版本，並在有新版本可用時更新 Homebrew 核心。",
     "doctor": "診斷是 Homebrew 的功能，可以檢測最常見的錯誤原因。",
-    "cleanup": "清理會移除過期的下載檔案和快取檔案以釋放磁碟空間。"
+    "cleanup": "清理會移除過期的下載檔案和快取檔案以釋放磁碟空間。",
+    "services": "服務是由 Homebrew 管理的背景程序（透過 launchd）。可以啟動、停止、重新啟動或執行某個 formula 的服務。"
   },
   "homebrew": {
     "currentVersion": "目前版本",
@@ -249,7 +252,9 @@
     "installSuccess": "成功安裝 \"{{name}}\"！",
     "installFailed": "安裝 \"{{name}}\" 失敗：{{error}}",
     "noDoctorOutput": "尚無輸出。請點擊「執行診斷」。",
-    "noCleanupOutput": "尚無輸出。請點擊「執行清理」。"
+    "noCleanupOutput": "尚無輸出。請點擊「執行清理」。",
+    "serviceActionLogs": "服務：{{name}}",
+    "serviceInfo": "{{name}} 的服務資訊"
   },
   "errors": {
     "loadingFormulas": "❌ 載入套件時發生錯誤！",
@@ -319,7 +324,8 @@
       "doctor": "診斷",
       "cleanup": "清理",
       "settings": "設定",
-      "shortcuts": "鍵盤快捷鍵..."
+      "shortcuts": "鍵盤快捷鍵...",
+      "services": "服務"
     },
     "tools": {
       "title": "工具",
@@ -349,7 +355,11 @@
     "package": "個套件",
     "packages": "個套件",
     "repository": "個軟體庫",
-    "repositories": "個軟體庫"
+    "repositories": "個軟體庫",
+    "loadingServices": "正在載入服務…",
+    "noServices": "找不到 Homebrew 服務。",
+    "service": "個服務",
+    "services": "個服務"
   },
   "repository": {
     "noSelection": "未選擇軟體庫",
@@ -640,7 +650,8 @@
       "startingTap": "❌ 啟動 tap 時發生錯誤：{{error}}",
       "startingUntap": "❌ 啟動 untap 時發生錯誤：{{error}}",
       "startingTrust": "❌ 啟動信任時發生錯誤：{{error}}",
-      "startingHomebrewUpdate": "❌ 啟動 Homebrew 更新時發生錯誤：{{error}}"
+      "startingHomebrewUpdate": "❌ 啟動 Homebrew 更新時發生錯誤：{{error}}",
+      "startingService": "❌ 啟動服務操作時發生錯誤：{{error}}"
     },
     "outdated": {
       "autoUpdateCask": "此自動更新應用程式可能已是最新版本。Homebrew 記錄的安裝版本可能落後於應用程式的實際版本。"
@@ -655,9 +666,41 @@
       "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
       "relaunching": "🚀 Relaunching {{name}}…",
       "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
+    },
+    "service": {
+      "start": "🔄 正在執行 'brew services {{action}} {{name}}'...",
+      "success": "✅ 'brew services {{action}} {{name}}' 成功完成！",
+      "failed": "❌ 'brew services {{action}} {{name}}' 失敗：{{error}}"
     }
   },
   "view": {
     "settings": "Settings"
+  },
+  "services": {
+    "noSelection": "未選擇服務",
+    "statusLabel": "狀態",
+    "user": "使用者",
+    "pid": "PID",
+    "copyPid": "複製 PID",
+    "pidCopied": "已複製 PID",
+    "status": {
+      "started": "執行中",
+      "stopped": "已停止",
+      "error": "錯誤",
+      "scheduled": "已排程",
+      "none": "未執行",
+      "other": "其他",
+      "unknown": "未知"
+    },
+    "buttons": {
+      "start": "啟動 \"{{name}}\"",
+      "stop": "停止 \"{{name}}\"",
+      "restart": "重新啟動 \"{{name}}\"",
+      "run": "執行 \"{{name}}\"（前景）",
+      "info": "顯示 \"{{name}}\" 的資訊"
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd 無法啟動此服務。它可能已載入，或需要 root 權限來綁定特權連接埠（例如 80/443）。請嘗試先停止再啟動，或在終端機中以 root 服務執行：sudo brew services start {{name}}"
+    }
   }
 }

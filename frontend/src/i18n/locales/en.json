@@ -20,6 +20,7 @@
     "allCasks": "All Casks",
     "leaves": "Leaves",
     "repositories": "Repositories",
+    "services": "Services",
     "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
@@ -35,6 +36,7 @@
     "allCasks": "All Casks",
     "leaves": "Leaves",
     "repositories": "Repositories",
+    "services": "Services",
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup",
@@ -185,6 +187,7 @@
     "allCasks": "All available Homebrew casks (GUI applications, fonts, plugins). Green highlighting shows installed casks.",
     "leaves": "Leaves are formulae that are not required as dependencies by other installed formulae.",
     "repositories": "Repositories (Taps) are sources for formulae. These contain additional packages besides the standard repository.",
+    "services": "Services are background processes (via launchd) managed by Homebrew. Start, stop, restart, or run a formula's service.",
     "homebrew": "Manage and update Homebrew itself. Check the installed version and update Homebrew core when a newer version is available.",
     "doctor": "Doctor is a Homebrew feature that can detect the most common causes of errors.",
     "cleanup": "Cleanup removes outdated downloads and cached files to free up disk space."
@@ -226,6 +229,8 @@
     "tapInputUrlHint": "Optional. Required when the tap source is not at the default GitHub homebrew-* location.",
     "tapInputUrlInvalid": "Invalid URL format. Use https://, git@, ssh://, or similar.",
     "repositoryInfo": "Info for {{name}}",
+    "serviceActionLogs": "Service: {{name}}",
+    "serviceInfo": "Service info for {{name}}",
     "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
     "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
     "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
@@ -315,6 +320,7 @@
       "allCasks": "All Casks",
       "leaves": "Leaves",
       "repositories": "Repositories",
+      "services": "Services",
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
@@ -339,17 +345,21 @@
       "helpMessage": "Currently there is no help page available."
     }
   },
-  "table": {
+    "table": {
     "loadingFormulas": "Loading formulae…",
     "loadingRepositories": "Loading repositories…",
+    "loadingServices": "Loading services…",
     "noResults": "No matching results.",
+    "noServices": "No Homebrew services found.",
     "allUpToDate": "Everything's up to date!",
     "installedStatus": "Installed",
     "notInstalledStatus": "Not installed",
     "package": "package",
     "packages": "packages",
     "repository": "repository",
-    "repositories": "repositories"
+    "repositories": "repositories",
+    "service": "service",
+    "services": "services"
   },
   "repository": {
     "noSelection": "No repository selected",
@@ -362,6 +372,33 @@
     "trustedUnknown": "Unknown",
     "defaultDescription": "Homebrew Tap Repository",
     "active": "Active"
+  },
+  "services": {
+    "noSelection": "No service selected",
+    "statusLabel": "Status",
+    "user": "User",
+    "pid": "PID",
+    "copyPid": "Copy PID",
+    "pidCopied": "PID copied",
+    "status": {
+      "started": "Running",
+      "stopped": "Stopped",
+      "error": "Error",
+      "scheduled": "Scheduled",
+      "none": "Not running",
+      "other": "Other",
+      "unknown": "Unknown"
+    },
+    "buttons": {
+      "start": "Start \"{{name}}\"",
+      "stop": "Stop \"{{name}}\"",
+      "restart": "Restart \"{{name}}\"",
+      "run": "Run \"{{name}}\" (foreground)",
+      "info": "Show info for \"{{name}}\""
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd couldn't start this service. It may already be loaded, or it needs root to bind privileged ports (e.g. 80/443). Try Stop and then Start again, or run it as a root service in Terminal: sudo brew services start {{name}}"
+    }
   },
   "common": {
     "notAvailable": "--",
@@ -625,6 +662,11 @@
       "success": "✅ Tap '{{name}}' is now trusted!",
       "failed": "❌ Trusting tap '{{name}}' failed: {{error}}"
     },
+    "service": {
+      "start": "🔄 Running 'brew services {{action}} {{name}}'...",
+      "success": "✅ 'brew services {{action}} {{name}}' completed successfully!",
+      "failed": "❌ 'brew services {{action}} {{name}}' failed: {{error}}"
+    },
     "untap": {
       "start": "🔄 Starting untap for '{{name}}'...",
       "success": "✅ Untap for '{{name}}' completed successfully!",
@@ -640,6 +682,7 @@
       "startingTap": "❌ Error starting tap: {{error}}",
       "startingUntap": "❌ Error starting untap: {{error}}",
       "startingTrust": "❌ Error starting trust: {{error}}",
+      "startingService": "❌ Error starting service action: {{error}}",
       "startingHomebrewUpdate": "❌ Error starting Homebrew update: {{error}}"
     },
     "outdated": {

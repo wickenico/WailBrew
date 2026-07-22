@@ -9,8 +9,8 @@ import { mapToSupportedLanguage } from "../i18n/languageUtils";
 import ThemeToggle from "./ThemeToggle";
 
 interface SidebarProps {
-    view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings";
-    setView: (view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
+    view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings";
+    setView: (view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
     packagesCount: number;
     casksCount: number;
     updatableCount: number;
@@ -18,6 +18,7 @@ interface SidebarProps {
     allCasksCount: number;
     leavesCount: number;
     repositoriesCount: number;
+    servicesCount: number;
     onClearSelection: () => void;
     sidebarWidth?: number;
     sidebarRef?: React.RefObject<HTMLElement | null>;
@@ -35,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     allCasksCount,
     leavesCount,
     repositoriesCount,
+    servicesCount,
     onClearSelection,
     sidebarWidth,
     sidebarRef,
@@ -240,6 +242,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <li className={view === "homebrew" ? "active" : ""} onClick={() => { setView("homebrew"); onClearSelection(); }}>
                         <span className="sidebar-shortcut">{cmdKey}8</span>
                         <span>🍺 {t('sidebar.homebrew')}</span>
+                    </li>
+                    <li className={view === "services" ? "active" : ""} onClick={() => { setView("services"); onClearSelection(); }}>
+                        <span className="sidebar-shortcut">{cmdKey}P</span>
+                        <span>🚀 {t('sidebar.services')}</span>
+                        <span className="badge">{servicesCount}</span>
                     </li>
                     <li className={view === "doctor" ? "active" : ""} onClick={() => { setView("doctor"); onClearSelection(); }}>
                         <span className="sidebar-shortcut">{cmdKey}9</span>

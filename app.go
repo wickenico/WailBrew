@@ -625,6 +625,41 @@ func (a *App) TrustBrewTap(tapName string) string {
 	return a.brewService.TrustBrewTap(a.ctx, tapName)
 }
 
+// GetBrewServices returns all Homebrew-managed services as rows of [name, status, user].
+func (a *App) GetBrewServices() [][]string {
+	return a.brewService.GetBrewServices()
+}
+
+// GetBrewServiceInfo returns the raw `brew services info <name>` output.
+func (a *App) GetBrewServiceInfo(name string) string {
+	return a.brewService.GetBrewServiceInfo(name)
+}
+
+// GetBrewServicePid returns the PID of a running service, or 0 if not running.
+func (a *App) GetBrewServicePid(name string) int {
+	return a.brewService.GetBrewServicePid(name)
+}
+
+// StartBrewService starts a service and registers it to launch at login.
+func (a *App) StartBrewService(name string) string {
+	return a.brewService.StartBrewService(a.ctx, name)
+}
+
+// StopBrewService stops a service and unregisters it.
+func (a *App) StopBrewService(name string) string {
+	return a.brewService.StopBrewService(a.ctx, name)
+}
+
+// RestartBrewService restarts a service.
+func (a *App) RestartBrewService(name string) string {
+	return a.brewService.RestartBrewService(a.ctx, name)
+}
+
+// RunBrewService runs a service without registering it to launch at login.
+func (a *App) RunBrewService(name string) string {
+	return a.brewService.RunBrewService(a.ctx, name)
+}
+
 func (a *App) GetBrewPackageInfoAsJson(packageName string) map[string]interface{} {
 	return a.brewService.GetBrewPackageInfoAsJson(packageName)
 }

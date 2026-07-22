@@ -25,7 +25,8 @@
     "cleanup": "ניקוי",
     "settings": "הגדרות",
     "refresh": "רענון",
-    "sponsor": "תמיכה"
+    "sponsor": "תמיכה",
+    "services": "שירותים"
   },
   "headers": {
     "installedFormulas": "נוסחאות מותקנות",
@@ -38,7 +39,8 @@
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew דוקטור",
     "homebrewCleanup": "Homebrew ניקוי",
-    "deprecatedFormulae": "נוסחאות שהוצאו משימוש"
+    "deprecatedFormulae": "נוסחאות שהוצאו משימוש",
+    "services": "שירותים"
   },
   "search": {
     "placeholder": "חיפוש...",
@@ -187,7 +189,8 @@
     "repositories": "מאגרים (Taps) הם מקורות לנוסחאות. אלו מכילים חבילות נוספות מעבר למאגר הרגיל.",
     "homebrew": "נהל ועדכן את Homebrew עצמו. בדוק את הגרסה המותקנת ועדכן את ליבת Homebrew כשגרסה חדשה זמינה.",
     "doctor": "דוקטור הוא תכונה של Homebrew שיכולה לזהות את הגורמים הנפוצים ביותר לשגיאות.",
-    "cleanup": "ניקוי מסיר הורדות מיושנות וקבצים שמורים כדי לפנות מקום בדיסק."
+    "cleanup": "ניקוי מסיר הורדות מיושנות וקבצים שמורים כדי לפנות מקום בדיסק.",
+    "services": "שירותים הם תהליכי רקע (דרך launchd) המנוהלים על ידי Homebrew. ניתן להפעיל, לעצור, להפעיל מחדש או להריץ את השירות של נוסחה."
   },
   "homebrew": {
     "currentVersion": "גרסה נוכחית",
@@ -249,7 +252,9 @@
     "installSuccess": "\"{{name}}\" הותקן בהצלחה!",
     "installFailed": "התקנת \"{{name}}\" נכשלה: {{error}}",
     "noDoctorOutput": "אין פלט עדיין. לחץ על \"הפעל דוקטור\".",
-    "noCleanupOutput": "אין פלט עדיין. לחץ על \"הפעל ניקוי\"."
+    "noCleanupOutput": "אין פלט עדיין. לחץ על \"הפעל ניקוי\".",
+    "serviceActionLogs": "שירות: {{name}}",
+    "serviceInfo": "מידע על השירות {{name}}"
   },
   "errors": {
     "loadingFormulas": "❌ שגיאה בטעינת נוסחאות!",
@@ -319,7 +324,8 @@
       "doctor": "דוקטור",
       "cleanup": "ניקוי",
       "settings": "הגדרות",
-      "shortcuts": "קיצורי מקלדת..."
+      "shortcuts": "קיצורי מקלדת...",
+      "services": "שירותים"
     },
     "tools": {
       "title": "כלים",
@@ -349,7 +355,11 @@
     "package": "חבילה",
     "packages": "חבילות",
     "repository": "מאגר",
-    "repositories": "מאגרים"
+    "repositories": "מאגרים",
+    "loadingServices": "טוען שירותים…",
+    "noServices": "לא נמצאו שירותי Homebrew.",
+    "service": "שירות",
+    "services": "שירותים"
   },
   "repository": {
     "noSelection": "לא נבחר מאגר",
@@ -640,7 +650,8 @@
       "startingTap": "❌ שגיאה בהתחלת הוספת מאגר: {{error}}",
       "startingUntap": "❌ שגיאה בהתחלת הסרת מאגר: {{error}}",
       "startingTrust": "❌ שגיאה בהפעלת מתן האמון: {{error}}",
-      "startingHomebrewUpdate": "❌ שגיאה בהתחלת עדכון Homebrew: {{error}}"
+      "startingHomebrewUpdate": "❌ שגיאה בהתחלת עדכון Homebrew: {{error}}",
+      "startingService": "❌ שגיאה בהפעלת פעולת השירות: {{error}}"
     },
     "outdated": {
       "autoUpdateCask": "ייתכן שהאפליקציה הזו עם עדכון אוטומטי כבר מעודכנת. גרסת ההתקנה ש-Homebrew מתעד עלולה להישאר מאחורי גרסת האפליקציה בפועל."
@@ -655,9 +666,41 @@
       "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
       "relaunching": "🚀 Relaunching {{name}}…",
       "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
+    },
+    "service": {
+      "start": "🔄 מריץ 'brew services {{action}} {{name}}'...",
+      "success": "✅ 'brew services {{action}} {{name}}' הושלם בהצלחה!",
+      "failed": "❌ 'brew services {{action}} {{name}}' נכשל: {{error}}"
     }
   },
   "view": {
     "settings": "Settings"
+  },
+  "services": {
+    "noSelection": "לא נבחר שירות",
+    "statusLabel": "סטטוס",
+    "user": "משתמש",
+    "pid": "PID",
+    "copyPid": "העתק PID",
+    "pidCopied": "PID הועתק",
+    "status": {
+      "started": "פועל",
+      "stopped": "הופסק",
+      "error": "שגיאה",
+      "scheduled": "מתוזמן",
+      "none": "לא פועל",
+      "other": "אחר",
+      "unknown": "לא ידוע"
+    },
+    "buttons": {
+      "start": "הפעל את \"{{name}}\"",
+      "stop": "עצור את \"{{name}}\"",
+      "restart": "הפעל מחדש את \"{{name}}\"",
+      "run": "הרץ את \"{{name}}\" (חזית)",
+      "info": "הצג מידע על \"{{name}}\""
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd לא הצליח להפעיל את השירות הזה. ייתכן שהוא כבר נטען, או שהוא זקוק להרשאות root כדי להיקשר ליציאות מורשות (למשל 80/443). נסה לעצור ואז להפעיל שוב, או הרץ אותו כשירות root בטרמינל: sudo brew services start {{name}}"
+    }
   }
 }

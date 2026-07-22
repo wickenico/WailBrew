@@ -25,7 +25,8 @@
     "cleanup": "Nettoyage",
     "settings": "Paramètres",
     "refresh": "Actualiser",
-    "sponsor": "Sponsoriser"
+    "sponsor": "Sponsoriser",
+    "services": "Services"
   },
   "headers": {
     "installedFormulas": "Formules Installées",
@@ -38,7 +39,8 @@
     "homebrew": "Homebrew",
     "homebrewDoctor": "Diagnostic Homebrew",
     "homebrewCleanup": "Nettoyage Homebrew",
-    "deprecatedFormulae": "Formules obsolètes"
+    "deprecatedFormulae": "Formules obsolètes",
+    "services": "Services"
   },
   "search": {
     "placeholder": "Rechercher...",
@@ -187,7 +189,8 @@
     "repositories": "Les dépôts (Taps) sont des sources de formules. Ils contiennent des paquets supplémentaires en plus du dépôt standard.",
     "homebrew": "Gérez et mettez à jour Homebrew lui-même. Vérifiez la version installée et mettez à jour le noyau Homebrew quand une nouvelle version est disponible.",
     "doctor": "Le diagnostic est une fonctionnalité Homebrew qui peut détecter les causes les plus courantes d'erreurs.",
-    "cleanup": "Le nettoyage supprime les téléchargements obsolètes et les fichiers en cache pour libérer de l'espace disque."
+    "cleanup": "Le nettoyage supprime les téléchargements obsolètes et les fichiers en cache pour libérer de l'espace disque.",
+    "services": "Les services sont des processus en arrière-plan (via launchd) gérés par Homebrew. Démarrez, arrêtez, redémarrez ou exécutez le service d'une formule."
   },
   "homebrew": {
     "currentVersion": "Version actuelle",
@@ -249,7 +252,9 @@
     "installSuccess": "\"{{name}}\" installé avec succès !",
     "installFailed": "Échec de l'installation de \"{{name}}\" : {{error}}",
     "noDoctorOutput": "Aucune sortie pour le moment. Cliquez sur \"Lancer le diagnostic\".",
-    "noCleanupOutput": "Aucune sortie pour le moment. Cliquez sur \"Lancer le nettoyage\"."
+    "noCleanupOutput": "Aucune sortie pour le moment. Cliquez sur \"Lancer le nettoyage\".",
+    "serviceActionLogs": "Service : {{name}}",
+    "serviceInfo": "Infos du service {{name}}"
   },
   "errors": {
     "loadingFormulas": "❌ Erreur lors du chargement des formules !",
@@ -319,7 +324,8 @@
       "doctor": "Diagnostic",
       "cleanup": "Nettoyage",
       "settings": "Paramètres",
-      "shortcuts": "Raccourcis clavier..."
+      "shortcuts": "Raccourcis clavier...",
+      "services": "Services"
     },
     "tools": {
       "title": "Outils",
@@ -349,7 +355,11 @@
     "package": "paquet",
     "packages": "paquets",
     "repository": "dépôt",
-    "repositories": "dépôts"
+    "repositories": "dépôts",
+    "loadingServices": "Chargement des services…",
+    "noServices": "Aucun service Homebrew trouvé.",
+    "service": "service",
+    "services": "services"
   },
   "repository": {
     "noSelection": "Aucun dépôt sélectionné",
@@ -640,7 +650,8 @@
       "startingTap": "❌ Erreur lors du démarrage du tap : {{error}}",
       "startingUntap": "❌ Erreur lors du démarrage de l'untap : {{error}}",
       "startingTrust": "❌ Erreur lors du démarrage de l'approbation : {{error}}",
-      "startingHomebrewUpdate": "❌ Erreur lors du démarrage de la mise à jour Homebrew : {{error}}"
+      "startingHomebrewUpdate": "❌ Erreur lors du démarrage de la mise à jour Homebrew : {{error}}",
+      "startingService": "❌ Erreur lors du démarrage de l'action du service : {{error}}"
     },
     "outdated": {
       "autoUpdateCask": "Cette application à mise à jour automatique est peut-être déjà à jour. La version d'installation enregistrée par Homebrew peut être en retard sur la version réelle de l'application."
@@ -655,9 +666,41 @@
       "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
       "relaunching": "🚀 Relaunching {{name}}…",
       "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
+    },
+    "service": {
+      "start": "🔄 Exécution de « brew services {{action}} {{name}} »...",
+      "success": "✅ « brew services {{action}} {{name}} » terminé avec succès !",
+      "failed": "❌ Échec de « brew services {{action}} {{name}} » : {{error}}"
     }
   },
   "view": {
     "settings": "Settings"
+  },
+  "services": {
+    "noSelection": "Aucun service sélectionné",
+    "statusLabel": "Statut",
+    "user": "Utilisateur",
+    "pid": "PID",
+    "copyPid": "Copier le PID",
+    "pidCopied": "PID copié",
+    "status": {
+      "started": "En cours",
+      "stopped": "Arrêté",
+      "error": "Erreur",
+      "scheduled": "Planifié",
+      "none": "Inactif",
+      "other": "Autre",
+      "unknown": "Inconnu"
+    },
+    "buttons": {
+      "start": "Démarrer « {{name}} »",
+      "stop": "Arrêter « {{name}} »",
+      "restart": "Redémarrer « {{name}} »",
+      "run": "Exécuter « {{name}} » (premier plan)",
+      "info": "Afficher les infos de « {{name}} »"
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd n'a pas pu démarrer ce service. Il est peut-être déjà chargé, ou il nécessite les droits root pour lier des ports privilégiés (par ex. 80/443). Essayez « Arrêter » puis « Démarrer » à nouveau, ou exécutez-le en tant que service root dans le Terminal : sudo brew services start {{name}}"
+    }
   }
 }

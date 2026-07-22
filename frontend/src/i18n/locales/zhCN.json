@@ -25,7 +25,8 @@
     "cleanup": "Cleanup",
     "settings": "软件设置",
     "refresh": "刷新",
-    "sponsor": "赞助"
+    "sponsor": "赞助",
+    "services": "服务"
   },
   "headers": {
     "installedFormulas": "已安装的 Formulae",
@@ -38,7 +39,8 @@
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup",
-    "deprecatedFormulae": "已弃用的包"
+    "deprecatedFormulae": "已弃用的包",
+    "services": "服务"
   },
   "search": {
     "placeholder": "搜索...",
@@ -187,7 +189,8 @@
     "repositories": "软件源（Taps）是 Formulae 的来源。它们除了包含标准存储库外，还包含其他软件包。",
     "homebrew": "管理和更新 Homebrew 本身。检查已安装的版本，并在有新版本可用时更新 Homebrew 核心。",
     "doctor": "Doctor 是 Homebrew 的一项内置功能，可以检测最常见的错误原因。",
-    "cleanup": "Cleanup 会删除已下载和缓存的文件以释放磁盘空间。"
+    "cleanup": "Cleanup 会删除已下载和缓存的文件以释放磁盘空间。",
+    "services": "服务是由 Homebrew 管理的后台进程（通过 launchd）。可以启动、停止、重启或运行某个 formula 的服务。"
   },
   "homebrew": {
     "currentVersion": "当前版本",
@@ -249,7 +252,9 @@
     "installSuccess": "成功安装 \"{{name}}\"！",
     "installFailed": "安装 \"{{name}}\" 失败：{{error}}",
     "noDoctorOutput": "暂无输出。请点击 \"执行 doctor\"。",
-    "noCleanupOutput": "暂无输出。请点击 \"执行 cleanup\"。"
+    "noCleanupOutput": "暂无输出。请点击 \"执行 cleanup\"。",
+    "serviceActionLogs": "服务：{{name}}",
+    "serviceInfo": "{{name}} 的服务信息"
   },
   "errors": {
     "loadingFormulas": "❌ 加载 Formulae 失败！",
@@ -319,7 +324,8 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "settings": "软件设置",
-      "shortcuts": "键盘快捷键..."
+      "shortcuts": "键盘快捷键...",
+      "services": "服务"
     },
     "tools": {
       "title": "工具",
@@ -349,7 +355,11 @@
     "package": "个软件包",
     "packages": "个软件包",
     "repository": "个软件源",
-    "repositories": "个软件源"
+    "repositories": "个软件源",
+    "loadingServices": "正在加载服务…",
+    "noServices": "未找到 Homebrew 服务。",
+    "service": "个服务",
+    "services": "个服务"
   },
   "repository": {
     "noSelection": "未选择软件源",
@@ -640,7 +650,8 @@
       "startingTap": "❌ 启动 tap 时出错：{{error}}",
       "startingUntap": "❌ 启动 untap 时出错：{{error}}",
       "startingTrust": "❌ 启动信任时出错：{{error}}",
-      "startingHomebrewUpdate": "❌ 启动 Homebrew 更新时出错：{{error}}"
+      "startingHomebrewUpdate": "❌ 启动 Homebrew 更新时出错：{{error}}",
+      "startingService": "❌ 启动服务操作时出错：{{error}}"
     },
     "outdated": {
       "autoUpdateCask": "此自动更新应用可能已是最新版本。Homebrew 记录的安装版本可能落后于应用的实际版本。"
@@ -655,9 +666,41 @@
       "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
       "relaunching": "🚀 Relaunching {{name}}…",
       "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
+    },
+    "service": {
+      "start": "🔄 正在执行 'brew services {{action}} {{name}}'...",
+      "success": "✅ 'brew services {{action}} {{name}}' 成功完成！",
+      "failed": "❌ 'brew services {{action}} {{name}}' 失败：{{error}}"
     }
   },
   "view": {
     "settings": "Settings"
+  },
+  "services": {
+    "noSelection": "未选择服务",
+    "statusLabel": "状态",
+    "user": "用户",
+    "pid": "PID",
+    "copyPid": "复制 PID",
+    "pidCopied": "已复制 PID",
+    "status": {
+      "started": "运行中",
+      "stopped": "已停止",
+      "error": "错误",
+      "scheduled": "已计划",
+      "none": "未运行",
+      "other": "其他",
+      "unknown": "未知"
+    },
+    "buttons": {
+      "start": "启动 \"{{name}}\"",
+      "stop": "停止 \"{{name}}\"",
+      "restart": "重启 \"{{name}}\"",
+      "run": "运行 \"{{name}}\"（前台）",
+      "info": "显示 \"{{name}}\" 的信息"
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd 无法启动此服务。它可能已加载，或需要 root 权限来绑定特权端口（例如 80/443）。请尝试先停止再启动，或在终端中以 root 服务运行：sudo brew services start {{name}}"
+    }
   }
 }

@@ -96,6 +96,9 @@ func Build(app AppInterface) *menu.Menu {
 	ViewMenu.AddText(getT("menu.view.homebrew"), keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "homebrew")
 	})
+	ViewMenu.AddText(getT("menu.view.services"), keys.CmdOrCtrl("p"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(getCtx(), "setView", "services")
+	})
 	ViewMenu.AddText(getT("menu.view.doctor"), keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "doctor")
 	})

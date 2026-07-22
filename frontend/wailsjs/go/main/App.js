@@ -90,6 +90,18 @@ export function GetBrewPath() {
   return window['go']['main']['App']['GetBrewPath']();
 }
 
+export function GetBrewServiceInfo(arg1) {
+  return window['go']['main']['App']['GetBrewServiceInfo'](arg1);
+}
+
+export function GetBrewServicePid(arg1) {
+  return window['go']['main']['App']['GetBrewServicePid'](arg1);
+}
+
+export function GetBrewServices() {
+  return window['go']['main']['App']['GetBrewServices']();
+}
+
 export function GetBrewTapInfo(arg1) {
   return window['go']['main']['App']['GetBrewTapInfo'](arg1);
 }
@@ -218,6 +230,10 @@ export function RestartApp() {
   return window['go']['main']['App']['RestartApp']();
 }
 
+export function RestartBrewService(arg1) {
+  return window['go']['main']['App']['RestartBrewService'](arg1);
+}
+
 export function RunBrewCleanup() {
   return window['go']['main']['App']['RunBrewCleanup']();
 }
@@ -228,6 +244,10 @@ export function RunBrewCleanupDryRun() {
 
 export function RunBrewDoctor() {
   return window['go']['main']['App']['RunBrewDoctor']();
+}
+
+export function RunBrewService(arg1) {
+  return window['go']['main']['App']['RunBrewService'](arg1);
 }
 
 export function SaveWindowGeometry(arg1, arg2, arg3, arg4, arg5) {
@@ -308,6 +328,14 @@ export function SetProxy(arg1) {
 
 export function SetWindowTheme(arg1) {
   return window['go']['main']['App']['SetWindowTheme'](arg1);
+}
+
+export function StartBrewService(arg1) {
+  return window['go']['main']['App']['StartBrewService'](arg1);
+}
+
+export function StopBrewService(arg1) {
+  return window['go']['main']['App']['StopBrewService'](arg1);
 }
 
 export function TapBrewRepository(arg1, arg2) {

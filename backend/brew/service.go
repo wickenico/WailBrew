@@ -59,6 +59,15 @@ type Service interface {
 	UntapBrewRepository(ctx context.Context, repositoryName string) string
 	TrustBrewTap(ctx context.Context, tapName string) string
 
+	// Services operations
+	GetBrewServices() [][]string
+	GetBrewServiceInfo(name string) string
+	GetBrewServicePid(name string) int
+	StartBrewService(ctx context.Context, name string) string
+	StopBrewService(ctx context.Context, name string) string
+	RestartBrewService(ctx context.Context, name string) string
+	RunBrewService(ctx context.Context, name string) string
+
 	// Package info
 	GetBrewPackageInfoAsJson(packageName string) map[string]interface{}
 	GetBrewPackageInfo(packageName string) string
@@ -107,6 +116,7 @@ type serviceImpl struct {
 	outdatedService *OutdatedService
 	actionsService  *ActionsService
 	tapService      *TapService
+	servicesService *ServicesService
 	startupService  *StartupService
 }
 
@@ -174,6 +184,9 @@ func NewService(
 	// Create tap service
 	tapService := NewTapService(brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter)
 
+	// Create services service
+	servicesService := NewServicesService(executor, brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter)
+
 	// Create startup service for optimized initial data loading
 	startupService := NewStartupService(listService, outdatedService, databaseService)
 
@@ -194,6 +207,7 @@ func NewService(
 		outdatedService: outdatedService,
 		actionsService:  actionsService,
 		tapService:      tapService,
+		servicesService: servicesService,
 		startupService:  startupService,
 	}
 }
@@ -316,6 +330,35 @@ func (s *serviceImpl) UntapBrewRepository(ctx context.Context, repositoryName st
 
 func (s *serviceImpl) TrustBrewTap(ctx context.Context, tapName string) string {
 	return s.tapService.TrustBrewTap(ctx, tapName)
+}
+
+// Services methods
+func (s *serviceImpl) GetBrewServices() [][]string {
+	return s.servicesService.GetBrewServices()
+}
+
+func (s *serviceImpl) GetBrewServiceInfo(name string) string {
+	return s.servicesService.GetBrewServiceInfo(name)
+}
+
+func (s *serviceImpl) GetBrewServicePid(name string) int {
+	return s.servicesService.GetBrewServicePid(name)
+}
+
+func (s *serviceImpl) StartBrewService(ctx context.Context, name string) string {
+	return s.servicesService.StartBrewService(ctx, name)
+}
+
+func (s *serviceImpl) StopBrewService(ctx context.Context, name string) string {
+	return s.servicesService.StopBrewService(ctx, name)
+}
+
+func (s *serviceImpl) RestartBrewService(ctx context.Context, name string) string {
+	return s.servicesService.RestartBrewService(ctx, name)
+}
+
+func (s *serviceImpl) RunBrewService(ctx context.Context, name string) string {
+	return s.servicesService.RunBrewService(ctx, name)
 }
 
 // Package info methods - these can be extracted to a separate module later

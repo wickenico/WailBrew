@@ -25,7 +25,8 @@
     "cleanup": "Temizlik",
     "settings": "Ayarlar",
     "refresh": "Yenile",
-    "sponsor": "Destekle"
+    "sponsor": "Destekle",
+    "services": "Hizmetler"
   },
   "headers": {
     "installedFormulas": "Yüklü Formüller",
@@ -38,7 +39,8 @@
     "homebrew": "Homebrew",
     "homebrewDoctor": "Homebrew Doktoru",
     "homebrewCleanup": "Homebrew Temizliği",
-    "deprecatedFormulae": "Kullanımdan Kaldırılan Formüller"
+    "deprecatedFormulae": "Kullanımdan Kaldırılan Formüller",
+    "services": "Hizmetler"
   },
   "search": {
     "placeholder": "Ara...",
@@ -187,7 +189,8 @@
     "repositories": "Depolar (Taps) formül kaynaklarıdır. Bunlar standart depoların yanısıra ek paketleri içerir.",
     "homebrew": "Homebrew'i yönetin ve güncelleyin. Yüklü sürümü kontrol edin ve yeni bir sürüm mevcut olduğunda Homebrew çekirdeğini güncelleyin.",
     "doctor": "Doktor, en sık karşılaşılan hataları saptayan bir Homebrew özelliğidir.",
-    "cleanup": "Temizlik eskimiş indirmeleri ve önbelleklenmiş dosyaları disk alanı açmak için siler."
+    "cleanup": "Temizlik eskimiş indirmeleri ve önbelleklenmiş dosyaları disk alanı açmak için siler.",
+    "services": "Hizmetler, Homebrew tarafından yönetilen arka plan işlemleridir (launchd aracılığıyla). Bir formülün hizmetini başlatın, durdurun, yeniden başlatın veya çalıştırın."
   },
   "homebrew": {
     "currentVersion": "Mevcut Sürüm",
@@ -249,7 +252,9 @@
     "installSuccess": "Successfully installed \"{{name}}\"!",
     "installFailed": "\"{{name}}\" indirilemedi: {{error}}",
     "noDoctorOutput": "Henüz bir sonuç yok. \"Doktoru Çalıştır\" düğmesine tıkla.",
-    "noCleanupOutput": "Henüz bir sonuç yok. \"Temizliği Çalıştır\" düğmesine tıkla."
+    "noCleanupOutput": "Henüz bir sonuç yok. \"Temizliği Çalıştır\" düğmesine tıkla.",
+    "serviceActionLogs": "Hizmet: {{name}}",
+    "serviceInfo": "{{name}} hizmet bilgileri"
   },
   "errors": {
     "loadingFormulas": "❌ Formüller yüklenirken bir hata oluştu.!",
@@ -319,7 +324,8 @@
       "doctor": "Doktor",
       "cleanup": "Temizlik",
       "settings": "Ayarlar",
-      "shortcuts": "Klavye Kısayolları..."
+      "shortcuts": "Klavye Kısayolları...",
+      "services": "Hizmetler"
     },
     "tools": {
       "title": "Araçlar",
@@ -349,7 +355,11 @@
     "package": "paket",
     "packages": "paket",
     "repository": "depo",
-    "repositories": "depolar"
+    "repositories": "depolar",
+    "loadingServices": "Hizmetler yükleniyor…",
+    "noServices": "Homebrew hizmeti bulunamadı.",
+    "service": "hizmet",
+    "services": "hizmet"
   },
   "repository": {
     "noSelection": "Hiçbir depo seçilmedi",
@@ -640,7 +650,8 @@
       "startingTap": "❌ Tap başlatılırken hata: {{error}}",
       "startingUntap": "❌ Untap başlatılırken hata: {{error}}",
       "startingTrust": "❌ Güvenme başlatılırken hata: {{error}}",
-      "startingHomebrewUpdate": "❌ Homebrew güncelleme başlatılırken hata: {{error}}"
+      "startingHomebrewUpdate": "❌ Homebrew güncelleme başlatılırken hata: {{error}}",
+      "startingService": "❌ Hizmet eylemi başlatılırken hata: {{error}}"
     },
     "outdated": {
       "autoUpdateCask": "Bu otomatik güncellenen uygulama zaten güncel olabilir. Homebrew'un kayıtlı kurulum sürümü gerçek uygulama sürümünün gerisinde kalabilir."
@@ -655,9 +666,41 @@
       "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
       "relaunching": "🚀 Relaunching {{name}}…",
       "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
+    },
+    "service": {
+      "start": "🔄 'brew services {{action}} {{name}}' çalıştırılıyor...",
+      "success": "✅ 'brew services {{action}} {{name}}' başarıyla tamamlandı!",
+      "failed": "❌ 'brew services {{action}} {{name}}' başarısız: {{error}}"
     }
   },
   "view": {
     "settings": "Settings"
+  },
+  "services": {
+    "noSelection": "Hizmet seçilmedi",
+    "statusLabel": "Durum",
+    "user": "Kullanıcı",
+    "pid": "PID",
+    "copyPid": "PID'yi kopyala",
+    "pidCopied": "PID kopyalandı",
+    "status": {
+      "started": "Çalışıyor",
+      "stopped": "Durduruldu",
+      "error": "Hata",
+      "scheduled": "Zamanlandı",
+      "none": "Çalışmıyor",
+      "other": "Diğer",
+      "unknown": "Bilinmiyor"
+    },
+    "buttons": {
+      "start": "\"{{name}}\" başlat",
+      "stop": "\"{{name}}\" durdur",
+      "restart": "\"{{name}}\" yeniden başlat",
+      "run": "\"{{name}}\" çalıştır (ön plan)",
+      "info": "\"{{name}}\" bilgilerini göster"
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd bu hizmeti başlatamadı. Zaten yüklü olabilir veya ayrıcalıklı bağlantı noktalarını (örn. 80/443) bağlamak için root gerektirebilir. Durdurup tekrar Başlatmayı deneyin ya da Terminal'de root hizmeti olarak çalıştırın: sudo brew services start {{name}}"
+    }
   }
 }

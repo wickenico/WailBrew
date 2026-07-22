@@ -48,6 +48,12 @@ export function GetBrewPackages():Promise<Array<any>>;
 
 export function GetBrewPath():Promise<string>;
 
+export function GetBrewServiceInfo(arg1:string):Promise<string>;
+
+export function GetBrewServicePid(arg1:string):Promise<number>;
+
+export function GetBrewServices():Promise<Array<any>>;
+
 export function GetBrewTapInfo(arg1:string):Promise<string>;
 
 export function GetBrewTaps():Promise<Array<any>>;
@@ -112,11 +118,15 @@ export function RemoveBrewPackage(arg1:string):Promise<string>;
 
 export function RestartApp():Promise<void>;
 
+export function RestartBrewService(arg1:string):Promise<string>;
+
 export function RunBrewCleanup():Promise<string>;
 
 export function RunBrewCleanupDryRun():Promise<string>;
 
 export function RunBrewDoctor():Promise<string>;
+
+export function RunBrewService(arg1:string):Promise<string>;
 
 export function SaveWindowGeometry(arg1:number,arg2:number,arg3:number,arg4:number,arg5:boolean):Promise<void>;
 
@@ -157,6 +167,10 @@ export function SetOutdatedFlag(arg1:string):Promise<void>;
 export function SetProxy(arg1:string):Promise<void>;
 
 export function SetWindowTheme(arg1:boolean):Promise<void>;
+
+export function StartBrewService(arg1:string):Promise<string>;
+
+export function StopBrewService(arg1:string):Promise<string>;
 
 export function TapBrewRepository(arg1:string,arg2:string):Promise<string>;
 

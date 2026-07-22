@@ -25,7 +25,8 @@
     "cleanup": "Очистка",
     "settings": "Настройки",
     "refresh": "Обновить",
-    "sponsor": "Поддержать"
+    "sponsor": "Поддержать",
+    "services": "Службы"
   },
   "headers": {
     "installedFormulas": "Установленные пакеты",
@@ -38,7 +39,8 @@
     "homebrew": "Homebrew",
     "homebrewDoctor": "Диагностика Homebrew",
     "homebrewCleanup": "Очистка Homebrew",
-    "deprecatedFormulae": "Устаревшие пакеты"
+    "deprecatedFormulae": "Устаревшие пакеты",
+    "services": "Службы"
   },
   "search": {
     "placeholder": "Поиск...",
@@ -187,7 +189,8 @@
     "repositories": "Репозитории (Taps) — это источники пакетов. Они содержат дополнительные пакеты помимо стандартного репозитория.",
     "homebrew": "Управление и обновление Homebrew. Проверьте установленную версию и обновите ядро Homebrew, когда доступна новая версия.",
     "doctor": "Диагностика — это функция Homebrew, которая может обнаружить наиболее распространённые причины ошибок.",
-    "cleanup": "Очистка удаляет устаревшие загрузки и кэшированные файлы для освобождения дискового пространства."
+    "cleanup": "Очистка удаляет устаревшие загрузки и кэшированные файлы для освобождения дискового пространства.",
+    "services": "Службы — это фоновые процессы (через launchd), управляемые Homebrew. Запускайте, останавливайте, перезапускайте или выполняйте службу формулы."
   },
   "homebrew": {
     "currentVersion": "Текущая версия",
@@ -249,7 +252,9 @@
     "installSuccess": "\"{{name}}\" успешно установлен!",
     "installFailed": "Не удалось установить \"{{name}}\": {{error}}",
     "noDoctorOutput": "Нет вывода. Нажмите \"Запустить диагностику\".",
-    "noCleanupOutput": "Нет вывода. Нажмите \"Запустить очистку\"."
+    "noCleanupOutput": "Нет вывода. Нажмите \"Запустить очистку\".",
+    "serviceActionLogs": "Служба: {{name}}",
+    "serviceInfo": "Сведения о службе {{name}}"
   },
   "errors": {
     "loadingFormulas": "❌ Ошибка загрузки пакетов!",
@@ -319,7 +324,8 @@
       "doctor": "Диагностика",
       "cleanup": "Очистка",
       "settings": "Настройки",
-      "shortcuts": "Горячие клавиши..."
+      "shortcuts": "Горячие клавиши...",
+      "services": "Службы"
     },
     "tools": {
       "title": "Инструменты",
@@ -349,7 +355,11 @@
     "package": "пакет",
     "packages": "пакетов",
     "repository": "репозиторий",
-    "repositories": "репозиториев"
+    "repositories": "репозиториев",
+    "loadingServices": "Загрузка служб…",
+    "noServices": "Службы Homebrew не найдены.",
+    "service": "служба",
+    "services": "службы"
   },
   "repository": {
     "noSelection": "Репозиторий не выбран",
@@ -640,7 +650,8 @@
       "startingTap": "❌ Ошибка запуска tap: {{error}}",
       "startingUntap": "❌ Ошибка запуска untap: {{error}}",
       "startingTrust": "❌ Ошибка при запуске добавления в доверенные: {{error}}",
-      "startingHomebrewUpdate": "❌ Ошибка запуска обновления Homebrew: {{error}}"
+      "startingHomebrewUpdate": "❌ Ошибка запуска обновления Homebrew: {{error}}",
+      "startingService": "❌ Ошибка при запуске действия службы: {{error}}"
     },
     "outdated": {
       "autoUpdateCask": "Это приложение с автоматическим обновлением может уже быть актуальным. Записанная Homebrew версия установки может отставать от фактической версии приложения."
@@ -655,9 +666,41 @@
       "quitFailed": "⚠️ Failed to quit {{name}}: {{error}}",
       "relaunching": "🚀 Relaunching {{name}}…",
       "relaunchFailed": "⚠️ Failed to relaunch {{name}}: {{error}}"
+    },
+    "service": {
+      "start": "🔄 Выполнение «brew services {{action}} {{name}}»...",
+      "success": "✅ «brew services {{action}} {{name}}» успешно завершено!",
+      "failed": "❌ «brew services {{action}} {{name}}» не удалось: {{error}}"
     }
   },
   "view": {
     "settings": "Settings"
+  },
+  "services": {
+    "noSelection": "Служба не выбрана",
+    "statusLabel": "Статус",
+    "user": "Пользователь",
+    "pid": "PID",
+    "copyPid": "Копировать PID",
+    "pidCopied": "PID скопирован",
+    "status": {
+      "started": "Запущена",
+      "stopped": "Остановлена",
+      "error": "Ошибка",
+      "scheduled": "Запланирована",
+      "none": "Не запущена",
+      "other": "Другое",
+      "unknown": "Неизвестно"
+    },
+    "buttons": {
+      "start": "Запустить «{{name}}»",
+      "stop": "Остановить «{{name}}»",
+      "restart": "Перезапустить «{{name}}»",
+      "run": "Выполнить «{{name}}» (на переднем плане)",
+      "info": "Показать сведения о «{{name}}»"
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd не смог запустить эту службу. Возможно, она уже загружена или ей нужны права root для привязки привилегированных портов (например, 80/443). Попробуйте «Остановить», а затем снова «Запустить», либо запустите её как службу root в терминале: sudo brew services start {{name}}"
+    }
   }
 }
