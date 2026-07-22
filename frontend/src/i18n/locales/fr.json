@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "Homebrew trouvé à un autre emplacement",
+    "message": "WailBrew utilise « {{current}} », mais un Homebrew fonctionnel a été trouvé dans « {{suggested}} ». Basculez dessus pour voir vos paquets.",
+    "switch": "Basculer et recharger",
+    "switching": "Basculement…",
+    "dismiss": "Ignorer",
+    "switchFailed": "Échec du changement du chemin Homebrew"
+  },
   "sidebar": {
     "packages": "Paquets",
     "formulas": "Formules",

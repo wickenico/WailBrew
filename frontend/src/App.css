@@ -1345,6 +1345,81 @@ body {
   font-weight: 500;
 }
 
+.brew-location-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  background: var(--accent-light);
+}
+
+.brew-location-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.brew-location-banner-text strong {
+  font-size: 0.95rem;
+  color: var(--accent);
+}
+
+.brew-location-banner-text span {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  word-break: break-word;
+}
+
+.brew-location-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.brew-location-switch-btn,
+.brew-location-dismiss-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--glass-border);
+}
+
+.brew-location-switch-btn {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.brew-location-switch-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.brew-location-dismiss-btn {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.brew-location-dismiss-btn:hover:not(:disabled) {
+  background: var(--glass-border);
+}
+
+.brew-location-switch-btn:disabled,
+.brew-location-dismiss-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .all-up-to-date {
   display: flex;
   flex-direction: column;

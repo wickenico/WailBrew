@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "Homebrew נמצא במיקום אחר",
+    "message": "‏WailBrew משתמש ב-\"{{current}}\", אך נמצא Homebrew תקין בנתיב \"{{suggested}}\". עברו אליו כדי לראות את החבילות שלכם.",
+    "switch": "החלף וטען מחדש",
+    "switching": "מחליף…",
+    "dismiss": "התעלם",
+    "switchFailed": "החלפת נתיב Homebrew נכשלה"
+  },
   "sidebar": {
     "packages": "חבילות",
     "formulas": "נוסחאות",

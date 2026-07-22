@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "Homebrew encontrado en otra ubicación",
+    "message": "WailBrew está usando «{{current}}», pero se encontró un Homebrew funcional en «{{suggested}}». Cambia a él para ver tus paquetes.",
+    "switch": "Cambiar y recargar",
+    "switching": "Cambiando…",
+    "dismiss": "Descartar",
+    "switchFailed": "No se pudo cambiar la ruta de Homebrew"
+  },
   "sidebar": {
     "packages": "Paquetes",
     "formulas": "Programas CLI",

@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "在其他位置找到了 Homebrew",
+    "message": "WailBrew 正在使用“{{current}}”，但在“{{suggested}}”找到了可用的 Homebrew。切换到该位置以查看您的软件包。",
+    "switch": "切换并重新加载",
+    "switching": "正在切换…",
+    "dismiss": "忽略",
+    "switchFailed": "切换 Homebrew 路径失败"
+  },
   "sidebar": {
     "packages": "软件包",
     "formulas": "Formulae",

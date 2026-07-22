@@ -319,9 +319,6 @@ func (a *App) startup(ctx context.Context) {
 		}
 	}
 
-	// Update brew executor with full environment
-	a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
-
 	// Set up the askpass helper
 	if a.askpassManager != nil {
 		if err := a.askpassManager.Setup(); err != nil {
@@ -340,27 +337,8 @@ func (a *App) startup(ctx context.Context) {
 	// Wails requires this exact context instance for EventsEmit to work
 	a.eventEmitter = &wailsEventEmitter{ctx: ctx}
 
-	// Initialize brew service with all dependencies
-	a.brewService = brew.NewService(
-		a.brewExecutor,
-		a.brewPath,
-		a.getBrewEnv,
-		a.sessionLogManager.Append,
-		func() error { return a.brewExecutor.ValidateInstallation() },
-		func(key string, params map[string]string) string {
-			if a.i18nManager != nil {
-				return a.i18nManager.GetBackendMessage(key, params)
-			}
-			return key
-		},
-		a.eventEmitter,
-		func() string { return a.GetOutdatedFlag() },
-		func() string { return a.GetCustomOutdatedArgs() },
-		brew.ExtractJSONFromOutput,
-		brew.ParseWarnings,
-		func() bool { return a.GetNoQuarantine() },
-		func() bool { return a.GetAutoRelaunch() },
-	)
+	// Initialize brew executor + service with all dependencies
+	a.reconfigureBrew()
 
 	// Restore last-known window position. Width/Height (and maximized state)
 	// are already applied via options.App in main.go to avoid first-frame
@@ -1042,6 +1020,69 @@ func (a *App) SetAdminUsername(username string) error {
 	return nil
 }
 
+// reconfigureBrew (re)creates the brew executor and service from the current
+// a.brewPath. It must be called after a.eventEmitter is set. It is safe to call
+// again at runtime (e.g. after SetBrewPath) so a path change fully propagates to
+// the service layer without requiring an app restart.
+func (a *App) reconfigureBrew() {
+	a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+
+	a.brewService = brew.NewService(
+		a.brewExecutor,
+		a.brewPath,
+		a.getBrewEnv,
+		a.sessionLogManager.Append,
+		func() error { return a.brewExecutor.ValidateInstallation() },
+		func(key string, params map[string]string) string {
+			if a.i18nManager != nil {
+				return a.i18nManager.GetBackendMessage(key, params)
+			}
+			return key
+		},
+		a.eventEmitter,
+		func() string { return a.GetOutdatedFlag() },
+		func() string { return a.GetCustomOutdatedArgs() },
+		brew.ExtractJSONFromOutput,
+		brew.ParseWarnings,
+		func() bool { return a.GetNoQuarantine() },
+		func() bool { return a.GetAutoRelaunch() },
+	)
+}
+
+// BrewLocationSuggestion describes whether a different, working Homebrew
+// installation was found than the one WailBrew is currently using.
+type BrewLocationSuggestion struct {
+	CurrentPath   string `json:"currentPath"`
+	SuggestedPath string `json:"suggestedPath"`
+	HasSuggestion bool   `json:"hasSuggestion"`
+}
+
+// CheckBrewLocation looks for a working Homebrew installation (via the user's
+// login shell and known locations) and reports it when it differs from the path
+// WailBrew is currently using, or when the current path is not actually working.
+// The frontend calls this when no packages show up so it can suggest a fix.
+func (a *App) CheckBrewLocation() BrewLocationSuggestion {
+	current := a.brewPath
+	suggestion := BrewLocationSuggestion{CurrentPath: current}
+
+	discovered := brew.DiscoverBrewPath()
+	if discovered == "" {
+		return suggestion
+	}
+
+	currentBroken := false
+	if a.brewExecutor != nil {
+		currentBroken = a.brewExecutor.ValidateInstallation() != nil
+	}
+
+	if discovered != current || currentBroken {
+		suggestion.SuggestedPath = discovered
+		suggestion.HasSuggestion = true
+	}
+
+	return suggestion
+}
+
 func (a *App) GetBrewPath() string {
 	// Return from config if set, otherwise return current brewPath
 	if a.config.BrewPath != "" {
@@ -1069,9 +1110,12 @@ func (a *App) SetBrewPath(path string) error {
 		return fmt.Errorf("failed to save brew path to config: %w", err)
 	}
 
-	// Update brew executor with new path
-	if a.brewExecutor != nil {
-		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+	// Recreate the executor AND service so the new path fully propagates at
+	// runtime (the service holds its own executor reference). Only do this once
+	// the event emitter exists (i.e. after startup); before that, startup() will
+	// build them itself.
+	if a.eventEmitter != nil {
+		a.reconfigureBrew()
 	}
 
 	return nil

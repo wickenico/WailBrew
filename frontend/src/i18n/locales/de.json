@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "Homebrew an einem anderen Ort gefunden",
+    "message": "WailBrew verwendet „{{current}}“, aber ein funktionierendes Homebrew wurde unter „{{suggested}}“ gefunden. Wechsle dorthin, um deine Pakete zu sehen.",
+    "switch": "Wechseln & neu laden",
+    "switching": "Wird gewechselt…",
+    "dismiss": "Verwerfen",
+    "switchFailed": "Homebrew-Pfad konnte nicht gewechselt werden"
+  },
   "sidebar": {
     "packages": "Pakete",
     "formulas": "Formeln",

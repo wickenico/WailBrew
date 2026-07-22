@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "Homebrew farklı bir konumda bulundu",
+    "message": "WailBrew \"{{current}}\" kullanıyor, ancak \"{{suggested}}\" konumunda çalışan bir Homebrew bulundu. Paketlerinizi görmek için ona geçin.",
+    "switch": "Geç ve yeniden yükle",
+    "switching": "Geçiliyor…",
+    "dismiss": "Yoksay",
+    "switchFailed": "Homebrew yolu değiştirilemedi"
+  },
   "sidebar": {
     "packages": "Paketler",
     "formulas": "Formüller",

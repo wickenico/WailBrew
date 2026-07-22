@@ -19,7 +19,7 @@ import {
     Home,
     Trash2
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch, GetAutoCleanupAfterUpgrade, SetAutoCleanupAfterUpgrade } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, CheckBrewLocation, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch, GetAutoCleanupAfterUpgrade, SetAutoCleanupAfterUpgrade } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -140,6 +140,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     };
 
     const handleDetectPath = async () => {
+        // Try the smart discovery first (queries the login shell + known
+        // locations), so custom HOMEBREW_PREFIX installs are found too.
+        try {
+            const suggestion = await CheckBrewLocation();
+            if (suggestion?.suggestedPath) {
+                await SetBrewPath(suggestion.suggestedPath);
+                setNewBrewPath(suggestion.suggestedPath);
+                setBrewPath(suggestion.suggestedPath);
+                toast.success(t('settings.messages.pathDetected', { path: suggestion.suggestedPath }));
+                onRefreshPackages();
+                return;
+            }
+        } catch (error) {
+            console.log("Smart brew detection failed, falling back to known paths:", error);
+        }
+
         const commonPaths = [
             "/opt/workbrew/bin/brew",
             "/opt/homebrew/bin/brew",

@@ -39,6 +39,22 @@ export namespace brew {
 
 export namespace main {
 	
+	export class BrewLocationSuggestion {
+	    currentPath: string;
+	    suggestedPath: string;
+	    hasSuggestion: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new BrewLocationSuggestion(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.currentPath = source["currentPath"];
+	        this.suggestedPath = source["suggestedPath"];
+	        this.hasSuggestion = source["hasSuggestion"];
+	    }
+	}
 	export class UpdateInfo {
 	    available: boolean;
 	    currentVersion: string;

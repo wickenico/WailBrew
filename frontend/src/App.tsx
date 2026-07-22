@@ -21,6 +21,7 @@ import {
     GetLandingTab,
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
+    CheckBrewLocation,
     GetDeprecatedFormulae,
     GetHomebrewVersion,
     GetSessionLogs,
@@ -31,6 +32,7 @@ import {
     RunBrewCleanupDryRun,
     RunBrewDoctor,
     SaveWindowGeometry,
+    SetBrewPath,
     SetDockBadgeCount,
     SetDockBadgeCountSync,
     SetLanguage,
@@ -111,6 +113,8 @@ const WailBrewApp = () => {
     const [repositories, setRepositories] = useState<RepositoryEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const [brewLocationSuggestion, setBrewLocationSuggestion] = useState<{ current: string; suggested: string } | null>(null);
+    const [switchingBrewPath, setSwitchingBrewPath] = useState<boolean>(false);
     const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
@@ -330,6 +334,12 @@ const WailBrewApp = () => {
                 setRepositories(reposFormatted);
                 // Note: allPackages are loaded lazily when user switches to "all" view
 
+                // If nothing is installed, verify brew isn't actually somewhere else
+                if (installedFormatted.length === 0 && casksFormatted.length === 0) {
+                    checkBrewLocation();
+                } else {
+                    setBrewLocationSuggestion(null);
+                }
 
                 setLoading(false);
 
@@ -410,6 +420,8 @@ const WailBrewApp = () => {
 
                 setError(errorMessage);
 
+                // Brew validation failed — check whether it lives elsewhere
+                checkBrewLocation();
 
                 setLoading(false);
 
@@ -2092,11 +2104,47 @@ const WailBrewApp = () => {
         }
     };
 
+    // Detect whether a working Homebrew exists at a different location than the
+    // one WailBrew is using (a common cause of "no packages shown"), and surface
+    // a suggestion banner. Only shows when a different, working path is found.
+    const checkBrewLocation = async () => {
+        try {
+            const suggestion = await CheckBrewLocation();
+            if (suggestion?.hasSuggestion && suggestion.suggestedPath) {
+                setBrewLocationSuggestion({
+                    current: suggestion.currentPath,
+                    suggested: suggestion.suggestedPath,
+                });
+            } else {
+                setBrewLocationSuggestion(null);
+            }
+        } catch (err) {
+            console.error("Error checking brew location:", err);
+        }
+    };
+
+    const handleSwitchBrewPath = async () => {
+        if (!brewLocationSuggestion) return;
+        try {
+            setSwitchingBrewPath(true);
+            await SetBrewPath(brewLocationSuggestion.suggested);
+            setBrewLocationSuggestion(null);
+            setError("");
+            await handleRefreshPackages();
+        } catch (err) {
+            console.error("Error switching brew path:", err);
+            toast.error(t('brewLocation.switchFailed'));
+        } finally {
+            setSwitchingBrewPath(false);
+        }
+    };
+
     const handleRefreshPackages = async () => {
         setLoading(true);
         setError("");
         setUpdatableError("");
         setLeavesError("");
+        setBrewLocationSuggestion(null);
 
         // Clear existing data to show clean loading state
         setPackages([]);
@@ -2126,6 +2174,7 @@ const WailBrewApp = () => {
             if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
                 setError(safeInstalled[0][1]);
                 setPackages([]);
+                checkBrewLocation();
             } else {
                 const formatted = safeInstalled.map(([name, installedVersion, size, installReason]) => ({
                     name,
@@ -2240,9 +2289,15 @@ const WailBrewApp = () => {
                 }));
                 setRepositories(formatted);
             }
+
+            // If nothing installed showed up, brew may be pointed at the wrong path
+            if (safeInstalled.length === 0 && safeInstalledCasks.length === 0) {
+                checkBrewLocation();
+            }
         } catch (error) {
             console.error('Error refreshing packages:', error);
             setError('Failed to refresh packages');
+            checkBrewLocation();
         } finally {
             setLoading(false);
         }
@@ -2297,6 +2352,35 @@ const WailBrewApp = () => {
                 {/* Loading timer for development only */}
                 {import.meta.env.DEV && loadingStartTime !== null && (
                     <LoadingTimer startTime={loadingStartTime} />
+                )}
+                {brewLocationSuggestion && (
+                    <div className="brew-location-banner">
+                        <div className="brew-location-banner-text">
+                            <strong>{t('brewLocation.title')}</strong>
+                            <span>
+                                {t('brewLocation.message', {
+                                    current: brewLocationSuggestion.current,
+                                    suggested: brewLocationSuggestion.suggested,
+                                })}
+                            </span>
+                        </div>
+                        <div className="brew-location-banner-actions">
+                            <button
+                                className="brew-location-switch-btn"
+                                onClick={handleSwitchBrewPath}
+                                disabled={switchingBrewPath}
+                            >
+                                {switchingBrewPath ? t('brewLocation.switching') : t('brewLocation.switch')}
+                            </button>
+                            <button
+                                className="brew-location-dismiss-btn"
+                                onClick={() => setBrewLocationSuggestion(null)}
+                                disabled={switchingBrewPath}
+                            >
+                                {t('brewLocation.dismiss')}
+                            </button>
+                        </div>
+                    </div>
                 )}
                 {view === "installed" && (
                     <>

@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "다른 위치에서 Homebrew를 찾았습니다",
+    "message": "WailBrew는 \"{{current}}\"을(를) 사용하고 있지만, 작동하는 Homebrew가 \"{{suggested}}\"에서 발견되었습니다. 패키지를 보려면 전환하세요.",
+    "switch": "전환 후 다시 불러오기",
+    "switching": "전환 중…",
+    "dismiss": "닫기",
+    "switchFailed": "Homebrew 경로 전환에 실패했습니다"
+  },
   "sidebar": {
     "packages": "패키지",
     "formulas": "Formulae",

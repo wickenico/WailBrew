@@ -1,4 +1,12 @@
 {
+  "brewLocation": {
+    "title": "Homebrew найден в другом месте",
+    "message": "WailBrew использует «{{current}}», но рабочий Homebrew найден в «{{suggested}}». Переключитесь на него, чтобы увидеть свои пакеты.",
+    "switch": "Переключить и перезагрузить",
+    "switching": "Переключение…",
+    "dismiss": "Скрыть",
+    "switchFailed": "Не удалось изменить путь к Homebrew"
+  },
   "sidebar": {
     "packages": "Пакеты",
     "formulas": "Пакеты",
