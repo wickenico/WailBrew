@@ -17,6 +17,7 @@ import {
     GetBrewPackageSizes,
     GetBrewTapInfo,
     GetInstalledDependents,
+    GetAutoCleanupAfterUpgrade,
     GetLandingTab,
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
@@ -1317,6 +1318,26 @@ const WailBrewApp = () => {
         setShowUpdateConfirm(true);
     };
 
+    // Runs `brew cleanup` after an upgrade if the user enabled the setting,
+    // appending its output to the current update log dialog.
+    const runAutoCleanupIfEnabled = async () => {
+        try {
+            const enabled = await GetAutoCleanupAfterUpgrade();
+            if (!enabled) return;
+
+            setUpdateLogs(prev => {
+                const line = t('dialogs.autoCleanupRunning');
+                return prev ? `${prev}\n\n${line}` : line;
+            });
+
+            const output = await RunBrewCleanup();
+            setUpdateLogs(prev => (prev ? `${prev}\n${output}` : output));
+        } catch (error) {
+            const errorMsg = `❌ ${t('dialogs.autoCleanupFailed')}: ${String(error)}`;
+            setUpdateLogs(prev => (prev ? `${prev}\n${errorMsg}` : errorMsg));
+        }
+    };
+
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
         const packageName = selectedPackage.name;
@@ -1366,6 +1387,8 @@ const WailBrewApp = () => {
                     isInstalled: true,
                 })));
             }
+
+            await runAutoCleanupIfEnabled();
 
             setIsUpdateRunning(false);
 
@@ -1425,6 +1448,7 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
             // Update all package lists after successful update
             await handleRefreshPackages();
+            await runAutoCleanupIfEnabled();
             setIsUpdateRunning(false);
             setCurrentlyUpdatingPackage(null);
 
@@ -1525,6 +1549,8 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
             // Update the package list after successful update
             await handleRefreshPackages();
+
+            await runAutoCleanupIfEnabled();
 
             setIsUpdateRunning(false);
 

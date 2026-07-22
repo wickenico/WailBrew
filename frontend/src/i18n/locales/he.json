@@ -229,6 +229,8 @@
     "uninstalling": "מסיר את \"{{name}}\"...\nאנא המתן...",
     "updatingAll": "מעדכן את כל החבילות המיושנות...\nאנא המתן...",
     "updatingSelected": "מעדכן {{count}} חבילות נבחרות...\nאנא המתן...",
+    "autoCleanupRunning": "🧹 מבצע ניקוי...",
+    "autoCleanupFailed": "הניקוי נכשל",
     "gettingInfo": "מקבל מידע על \"{{name}}\"...\nאנא המתן...",
     "runningHomebrewUpdate": "מעדכן את Homebrew...\nאנא המתן...",
     "homebrewUpdateLogs": "יומני עדכון Homebrew",
@@ -569,6 +571,10 @@
     "autoRelaunch": {
       "title": "Auto-Relaunch After Upgrade",
       "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
+    },
+    "autoCleanupAfterUpgrade": {
+      "title": "ניקוי אוטומטי לאחר שדרוג",
+      "description": "הרצה אוטומטית של `brew cleanup` לאחר שדרוג חבילות כדי להסיר גרסאות ישנות ולפנות מקום בדיסק."
     }
   },
   "backend": {

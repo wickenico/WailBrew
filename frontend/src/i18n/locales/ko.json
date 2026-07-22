@@ -229,6 +229,8 @@
     "uninstalling": "\"{{name}}\" 제거 중...\n잠시 기다려 주세요...",
     "updatingAll": "모든 오래된 패키지 업데이트 중...\n잠시 기다려 주세요...",
     "updatingSelected": "{{count}}개 선택된 패키지 업데이트 중...\n잠시 기다려 주세요...",
+    "autoCleanupRunning": "🧹 정리 실행 중...",
+    "autoCleanupFailed": "정리 실패",
     "gettingInfo": "\"{{name}}\" 정보 가져오는 중...\n잠시 기다려 주세요...",
     "runningHomebrewUpdate": "Homebrew 업데이트 중...\n잠시 기다려 주세요...",
     "homebrewUpdateLogs": "Homebrew 업데이트 로그",
@@ -569,6 +571,10 @@
     "autoRelaunch": {
       "title": "Auto-Relaunch After Upgrade",
       "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
+    },
+    "autoCleanupAfterUpgrade": {
+      "title": "업그레이드 후 자동 정리",
+      "description": "패키지를 업그레이드한 후 자동으로 `brew cleanup`을 실행하여 이전 버전을 제거하고 디스크 공간을 확보합니다."
     }
   },
   "backend": {

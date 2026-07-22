@@ -23,6 +23,8 @@ type Config struct {
 	// see https://github.com/orgs/Homebrew/discussions/6537).
 	AutoRelaunch bool `json:"autoRelaunch"` // Quit the running app before upgrade and relaunch after quarantine removal
 
+	AutoCleanupAfterUpgrade bool `json:"autoCleanupAfterUpgrade"` // Run `brew cleanup` automatically after an upgrade
+
 	// Window geometry — persisted across launches so the window opens where it
 	// was last left. Zero values mean "not yet captured" and the app falls back
 	// to its built-in defaults.

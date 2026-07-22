@@ -229,6 +229,8 @@
     "uninstalling": "Uninstalling \"{{name}}\"...\nPlease wait...",
     "updatingAll": "Updating all outdated packages...\nPlease wait...",
     "updatingSelected": "Updating {{count}} selected package(s)...\nPlease wait...",
+    "autoCleanupRunning": "🧹 Running cleanup...",
+    "autoCleanupFailed": "Cleanup failed",
     "gettingInfo": "Getting information for \"{{name}}\"...\nPlease wait...",
     "runningHomebrewUpdate": "Updating Homebrew...\nPlease wait...",
     "homebrewUpdateLogs": "Homebrew Update Logs",
@@ -435,6 +437,10 @@
     "autoRelaunch": {
       "title": "Auto-Relaunch After Upgrade",
       "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
+    },
+    "autoCleanupAfterUpgrade": {
+      "title": "Auto-Cleanup After Upgrade",
+      "description": "Automatically run `brew cleanup` after upgrading packages to remove old versions and free up disk space."
     },
     "brewPath": {
       "title": "Homebrew Path Configuration",

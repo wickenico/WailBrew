@@ -42,6 +42,14 @@ export function GetAppVersion() {
   return window['go']['main']['App']['GetAppVersion']();
 }
 
+export function GetAutoCleanupAfterUpgrade() {
+  return window['go']['main']['App']['GetAutoCleanupAfterUpgrade']();
+}
+
+export function GetAutoRelaunch() {
+  return window['go']['main']['App']['GetAutoRelaunch']();
+}
+
 export function GetBrewCaskSizes(arg1) {
   return window['go']['main']['App']['GetBrewCaskSizes'](arg1);
 }
@@ -150,10 +158,6 @@ export function GetMirrorSource() {
   return window['go']['main']['App']['GetMirrorSource']();
 }
 
-export function GetAutoRelaunch() {
-  return window['go']['main']['App']['GetAutoRelaunch']();
-}
-
 export function GetNoQuarantine() {
   return window['go']['main']['App']['GetNoQuarantine']();
 }
@@ -234,6 +238,14 @@ export function SetAdminUsername(arg1) {
   return window['go']['main']['App']['SetAdminUsername'](arg1);
 }
 
+export function SetAutoCleanupAfterUpgrade(arg1) {
+  return window['go']['main']['App']['SetAutoCleanupAfterUpgrade'](arg1);
+}
+
+export function SetAutoRelaunch(arg1) {
+  return window['go']['main']['App']['SetAutoRelaunch'](arg1);
+}
+
 export function SetBrewPath(arg1) {
   return window['go']['main']['App']['SetBrewPath'](arg1);
 }
@@ -276,10 +288,6 @@ export function SetLanguage(arg1) {
 
 export function SetMirrorSource(arg1, arg2) {
   return window['go']['main']['App']['SetMirrorSource'](arg1, arg2);
-}
-
-export function SetAutoRelaunch(arg1) {
-  return window['go']['main']['App']['SetAutoRelaunch'](arg1);
 }
 
 export function SetNoQuarantine(arg1) {

@@ -229,6 +229,8 @@
     "uninstalling": "正在卸载 \"{{name}}\"...\n请等待...",
     "updatingAll": "正在更新所有可更新的软件包...\n请等待...",
     "updatingSelected": "正在更新 {{count}} 个已选软件包...\n请等待...",
+    "autoCleanupRunning": "🧹 正在清理...",
+    "autoCleanupFailed": "清理失败",
     "gettingInfo": "正在获取 \"{{name}}\" 的信息...\n请等待...",
     "runningHomebrewUpdate": "正在更新 Homebrew...\n请等待...",
     "homebrewUpdateLogs": "Homebrew 更新日志",
@@ -569,6 +571,10 @@
     "autoRelaunch": {
       "title": "Auto-Relaunch After Upgrade",
       "description": "If a cask app is running when an upgrade begins, quit it first, then automatically relaunch it after quarantine removal completes. Requires 'Remove Quarantine Attribute' to be enabled."
+    },
+    "autoCleanupAfterUpgrade": {
+      "title": "升级后自动清理",
+      "description": "升级软件包后自动运行 `brew cleanup`，以删除旧版本并释放磁盘空间。"
     }
   },
   "backend": {

@@ -16,9 +16,10 @@ import {
     Code2,
     Shield,
     Network,
-    Home
+    Home,
+    Trash2
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch, GetAutoCleanupAfterUpgrade, SetAutoCleanupAfterUpgrade } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -75,6 +76,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const [noQuarantine, setNoQuarantine] = useState<boolean>(false);
     const [autoRelaunch, setAutoRelaunch] = useState<boolean>(true);
+    const [autoCleanup, setAutoCleanup] = useState<boolean>(false);
 
     useEffect(() => {
         loadCurrentBrewPath();
@@ -89,6 +91,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadLandingTab();
         loadNoQuarantine();
         loadAutoRelaunch();
+        loadAutoCleanup();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -652,6 +655,26 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const loadAutoCleanup = async () => {
+        try {
+            const val = await GetAutoCleanupAfterUpgrade();
+            setAutoCleanup(val);
+        } catch (error) {
+            console.error("Failed to get auto-cleanup setting:", error);
+        }
+    };
+
+    const handleToggleAutoCleanup = async () => {
+        const newVal = !autoCleanup;
+        try {
+            await SetAutoCleanupAfterUpgrade(newVal);
+            setAutoCleanup(newVal);
+        } catch (error) {
+            console.error("Failed to set auto-cleanup:", error);
+            toast.error(String(error));
+        }
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t('settings.mirrorSource.mirrors.official');
@@ -821,6 +844,28 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             aria-checked={autoRelaunch}
                             role="switch"
                             id="settings-auto-relaunch-toggle"
+                        />
+                    </div>
+                </div>
+
+                {/* Auto-Cleanup After Upgrade Toggle Card */}
+                <div className={`settings-card ${autoCleanup ? 'expanded' : ''}`}>
+                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                        <div className="settings-card-icon">
+                            <Trash2 size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.autoCleanupAfterUpgrade.title')}</h3>
+                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
+                                {t('settings.autoCleanupAfterUpgrade.description')}
+                            </span>
+                        </div>
+                        <button
+                            className={`settings-toggle ${autoCleanup ? 'active' : ''}`}
+                            onClick={handleToggleAutoCleanup}
+                            aria-checked={autoCleanup}
+                            role="switch"
+                            id="settings-auto-cleanup-toggle"
                         />
                     </div>
                 </div>

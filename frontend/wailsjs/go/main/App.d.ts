@@ -24,6 +24,10 @@ export function GetAllBrewPackages():Promise<Array<any>>;
 
 export function GetAppVersion():Promise<string>;
 
+export function GetAutoCleanupAfterUpgrade():Promise<boolean>;
+
+export function GetAutoRelaunch():Promise<boolean>;
+
 export function GetBrewCaskSizes(arg1:Array<string>):Promise<Record<string, string>>;
 
 export function GetBrewCasks():Promise<Array<any>>;
@@ -78,8 +82,6 @@ export function GetMacOSVersion():Promise<string>;
 
 export function GetMirrorSource():Promise<Record<string, string>>;
 
-export function GetAutoRelaunch():Promise<boolean>;
-
 export function GetNoQuarantine():Promise<boolean>;
 
 export function GetOutdatedFlag():Promise<string>;
@@ -120,6 +122,10 @@ export function SelectCaskAppDir():Promise<string>;
 
 export function SetAdminUsername(arg1:string):Promise<void>;
 
+export function SetAutoCleanupAfterUpgrade(arg1:boolean):Promise<void>;
+
+export function SetAutoRelaunch(arg1:boolean):Promise<void>;
+
 export function SetBrewPath(arg1:string):Promise<void>;
 
 export function SetCaskAppDir(arg1:string):Promise<void>;
@@ -141,8 +147,6 @@ export function SetLandingTab(arg1:string):Promise<void>;
 export function SetLanguage(arg1:string):Promise<void>;
 
 export function SetMirrorSource(arg1:string,arg2:string):Promise<void>;
-
-export function SetAutoRelaunch(arg1:boolean):Promise<void>;
 
 export function SetNoQuarantine(arg1:boolean):Promise<void>;
 

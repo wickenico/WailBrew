@@ -789,6 +789,17 @@ func (a *App) SetAutoRelaunch(val bool) error {
 	return a.config.Save()
 }
 
+// GetAutoCleanupAfterUpgrade returns whether `brew cleanup` should run
+// automatically after an upgrade completes.
+func (a *App) GetAutoCleanupAfterUpgrade() bool {
+	return a.config.AutoCleanupAfterUpgrade
+}
+
+func (a *App) SetAutoCleanupAfterUpgrade(val bool) error {
+	a.config.AutoCleanupAfterUpgrade = val
+	return a.config.Save()
+}
+
 func (a *App) GetProxy() string {
 	return a.config.Proxy
 }
