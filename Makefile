@@ -11,7 +11,7 @@ else
 	SED_I := sed -i
 endif
 
-.PHONY: build dev clean bump update-deps
+.PHONY: build dev clean bump bump-minor update-deps
 
 i:
 	cd frontend && pnpm install
@@ -36,6 +36,18 @@ bump:
 	NEW_PATCH=$$((PATCH + 1)); \
 	NEW_VERSION="$$MAJOR.$$MINOR.$$NEW_PATCH"; \
 	echo "Bumping version: $$CURRENT -> $$NEW_VERSION"; \
+	$(SED_I) "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" frontend/package.json; \
+	$(SED_I) "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" wails.json; \
+	$(SED_I) "s/\"productVersion\": \"$$CURRENT\"/\"productVersion\": \"$$NEW_VERSION\"/g" wails.json; \
+	echo "Updated frontend/package.json and wails.json to $$NEW_VERSION"
+
+bump-minor:
+	@CURRENT=$$(grep '"version"' frontend/package.json | head -1 | sed 's/.*"\([0-9]*\.[0-9]*\.[0-9]*\)".*/\1/'); \
+	MAJOR=$$(echo $$CURRENT | cut -d. -f1); \
+	MINOR=$$(echo $$CURRENT | cut -d. -f2); \
+	NEW_MINOR=$$((MINOR + 1)); \
+	NEW_VERSION="$$MAJOR.$$NEW_MINOR.0"; \
+	echo "Bumping minor version: $$CURRENT -> $$NEW_VERSION"; \
 	$(SED_I) "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" frontend/package.json; \
 	$(SED_I) "s/\"version\": \"$$CURRENT\"/\"version\": \"$$NEW_VERSION\"/g" wails.json; \
 	$(SED_I) "s/\"productVersion\": \"$$CURRENT\"/\"productVersion\": \"$$NEW_VERSION\"/g" wails.json; \
