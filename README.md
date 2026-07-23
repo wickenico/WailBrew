@@ -265,10 +265,6 @@ For issues, feature requests, or questions:
 - Create a [new issue](https://github.com/wickenico/WailBrew/issues/new) if needed
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on reporting bugs
 
-## 📈 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=wickenico/WailBrew&type=Date)](https://star-history.com/#wickenico/WailBrew&Date)
-
 ## 📝 License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
