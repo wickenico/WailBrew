@@ -10,9 +10,13 @@ interface ConfirmDialogProps {
     cancelLabel?: string;
     destructive?: boolean;
     dependents?: string[];
+    checkboxLabel?: string;
+    checkboxHint?: string;
+    checkboxChecked?: boolean;
+    onCheckboxChange?: (checked: boolean) => void;
 }
 
-const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel, destructive, dependents }) => {
+const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel, destructive, dependents, checkboxLabel, checkboxHint, checkboxChecked, onCheckboxChange }) => {
     const { t } = useTranslation();
 
     if (!open) return null;
@@ -34,6 +38,19 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
                                 <span key={dep} className="confirm-dependent-chip">{dep}</span>
                             ))}
                         </div>
+                    </div>
+                )}
+                {checkboxLabel && onCheckboxChange && (
+                    <div className="confirm-checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={!!checkboxChecked}
+                                onChange={(e) => onCheckboxChange(e.target.checked)}
+                            />
+                            <span>{checkboxLabel}</span>
+                        </label>
+                        {checkboxHint && <span className="confirm-checkbox-hint">{checkboxHint}</span>}
                     </div>
                 )}
                 <div className="confirm-actions">

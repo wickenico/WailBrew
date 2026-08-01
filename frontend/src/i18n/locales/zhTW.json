@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "您確定要解除安裝 \"{{name}}\" 嗎？",
+    "zapUninstall": "同時移除所有應用程式資料（--zap）",
+    "zapUninstallHint": "刪除應用程式遺留的偏好設定、快取和支援檔案。",
     "dependentsWarning": "{{count}} 個已安裝套件需要此套件",
     "confirmInstall": "您確定要安裝 \"{{name}}\" 嗎？",
     "confirmUpdate": "您確定要更新 \"{{name}}\" 嗎？",
@@ -593,6 +595,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "升級後自動清理",
       "description": "升級套件後自動執行 `brew cleanup`，以移除舊版本並釋放磁碟空間。"
+    },
+    "uninstallCaskWithZap": {
+      "title": "解除安裝 Cask 時使用 zap",
+      "description": "解除安裝 Cask 時預先勾選 --zap 選項，以便同時移除遺留的偏好設定、快取和支援檔案。"
     }
   },
   "backend": {

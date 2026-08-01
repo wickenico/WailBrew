@@ -106,6 +106,8 @@ export function GetSystemArchitecture():Promise<string>;
 
 export function GetTranslation(arg1:string,arg2:Record<string, string>):Promise<string>;
 
+export function GetUninstallCaskWithZap():Promise<boolean>;
+
 export function InstallBrewPackage(arg1:string):Promise<string>;
 
 export function OpenConfigFile():Promise<void>;
@@ -114,7 +116,7 @@ export function OpenURL(arg1:string):Promise<void>;
 
 export function ParseNewPackagesFromUpdateOutput(arg1:string):Promise<brew.NewPackagesInfo>;
 
-export function RemoveBrewPackage(arg1:string):Promise<string>;
+export function RemoveBrewPackage(arg1:string,arg2:boolean):Promise<string>;
 
 export function RestartApp():Promise<void>;
 
@@ -165,6 +167,8 @@ export function SetNoQuarantine(arg1:boolean):Promise<void>;
 export function SetOutdatedFlag(arg1:string):Promise<void>;
 
 export function SetProxy(arg1:string):Promise<void>;
+
+export function SetUninstallCaskWithZap(arg1:boolean):Promise<void>;
 
 export function SetWindowTheme(arg1:boolean):Promise<void>;
 

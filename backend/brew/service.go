@@ -49,7 +49,7 @@ type Service interface {
 
 	// Actions
 	InstallBrewPackage(ctx context.Context, packageName string) string
-	RemoveBrewPackage(ctx context.Context, packageName string) string
+	RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string
 	UpdateBrewPackage(ctx context.Context, packageName string) string
 	UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string
 	UpdateAllBrewPackages(ctx context.Context) string
@@ -303,8 +303,8 @@ func (s *serviceImpl) InstallBrewPackage(ctx context.Context, packageName string
 	return s.actionsService.InstallBrewPackage(ctx, packageName)
 }
 
-func (s *serviceImpl) RemoveBrewPackage(ctx context.Context, packageName string) string {
-	return s.actionsService.RemoveBrewPackage(ctx, packageName)
+func (s *serviceImpl) RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string {
+	return s.actionsService.RemoveBrewPackage(ctx, packageName, zap)
 }
 
 func (s *serviceImpl) UpdateBrewPackage(ctx context.Context, packageName string) string {

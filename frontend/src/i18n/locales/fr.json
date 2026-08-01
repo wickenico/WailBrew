@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "Voulez-vous vraiment désinstaller \"{{name}}\" ?",
+    "zapUninstall": "Supprimer également toutes les données de l'application (--zap)",
+    "zapUninstallHint": "Supprime les préférences, caches et fichiers de support laissés par l'application.",
     "dependentsWarning": "Requis par {{count}} formule installée",
     "confirmInstall": "Voulez-vous vraiment installer \"{{name}}\" ?",
     "confirmUpdate": "Voulez-vous vraiment mettre à jour \"{{name}}\" ?",
@@ -593,6 +595,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "Nettoyage automatique après la mise à niveau",
       "description": "Exécute automatiquement `brew cleanup` après la mise à niveau des paquets pour supprimer les anciennes versions et libérer de l'espace disque."
+    },
+    "uninstallCaskWithZap": {
+      "title": "Utiliser zap lors de la désinstallation des casks",
+      "description": "Présélectionne l'option --zap lors de la désinstallation d'un cask, afin de supprimer également les préférences, caches et fichiers de support restants."
     }
   },
   "backend": {

@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "האם באמת ברצונך להסיר את \"{{name}}\"?",
+    "zapUninstall": "הסר גם את כל נתוני היישום (--zap)",
+    "zapUninstallHint": "מוחק העדפות, מטמונים וקובצי תמיכה שהיישום השאיר מאחור.",
     "dependentsWarning": "נדרש על ידי {{count}} נוסחאות מותקנות",
     "confirmInstall": "האם באמת ברצונך להתקין את \"{{name}}\"?",
     "confirmUpdate": "האם באמת ברצונך לעדכן את \"{{name}}\"?",
@@ -593,6 +595,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "ניקוי אוטומטי לאחר שדרוג",
       "description": "הרצה אוטומטית של `brew cleanup` לאחר שדרוג חבילות כדי להסיר גרסאות ישנות ולפנות מקום בדיסק."
+    },
+    "uninstallCaskWithZap": {
+      "title": "שימוש ב-zap בהסרת Casks",
+      "description": "מסמן מראש את האפשרות --zap בעת הסרת Cask, כך שגם העדפות, מטמונים וקובצי תמיכה שנותרו יימחקו."
     }
   },
   "backend": {

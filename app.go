@@ -596,8 +596,8 @@ func (a *App) InstallBrewPackage(packageName string) string {
 	return a.brewService.InstallBrewPackage(a.ctx, packageName)
 }
 
-func (a *App) RemoveBrewPackage(packageName string) string {
-	return a.brewService.RemoveBrewPackage(a.ctx, packageName)
+func (a *App) RemoveBrewPackage(packageName string, zap bool) string {
+	return a.brewService.RemoveBrewPackage(a.ctx, packageName, zap)
 }
 
 func (a *App) UpdateBrewPackage(packageName string) string {
@@ -810,6 +810,17 @@ func (a *App) GetAutoCleanupAfterUpgrade() bool {
 
 func (a *App) SetAutoCleanupAfterUpgrade(val bool) error {
 	a.config.AutoCleanupAfterUpgrade = val
+	return a.config.Save()
+}
+
+// GetUninstallCaskWithZap returns whether cask uninstalls should pass --zap,
+// which additionally removes preferences, caches and support files.
+func (a *App) GetUninstallCaskWithZap() bool {
+	return a.config.UninstallCaskWithZap
+}
+
+func (a *App) SetUninstallCaskWithZap(val bool) error {
+	a.config.UninstallCaskWithZap = val
 	return a.config.Save()
 }
 

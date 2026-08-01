@@ -1760,6 +1760,43 @@ body {
   font-family: 'SF Mono', 'Menlo', monospace;
 }
 
+.confirm-checkbox {
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: var(--hover-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 4px;
+}
+
+.confirm-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-main);
+}
+
+.confirm-checkbox input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.confirm-checkbox-hint {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  padding-left: 23px;
+}
+
 .confirm-actions {
   margin-top: 22px;
   display: flex;

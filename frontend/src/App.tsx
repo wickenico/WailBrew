@@ -29,6 +29,7 @@ import {
     GetHomebrewVersion,
     GetSessionLogs,
     GetStartupDataWithUpdate,
+    GetUninstallCaskWithZap,
     InstallBrewPackage,
     RemoveBrewPackage,
     RestartBrewService,
@@ -41,6 +42,7 @@ import {
     SetDockBadgeCount,
     SetDockBadgeCountSync,
     SetLanguage,
+    SetUninstallCaskWithZap,
     StartBrewService,
     StopBrewService,
     TapBrewRepository,
@@ -140,6 +142,8 @@ const WailBrewApp = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const [uninstallDependents, setUninstallDependents] = useState<string[]>([]);
+    const [uninstallIsCask, setUninstallIsCask] = useState<boolean>(false);
+    const [zapUninstall, setZapUninstall] = useState<boolean>(false);
     const [showInstallConfirm, setShowInstallConfirm] = useState<boolean>(false);
     const [showUpdateConfirm, setShowUpdateConfirm] = useState<boolean>(false);
     const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState<boolean>(false);
@@ -1265,6 +1269,7 @@ const WailBrewApp = () => {
     const handleRemoveConfirmed = async () => {
         if (!selectedPackage) return;
         const packageName = selectedPackage.name;
+        const zap = uninstallIsCask && zapUninstall;
         setShowConfirm(false);
         setUninstallLogs(t('dialogs.uninstalling', { name: packageName }));
         setIsUninstallRunning(true);
@@ -1309,7 +1314,7 @@ const WailBrewApp = () => {
 
         // Start the uninstall process
         try {
-            await RemoveBrewPackage(packageName);
+            await RemoveBrewPackage(packageName, zap);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
             setUninstallLogs(prev => prev ? `${prev}\n${errorMsg}` : errorMsg);
@@ -1662,7 +1667,26 @@ const WailBrewApp = () => {
         } catch {
             setUninstallDependents([]);
         }
+
+        // Installed casks carry no isCask flag, so fall back to the cask views
+        const isCask = pkg.isCask ?? (view === "casks" || view === "allCasks");
+        setUninstallIsCask(isCask);
+        if (isCask) {
+            try {
+                setZapUninstall(await GetUninstallCaskWithZap());
+            } catch {
+                setZapUninstall(false);
+            }
+        }
+
         setShowConfirm(true);
+    };
+
+    const handleToggleZapUninstall = (checked: boolean) => {
+        setZapUninstall(checked);
+        SetUninstallCaskWithZap(checked).catch(err => {
+            console.error("Failed to persist zap uninstall setting:", err);
+        });
     };
 
     const handleUntapRepository = (repo: RepositoryEntry) => {
@@ -2980,6 +3004,7 @@ const WailBrewApp = () => {
                         onSelectDependency={handleSelectDependency}
                         onUninstallDeprecated={async (formula: string) => {
                             setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
+                            setUninstallIsCask(false);
                             setShowConfirm(true);
                         }}
                     />
@@ -3035,11 +3060,15 @@ const WailBrewApp = () => {
                 <ConfirmDialog
                     open={showConfirm}
                     message={t('dialogs.confirmUninstall', { name: selectedPackage?.name })}
-                    onConfirm={() => { setUninstallDependents([]); handleRemoveConfirmed(); }}
-                    onCancel={() => { setShowConfirm(false); setUninstallDependents([]); }}
+                    onConfirm={() => { setUninstallDependents([]); handleRemoveConfirmed(); setUninstallIsCask(false); }}
+                    onCancel={() => { setShowConfirm(false); setUninstallDependents([]); setUninstallIsCask(false); }}
                     confirmLabel={t('buttons.yesUninstall')}
                     destructive={true}
                     dependents={uninstallDependents}
+                    checkboxLabel={uninstallIsCask ? t('dialogs.zapUninstall') : undefined}
+                    checkboxHint={uninstallIsCask ? t('dialogs.zapUninstallHint') : undefined}
+                    checkboxChecked={zapUninstall}
+                    onCheckboxChange={uninstallIsCask ? handleToggleZapUninstall : undefined}
                 />
                 <ConfirmDialog
                     open={showInstallConfirm}

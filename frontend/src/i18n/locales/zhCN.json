@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "您确定要卸载 \"{{name}}\" 吗？",
+    "zapUninstall": "同时删除所有应用数据（--zap）",
+    "zapUninstallHint": "删除应用遗留的偏好设置、缓存和支持文件。",
     "dependentsWarning": "{{count}} 个已安装配方需要此包",
     "confirmInstall": "您确定要安装 \"{{name}}\" 吗？",
     "confirmUpdate": "您确定要更新 \"{{name}}\" 吗？",
@@ -593,6 +595,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "升级后自动清理",
       "description": "升级软件包后自动运行 `brew cleanup`，以删除旧版本并释放磁盘空间。"
+    },
+    "uninstallCaskWithZap": {
+      "title": "卸载 Cask 时使用 zap",
+      "description": "卸载 Cask 时预先选中 --zap 选项，以便同时删除遗留的偏好设置、缓存和支持文件。"
     }
   },
   "backend": {

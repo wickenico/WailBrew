@@ -17,9 +17,10 @@ import {
     Shield,
     Network,
     Home,
-    Trash2
+    Trash2,
+    Eraser
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, CheckBrewLocation, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch, GetAutoCleanupAfterUpgrade, SetAutoCleanupAfterUpgrade } from "../../wailsjs/go/main/App";
+import { GetBrewPath, SetBrewPath, CheckBrewLocation, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch, GetAutoCleanupAfterUpgrade, SetAutoCleanupAfterUpgrade, GetUninstallCaskWithZap, SetUninstallCaskWithZap } from "../../wailsjs/go/main/App";
 import toast from 'react-hot-toast';
 
 interface SettingsViewProps {
@@ -77,6 +78,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [noQuarantine, setNoQuarantine] = useState<boolean>(false);
     const [autoRelaunch, setAutoRelaunch] = useState<boolean>(true);
     const [autoCleanup, setAutoCleanup] = useState<boolean>(false);
+    const [uninstallCaskWithZap, setUninstallCaskWithZap] = useState<boolean>(false);
 
     useEffect(() => {
         loadCurrentBrewPath();
@@ -92,6 +94,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadNoQuarantine();
         loadAutoRelaunch();
         loadAutoCleanup();
+        loadUninstallCaskWithZap();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -691,6 +694,26 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const loadUninstallCaskWithZap = async () => {
+        try {
+            const val = await GetUninstallCaskWithZap();
+            setUninstallCaskWithZap(val);
+        } catch (error) {
+            console.error("Failed to get zap uninstall setting:", error);
+        }
+    };
+
+    const handleToggleUninstallCaskWithZap = async () => {
+        const newVal = !uninstallCaskWithZap;
+        try {
+            await SetUninstallCaskWithZap(newVal);
+            setUninstallCaskWithZap(newVal);
+        } catch (error) {
+            console.error("Failed to set zap uninstall setting:", error);
+            toast.error(String(error));
+        }
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t('settings.mirrorSource.mirrors.official');
@@ -882,6 +905,28 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             aria-checked={autoCleanup}
                             role="switch"
                             id="settings-auto-cleanup-toggle"
+                        />
+                    </div>
+                </div>
+
+                {/* Uninstall Casks With Zap Toggle Card */}
+                <div className={`settings-card ${uninstallCaskWithZap ? 'expanded' : ''}`}>
+                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                        <div className="settings-card-icon">
+                            <Eraser size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t('settings.uninstallCaskWithZap.title')}</h3>
+                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
+                                {t('settings.uninstallCaskWithZap.description')}
+                            </span>
+                        </div>
+                        <button
+                            className={`settings-toggle ${uninstallCaskWithZap ? 'active' : ''}`}
+                            onClick={handleToggleUninstallCaskWithZap}
+                            aria-checked={uninstallCaskWithZap}
+                            role="switch"
+                            id="settings-uninstall-cask-zap-toggle"
                         />
                     </div>
                 </div>

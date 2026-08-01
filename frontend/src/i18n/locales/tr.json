@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "Gerçekten \"{{name}}\" paketini silmek istiyor musun?",
+    "zapUninstall": "Uygulama verilerini de kaldır (--zap)",
+    "zapUninstallHint": "Uygulamanın geride bıraktığı tercihleri, önbellekleri ve destek dosyalarını siler.",
     "dependentsWarning": "{{count}} yüklü formül tarafından kullanılıyor",
     "confirmInstall": "Gerçekten \"{{name}}\" paketini yüklemek istiyor musun?",
     "confirmUpdate": "Gerçekten \"{{name}}\" paketini güncellemek istiyor musun?",
@@ -593,6 +595,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "Yükseltmeden Sonra Otomatik Temizlik",
       "description": "Paketleri yükselttikten sonra eski sürümleri kaldırmak ve disk alanı açmak için otomatik olarak `brew cleanup` çalıştırır."
+    },
+    "uninstallCaskWithZap": {
+      "title": "Cask Kaldırırken Zap Kullan",
+      "description": "Bir cask kaldırılırken --zap seçeneğini önceden işaretler, böylece geride kalan tercihler, önbellekler ve destek dosyaları da silinir."
     }
   },
   "backend": {

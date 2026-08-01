@@ -25,6 +25,8 @@ type Config struct {
 
 	AutoCleanupAfterUpgrade bool `json:"autoCleanupAfterUpgrade"` // Run `brew cleanup` automatically after an upgrade
 
+	UninstallCaskWithZap bool `json:"uninstallCaskWithZap"` // Pass --zap when uninstalling a cask, removing leftover preferences/caches
+
 	// Window geometry — persisted across launches so the window opens where it
 	// was last left. Zero values mean "not yet captured" and the app falls back
 	// to its built-in defaults.

@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
+    "zapUninstall": "Also remove all app data (--zap)",
+    "zapUninstallHint": "Deletes preferences, caches and support files the app left behind.",
     "dependentsWarning": "Required by {{count}} installed formula",
     "confirmInstall": "Do you really want to install \"{{name}}\"?",
     "confirmUpdate": "Do you really want to update \"{{name}}\"?",
@@ -486,6 +488,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "Auto-Cleanup After Upgrade",
       "description": "Automatically run `brew cleanup` after upgrading packages to remove old versions and free up disk space."
+    },
+    "uninstallCaskWithZap": {
+      "title": "Zap Casks on Uninstall",
+      "description": "Preselect the --zap option when uninstalling a cask, so leftover preferences, caches and support files are removed too."
     },
     "brewPath": {
       "title": "Homebrew Path Configuration",

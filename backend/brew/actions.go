@@ -246,13 +246,21 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	return successMsg
 }
 
-// RemoveBrewPackage uninstalls a package with live progress updates
-func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName string) string {
+// RemoveBrewPackage uninstalls a package with live progress updates.
+// When zap is true and the package is a cask, --zap is passed so Homebrew also
+// removes leftover preferences, caches and support files.
+func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string {
 	// Emit initial progress
 	startMessage := s.getBackendMsg("uninstallStart", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUninstallProgress", startMessage)
 
-	cmd := exec.Command(s.brewPath, "uninstall", packageName)
+	args := []string{"uninstall"}
+	if zap && s.isPackageCask(packageName) {
+		args = append(args, "--zap", "--cask")
+	}
+	args = append(args, packageName)
+
+	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output

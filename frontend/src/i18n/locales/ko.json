@@ -203,6 +203,8 @@
   },
   "dialogs": {
     "confirmUninstall": "정말로 \"{{name}}\"을(를) 제거하시겠습니까?",
+    "zapUninstall": "앱 데이터도 모두 삭제 (--zap)",
+    "zapUninstallHint": "앱이 남긴 환경설정, 캐시, 지원 파일을 삭제합니다.",
     "dependentsWarning": "{{count}}개의 설치된 패키지에서 사용 중",
     "confirmInstall": "정말로 \"{{name}}\"을(를) 설치하시겠습니까?",
     "confirmUpdate": "정말로 \"{{name}}\"을(를) 업데이트하시겠습니까?",
@@ -593,6 +595,10 @@
     "autoCleanupAfterUpgrade": {
       "title": "업그레이드 후 자동 정리",
       "description": "패키지를 업그레이드한 후 자동으로 `brew cleanup`을 실행하여 이전 버전을 제거하고 디스크 공간을 확보합니다."
+    },
+    "uninstallCaskWithZap": {
+      "title": "Cask 제거 시 zap 사용",
+      "description": "Cask를 제거할 때 --zap 옵션을 미리 선택하여 남아 있는 환경설정, 캐시, 지원 파일도 함께 삭제합니다."
     }
   },
   "backend": {

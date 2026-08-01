@@ -206,6 +206,10 @@ export function GetTranslation(arg1, arg2) {
   return window['go']['main']['App']['GetTranslation'](arg1, arg2);
 }
 
+export function GetUninstallCaskWithZap() {
+  return window['go']['main']['App']['GetUninstallCaskWithZap']();
+}
+
 export function InstallBrewPackage(arg1) {
   return window['go']['main']['App']['InstallBrewPackage'](arg1);
 }
@@ -222,8 +226,8 @@ export function ParseNewPackagesFromUpdateOutput(arg1) {
   return window['go']['main']['App']['ParseNewPackagesFromUpdateOutput'](arg1);
 }
 
-export function RemoveBrewPackage(arg1) {
-  return window['go']['main']['App']['RemoveBrewPackage'](arg1);
+export function RemoveBrewPackage(arg1, arg2) {
+  return window['go']['main']['App']['RemoveBrewPackage'](arg1, arg2);
 }
 
 export function RestartApp() {
@@ -324,6 +328,10 @@ export function SetOutdatedFlag(arg1) {
 
 export function SetProxy(arg1) {
   return window['go']['main']['App']['SetProxy'](arg1);
+}
+
+export function SetUninstallCaskWithZap(arg1) {
+  return window['go']['main']['App']['SetUninstallCaskWithZap'](arg1);
 }
 
 export function SetWindowTheme(arg1) {
