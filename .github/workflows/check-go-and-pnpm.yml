@@ -21,7 +21,7 @@ jobs:
           node-version: 22
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.5.2
 
