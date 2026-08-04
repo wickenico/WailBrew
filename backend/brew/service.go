@@ -139,6 +139,9 @@ func NewService(
 	// Create database service first (needs executor)
 	databaseService := NewDatabaseService(executor)
 
+	// Probed lazily on the first read failure, so no cost on the happy path.
+	capabilities := NewCapabilityDetector(executor)
+
 	// Create list service
 	listService := NewListService(
 		executor,
@@ -147,6 +150,18 @@ func NewService(
 		func() { databaseService.knownPackagesMux.Lock() },
 		func() { databaseService.knownPackagesMux.Unlock() },
 		logFunc,
+		func(stderr string) {
+			// A read failed. If Homebrew blocked it on an untrusted tap and this
+			// install can actually run `brew trust`, offer the same remediation
+			// the install and tap flows already provide.
+			tap, ok := TrustRemedy(capabilities.Capabilities(), stderr)
+			if !ok {
+				return
+			}
+			if payload, err := json.Marshal(map[string]string{"tap": tap}); err == nil {
+				eventEmitter.Emit("packageListTrustRequired", string(payload))
+			}
+		},
 	)
 
 	// Create size service

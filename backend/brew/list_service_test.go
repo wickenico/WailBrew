@@ -1,6 +1,7 @@
 package brew
 
 import (
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -12,17 +13,25 @@ import (
 type fakeRunner struct {
 	stdout map[string]string
 	stderr map[string]string
+	errs   map[string]error
 }
 
 func argKey(args ...string) string { return strings.Join(args, " ") }
 
 func (f *fakeRunner) Run(args ...string) ([]byte, error) {
 	k := argKey(args...)
+	if err := f.errs[k]; err != nil {
+		return nil, err
+	}
 	return []byte(f.stderr[k] + f.stdout[k]), nil
 }
 
 func (f *fakeRunner) RunStdoutOnly(args ...string) ([]byte, error) {
-	return []byte(f.stdout[argKey(args...)]), nil
+	k := argKey(args...)
+	if err := f.errs[k]; err != nil {
+		return nil, err
+	}
+	return []byte(f.stdout[k]), nil
 }
 
 func (f *fakeRunner) RunNoCacheStdoutOnly(args ...string) ([]byte, error) {
@@ -31,17 +40,6 @@ func (f *fakeRunner) RunNoCacheStdoutOnly(args ...string) ([]byte, error) {
 
 func (f *fakeRunner) RunWithTimeoutStdoutOnly(_ time.Duration, args ...string) ([]byte, error) {
 	return f.RunStdoutOnly(args...)
-}
-
-func newTestListService(runner commandRunner, logFunc func(string)) *ListService {
-	if logFunc == nil {
-		logFunc = func(string) {}
-	}
-	return NewListService(runner,
-		func() error { return nil },
-		func() map[string]bool { return map[string]bool{} },
-		func() {}, func() {},
-		logFunc)
 }
 
 // Homebrew writes deprecation warnings from third-party taps to stderr while
@@ -70,6 +68,50 @@ func TestGetBrewPackages_installReasonSurvivesStderrWarnings(t *testing.T) {
 	}
 	if reason := packages[0][3]; reason != "on_request" {
 		t.Fatalf("expected install reason %q, got %q", "on_request", reason)
+	}
+}
+
+func newTestListService(runner commandRunner, logFunc func(string)) *ListService {
+	return newTestListServiceWithFailureHook(runner, logFunc, nil)
+}
+
+func newTestListServiceWithFailureHook(runner commandRunner, logFunc func(string), onFailure func(string)) *ListService {
+	if logFunc == nil {
+		logFunc = func(string) {}
+	}
+	if onFailure == nil {
+		onFailure = func(string) {}
+	}
+	return NewListService(runner,
+		func() error { return nil },
+		func() map[string]bool { return map[string]bool{} },
+		func() {}, func() {},
+		logFunc, onFailure)
+}
+
+// Homebrew names the untrusted tap and the exact recovery command in its
+// diagnostic. Read paths must hand that text to the failure hook so the UI can
+// offer the trust action that already exists for install and tap flows.
+func TestGetBrewCasks_reportsDiagnosticWhenTapIsUntrusted(t *testing.T) {
+	const diagnostic = "exit status 1: Error: Refusing to load cask " +
+		"macos-fuse-t/cask/fuse-t-sshfs from untrusted tap macos-fuse-t/cask."
+
+	runner := &fakeRunner{
+		errs: map[string]error{"list --cask --versions": errors.New(diagnostic)},
+	}
+
+	var reported []string
+	service := newTestListServiceWithFailureHook(runner, nil, func(stderr string) {
+		reported = append(reported, stderr)
+	})
+
+	service.GetBrewCasks()
+
+	if len(reported) != 1 {
+		t.Fatalf("expected the failure diagnostic to be reported once, got %d", len(reported))
+	}
+	if tap, ok := TrustRemedy(Capabilities{SupportsTrust: true}, reported[0]); !ok || tap != "macos-fuse-t/cask" {
+		t.Fatalf("reported diagnostic did not yield the untrusted tap: %q", reported[0])
 	}
 }
 
