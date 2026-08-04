@@ -188,6 +188,7 @@ func NewApp() *App {
 		brewEnvLCAll,
 		brewEnvNoAutoUpdate,
 	}
+	basicEnv = append(basicEnv, brew.HomebrewConfigEnv()...)
 	app.brewExecutor = brew.NewExecutor(brewPath, basicEnv, app.sessionLogManager.Append)
 
 	// Initialize i18n manager
@@ -209,6 +210,10 @@ func (a *App) getBrewEnv() []string {
 		brewEnvNoAutoUpdate,
 		brewEnvNonInteractive,
 	}
+
+	// Recover XDG_CONFIG_HOME from the login shell so Homebrew finds the same
+	// trust configuration the user's terminal does (see brew.HomebrewConfigEnv).
+	env = append(env, brew.HomebrewConfigEnv()...)
 
 	// Add proxy environment variables if configured
 	if a.config.Proxy != "" {

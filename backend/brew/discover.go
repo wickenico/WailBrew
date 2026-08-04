@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -35,12 +36,7 @@ func DiscoverBrewPath() string {
 // discoverViaLoginShell runs `$SHELL -lc 'command -v brew'` so we pick up the
 // user's real environment (custom HOMEBREW_PREFIX, non-default arch prefix, etc.).
 func discoverViaLoginShell() string {
-	shell := strings.TrimSpace(os.Getenv("SHELL"))
-	if shell == "" {
-		shell = "/bin/zsh"
-	}
-
-	output, err := runHostWithTimeout(shell, "-lc", "command -v brew")
+	output, err := runHostWithTimeout(loginShell(), "-lc", "command -v brew")
 	if err != nil {
 		return ""
 	}
@@ -58,6 +54,67 @@ func discoverViaLoginShell() string {
 		return path
 	}
 	return ""
+}
+
+// loginShell returns the user's login shell, falling back to zsh (the macOS default).
+func loginShell() string {
+	if shell := strings.TrimSpace(os.Getenv("SHELL")); shell != "" {
+		return shell
+	}
+	return "/bin/zsh"
+}
+
+// HomebrewConfigEnv returns extra environment entries so that brew, when launched
+// from the macOS GUI, resolves the same Homebrew configuration the user's
+// terminal does. Returns nil when nothing needs to be added.
+//
+// The result is memoized: the environment cannot change while the app is running
+// and the lookup spawns a login shell, which getBrewEnv would otherwise repeat on
+// every configuration change. Note that the sibling login-shell lookup in
+// discoverViaLoginShell is deliberately *not* memoized — CheckBrewLocation re-runs
+// it so the app can suggest a fix once the user installs Homebrew or repairs their
+// PATH, and a cached answer would freeze that recovery path.
+//
+// This value is also deliberately not persisted to config.json next to BrewPath.
+// A user's shell profile can change between launches, and a stale XDG_CONFIG_HOME
+// would silently point Homebrew at the wrong trust file — reviving this bug in a
+// form that is much harder to diagnose. Falling back to "unset" instead lets
+// Homebrew fail loudly with its own actionable message.
+var HomebrewConfigEnv = sync.OnceValue(func() []string {
+	return homebrewConfigEnv(os.Getenv("XDG_CONFIG_HOME"), loginShellXDGConfigHome)
+})
+
+// loginShellXDGConfigHome asks the user's login shell for XDG_CONFIG_HOME so we
+// pick up a value exported from their profile rather than the empty GUI value.
+func loginShellXDGConfigHome() string {
+	output, err := runHostWithTimeout(loginShell(), "-lc", `printf %s "${XDG_CONFIG_HOME-}"`)
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(output))
+}
+
+// homebrewConfigEnv reports the extra environment entries brew needs in order to
+// locate the user's Homebrew configuration.
+//
+// Homebrew 6 keeps tap/formula/cask trust state in
+// ${XDG_CONFIG_HOME}/homebrew/trust.json when XDG_CONFIG_HOME is set, and in
+// ~/.homebrew/trust.json otherwise. A macOS GUI app inherits no login-shell
+// environment, so without this the app reads a different trust file than the
+// user's terminal does and every third-party tap appears untrusted.
+//
+// An existing process value always wins; we only fill in what the GUI lost.
+func homebrewConfigEnv(processXDGConfigHome string, loginShellXDGConfigHome func() string) []string {
+	if strings.TrimSpace(processXDGConfigHome) != "" {
+		return nil
+	}
+
+	value := strings.TrimSpace(loginShellXDGConfigHome())
+	if value == "" {
+		return nil
+	}
+
+	return []string{"XDG_CONFIG_HOME=" + value}
 }
 
 // knownBrewLocations returns candidate brew paths to scan, including any
