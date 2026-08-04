@@ -82,23 +82,42 @@ func (s *ListService) fetchCatalogNames(kind string, args ...string) [][]string 
 	return results
 }
 
+// commandRunner is the subset of *Executor that ListService uses. It exists so
+// tests can supply canned brew output — including stderr — without requiring a
+// real Homebrew installation.
+type commandRunner interface {
+	Run(args ...string) ([]byte, error)
+	RunStdoutOnly(args ...string) ([]byte, error)
+	RunNoCacheStdoutOnly(args ...string) ([]byte, error)
+	RunWithTimeoutStdoutOnly(timeout time.Duration, args ...string) ([]byte, error)
+}
+
 // ListService provides package listing functionality
 type ListService struct {
-	executor      *Executor
+	executor      commandRunner
 	validateFunc  func() error
 	knownPackages func() map[string]bool
 	lockKnown     func()
 	unlockKnown   func()
+	logFunc       func(string)
 }
 
 // NewListService creates a new list service
-func NewListService(executor *Executor, validateFunc func() error, knownPackages func() map[string]bool, lockFunc func(), unlockFunc func()) *ListService {
+func NewListService(executor commandRunner, validateFunc func() error, knownPackages func() map[string]bool, lockFunc func(), unlockFunc func(), logFunc func(string)) *ListService {
 	return &ListService{
 		executor:      executor,
 		validateFunc:  validateFunc,
 		knownPackages: knownPackages,
 		lockKnown:     lockFunc,
 		unlockKnown:   unlockFunc,
+		logFunc:       logFunc,
+	}
+}
+
+// log reports a diagnostic to the session log when one is configured.
+func (s *ListService) log(message string) {
+	if s.logFunc != nil {
+		s.logFunc(message)
 	}
 }
 
@@ -168,7 +187,7 @@ func (s *ListService) GetBrewPackages() [][]string {
 	}
 
 	// Resolve install origin (on request vs as dependency) from Homebrew JSON metadata.
-	infoOutput, infoErr := s.executor.Run("info", "--json=v2", "--formula", "--installed")
+	infoOutput, infoErr := s.executor.RunStdoutOnly("info", "--json=v2", "--formula", "--installed")
 	if infoErr == nil {
 		var info struct {
 			Formulae []struct {
@@ -180,7 +199,11 @@ func (s *ListService) GetBrewPackages() [][]string {
 			} `json:"formulae"`
 		}
 
-		if err := json.Unmarshal(infoOutput, &info); err == nil {
+		if err := json.Unmarshal(infoOutput, &info); err != nil {
+			// Not fatal: the list still renders, but every package falls back to
+			// an "unknown" origin. Log it so that degradation is traceable.
+			s.log(fmt.Sprintf("Failed to parse install-reason metadata from brew info: %v", err))
+		} else {
 			for _, f := range info.Formulae {
 				reason := "unknown"
 				if len(f.Installed) > 0 {
@@ -234,7 +257,7 @@ func (s *ListService) fillCaskInstalledVersions(caskNames []string, versionMap m
 	args := []string{"info", "--cask", "--json=v2"}
 	args = append(args, caskNames...)
 
-	infoOutput, err := s.executor.Run(args...)
+	infoOutput, err := s.executor.RunStdoutOnly(args...)
 	if err != nil {
 		for _, caskName := range caskNames {
 			s.fillSingleCaskInstalledVersion(caskName, versionMap)
@@ -264,7 +287,7 @@ func (s *ListService) fillCaskInstalledVersions(caskNames []string, versionMap m
 }
 
 func (s *ListService) fillSingleCaskInstalledVersion(caskName string, versionMap map[string]string) {
-	infoOutput, err := s.executor.Run("info", "--cask", "--json=v2", caskName)
+	infoOutput, err := s.executor.RunStdoutOnly("info", "--cask", "--json=v2", caskName)
 	if err != nil {
 		return
 	}
