@@ -1035,6 +1035,7 @@ const WailBrewApp = () => {
         return () => {
             unlisten();
             unlistenRefresh();
+            unlistenRefreshPackages();
             unlistenAbout();
             unlistenUpdate();
             unlistenWailbrewUpdated();
