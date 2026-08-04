@@ -900,6 +900,23 @@ const WailBrewApp = () => {
         const unlistenRefreshPackages = EventsOn("refreshPackagesData", () => {
             handleRefreshPackages();
         });
+        // Homebrew 5.1.15+: a list failed because a tap is not trusted. The
+        // backend only emits this when `brew trust` actually exists, so the
+        // prompt is never offered where it could not be carried out.
+        const unlistenListTrust = EventsOn("packageListTrustRequired", (payload: string) => {
+            let tap = "";
+            try {
+                tap = (JSON.parse(payload) as { tap?: string }).tap || "";
+            } catch {
+                tap = "";
+            }
+            if (tap) {
+                setTrustPrompt({
+                    tap,
+                    retry: () => handleRefreshPackages(),
+                });
+            }
+        });
         const unlistenAbout = EventsOn("showAbout", () => {
             setShowAbout(true);
         });
@@ -1036,6 +1053,7 @@ const WailBrewApp = () => {
             unlisten();
             unlistenRefresh();
             unlistenRefreshPackages();
+            unlistenListTrust();
             unlistenAbout();
             unlistenUpdate();
             unlistenWailbrewUpdated();

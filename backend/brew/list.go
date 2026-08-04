@@ -58,6 +58,7 @@ func emptyCatalogError(kind string) [][]string {
 func (s *ListService) fetchCatalogNames(kind string, args ...string) [][]string {
 	output, err := s.executor.RunStdoutOnly(args...)
 	if err != nil {
+		s.reportFailure(err)
 		return [][]string{{"Error", fmt.Sprintf(
 			"Failed to fetch all %s: %v. This often happens on fresh Homebrew installations. Try refreshing after a few minutes.",
 			kind, err,
@@ -100,10 +101,13 @@ type ListService struct {
 	lockKnown     func()
 	unlockKnown   func()
 	logFunc       func(string)
+	onFailure     func(string)
 }
 
-// NewListService creates a new list service
-func NewListService(executor commandRunner, validateFunc func() error, knownPackages func() map[string]bool, lockFunc func(), unlockFunc func(), logFunc func(string)) *ListService {
+// NewListService creates a new list service. onFailure receives the diagnostic
+// text of a failed read command so the caller can classify it — for example to
+// offer the trust action when a tap is untrusted.
+func NewListService(executor commandRunner, validateFunc func() error, knownPackages func() map[string]bool, lockFunc func(), unlockFunc func(), logFunc func(string), onFailure func(string)) *ListService {
 	return &ListService{
 		executor:      executor,
 		validateFunc:  validateFunc,
@@ -111,6 +115,16 @@ func NewListService(executor commandRunner, validateFunc func() error, knownPack
 		lockKnown:     lockFunc,
 		unlockKnown:   unlockFunc,
 		logFunc:       logFunc,
+		onFailure:     onFailure,
+	}
+}
+
+// reportFailure hands a failed command's diagnostic to the caller for
+// classification. Since Executor wraps brew's stderr into the returned error,
+// err.Error() carries Homebrew's own explanation and recovery instructions.
+func (s *ListService) reportFailure(err error) {
+	if s.onFailure != nil && err != nil {
+		s.onFailure(err.Error())
 	}
 }
 
@@ -157,6 +171,7 @@ func (s *ListService) GetBrewPackages() [][]string {
 
 	output, err := s.executor.RunStdoutOnly("list", "--formula", "--versions")
 	if err != nil {
+		s.reportFailure(err)
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed packages: %v", err)}}
 	}
 
@@ -314,6 +329,7 @@ func (s *ListService) GetBrewCasks() [][]string {
 
 	output, err := s.executor.RunStdoutOnly("list", "--cask", "--versions")
 	if err != nil {
+		s.reportFailure(err)
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
 	}
 
@@ -401,6 +417,7 @@ func (s *ListService) GetBrewLeaves() []string {
 func (s *ListService) GetBrewTaps() [][]string {
 	output, err := s.executor.RunStdoutOnly("tap")
 	if err != nil {
+		s.reportFailure(err)
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch repositories: %v", err)}}
 	}
 
