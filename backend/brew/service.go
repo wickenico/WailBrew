@@ -146,6 +146,7 @@ func NewService(
 		func() map[string]bool { return databaseService.knownPackages },
 		func() { databaseService.knownPackagesMux.Lock() },
 		func() { databaseService.knownPackagesMux.Unlock() },
+		logFunc,
 	)
 
 	// Create size service
@@ -699,7 +700,7 @@ func (s *serviceImpl) GetHomebrewCaskVersion() (string, error) {
 		return "", fmt.Errorf("Homebrew validation failed: %v", err)
 	}
 
-	infoOutput, err := s.executor.Run("info", "--cask", "--json=v2", "wailbrew")
+	infoOutput, err := s.executor.RunStdoutOnly("info", "--cask", "--json=v2", "wailbrew")
 	if err != nil {
 		return "", fmt.Errorf("failed to get Homebrew Cask info: %v", err)
 	}
