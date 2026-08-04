@@ -166,7 +166,27 @@ func (e *Executor) runActual(timeout time.Duration, stdoutOnly bool, args ...str
 		}
 	}
 
-	return output, err
+	return output, withCommandStderr(err, output)
+}
+
+// withCommandStderr attaches brew's diagnostic output to err so callers that
+// format with %v show Homebrew's actionable message (for example "Refusing to
+// load cask ... Run `brew trust` ...") instead of a bare "exit status 1".
+//
+// cmd.Output() reports failures as *exec.ExitError, whose Error() is only the
+// wait status; the diagnostics live in the Stderr field. The original error is
+// wrapped so errors.As/errors.Is keep working.
+func withCommandStderr(err error, stdout []byte) error {
+	if err == nil {
+		return nil
+	}
+
+	detail := strings.TrimSpace(brewCommandErrorOutput(stdout, err))
+	if detail == "" {
+		return err
+	}
+
+	return fmt.Errorf("%w: %s", err, detail)
 }
 
 func brewCommandErrorOutput(stdout []byte, err error) string {
