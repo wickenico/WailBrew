@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp, ArrowUpCircle, CheckSquare, CircleCheckBig, CirclePlus, CircleX, Info, Square, TriangleAlert } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 
 interface PackageEntry {
@@ -56,6 +57,89 @@ const parseSizeToBytes = (size?: string): number => {
     };
 
     return value * (multipliers[unit] || 1);
+};
+
+interface WarningIconTooltipProps {
+    warning: string;
+}
+
+const WarningIconTooltip: React.FC<WarningIconTooltipProps> = ({ warning }) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({
+        position: "fixed",
+        top: -9999,
+        left: 0,
+        zIndex: 99999,
+    });
+    const iconRef = useRef<HTMLSpanElement>(null);
+    const tooltipRef = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+        if (!showTooltip || !iconRef.current || !tooltipRef.current) return;
+
+        const rect = iconRef.current.getBoundingClientRect();
+        const tipRect = tooltipRef.current.getBoundingClientRect();
+        const gap = 8;
+        const padding = 8;
+
+        const placeAbove = rect.top >= tipRect.height + gap;
+        let top = placeAbove
+            ? rect.top - tipRect.height - gap
+            : rect.bottom + gap;
+        top = Math.max(padding, Math.min(top, window.innerHeight - tipRect.height - padding));
+
+        let left = rect.left + rect.width / 2;
+        const halfWidth = tipRect.width / 2;
+        left = Math.max(
+            padding + halfWidth,
+            Math.min(left, window.innerWidth - padding - halfWidth)
+        );
+
+        setTooltipStyle({
+            position: "fixed",
+            top,
+            left,
+            transform: "translateX(-50%)",
+            zIndex: 99999,
+        });
+    }, [showTooltip, warning]);
+
+    return (
+        <>
+            <span
+                ref={iconRef}
+                className="warning-icon-wrapper"
+                style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    cursor: "help",
+                }}
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => {
+                    setShowTooltip(false);
+                    setTooltipStyle({
+                        position: "fixed",
+                        top: -9999,
+                        left: 0,
+                        zIndex: 99999,
+                    });
+                }}
+            >
+                <TriangleAlert size={16} className="warning-icon" />
+            </span>
+            {showTooltip && ReactDOM.createPortal(
+                <div
+                    ref={tooltipRef}
+                    className="warning-tooltip"
+                    style={tooltipStyle}
+                    role="tooltip"
+                >
+                    {warning}
+                </div>,
+                document.body
+            )}
+        </>
+    );
 };
 
 const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
@@ -335,19 +419,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(({
                     <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                         {typeIcon}
                         <span>{pkg.name}</span>
-                        {pkg.warning && (
-                            <span
-                                className="warning-icon-wrapper"
-                                title={pkg.warning}
-                                style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    cursor: "help",
-                                }}
-                            >
-                                <TriangleAlert size={16} className="warning-icon" />
-                            </span>
-                        )}
+                        {pkg.warning && <WarningIconTooltip warning={pkg.warning} />}
                     </div>
                 );
             }
