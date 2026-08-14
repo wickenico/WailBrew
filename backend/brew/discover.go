@@ -41,17 +41,20 @@ func discoverViaLoginShell() string {
 		return ""
 	}
 
-	path := strings.TrimSpace(string(output))
-	// `command -v` may emit more than one line; the executable path is first.
-	if idx := strings.IndexByte(path, '\n'); idx >= 0 {
-		path = strings.TrimSpace(path[:idx])
-	}
-	if path == "" {
-		return ""
-	}
+	return workingBrewPathFromShellOutput(output, isWorkingBrew)
+}
 
-	if isWorkingBrew(path) {
-		return path
+// workingBrewPathFromShellOutput finds the actual `command -v brew` result
+// without assuming the login shell is silent. Shell startup files may print
+// diagnostics before or after the command output, so candidates are checked
+// from the end and accepted only when they point to a working brew executable.
+func workingBrewPathFromShellOutput(output []byte, isWorking func(string) bool) string {
+	lines := strings.Split(string(output), "\n")
+	for i := len(lines) - 1; i >= 0; i-- {
+		candidate := strings.TrimSpace(lines[i])
+		if candidate != "" && isWorking(candidate) {
+			return candidate
+		}
 	}
 	return ""
 }
@@ -84,14 +87,34 @@ var HomebrewConfigEnv = sync.OnceValue(func() []string {
 	return homebrewConfigEnv(os.Getenv("XDG_CONFIG_HOME"), loginShellXDGConfigHome)
 })
 
-// loginShellXDGConfigHome asks the user's login shell for XDG_CONFIG_HOME so we
-// pick up a value exported from their profile rather than the empty GUI value.
+// loginShellXDGConfigHome asks the user's login shell for its environment so we
+// pick up XDG_CONFIG_HOME exported by the profile rather than the empty GUI
+// value. Parsing the env output avoids treating unrelated startup diagnostics
+// as the variable value.
 func loginShellXDGConfigHome() string {
-	output, err := runHostWithTimeout(loginShell(), "-lc", `printf %s "${XDG_CONFIG_HOME-}"`)
+	output, err := runHostWithTimeout(loginShell(), "-lc", `/usr/bin/printf '\0'; /usr/bin/env -0`)
 	if err != nil {
 		return ""
 	}
-	return strings.TrimSpace(string(output))
+	return environmentValueFromShellOutput(output, "XDG_CONFIG_HOME")
+}
+
+// environmentValueFromShellOutput extracts an exact KEY=value entry from the
+// NUL-delimited environment snapshot. The first NUL separates startup output
+// from env records; the final NUL keeps any shell-exit output outside them.
+func environmentValueFromShellOutput(output []byte, key string) string {
+	prefix := key + "="
+	records := strings.Split(string(output), "\x00")
+	if len(records) < 3 {
+		return ""
+	}
+
+	for _, record := range records[1 : len(records)-1] {
+		if strings.HasPrefix(record, prefix) {
+			return strings.TrimSpace(strings.TrimPrefix(record, prefix))
+		}
+	}
+	return ""
 }
 
 // homebrewConfigEnv reports the extra environment entries brew needs in order to
