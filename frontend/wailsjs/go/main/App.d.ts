@@ -116,6 +116,8 @@ export function OpenURL(arg1:string):Promise<void>;
 
 export function ParseNewPackagesFromUpdateOutput(arg1:string):Promise<brew.NewPackagesInfo>;
 
+export function PreviewBrewCommand(arg1:string,arg2:Array<string>,arg3:boolean,arg4:boolean):Promise<string>;
+
 export function RemoveBrewPackage(arg1:string,arg2:boolean):Promise<string>;
 
 export function RestartApp():Promise<void>;

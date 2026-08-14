@@ -226,6 +226,10 @@ export function ParseNewPackagesFromUpdateOutput(arg1) {
   return window['go']['main']['App']['ParseNewPackagesFromUpdateOutput'](arg1);
 }
 
+export function PreviewBrewCommand(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['PreviewBrewCommand'](arg1, arg2, arg3, arg4);
+}
+
 export function RemoveBrewPackage(arg1, arg2) {
   return window['go']['main']['App']['RemoveBrewPackage'](arg1, arg2);
 }

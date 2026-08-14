@@ -630,6 +630,63 @@ func (a *App) TrustBrewTap(tapName string) string {
 	return a.brewService.TrustBrewTap(a.ctx, tapName)
 }
 
+// PreviewBrewCommand returns the exact brew command an action will run, so the
+// confirmation dialogs can show it. Supported actions: install, uninstall,
+// upgrade, upgrade-selected, upgrade-all, tap, untap, trust. For tap, targets is
+// [name] or [name, url]; all other single-target actions take [name].
+func (a *App) PreviewBrewCommand(action string, targets []string, isCask bool, zap bool) string {
+	target := ""
+	if len(targets) > 0 {
+		target = targets[0]
+	}
+
+	switch action {
+	case "install":
+		if target == "" {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildInstallArgs(target))
+	case "uninstall":
+		if target == "" {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildUninstallArgs(target, zap, isCask))
+	case "upgrade":
+		if target == "" {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildUpgradeArgs(target, isCask, a.GetOutdatedFlag(), false))
+	case "upgrade-selected":
+		if len(targets) == 0 {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildUpgradeSelectedArgs(targets))
+	case "upgrade-all":
+		return brew.FormatCommand(brew.BuildUpgradeAllArgs(a.GetOutdatedFlag()))
+	case "tap":
+		if target == "" {
+			return ""
+		}
+		repositoryURL := ""
+		if len(targets) > 1 {
+			repositoryURL = targets[1]
+		}
+		return brew.FormatCommand(brew.BuildTapArgs(target, repositoryURL))
+	case "untap":
+		if target == "" {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildUntapArgs(target))
+	case "trust":
+		if target == "" {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildTrustArgs(target))
+	default:
+		return ""
+	}
+}
+
 // GetBrewServices returns all Homebrew-managed services as rows of [name, status, user].
 func (a *App) GetBrewServices() [][]string {
 	return a.brewService.GetBrewServices()

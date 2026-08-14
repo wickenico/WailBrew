@@ -157,7 +157,7 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	startMessage := s.getBackendMsg("installStart", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageInstallProgress", startMessage)
 
-	cmd := exec.Command(s.brewPath, "install", packageName)
+	cmd := exec.Command(s.brewPath, BuildInstallArgs(packageName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
@@ -254,11 +254,9 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	startMessage := s.getBackendMsg("uninstallStart", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUninstallProgress", startMessage)
 
-	args := []string{"uninstall"}
-	if zap && s.isPackageCask(packageName) {
-		args = append(args, "--zap", "--cask")
-	}
-	args = append(args, packageName)
+	// isPackageCask shells out to brew, so only probe when zap was requested.
+	isCask := zap && s.isPackageCask(packageName)
+	args := BuildUninstallArgs(packageName, zap, isCask)
 
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
@@ -333,21 +331,7 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 
 // RunUpdateCommand executes the brew upgrade command and returns the result
 func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (finalMessage string, wailbrewUpdated bool, shouldRetry bool) {
-	args := []string{"upgrade"}
-
-	if s.isPackageCask(packageName) {
-		outdatedFlag := s.getOutdatedFlag()
-		if outdatedFlag == "greedy" {
-			args = append(args, "--greedy")
-		} else if outdatedFlag == "greedy-auto-updates" {
-			args = append(args, "--greedy-auto-updates")
-		}
-	}
-
-	if useForce {
-		args = append(args, "--force")
-	}
-	args = append(args, packageName)
+	args := BuildUpgradeArgs(packageName, s.isPackageCask(packageName), s.getOutdatedFlag(), useForce)
 
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
@@ -479,8 +463,7 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	}
 
 	// Build brew upgrade command with specific packages
-	args := []string{"upgrade"}
-	args = append(args, packageNames...)
+	args := BuildUpgradeSelectedArgs(packageNames)
 
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
@@ -625,14 +608,7 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	s.eventEmitter.Emit("packageUpdateProgress", startMessage)
 
 	// Build upgrade command respecting the user's Outdated Detection Mode setting
-	upgradeArgs := []string{"upgrade"}
-	outdatedFlag := s.getOutdatedFlag()
-	if outdatedFlag == "greedy" {
-		upgradeArgs = append(upgradeArgs, "--greedy")
-	} else if outdatedFlag == "greedy-auto-updates" {
-		upgradeArgs = append(upgradeArgs, "--greedy-auto-updates")
-	}
-	// If outdatedFlag is "none", no additional flag is added (standard mode)
+	upgradeArgs := BuildUpgradeAllArgs(s.getOutdatedFlag())
 	cmd := exec.Command(s.brewPath, upgradeArgs...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 

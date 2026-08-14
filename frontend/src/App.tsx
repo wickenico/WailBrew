@@ -3088,6 +3088,12 @@ const WailBrewApp = () => {
                     checkboxHint={uninstallIsCask ? t('dialogs.zapUninstallHint') : undefined}
                     checkboxChecked={zapUninstall}
                     onCheckboxChange={uninstallIsCask ? handleToggleZapUninstall : undefined}
+                    commandSpec={{
+                        action: 'uninstall',
+                        targets: selectedPackage ? [selectedPackage.name] : [],
+                        isCask: uninstallIsCask,
+                        zap: uninstallIsCask && zapUninstall,
+                    }}
                 />
                 <ConfirmDialog
                     open={showInstallConfirm}
@@ -3095,6 +3101,10 @@ const WailBrewApp = () => {
                     onConfirm={handleInstallConfirmed}
                     onCancel={() => setShowInstallConfirm(false)}
                     confirmLabel={t('buttons.yesInstall')}
+                    commandSpec={{
+                        action: 'install',
+                        targets: selectedPackage ? [selectedPackage.name] : [],
+                    }}
                 />
                 <ConfirmDialog
                     open={showUpdateConfirm}
@@ -3102,6 +3112,11 @@ const WailBrewApp = () => {
                     onConfirm={handleUpdateConfirmed}
                     onCancel={() => setShowUpdateConfirm(false)}
                     confirmLabel={t('buttons.yesUpdate')}
+                    commandSpec={{
+                        action: 'upgrade',
+                        targets: selectedPackage ? [selectedPackage.name] : [],
+                        isCask: selectedPackage?.isCask ?? false,
+                    }}
                 />
                 <ConfirmDialog
                     open={showUpdateAllConfirm}
@@ -3109,6 +3124,7 @@ const WailBrewApp = () => {
                     onConfirm={handleUpdateAllConfirmed}
                     onCancel={() => setShowUpdateAllConfirm(false)}
                     confirmLabel={t('buttons.yesUpdateAll')}
+                    commandSpec={{ action: 'upgrade-all', targets: [] }}
                 />
                 <ConfirmDialog
                     open={showUpdateSelectedConfirm}
@@ -3116,6 +3132,7 @@ const WailBrewApp = () => {
                     onConfirm={handleUpdateSelectedConfirmed}
                     onCancel={() => setShowUpdateSelectedConfirm(false)}
                     confirmLabel={t('buttons.yesUpdateSelected', { count: selectedPackages.size })}
+                    commandSpec={{ action: 'upgrade-selected', targets: Array.from(selectedPackages) }}
                 />
                 <ConfirmDialog
                     open={showUntapConfirm}
@@ -3124,6 +3141,10 @@ const WailBrewApp = () => {
                     onCancel={() => setShowUntapConfirm(false)}
                     confirmLabel={t('buttons.yesUntap')}
                     destructive={true}
+                    commandSpec={{
+                        action: 'untap',
+                        targets: selectedRepository ? [selectedRepository.name] : [],
+                    }}
                 />
                 <ConfirmDialog
                     open={trustPrompt !== null}
@@ -3131,6 +3152,10 @@ const WailBrewApp = () => {
                     onConfirm={handleTrustConfirmed}
                     onCancel={() => setTrustPrompt(null)}
                     confirmLabel={t('buttons.yesTrust')}
+                    commandSpec={{
+                        action: 'trust',
+                        targets: trustPrompt ? [trustPrompt.tap] : [],
+                    }}
                 />
                 <LogDialog
                     open={updateLogs !== null}

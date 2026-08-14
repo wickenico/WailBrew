@@ -77,11 +77,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 	startMessage := s.getBackendMsg("tapStart", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryTapProgress", startMessage)
 
-	args := []string{"tap", repositoryName}
-	if url := strings.TrimSpace(repositoryURL); url != "" {
-		args = append(args, url)
-	}
-	cmd := exec.Command(s.brewPath, args...)
+	cmd := exec.Command(s.brewPath, BuildTapArgs(repositoryName, repositoryURL)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
@@ -168,7 +164,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	startMessage := s.getBackendMsg("untapStart", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryUntapProgress", startMessage)
 
-	cmd := exec.Command(s.brewPath, "untap", repositoryName)
+	cmd := exec.Command(s.brewPath, BuildUntapArgs(repositoryName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	// Create pipes for real-time output
@@ -242,7 +238,7 @@ func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
 	startMessage := s.getBackendMsg("trustStart", map[string]string{"name": tapName})
 	s.eventEmitter.Emit("repositoryTrustProgress", startMessage)
 
-	cmd := exec.Command(s.brewPath, "trust", tapName)
+	cmd := exec.Command(s.brewPath, BuildTrustArgs(tapName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	stdout, err := cmd.StdoutPipe()
