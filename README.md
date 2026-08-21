@@ -2,7 +2,7 @@
   <img src="images/logo.png" alt="WailBrew logo — a whale holding a mug of beer" width="180">
 </p>
 
-<h1 align="center">WailBrew — Homebrew GUI Manager for macOS</h1>
+<h1 align="center">WailBrew - Homebrew GUI Manager for macOS</h1>
 
 <p align="center">
   A modern, native <strong>Homebrew GUI</strong> for macOS to install, update, and manage brew packages, casks, and services — an actively maintained, open-source <strong>Cakebrew alternative</strong>.
