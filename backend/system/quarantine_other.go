@@ -8,11 +8,6 @@ func ResolveCaskAppPath(brewPath, caskName, appDir string) (appPath string, isPk
 	return "", false, nil
 }
 
-// parseCaskArtifacts is a no-op on non-macOS platforms.
-func parseCaskArtifacts(jsonBytes []byte, appDir string) (appPath string, isPkg bool, err error) {
-	return "", false, nil
-}
-
 // AppNameFromPath is a no-op on non-macOS platforms.
 func AppNameFromPath(appPath string) string {
 	return ""
