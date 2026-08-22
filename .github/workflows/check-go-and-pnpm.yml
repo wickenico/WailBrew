@@ -4,10 +4,15 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
@@ -15,23 +20,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22
-
       - name: Set up pnpm
         uses: pnpm/action-setup@v6.0.10
         with:
           version: 11.5.2
 
-      - name: Setup pnpm cache
-        uses: actions/cache@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
-          path: ~/.local/share/pnpm/store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install frontend dependencies
         run: pnpm install
@@ -39,6 +38,10 @@ jobs:
 
       - name: Build frontend
         run: pnpm run build
+        working-directory: frontend
+
+      - name: Run frontend tests
+        run: pnpm run test
         working-directory: frontend
 
       - name: Set up Go
@@ -50,3 +53,6 @@ jobs:
         run: |
           go mod tidy
           go build ./...
+
+      - name: Run Go tests
+        run: go test ./...
