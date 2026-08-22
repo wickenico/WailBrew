@@ -1,7 +1,6 @@
 package brew
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,7 +9,6 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
-	"sync"
 	"time"
 
 	"WailBrew/backend/system"
@@ -651,56 +649,32 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 	cmd := exec.Command(s.brewPath, "update")
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, _ := runStreamingCommand(cmd,
+		func(line string) {
+			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateOutput", map[string]string{"line": line}))
+		},
+		func(line string) {
+			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateWarning", map[string]string{"line": line}))
+		},
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
-	}
-
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingHomebrewUpdate", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateOutput", map[string]string{"line": line}))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateWarning", map[string]string{"line": line}))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
 	var finalMessage string
-	if err != nil {
+	if phase == phaseRun {
 		finalMessage = s.getBackendMsg("homebrewUpdateFailed", map[string]string{"error": err.Error()})
 	} else {
 		finalMessage = s.getBackendMsg("homebrewUpdateSuccess", map[string]string{})

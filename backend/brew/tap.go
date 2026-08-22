@@ -1,13 +1,11 @@
 package brew
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
-	"sync"
 
 	"WailBrew/backend/system"
 )
@@ -80,62 +78,25 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 	cmd := exec.Command(s.brewPath, BuildTapArgs(repositoryName, repositoryURL)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	// Create pipes for real-time output
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, stderrStr := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("📦 %s", line)) },
+		func(line string) { s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		return errorMsg
-	}
-
-	// Start the command
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingTap", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		return errorMsg
-	}
-
-	// Read and emit output in real-time
-	var stderrOutput strings.Builder
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("📦 %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				stderrOutput.WriteString(line)
-				stderrOutput.WriteString("\n")
-				s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-	if err != nil {
-		stderrStr := stderrOutput.String()
+	case phaseRun:
 		// Homebrew 6: tap may be blocked because it is not trusted. Surface a
 		// distinct event so the UI can ask the user to trust it and retry.
 		if IsUntrustedTapError(stderrStr) {
@@ -167,58 +128,25 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	cmd := exec.Command(s.brewPath, BuildUntapArgs(repositoryName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	// Create pipes for real-time output
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, _ := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("🗑️ %s", line)) },
+		func(line string) { s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		return errorMsg
-	}
-
-	// Start the command
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingUntap", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		return errorMsg
-	}
-
-	// Read and emit output in real-time
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("🗑️ %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-	if err != nil {
+	case phaseRun:
 		errorMsg := s.getBackendMsg("untapFailed", map[string]string{"name": repositoryName, "error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryUntapComplete", errorMsg)
@@ -241,57 +169,28 @@ func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
 	cmd := exec.Command(s.brewPath, BuildTrustArgs(tapName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, _ := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("🔐 %s", line)) },
+		func(line string) { s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
-	}
-
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingTrust", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("🔐 %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	wg.Wait()
-	err = cmd.Wait()
-	if err != nil {
+	case phaseRun:
 		errorMsg := s.getBackendMsg("trustFailed", map[string]string{"name": tapName, "error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)

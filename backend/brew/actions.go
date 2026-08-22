@@ -1,13 +1,11 @@
 package brew
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
 	"strings"
-	"sync"
 
 	"WailBrew/backend/system"
 )
@@ -160,65 +158,28 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	cmd := exec.Command(s.brewPath, BuildInstallArgs(packageName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	// Create pipes for real-time output
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, stderrStr := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("📦 %s", line)) },
+		func(line string) { s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
-	}
-
-	// Start the command
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingInstall", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
-	}
-
-	// Read and emit output in real-time
-	var stderrOutput strings.Builder
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("📦 %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				stderrOutput.WriteString(line)
-				stderrOutput.WriteString("\n")
-				s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-	if err != nil {
-		stderrStr := stderrOutput.String()
+	case phaseRun:
 		// Homebrew 6: install can be blocked because the package's tap is not
 		// trusted. Surface a distinct event so the UI can offer to trust + retry.
 		if IsUntrustedTapError(stderrStr) {
@@ -261,61 +222,28 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	// Create pipes for real-time output
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, _ := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("packageUninstallProgress", fmt.Sprintf("🗑️ %s", line)) },
+		func(line string) { s.eventEmitter.Emit("packageUninstallProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
-	}
-
-	// Start the command
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingUninstall", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
-	}
-
-	// Read and emit output in real-time
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageUninstallProgress", fmt.Sprintf("🗑️ %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageUninstallProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-	if err != nil {
+	case phaseRun:
 		errorMsg := s.getBackendMsg("uninstallFailed", map[string]string{"name": packageName, "error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
@@ -336,64 +264,25 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	// Create pipes for real-time output
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, stderrStr := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line)) },
+		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		return errorMsg, false, false
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		return errorMsg, false, false
-	}
-
-	// Start the command
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingUpdate", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		return errorMsg, false, false
-	}
-
-	// Capture stderr for error detection
-	var stderrOutput strings.Builder
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	// Read and emit output in real-time
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				stderrOutput.WriteString(line)
-				stderrOutput.WriteString("\n")
-				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-
-	if err != nil {
-		stderrStr := stderrOutput.String()
+	case phaseRun:
 		// Check if this is the "app already exists" error and we haven't tried --force yet
 		if !useForce && s.isAppExistsError(stderrStr) {
 			return "", false, true
@@ -468,86 +357,39 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	// Track which packages were updated (especially wailbrew)
+	updatedPackages := make(map[string]bool)
+
+	phase, err, stderrStr := runStreamingCommand(cmd,
+		func(line string) {
+			s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
+			if detectWailbrewSelfUpdate(line) {
+				updatedPackages["wailbrew"] = true
+			}
+		},
+		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		msg := fmt.Sprintf("❌ Error creating output pipe: %v", err)
 		s.eventEmitter.Emit("packageUpdateProgress", msg)
 		s.eventEmitter.Emit("packageUpdateComplete", msg)
 		return msg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		msg := fmt.Sprintf("❌ Error creating error pipe: %v", err)
 		s.eventEmitter.Emit("packageUpdateProgress", msg)
 		s.eventEmitter.Emit("packageUpdateComplete", msg)
 		return msg
-	}
-
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		msg := fmt.Sprintf("❌ Error starting update: %v", err)
 		s.eventEmitter.Emit("packageUpdateProgress", msg)
 		s.eventEmitter.Emit("packageUpdateComplete", msg)
 		return msg
 	}
 
-	// Track which packages were updated (especially wailbrew)
-	updatedPackages := make(map[string]bool)
-	var stderrOutput strings.Builder
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	// Read and emit output in real-time
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
-
-				// Detect if wailbrew is being updated
-				if strings.Contains(strings.ToLower(line), "wailbrew") {
-					if strings.Contains(line, "Upgrading") || strings.Contains(line, "Installing") {
-						parts := strings.Fields(line)
-						for i, part := range parts {
-							if (part == "Upgrading" || part == "Installing") && i+1 < len(parts) {
-								pkgName := strings.ToLower(parts[i+1])
-								pkgName = strings.Trim(pkgName, ":.,!?")
-								if pkgName == "wailbrew" {
-									updatedPackages["wailbrew"] = true
-								}
-							}
-						}
-					}
-					if strings.Contains(line, "successfully") && strings.Contains(strings.ToLower(line), "wailbrew") {
-						updatedPackages["wailbrew"] = true
-					}
-				}
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				stderrOutput.WriteString(line)
-				stderrOutput.WriteString("\n")
-				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-
 	var finalMessage string
-	if err != nil {
-		stderrStr := stderrOutput.String()
+	if phase == phaseRun {
 		// Check if this is the "app already exists" error
 		if s.isAppExistsError(stderrStr) {
 			// Extract failed package names
@@ -612,84 +454,39 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	cmd := exec.Command(s.brewPath, upgradeArgs...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	// Create pipes for real-time output
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	// Track which packages are being updated
+	updatedPackages := make(map[string]bool)
+
+	phase, err, _ := runStreamingCommand(cmd,
+		func(line string) {
+			s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
+			if detectWailbrewSelfUpdate(line) {
+				updatedPackages["wailbrew"] = true
+			}
+		},
+		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		s.eventEmitter.Emit("packageUpdateComplete", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		s.eventEmitter.Emit("packageUpdateComplete", errorMsg)
 		return errorMsg
-	}
-
-	// Start the command
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingUpdateAll", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		s.eventEmitter.Emit("packageUpdateComplete", errorMsg)
 		return errorMsg
 	}
 
-	// Track which packages are being updated
-	updatedPackages := make(map[string]bool)
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	// Read and emit output in real-time
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
-
-				// Detect if wailbrew is being updated
-				if strings.Contains(strings.ToLower(line), "wailbrew") {
-					if strings.Contains(line, "Upgrading") || strings.Contains(line, "Installing") {
-						parts := strings.Fields(line)
-						for i, part := range parts {
-							if (part == "Upgrading" || part == "Installing") && i+1 < len(parts) {
-								pkgName := strings.ToLower(parts[i+1])
-								pkgName = strings.Trim(pkgName, ":.,!?")
-								if pkgName == "wailbrew" {
-									updatedPackages["wailbrew"] = true
-								}
-							}
-						}
-					}
-					if strings.Contains(line, "successfully") && strings.Contains(strings.ToLower(line), "wailbrew") {
-						updatedPackages["wailbrew"] = true
-					}
-				}
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-
 	var finalMessage string
-	if err != nil {
+	if phase == phaseRun {
 		finalMessage = s.getBackendMsg("updateAllFailed", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 	} else {

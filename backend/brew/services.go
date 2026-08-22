@@ -1,13 +1,10 @@
 package brew
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
-	"strings"
-	"sync"
 
 	"WailBrew/backend/system"
 )
@@ -152,58 +149,28 @@ func (s *ServicesService) runServiceAction(ctx context.Context, action, name str
 	cmd := exec.CommandContext(ctx, s.brewPath, "services", action, name)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
+	phase, err, _ := runStreamingCommand(cmd,
+		func(line string) { s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("📦 %s", line)) },
+		func(line string) { s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("⚠️ %s", line)) },
+	)
+
+	switch phase {
+	case phaseStdoutPipe:
 		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
+	case phaseStderrPipe:
 		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
-	}
-
-	if err := cmd.Start(); err != nil {
+	case phaseStart:
 		errorMsg := s.getBackendMsg("errorStartingService", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("📦 %s", line))
-			}
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line != "" {
-				s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("⚠️ %s", line))
-			}
-		}
-	}()
-
-	// Wait for scanners to drain before calling cmd.Wait()
-	wg.Wait()
-	err = cmd.Wait()
-	if err != nil {
+	case phaseRun:
 		errorMsg := s.getBackendMsg("serviceFailed", map[string]string{"action": action, "name": name, "error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
