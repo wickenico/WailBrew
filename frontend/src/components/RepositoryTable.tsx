@@ -1,13 +1,7 @@
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { CircleCheckBig, CircleX, ArrowUp, ArrowDown, Info, ShieldCheck, ShieldAlert } from "lucide-react";
-
-interface RepositoryEntry {
-    name: string;
-    status: string;
-    desc?: string;
-    trusted?: boolean;
-}
+import type { RepositoryEntry } from "../types";
 
 interface RepositoryTableProps {
     repositories: RepositoryEntry[];

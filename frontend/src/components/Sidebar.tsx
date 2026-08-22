@@ -6,11 +6,12 @@ import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
+import type { View } from "../types";
 import ThemeToggle from "./ThemeToggle";
 
 interface SidebarProps {
-    view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings";
-    setView: (view: "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings") => void;
+    view: View;
+    setView: (view: View) => void;
     packagesCount: number;
     casksCount: number;
     updatableCount: number;

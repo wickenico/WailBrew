@@ -85,29 +85,7 @@ import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import { LoadingTimer } from "./components/LoadingTimer";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
-
-interface PackageEntry {
-    name: string;
-    installedVersion: string;
-    installReason?: "on_request" | "dependency" | "unknown";
-    latestVersion?: string;
-    size?: string;
-    desc?: string;
-    homepage?: string;
-    dependencies?: string[];
-    conflicts?: string[];
-    isInstalled?: boolean;
-    warning?: string;
-    isCask?: boolean;
-}
-
-interface RepositoryEntry {
-    name: string;
-    status: string;
-    desc?: string;
-    // Homebrew 6 tap trust: true = trusted, false = untrusted, undefined = unknown
-    trusted?: boolean;
-}
+import type { PackageEntry, RepositoryEntry, View } from "./types";
 
 const WailBrewApp = () => {
     const { t, i18n } = useTranslation();
@@ -134,7 +112,7 @@ const WailBrewApp = () => {
     const [error, setError] = useState<string>("");
     const [brewLocationSuggestion, setBrewLocationSuggestion] = useState<{ current: string; suggested: string } | null>(null);
     const [switchingBrewPath, setSwitchingBrewPath] = useState<boolean>(false);
-    const [view, setView] = useState<"installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings">("installed");
+    const [view, setView] = useState<View>("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
@@ -891,7 +869,7 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         const unlisten = EventsOn("setView", (data: string) => {
-            setView(data as "installed" | "casks" | "updatable" | "all" | "allCasks" | "leaves" | "repositories" | "services" | "homebrew" | "doctor" | "cleanup" | "settings");
+            setView(data as View);
             clearSelection();
         });
         const unlistenRefresh = EventsOn("refreshPackages", () => {

@@ -1,12 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-
-interface RepositoryEntry {
-    name: string;
-    status: string;
-    desc?: string;
-    trusted?: boolean;
-}
+import type { RepositoryEntry } from "../types";
 
 interface RepositoryInfoProps {
     repository: RepositoryEntry | null;

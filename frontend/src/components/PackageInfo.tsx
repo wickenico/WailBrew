@@ -3,19 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GetInstalledDependencies, GetInstalledDependents } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
-
-interface PackageEntry {
-    name: string;
-    installedVersion: string;
-    latestVersion?: string;
-    size?: string;
-    desc?: string;
-    homepage?: string;
-    dependencies?: string[];
-    conflicts?: string[];
-    isInstalled?: boolean;
-    isCask?: boolean;
-}
+import type { PackageEntry } from "../types";
 
 interface PackageInfoProps {
     packageEntry: PackageEntry | null;

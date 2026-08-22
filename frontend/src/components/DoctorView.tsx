@@ -2,19 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { CircleX } from "lucide-react";
 import PackageInfo from "./PackageInfo";
-
-interface PackageEntry {
-    name: string;
-    installedVersion: string;
-    latestVersion?: string;
-    size?: string;
-    desc?: string;
-    homepage?: string;
-    dependencies?: string[];
-    conflicts?: string[];
-    isInstalled?: boolean;
-    isCask?: boolean;
-}
+import type { PackageEntry } from "../types";
 
 interface DoctorViewProps {
     doctorLog: string;

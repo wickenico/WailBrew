@@ -2,20 +2,7 @@ import { ArrowDown, ArrowUp, ArrowUpCircle, CheckSquare, CircleCheckBig, CircleP
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-
-interface PackageEntry {
-    name: string;
-    installedVersion: string;
-    latestVersion?: string;
-    size?: string;
-    desc?: string;
-    homepage?: string;
-    dependencies?: string[];
-    conflicts?: string[];
-    isInstalled?: boolean;
-    warning?: string;
-    isCask?: boolean;
-}
+import type { PackageEntry } from "../types";
 
 interface PackageTableProps {
     packages: PackageEntry[];
