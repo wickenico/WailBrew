@@ -886,6 +886,36 @@ func (a *App) SetUninstallCaskWithZap(val bool) error {
 	return a.config.Save()
 }
 
+// GetFavorites returns the names of formulae/casks marked as favorites.
+func (a *App) GetFavorites() []string {
+	if a.config.Favorites == nil {
+		return []string{}
+	}
+	return a.config.Favorites
+}
+
+// ToggleFavorite adds name to the favorites list if absent, or removes it if present.
+func (a *App) ToggleFavorite(name string) error {
+	for i, fav := range a.config.Favorites {
+		if fav == name {
+			a.config.Favorites = append(a.config.Favorites[:i], a.config.Favorites[i+1:]...)
+			return a.config.Save()
+		}
+	}
+	a.config.Favorites = append(a.config.Favorites, name)
+	return a.config.Save()
+}
+
+// GetSortFavoritesToTop returns whether favorited packages should be pinned to the top of package tables.
+func (a *App) GetSortFavoritesToTop() bool {
+	return a.config.SortFavoritesToTop
+}
+
+func (a *App) SetSortFavoritesToTop(val bool) error {
+	a.config.SortFavoritesToTop = val
+	return a.config.Save()
+}
+
 func (a *App) GetProxy() string {
 	return a.config.Proxy
 }

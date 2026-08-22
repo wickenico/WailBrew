@@ -15,6 +15,7 @@ import {
     Settings,
     Shield,
     Sparkles,
+    Star,
     Terminal,
     Trash2,
 } from "lucide-react";
@@ -38,6 +39,7 @@ import {
     GetNoQuarantine,
     GetOutdatedFlag,
     GetProxy,
+    GetSortFavoritesToTop,
     GetSystemArchitecture,
     GetUninstallCaskWithZap,
     SelectCaskAppDir,
@@ -53,15 +55,17 @@ import {
     SetNoQuarantine,
     SetOutdatedFlag,
     SetProxy,
+    SetSortFavoritesToTop,
     SetUninstallCaskWithZap,
     TestProxyConnection,
 } from "../../wailsjs/go/main/App";
 
 interface SettingsViewProps {
     onRefreshPackages: () => void;
+    onSortFavoritesToTopChange: (val: boolean) => void;
 }
 
-const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
+const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFavoritesToTopChange }) => {
     const { t } = useTranslation();
     const [brewPath, setBrewPath] = useState<string>("");
     const [newBrewPath, setNewBrewPath] = useState<string>("");
@@ -113,6 +117,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [autoRelaunch, setAutoRelaunch] = useState<boolean>(true);
     const [autoCleanup, setAutoCleanup] = useState<boolean>(false);
     const [uninstallCaskWithZap, setUninstallCaskWithZap] = useState<boolean>(false);
+    const [sortFavoritesToTop, setSortFavoritesToTop] = useState<boolean>(false);
 
     useEffect(() => {
         loadCurrentBrewPath();
@@ -129,6 +134,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         loadAutoRelaunch();
         loadAutoCleanup();
         loadUninstallCaskWithZap();
+        loadSortFavoritesToTop();
     }, []);
 
     const loadCurrentBrewPath = async () => {
@@ -747,6 +753,27 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         }
     };
 
+    const loadSortFavoritesToTop = async () => {
+        try {
+            const val = await GetSortFavoritesToTop();
+            setSortFavoritesToTop(val);
+        } catch (error) {
+            console.error("Failed to get sort-favorites-to-top setting:", error);
+        }
+    };
+
+    const handleToggleSortFavoritesToTop = async () => {
+        const newVal = !sortFavoritesToTop;
+        try {
+            await SetSortFavoritesToTop(newVal);
+            setSortFavoritesToTop(newVal);
+            onSortFavoritesToTopChange(newVal);
+        } catch (error) {
+            console.error("Failed to set sort-favorites-to-top setting:", error);
+            toast.error(String(error));
+        }
+    };
+
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
             return t("settings.mirrorSource.mirrors.official");
@@ -973,6 +1000,31 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             aria-checked={uninstallCaskWithZap}
                             role="switch"
                             id="settings-uninstall-cask-zap-toggle"
+                        />
+                    </div>
+                </div>
+
+                {/* Sort Favorites to Top Toggle Card */}
+                <div className={`settings-card ${sortFavoritesToTop ? "expanded" : ""}`}>
+                    <div className="settings-card-header" style={{ cursor: "default" }}>
+                        <div className="settings-card-icon">
+                            <Star size={20} />
+                        </div>
+                        <div className="settings-card-info">
+                            <h3>{t("settings.sortFavoritesToTop.title")}</h3>
+                            <span
+                                className="settings-card-value"
+                                style={{ whiteSpace: "normal", fontFamily: "inherit" }}
+                            >
+                                {t("settings.sortFavoritesToTop.description")}
+                            </span>
+                        </div>
+                        <button
+                            className={`settings-toggle ${sortFavoritesToTop ? "active" : ""}`}
+                            onClick={handleToggleSortFavoritesToTop}
+                            aria-checked={sortFavoritesToTop}
+                            role="switch"
+                            id="settings-sort-favorites-toggle"
                         />
                     </div>
                 </div>

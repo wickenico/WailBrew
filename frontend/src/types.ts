@@ -14,6 +14,7 @@ export interface PackageEntry {
     isInstalled?: boolean;
     warning?: string;
     isCask?: boolean;
+    isFavorite?: boolean;
 }
 
 export interface RepositoryEntry {

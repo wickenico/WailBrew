@@ -74,6 +74,8 @@ export function GetCustomOutdatedArgs():Promise<string>;
 
 export function GetDeprecatedFormulae(arg1:string):Promise<Array<string>>;
 
+export function GetFavorites():Promise<Array<string>>;
+
 export function GetHomebrewCaskVersion():Promise<string>;
 
 export function GetHomebrewVersion():Promise<string>;
@@ -97,6 +99,8 @@ export function GetOutdatedFlag():Promise<string>;
 export function GetProxy():Promise<string>;
 
 export function GetSessionLogs():Promise<string>;
+
+export function GetSortFavoritesToTop():Promise<boolean>;
 
 export function GetStartupData():Promise<brew.StartupData>;
 
@@ -170,6 +174,8 @@ export function SetOutdatedFlag(arg1:string):Promise<void>;
 
 export function SetProxy(arg1:string):Promise<void>;
 
+export function SetSortFavoritesToTop(arg1:boolean):Promise<void>;
+
 export function SetUninstallCaskWithZap(arg1:boolean):Promise<void>;
 
 export function SetWindowTheme(arg1:boolean):Promise<void>;
@@ -181,6 +187,8 @@ export function StopBrewService(arg1:string):Promise<string>;
 export function TapBrewRepository(arg1:string,arg2:string):Promise<string>;
 
 export function TestProxyConnection(arg1:string,arg2:string):Promise<string>;
+
+export function ToggleFavorite(arg1:string):Promise<void>;
 
 export function TrustBrewTap(arg1:string):Promise<string>;
 

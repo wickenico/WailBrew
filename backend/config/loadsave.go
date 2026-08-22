@@ -27,6 +27,9 @@ type Config struct {
 
 	UninstallCaskWithZap bool `json:"uninstallCaskWithZap"` // Pass --zap when uninstalling a cask, removing leftover preferences/caches
 
+	Favorites          []string `json:"favorites,omitempty"`          // Names of formulae/casks marked as favorites
+	SortFavoritesToTop bool     `json:"sortFavoritesToTop,omitempty"` // Pin favorited packages to the top of package tables
+
 	// Window geometry — persisted across launches so the window opens where it
 	// was last left. Zero values mean "not yet captured" and the app falls back
 	// to its built-in defaults.

@@ -1533,6 +1533,15 @@ body {
   animation: spin 1s linear infinite;
 }
 
+.refresh-button.active {
+  color: #ffc107;
+}
+
+.refresh-button.active:hover:not(:disabled) {
+  color: #ffc107;
+  transform: none;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -1622,6 +1631,11 @@ body {
 .install-button:hover {
   color: #2196F3;
   background: rgba(33, 150, 243, 0.15);
+}
+
+.favorite-button:hover {
+  color: #ffc107;
+  background: rgba(255, 193, 7, 0.15);
 }
 
 

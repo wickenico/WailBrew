@@ -119,7 +119,10 @@
     "close": "Kapat",
     "updateHomebrew": "Homebrew'i güncelle",
     "uninstallDeprecated": "Kullanımdan kaldırılan formül \"{{name}}\" kaldır",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "\"{{name}}\" öğesini favorilere ekle",
+    "unfavorite": "\"{{name}}\" öğesini favorilerden kaldır",
+    "toggleFavoritesOnly": "Yalnızca favorileri göster"
   },
   "filters": {
     "onRequest": "İstekle kurulan ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "Cask Kaldırırken Zap Kullan",
       "description": "Bir cask kaldırılırken --zap seçeneğini önceden işaretler, böylece geride kalan tercihler, önbellekler ve destek dosyaları da silinir."
+    },
+    "sortFavoritesToTop": {
+      "title": "Favorileri Üste Sırala",
+      "description": "Favori olarak işaretlediğiniz paketleri, normal sıralama düzeninin önünde paket tablolarının en üstüne sabitler."
     }
   },
   "backend": {

@@ -8,6 +8,7 @@ import {
     CircleX,
     Info,
     Square,
+    Star,
     TriangleAlert,
 } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -30,6 +31,8 @@ interface PackageTableProps {
     onTogglePackageSelect?: (packageName: string) => void;
     onSelectAllPackages?: () => void;
     onDeselectAllPackages?: () => void;
+    onToggleFavorite?: (pkg: PackageEntry) => void;
+    sortFavoritesToTop?: boolean;
 }
 
 export interface PackageTableRef {
@@ -148,6 +151,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             onTogglePackageSelect,
             onSelectAllPackages,
             onDeselectAllPackages,
+            onToggleFavorite,
+            sortFavoritesToTop = false,
         },
         ref,
     ) => {
@@ -160,6 +165,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
 
         // Helper function to get column width based on key
         const getColumnWidth = (key: string): string => {
+            if (key === "favorite") return "40px";
             if (key === "name") return "30%";
             if (key === "installedVersion") return "160px";
             if (key === "latestVersion") return "160px";
@@ -291,36 +297,44 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
 
         // Sort packages based on current sort state
         const sortedPackages = React.useMemo(() => {
-            if (!sortKey) return packages;
+            const sortWithinGroup = (list: PackageEntry[]) => {
+                if (!sortKey) return list;
 
-            return [...packages].sort((a, b) => {
-                let aValue: any = (a as any)[sortKey];
-                let bValue: any = (b as any)[sortKey];
+                return [...list].sort((a, b) => {
+                    let aValue: any = (a as any)[sortKey];
+                    let bValue: any = (b as any)[sortKey];
 
-                // Special handling for size column
-                if (sortKey === "size") {
-                    aValue = parseSizeToBytes(aValue);
-                    bValue = parseSizeToBytes(bValue);
-                }
+                    // Special handling for size column
+                    if (sortKey === "size") {
+                        aValue = parseSizeToBytes(aValue);
+                        bValue = parseSizeToBytes(bValue);
+                    }
 
-                // Handle undefined/null values
-                if (aValue === undefined || aValue === null) aValue = "";
-                if (bValue === undefined || bValue === null) bValue = "";
+                    // Handle undefined/null values
+                    if (aValue === undefined || aValue === null) aValue = "";
+                    if (bValue === undefined || bValue === null) bValue = "";
 
-                // Handle boolean values
-                if (typeof aValue === "boolean") {
-                    aValue = aValue ? 1 : 0;
-                    bValue = bValue ? 1 : 0;
-                }
+                    // Handle boolean values
+                    if (typeof aValue === "boolean") {
+                        aValue = aValue ? 1 : 0;
+                        bValue = bValue ? 1 : 0;
+                    }
 
-                // Compare
-                let comparison = 0;
-                if (aValue < bValue) comparison = -1;
-                if (aValue > bValue) comparison = 1;
+                    // Compare
+                    let comparison = 0;
+                    if (aValue < bValue) comparison = -1;
+                    if (aValue > bValue) comparison = 1;
 
-                return sortDirection === "asc" ? comparison : -comparison;
-            });
-        }, [packages, sortKey, sortDirection]);
+                    return sortDirection === "asc" ? comparison : -comparison;
+                });
+            };
+
+            if (!sortFavoritesToTop) return sortWithinGroup(packages);
+
+            const favorites = packages.filter((pkg) => pkg.isFavorite);
+            const others = packages.filter((pkg) => !pkg.isFavorite);
+            return [...sortWithinGroup(favorites), ...sortWithinGroup(others)];
+        }, [packages, sortKey, sortDirection, sortFavoritesToTop]);
         const allVisibleSelected =
             multiSelectMode &&
             sortedPackages.length > 0 &&
@@ -354,6 +368,26 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
         }, [selectedPackage, sortedPackages]);
 
         const renderCellContent = (pkg: PackageEntry, col: { key: string; label: string }) => {
+            if (col.key === "favorite") {
+                return (
+                    <button
+                        type="button"
+                        className="action-button favorite-button"
+                        style={pkg.isFavorite ? { color: "#ffc107" } : undefined}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleFavorite?.(pkg);
+                        }}
+                        title={
+                            pkg.isFavorite
+                                ? t("buttons.unfavorite", { name: pkg.name })
+                                : t("buttons.favorite", { name: pkg.name })
+                        }
+                    >
+                        <Star size={16} fill={pkg.isFavorite ? "currentColor" : "none"} />
+                    </button>
+                );
+            }
             if (col.key === "actions") {
                 return (
                     <div className="action-buttons">
@@ -506,7 +540,8 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                             </th>
                                         )}
                                         {columns.map((col) => {
-                                            const isSortable = col.sortable !== false && col.key !== "actions";
+                                            const isSortable =
+                                                col.sortable !== false && col.key !== "actions" && col.key !== "favorite";
                                             const isCurrentSort = sortKey === col.key;
 
                                             return (
@@ -532,7 +567,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                                             <ArrowDown size={14} />
                                                         )}
                                                     </div>
-                                                    {col.key !== "actions" && (
+                                                    {col.key !== "actions" && col.key !== "favorite" && (
                                                         <div
                                                             className="col-resize-handle"
                                                             onMouseDown={(e) => handleResizeMouseDown(e, col.key)}

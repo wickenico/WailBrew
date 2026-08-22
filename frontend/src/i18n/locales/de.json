@@ -119,7 +119,10 @@
     "close": "Schließen",
     "updateHomebrew": "Homebrew aktualisieren",
     "uninstallDeprecated": "Veraltete Formel \"{{name}}\" deinstallieren",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "\"{{name}}\" zu Favoriten hinzufügen",
+    "unfavorite": "\"{{name}}\" aus Favoriten entfernen",
+    "toggleFavoritesOnly": "Nur Favoriten anzeigen"
   },
   "filters": {
     "onRequest": "Auf Anfrage ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "Casks beim Deinstallieren zappen",
       "description": "Wählt die Option --zap beim Deinstallieren eines Casks vor, damit auch zurückgebliebene Einstellungen, Caches und Support-Dateien entfernt werden."
+    },
+    "sortFavoritesToTop": {
+      "title": "Favoriten nach oben sortieren",
+      "description": "Heftet die von Ihnen als Favoriten markierten Pakete oben in den Pakettabellen an, vor der regulären Sortierreihenfolge."
     }
   },
   "backend": {

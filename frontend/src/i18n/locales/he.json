@@ -119,7 +119,10 @@
     "close": "סגור",
     "updateHomebrew": "עדכן Homebrew",
     "uninstallDeprecated": "הסר נוסחה שהוצאה משימוש \"{{name}}\"",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "הוספת \"{{name}}\" למועדפים",
+    "unfavorite": "הסרת \"{{name}}\" מהמועדפים",
+    "toggleFavoritesOnly": "הצג מועדפים בלבד"
   },
   "filters": {
     "onRequest": "לפי בקשה ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "שימוש ב-zap בהסרת Casks",
       "description": "מסמן מראש את האפשרות --zap בעת הסרת Cask, כך שגם העדפות, מטמונים וקובצי תמיכה שנותרו יימחקו."
+    },
+    "sortFavoritesToTop": {
+      "title": "מיין מועדפים לראש הרשימה",
+      "description": "מצמיד חבילות שסימנת כמועדפות לראש טבלאות החבילות, לפני סדר המיון הרגיל."
     }
   },
   "backend": {

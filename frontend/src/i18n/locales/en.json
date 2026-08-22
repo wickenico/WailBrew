@@ -119,7 +119,10 @@
     "close": "Close",
     "updateHomebrew": "Update Homebrew",
     "uninstallDeprecated": "Uninstall deprecated formula \"{{name}}\"",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "Add \"{{name}}\" to favorites",
+    "unfavorite": "Remove \"{{name}}\" from favorites",
+    "toggleFavoritesOnly": "Show favorites only"
   },
   "filters": {
     "onRequest": "On Request ({{count}})",
@@ -458,6 +461,10 @@
     "uninstallCaskWithZap": {
       "title": "Zap Casks on Uninstall",
       "description": "Preselect the --zap option when uninstalling a cask, so leftover preferences, caches and support files are removed too."
+    },
+    "sortFavoritesToTop": {
+      "title": "Sort Favorites to Top",
+      "description": "Pin packages you've marked as favorites to the top of package tables, ahead of the regular sort order."
     },
     "brewPath": {
       "title": "Homebrew Path Configuration",

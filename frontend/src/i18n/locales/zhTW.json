@@ -119,7 +119,10 @@
     "close": "關閉",
     "updateHomebrew": "更新 Homebrew",
     "uninstallDeprecated": "解除安裝已棄用的套件 \"{{name}}\"",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "將 \"{{name}}\" 加入我的最愛",
+    "unfavorite": "將 \"{{name}}\" 從我的最愛移除",
+    "toggleFavoritesOnly": "僅顯示我的最愛"
   },
   "filters": {
     "onRequest": "按需安裝 ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "解除安裝 Cask 時使用 zap",
       "description": "解除安裝 Cask 時預先勾選 --zap 選項，以便同時移除遺留的偏好設定、快取和支援檔案。"
+    },
+    "sortFavoritesToTop": {
+      "title": "將我的最愛排序至頂端",
+      "description": "將您標記為我的最愛的套件固定在套件表格頂端，優先於一般排序順序。"
     }
   },
   "backend": {

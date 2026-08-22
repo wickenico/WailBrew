@@ -119,7 +119,10 @@
     "close": "닫기",
     "updateHomebrew": "Homebrew 업데이트",
     "uninstallDeprecated": "지원 중단된 Formula \"{{name}}\" 제거",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "\"{{name}}\"을(를) 즐겨찾기에 추가",
+    "unfavorite": "\"{{name}}\"을(를) 즐겨찾기에서 제거",
+    "toggleFavoritesOnly": "즐겨찾기만 표시"
   },
   "filters": {
     "onRequest": "요청 설치 ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "Cask 제거 시 zap 사용",
       "description": "Cask를 제거할 때 --zap 옵션을 미리 선택하여 남아 있는 환경설정, 캐시, 지원 파일도 함께 삭제합니다."
+    },
+    "sortFavoritesToTop": {
+      "title": "즐겨찾기를 맨 위로 정렬",
+      "description": "즐겨찾기로 표시한 패키지를 일반 정렬 순서보다 앞서 패키지 테이블 맨 위에 고정합니다."
     }
   },
   "backend": {

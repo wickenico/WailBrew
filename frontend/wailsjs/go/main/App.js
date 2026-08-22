@@ -142,6 +142,10 @@ export function GetDeprecatedFormulae(arg1) {
   return window['go']['main']['App']['GetDeprecatedFormulae'](arg1);
 }
 
+export function GetFavorites() {
+  return window['go']['main']['App']['GetFavorites']();
+}
+
 export function GetHomebrewCaskVersion() {
   return window['go']['main']['App']['GetHomebrewCaskVersion']();
 }
@@ -188,6 +192,10 @@ export function GetProxy() {
 
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
+}
+
+export function GetSortFavoritesToTop() {
+  return window['go']['main']['App']['GetSortFavoritesToTop']();
 }
 
 export function GetStartupData() {
@@ -334,6 +342,10 @@ export function SetProxy(arg1) {
   return window['go']['main']['App']['SetProxy'](arg1);
 }
 
+export function SetSortFavoritesToTop(arg1) {
+  return window['go']['main']['App']['SetSortFavoritesToTop'](arg1);
+}
+
 export function SetUninstallCaskWithZap(arg1) {
   return window['go']['main']['App']['SetUninstallCaskWithZap'](arg1);
 }
@@ -356,6 +368,10 @@ export function TapBrewRepository(arg1, arg2) {
 
 export function TestProxyConnection(arg1, arg2) {
   return window['go']['main']['App']['TestProxyConnection'](arg1, arg2);
+}
+
+export function ToggleFavorite(arg1) {
+  return window['go']['main']['App']['ToggleFavorite'](arg1);
 }
 
 export function TrustBrewTap(arg1) {

@@ -119,7 +119,10 @@
     "close": "关闭",
     "updateHomebrew": "更新 Homebrew",
     "uninstallDeprecated": "卸载已弃用的包 \"{{name}}\"",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "将 \"{{name}}\" 添加到收藏",
+    "unfavorite": "将 \"{{name}}\" 从收藏中移除",
+    "toggleFavoritesOnly": "仅显示收藏"
   },
   "filters": {
     "onRequest": "按需安装 ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "卸载 Cask 时使用 zap",
       "description": "卸载 Cask 时预先选中 --zap 选项，以便同时删除遗留的偏好设置、缓存和支持文件。"
+    },
+    "sortFavoritesToTop": {
+      "title": "将收藏置顶",
+      "description": "将您标记为收藏的软件包固定在软件包表格的顶部，排在常规排序之前。"
     }
   },
   "backend": {

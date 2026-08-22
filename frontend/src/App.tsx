@@ -1,4 +1,4 @@
-import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, X } from "lucide-react";
+import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -24,10 +24,12 @@ import {
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
     GetDeprecatedFormulae,
+    GetFavorites,
     GetHomebrewVersion,
     GetInstalledDependents,
     GetLandingTab,
     GetSessionLogs,
+    GetSortFavoritesToTop,
     GetStartupDataWithUpdate,
     GetUninstallCaskWithZap,
     InstallBrewPackage,
@@ -46,6 +48,7 @@ import {
     StartBrewService,
     StopBrewService,
     TapBrewRepository,
+    ToggleFavorite,
     TrustBrewTap,
     UntapBrewRepository,
     UpdateAllBrewPackages,
@@ -150,6 +153,9 @@ const WailBrewApp = () => {
     const [_updatableError, setUpdatableError] = useState<string>("");
     const [leavesError, setLeavesError] = useState<string>("");
     const [installedFilter, setInstalledFilter] = useState<"all" | "on_request" | "dependency">("all");
+    const [favorites, setFavorites] = useState<Set<string>>(new Set());
+    const [sortFavoritesToTop, setSortFavoritesToTop] = useState<boolean>(false);
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
     const [homebrewLog, setHomebrewLog] = useState<string>("");
     const [homebrewVersion, setHomebrewVersion] = useState<string>("");
     const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{
@@ -210,6 +216,33 @@ const WailBrewApp = () => {
             })
             .catch(() => {});
     }, []);
+
+    useEffect(() => {
+        GetFavorites()
+            .then((names) => setFavorites(new Set(names)))
+            .catch(() => {});
+        GetSortFavoritesToTop()
+            .then(setSortFavoritesToTop)
+            .catch(() => {});
+    }, []);
+
+    const handleToggleFavorite = async (pkg: PackageEntry) => {
+        try {
+            await ToggleFavorite(pkg.name);
+            setFavorites((prev) => {
+                const next = new Set(prev);
+                if (next.has(pkg.name)) {
+                    next.delete(pkg.name);
+                } else {
+                    next.add(pkg.name);
+                }
+                return next;
+            });
+        } catch (error) {
+            console.error("Failed to toggle favorite:", error);
+            toast.error(String(error));
+        }
+    };
 
     // Persist window geometry on resize/move so it survives force-quits and
     // crashes (where the Go shutdown hook may not run). Debounced to avoid
@@ -1172,9 +1205,10 @@ const WailBrewApp = () => {
               })
             : activePackages;
 
-    const filteredPackages = installedFilteredPackages.filter((pkg) =>
-        pkg.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+    const filteredPackages = installedFilteredPackages
+        .filter((pkg) => pkg.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        .map((pkg) => ({ ...pkg, isFavorite: favorites.has(pkg.name) }))
+        .filter((pkg) => !showFavoritesOnly || pkg.isFavorite);
 
     const filteredRepositories = activeRepositories.filter((repo) =>
         repo.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -2491,12 +2525,14 @@ const WailBrewApp = () => {
 
     // Table columns config
     const columnsInstalled = [
+        { key: "favorite", label: "", sortable: false },
         { key: "name", label: t("tableColumns.name"), sortable: true },
         { key: "installedVersion", label: t("tableColumns.version"), sortable: false },
         { key: "size", label: t("tableColumns.size"), sortable: true },
         { key: "actions", label: t("tableColumns.actions"), sortable: false },
     ];
     const columnsUpdatable = [
+        { key: "favorite", label: "", sortable: false },
         { key: "name", label: t("tableColumns.name"), sortable: true },
         { key: "installedVersion", label: t("tableColumns.version"), sortable: false },
         { key: "latestVersion", label: t("tableColumns.latestVersion"), sortable: false },
@@ -2504,6 +2540,7 @@ const WailBrewApp = () => {
         { key: "actions", label: t("tableColumns.actions"), sortable: false },
     ];
     const columnsAll = [
+        { key: "favorite", label: "", sortable: false },
         { key: "name", label: t("tableColumns.name"), sortable: true },
         { key: "isInstalled", label: t("tableColumns.status"), sortable: true },
         { key: "actions", label: t("tableColumns.actions"), sortable: false },
@@ -2569,14 +2606,23 @@ const WailBrewApp = () => {
                             <HeaderRow
                                 title={t("headers.installedFormulas", { count: packages.length })}
                                 actions={
-                                    <button
-                                        className="refresh-button"
-                                        onClick={handleRefreshPackages}
-                                        disabled={loading}
-                                        title={t("buttons.refresh")}
-                                    >
-                                        <RefreshCw size={18} />
-                                    </button>
+                                    <>
+                                        <button
+                                            className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
+                                            onClick={() => setShowFavoritesOnly((prev) => !prev)}
+                                            title={t("buttons.toggleFavoritesOnly")}
+                                        >
+                                            <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
+                                            className="refresh-button"
+                                            onClick={handleRefreshPackages}
+                                            disabled={loading}
+                                            title={t("buttons.refresh")}
+                                        >
+                                            <RefreshCw size={18} />
+                                        </button>
+                                    </>
                                 }
                                 searchQuery={searchQuery}
                                 onSearchChange={setSearchQuery}
@@ -2606,6 +2652,8 @@ const WailBrewApp = () => {
                             <PackageTable
                                 ref={view === "installed" ? packageTableRef : null}
                                 packages={filteredPackages}
+                                onToggleFavorite={handleToggleFavorite}
+                                sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
                                 onSelect={handleSelect}
@@ -2631,14 +2679,23 @@ const WailBrewApp = () => {
                             <HeaderRow
                                 title={t("headers.installedCasks", { count: casks.length })}
                                 actions={
-                                    <button
-                                        className="refresh-button"
-                                        onClick={handleRefreshPackages}
-                                        disabled={loading}
-                                        title={t("buttons.refresh")}
-                                    >
-                                        <RefreshCw size={18} />
-                                    </button>
+                                    <>
+                                        <button
+                                            className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
+                                            onClick={() => setShowFavoritesOnly((prev) => !prev)}
+                                            title={t("buttons.toggleFavoritesOnly")}
+                                        >
+                                            <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
+                                            className="refresh-button"
+                                            onClick={handleRefreshPackages}
+                                            disabled={loading}
+                                            title={t("buttons.refresh")}
+                                        >
+                                            <RefreshCw size={18} />
+                                        </button>
+                                    </>
                                 }
                                 searchQuery={searchQuery}
                                 onSearchChange={setSearchQuery}
@@ -2648,6 +2705,8 @@ const WailBrewApp = () => {
                             <PackageTable
                                 ref={view === "casks" ? packageTableRef : null}
                                 packages={filteredPackages}
+                                onToggleFavorite={handleToggleFavorite}
+                                sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
                                 onSelect={handleSelect}
@@ -2674,6 +2733,13 @@ const WailBrewApp = () => {
                                 title={t("headers.outdatedFormulas", { count: updatablePackages.length })}
                                 actions={
                                     <>
+                                        <button
+                                            className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
+                                            onClick={() => setShowFavoritesOnly((prev) => !prev)}
+                                            title={t("buttons.toggleFavoritesOnly")}
+                                        >
+                                            <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                                        </button>
                                         <button
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
@@ -2718,6 +2784,8 @@ const WailBrewApp = () => {
                                 <PackageTable
                                     ref={view === "updatable" ? packageTableRef : null}
                                     packages={filteredPackages}
+                                onToggleFavorite={handleToggleFavorite}
+                                sortFavoritesToTop={sortFavoritesToTop}
                                     selectedPackage={selectedPackage}
                                     loading={loading}
                                     onSelect={handleSelect}
@@ -2752,14 +2820,23 @@ const WailBrewApp = () => {
                             <HeaderRow
                                 title={t("headers.allFormulas", { count: allPackages.length })}
                                 actions={
-                                    <button
-                                        className="refresh-button"
-                                        onClick={loadAllPackages}
-                                        disabled={loadingAllPackages}
-                                        title={t("buttons.refresh")}
-                                    >
-                                        <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
-                                    </button>
+                                    <>
+                                        <button
+                                            className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
+                                            onClick={() => setShowFavoritesOnly((prev) => !prev)}
+                                            title={t("buttons.toggleFavoritesOnly")}
+                                        >
+                                            <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
+                                            className="refresh-button"
+                                            onClick={loadAllPackages}
+                                            disabled={loadingAllPackages}
+                                            title={t("buttons.refresh")}
+                                        >
+                                            <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
+                                        </button>
+                                    </>
                                 }
                                 searchQuery={searchQuery}
                                 onSearchChange={setSearchQuery}
@@ -2769,6 +2846,8 @@ const WailBrewApp = () => {
                             <PackageTable
                                 ref={view === "all" ? packageTableRef : null}
                                 packages={filteredPackages}
+                                onToggleFavorite={handleToggleFavorite}
+                                sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading || loadingAllPackages}
                                 onSelect={handleSelect}
@@ -2794,14 +2873,23 @@ const WailBrewApp = () => {
                             <HeaderRow
                                 title={t("headers.allCasks", { count: allCasksAll.length })}
                                 actions={
-                                    <button
-                                        className="refresh-button"
-                                        onClick={loadAllCasks}
-                                        disabled={loadingAllCasks}
-                                        title={t("buttons.refresh")}
-                                    >
-                                        <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
-                                    </button>
+                                    <>
+                                        <button
+                                            className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
+                                            onClick={() => setShowFavoritesOnly((prev) => !prev)}
+                                            title={t("buttons.toggleFavoritesOnly")}
+                                        >
+                                            <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
+                                            className="refresh-button"
+                                            onClick={loadAllCasks}
+                                            disabled={loadingAllCasks}
+                                            title={t("buttons.refresh")}
+                                        >
+                                            <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
+                                        </button>
+                                    </>
                                 }
                                 searchQuery={searchQuery}
                                 onSearchChange={setSearchQuery}
@@ -2811,6 +2899,8 @@ const WailBrewApp = () => {
                             <PackageTable
                                 ref={view === "allCasks" ? packageTableRef : null}
                                 packages={filteredPackages}
+                                onToggleFavorite={handleToggleFavorite}
+                                sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading || loadingAllCasks}
                                 onSelect={handleSelect}
@@ -2835,6 +2925,15 @@ const WailBrewApp = () => {
                         <>
                             <HeaderRow
                                 title={t("headers.leaves", { count: leavesPackages.length })}
+                                actions={
+                                    <button
+                                        className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
+                                        onClick={() => setShowFavoritesOnly((prev) => !prev)}
+                                        title={t("buttons.toggleFavoritesOnly")}
+                                    >
+                                        <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                                    </button>
+                                }
                                 searchQuery={searchQuery}
                                 onSearchChange={setSearchQuery}
                                 onClearSearch={() => setSearchQuery("")}
@@ -2844,6 +2943,8 @@ const WailBrewApp = () => {
                             <PackageTable
                                 ref={view === "leaves" ? packageTableRef : null}
                                 packages={filteredPackages}
+                                onToggleFavorite={handleToggleFavorite}
+                                sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
                                 onSelect={handleSelect}
@@ -3058,7 +3159,12 @@ const WailBrewApp = () => {
                             }}
                         />
                     )}
-                    {view === "settings" && <SettingsView onRefreshPackages={handleRefreshPackages} />}
+                    {view === "settings" && (
+                        <SettingsView
+                            onRefreshPackages={handleRefreshPackages}
+                            onSortFavoritesToTopChange={setSortFavoritesToTop}
+                        />
+                    )}
                     <ConfirmDialog
                         open={showConfirm}
                         message={t("dialogs.confirmUninstall", { name: selectedPackage?.name })}

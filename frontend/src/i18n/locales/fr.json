@@ -119,7 +119,10 @@
     "close": "Fermer",
     "updateHomebrew": "Mettre à jour Homebrew",
     "uninstallDeprecated": "Désinstaller la formule obsolète \"{{name}}\"",
-    "untap": "Untap \"{{name}}\""
+    "untap": "Untap \"{{name}}\"",
+    "favorite": "Ajouter \"{{name}}\" aux favoris",
+    "unfavorite": "Retirer \"{{name}}\" des favoris",
+    "toggleFavoritesOnly": "Afficher uniquement les favoris"
   },
   "filters": {
     "onRequest": "À la demande ({{count}})",
@@ -560,6 +563,10 @@
     "uninstallCaskWithZap": {
       "title": "Utiliser zap lors de la désinstallation des casks",
       "description": "Présélectionne l'option --zap lors de la désinstallation d'un cask, afin de supprimer également les préférences, caches et fichiers de support restants."
+    },
+    "sortFavoritesToTop": {
+      "title": "Trier les favoris en haut",
+      "description": "Épingle les paquets que vous avez marqués comme favoris en haut des tableaux de paquets, avant l'ordre de tri habituel."
     }
   },
   "backend": {
