@@ -27,6 +27,21 @@ func IsUntrustedTapError(output string) bool {
 		strings.Contains(lower, "tap trust")
 }
 
+// IsBrokenRubyStateError reports whether brew output indicates Homebrew's own
+// Ruby library is in an inconsistent state (e.g. a partial `brew update` left
+// core and the homebrew-cask tap out of sync), rather than a WailBrew bug.
+// These surface as Ruby NameErrors like "uninitialized constant Cask::CaskLoader".
+func IsBrokenRubyStateError(output string) bool {
+	lower := strings.ToLower(output)
+	return strings.Contains(lower, "uninitialized constant") ||
+		strings.Contains(lower, "please report this issue")
+}
+
+// BrokenRubyStateRemedy is the actionable hint to show alongside a broken-Ruby-state
+// error, since the fix lives in the user's Homebrew installation, not in WailBrew.
+const BrokenRubyStateRemedy = "This looks like a broken Homebrew installation rather than a WailBrew issue. " +
+	"Try running `brew update-reset && brew update` in Terminal, then `brew doctor`."
+
 // ExtractUntrustedTap makes a best-effort attempt to pull the "owner/repo" tap
 // token out of a Homebrew trust error message. Returns "" if none is found.
 func ExtractUntrustedTap(output string) string {

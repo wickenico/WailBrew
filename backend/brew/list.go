@@ -330,6 +330,9 @@ func (s *ListService) GetBrewCasks() [][]string {
 	output, err := s.executor.RunStdoutOnly("list", "--cask", "--versions")
 	if err != nil {
 		s.reportFailure(err)
+		if IsBrokenRubyStateError(err.Error()) {
+			return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v\n\n%s", err, BrokenRubyStateRemedy)}}
+		}
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
 	}
 
