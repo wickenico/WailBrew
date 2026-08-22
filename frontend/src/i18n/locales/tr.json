@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "Paketler",
-    "formulas": "Formüller",
     "browseInstall": "Gözat & Yükle",
     "tools": "Araçlar",
     "installed": "Yüklendi",
@@ -23,7 +22,6 @@
     "homebrew": "Homebrew",
     "doctor": "Doktor",
     "cleanup": "Temizlik",
-    "settings": "Ayarlar",
     "refresh": "Yenile",
     "sponsor": "Destekle",
     "services": "Hizmetler"
@@ -98,8 +96,6 @@
     "update": "\"{{name}}\" güncelle",
     "tap": "Depo ekle",
     "updateAll": "Tümünü Güncelle",
-    "multiSelect": "Çoklu Seçim",
-    "exitMultiSelect": "Çoklu Seçimden Çık",
     "updateSelected": "{{count}} Seçiliyi Güncelle",
     "selectAll": "Tümünü Seç",
     "deselectAll": "Seçimi Kaldır",
@@ -108,7 +104,6 @@
     "runDoctor": "Doktoru çalıştır",
     "runCleanup": "Temizliği çalıştır",
     "runDryRun": "Simülasyon",
-    "checkEstimate": "Tahmini kontrol et",
     "refresh": "Paketleri yenile",
     "yes": "Evet",
     "cancel": "İptal",
@@ -120,7 +115,6 @@
     "yesUntap": "Evet, kaldır",
     "yesTrust": "Evet, güven",
     "trustRepository": "\"{{name}}\" güven",
-    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Kapat",
     "updateHomebrew": "Homebrew'i güncelle",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "Filtreyi değiştir: istekle kurulanlar",
     "toggleAsDependency": "Filtreyi değiştir: bağımlılık olarak kurulanlar"
   },
-  "multiSelect": {
-    "selectedCount": "{{total}} içinden {{count}} seçildi"
-  },
   "logDialog": {
     "running": "Çalışıyor...",
     "completed": "Tamamlandı",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(Yükleniyor...)",
-    "description": "Açıklama",
-    "homepage": "Anasayfa",
-    "version": "Sürüm",
     "status": "Durum",
-    "dependencies": "Bağımlılıklar",
-    "conflicts": "Çakışmalar",
     "installed": "Yüklendi",
     "notInstalled": "Yüklenmedi",
     "noSelection": "Hiçbir paket seçilmedi",
@@ -159,7 +145,6 @@
     "last30Days": "Son 30 Gün",
     "last90Days": "Son 90 Gün",
     "last365Days": "Son 365 Gün",
-    "brewPage": "Homebrew Sayfası",
     "loadingAnalytics": "İstatistikler yükleniyor...",
     "installedDepsTitle": "Yüklü bağımlılıklar",
     "installedDepsNone": "Yüklü bağımlılık yok",
@@ -198,7 +183,6 @@
     "updateAvailable": "Güncelleme mevcut: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "Tahmini boşaltılacak alan: {{size}}",
     "spaceToFree": "{{size}} boşaltılabilir"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "\"{{name}}\" güvenilir yapılamadı: {{error}}",
     "updateLogs": "{{name}} için günlükleri güncelle",
     "updateAllLogs": "Tüm paketler için günlükleri güncelle",
-    "updateSelectedLogs": "Seçili paketler için güncelleme günlükleri",
     "installLogs": "{{name} için günlükleri indir",
     "uninstallLogs": "{{name}} için günlükleri kaldır",
     "untapLogs": "{{name}} için depo kaldırma günlükleri",
@@ -234,10 +217,6 @@
     "tapInputUrlHint": "İsteğe bağlı. Tap kaynağı varsayılan GitHub homebrew-* konumunda değilse gereklidir.",
     "tapInputUrlInvalid": "Geçersiz URL formatı. https://, git@, ssh:// veya benzeri kullanın.",
     "repositoryInfo": "{{name}} için bilgi",
-    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
-    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
-    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
-    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "{{name}} detayı",
     "sessionLogs": "Oturum günlükleri",
     "updating": "\"{{name}}\" güncelleniyor...\nLütfen bekle...",
@@ -254,8 +233,6 @@
     "runningCleanup": "Brew temizliği çalışıyor…\nLütfen bekle...",
     "runningDryRun": "brew cleanup --dry-run çalışıyor…\nLütfen bekle...",
     "noHomebrewOutput": "Henüz bir sonuç yok. \"Homebrew'i güncelle\" düğmesine tıkla.",
-    "installSuccess": "Successfully installed \"{{name}}\"!",
-    "installFailed": "\"{{name}}\" indirilemedi: {{error}}",
     "noDoctorOutput": "Henüz bir sonuç yok. \"Doktoru Çalıştır\" düğmesine tıkla.",
     "noCleanupOutput": "Henüz bir sonuç yok. \"Temizliği Çalıştır\" düğmesine tıkla.",
     "serviceActionLogs": "Hizmet: {{name}}",
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – macOS için minimalist bir Homebrew GUI",
     "createdBy": "Nico Wickersheim tarafından yaratıldı",
-    "developedWith": "{{wails}} ve React ile geliştirildi",
     "description": "WailBrew Homebrew için paketleri kolayca yönetmesi, yüklemesi ve güncellemesi için yazılmış bir modern grafiksel kullanıcı arayüzüdür.",
     "links": "Bağlantılar:",
     "wailbrewWebsite": "WailBrew Sitesi",
     "githubRepo": "GitHub Deposu",
-    "reportBug": "Hata Bildir",
     "homebrewWebsite": "Homebrew Sitesi",
     "acknowledgments": "Teşekkür Bölümü:",
-    "acknowledgmentText": "Bruno Philipe'in {{cakebrew}}'i tarafından ilham alındı .\\nOrijinal Homebrew GUI adına mükemmel çalışma için teşekkürler!",
     "translationTitle": "Çeviriler:",
     "translationThanks": "Çevirilere katkıda bulunan herkese çok teşekkürler!",
     "improveTranslations": "→ Çevirileri geliştirmeye yardımcı olun",
@@ -389,10 +363,7 @@
     "available": "Güncelleme var!",
     "currentVersion": "Şimdiki Sürüm",
     "newVersion": "Yeni Sürüm",
-    "published": "Yayınlanma Tarihi",
-    "size": "Boyut",
     "changes": "Değişiklikler",
-    "viewReleaseNotes": "Güncelleme Notlarını Görüntüle",
     "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Manual Güncelleme",
     "instruction": "WailBrew'i güncellemek için, lütfen aşağıdaki komutu komut satırında uygulayın;",
@@ -401,12 +372,7 @@
     "upToDate": "Güncelsin!",
     "currentVersionIs": "Sürüm {{version}} güncel sürümdür.",
     "tryAgain": "Tekrar dene",
-    "gotIt": "Anlaşıldı",
-    "downloadAndInstall": "İndir ve Yükle",
-    "installing": "Yükleniyor...",
-    "updateInstalled": "Güncelleme Yüklendi!",
-    "restartMessage": "Güncelleme başarıyla yüklendi. Yeni sürümü kullanmak için lütfen WailBrew'i yeniden başlatın.",
-    "restartNow": "Şimdi Yeniden Başlat"
+    "gotIt": "Anlaşıldı"
   },
   "restartDialog": {
     "title": "Yeniden Başlatma Gerekli",
@@ -445,9 +411,6 @@
     "subtitle": "Homebrew deneyiminizi yapılandırın",
     "loading": "Ayarlar yükleniyor...",
     "footer": "WailBrew ayarlarını Homebrew tecrübeni özelleştirmek için ayarla.",
-    "categories": {
-      "general": "Genel"
-    },
     "landingTab": {
       "title": "Başlangıç Sekmesi",
       "description": "WailBrew başladığında hangi sekmenin gösterileceğini seçin.",
@@ -463,7 +426,6 @@
       "currentPath": "Homebrew Yolu",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "Brew yolunu otomatik sapta",
-      "currentlyUsing": "Şu an kullanılan:",
       "note": "Not: Brew yolunu değiştirmek yeni Homebrew kurulumunu yansıtmak için tüm paket datasını yenileyecek."
     },
     "buttons": {
@@ -481,7 +443,6 @@
       "outdatedFlagUpdated": "Eski paket algılama ayarı başarıyla güncellendi!",
       "outdatedFlagReset": "Eski paket algılama ayarı güncel değerine sıfırlandı.",
       "caskAppDirUpdated": "Cask uygulama dizini ayarı başarıyla güncellendi!",
-      "caskAppDirReset": "Cask uygulama dizini ayarı güncel değerine sıfırlandı.",
       "customCaskOptsUpdated": "Özel Cask seçenekleri başarıyla güncellendi!",
       "customOutdatedArgsUpdated": "Özel outdated argümanları başarıyla güncellendi!",
       "adminUsernameUpdated": "Yönetici kullanıcı adı başarıyla güncellendi!",
@@ -544,10 +505,7 @@
       "title": "Cask Uygulama Dizini",
       "description": "Homebrew Cask uygulamalarının yüklendiği dizini yapılandırın. Bu, --appdir seçeneğiyle HOMEBREW_CASK_OPTS ortam değişkenini ayarlar.",
       "currentDir": "Uygulama Dizini",
-      "placeholder": "/Applications/3rd-party",
       "default": "Varsayılan (/Applications)",
-      "currentlyUsing": "Şu anda kullanılıyor:",
-      "hint": "Bir dizin seçmek için klasör simgesine tıklayın. Varsayılan /Applications dizinini kullanmak için boş bırakın.",
       "selectDirectory": "Dizin seç",
       "newDirectory": "Yeni dizin",
       "note": "Not: Bu ayarı değiştirmek, yeni cask kurulumlarının ve güncellemelerinin yerleştirildiği yeri etkileyecektir. Mevcut kurulumlar otomatik olarak taşınmaz."

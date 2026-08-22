@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "Paquets",
-    "formulas": "Formules",
     "browseInstall": "Parcourir & Installer",
     "tools": "Outils",
     "installed": "Installées",
@@ -23,7 +22,6 @@
     "homebrew": "Homebrew",
     "doctor": "Diagnostic",
     "cleanup": "Nettoyage",
-    "settings": "Paramètres",
     "refresh": "Actualiser",
     "sponsor": "Sponsoriser",
     "services": "Services"
@@ -98,8 +96,6 @@
     "update": "Mettre à jour \"{{name}}\"",
     "tap": "Tapper un dépôt",
     "updateAll": "Tout mettre à jour",
-    "multiSelect": "Sélection multiple",
-    "exitMultiSelect": "Quitter la sélection multiple",
     "updateSelected": "Mettre à jour {{count}} sélectionné(s)",
     "selectAll": "Tout sélectionner",
     "deselectAll": "Tout désélectionner",
@@ -108,7 +104,6 @@
     "runDoctor": "Lancer le diagnostic",
     "runCleanup": "Lancer le nettoyage",
     "runDryRun": "Simulation",
-    "checkEstimate": "Vérifier l'estimation",
     "refresh": "Actualiser les paquets",
     "yes": "Oui",
     "cancel": "Annuler",
@@ -120,7 +115,6 @@
     "yesUntap": "Oui, détapper",
     "yesTrust": "Oui, approuver",
     "trustRepository": "Approuver « {{name}} »",
-    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Fermer",
     "updateHomebrew": "Mettre à jour Homebrew",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "Basculer le filtre : installé à la demande",
     "toggleAsDependency": "Basculer le filtre : installé comme dépendance"
   },
-  "multiSelect": {
-    "selectedCount": "{{count}} sur {{total}} sélectionné(s)"
-  },
   "logDialog": {
     "running": "En cours...",
     "completed": "Terminé",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(Chargement…)",
-    "description": "Description",
-    "homepage": "Page d'accueil",
-    "version": "Version",
     "status": "Statut",
-    "dependencies": "Dépendances",
-    "conflicts": "Conflits",
     "installed": "Installé",
     "notInstalled": "Non installé",
     "noSelection": "Aucun paquet sélectionné",
@@ -159,7 +145,6 @@
     "last30Days": "30 derniers jours",
     "last90Days": "90 derniers jours",
     "last365Days": "365 derniers jours",
-    "brewPage": "Page Homebrew",
     "loadingAnalytics": "Chargement des statistiques...",
     "installedDepsTitle": "Dépendances installées",
     "installedDepsNone": "Aucune dépendance installée",
@@ -198,7 +183,6 @@
     "updateAvailable": "Mise à jour disponible: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "Espace estimé à libérer : {{size}}",
     "spaceToFree": "{{size}} peuvent être libérés"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "Échec de l'approbation de « {{name}} » : {{error}}",
     "updateLogs": "Journaux de mise à jour pour {{name}}",
     "updateAllLogs": "Journaux de mise à jour pour tous les paquets",
-    "updateSelectedLogs": "Journaux de mise à jour pour les paquets sélectionnés",
     "installLogs": "Journaux d'installation pour {{name}}",
     "uninstallLogs": "Journaux de désinstallation pour {{name}}",
     "untapLogs": "Journaux de détappage pour {{name}}",
@@ -234,10 +217,6 @@
     "tapInputUrlHint": "Optionnel. Requis lorsque la source du tap n'est pas à l'emplacement GitHub par défaut homebrew-*.",
     "tapInputUrlInvalid": "Format d'URL invalide. Utilisez https://, git@, ssh:// ou similaire.",
     "repositoryInfo": "Informations pour {{name}}",
-    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
-    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
-    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
-    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "Informations pour {{name}}",
     "sessionLogs": "Journaux de session",
     "updating": "Mise à jour de \"{{name}}\"...\nVeuillez patienter...",
@@ -254,8 +233,6 @@
     "runningCleanup": "Exécution de brew cleanup…\nVeuillez patienter...",
     "runningDryRun": "Exécution de brew cleanup --dry-run…\nVeuillez patienter...",
     "noHomebrewOutput": "Aucune sortie pour le moment. Cliquez sur \"Mettre à jour Homebrew\".",
-    "installSuccess": "\"{{name}}\" installé avec succès !",
-    "installFailed": "Échec de l'installation de \"{{name}}\" : {{error}}",
     "noDoctorOutput": "Aucune sortie pour le moment. Cliquez sur \"Lancer le diagnostic\".",
     "noCleanupOutput": "Aucune sortie pour le moment. Cliquez sur \"Lancer le nettoyage\".",
     "serviceActionLogs": "Service : {{name}}",
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – Interface graphique minimaliste pour Homebrew sur macOS",
     "createdBy": "Créé par Nico Wickersheim",
-    "developedWith": "Développé avec {{wails}} et React",
     "description": "WailBrew est une interface graphique moderne pour Homebrew qui facilite la gestion, l'installation et la mise à jour des paquets.",
     "links": "Liens :",
     "wailbrewWebsite": "Site Web WailBrew",
     "githubRepo": "Dépôt GitHub",
-    "reportBug": "Signaler un bug",
     "homebrewWebsite": "Site Web Homebrew",
     "acknowledgments": "Remerciements :",
-    "acknowledgmentText": "Inspiré par {{cakebrew}} de Bruno Philipe.\\nMerci pour l'excellent travail sur l'interface graphique Homebrew originale !",
     "translationTitle": "Traductions :",
     "translationThanks": "Un grand merci à tous ceux qui ont contribué aux traductions !",
     "improveTranslations": "→ Aider à améliorer les traductions",
@@ -389,10 +363,7 @@
     "available": "Mise à jour disponible !",
     "currentVersion": "Version actuelle",
     "newVersion": "Nouvelle version",
-    "published": "Publié",
-    "size": "Taille",
     "changes": "Changements",
-    "viewReleaseNotes": "Voir les notes de version",
     "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Mise à jour manuelle",
     "instruction": "Pour mettre à jour WailBrew, veuillez exécuter la commande suivante dans votre terminal :",
@@ -401,12 +372,7 @@
     "upToDate": "Vous êtes à jour !",
     "currentVersionIs": "La version {{version}} est la version actuelle.",
     "tryAgain": "Réessayer",
-    "gotIt": "Compris",
-    "downloadAndInstall": "Télécharger et installer",
-    "installing": "Installation...",
-    "updateInstalled": "Mise à jour installée !",
-    "restartMessage": "La mise à jour a été installée avec succès. Veuillez redémarrer WailBrew pour utiliser la nouvelle version.",
-    "restartNow": "Redémarrer maintenant"
+    "gotIt": "Compris"
   },
   "restartDialog": {
     "title": "Redémarrage requis",
@@ -445,9 +411,6 @@
     "subtitle": "Configurez votre expérience Homebrew",
     "loading": "Chargement des paramètres...",
     "footer": "Configurez les paramètres de WailBrew pour personnaliser votre expérience Homebrew.",
-    "categories": {
-      "general": "Général"
-    },
     "landingTab": {
       "title": "Onglet de démarrage",
       "description": "Choisissez l'onglet affiché au lancement de WailBrew.",
@@ -463,7 +426,6 @@
       "currentPath": "Chemin Homebrew",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "Détecter automatiquement le chemin brew",
-      "currentlyUsing": "Actuellement utilisé :",
       "note": "Remarque : Modifier le chemin brew actualisera toutes les données des paquets pour refléter la nouvelle installation Homebrew."
     },
     "buttons": {
@@ -481,7 +443,6 @@
       "outdatedFlagUpdated": "Paramètre de détection des packages obsolètes mis à jour avec succès !",
       "outdatedFlagReset": "Paramètre de détection des packages obsolètes réinitialisé à la valeur actuelle.",
       "caskAppDirUpdated": "Paramètre du répertoire d'applications Cask mis à jour avec succès !",
-      "caskAppDirReset": "Paramètre du répertoire d'applications Cask réinitialisé à la valeur actuelle.",
       "customCaskOptsUpdated": "Options Cask personnalisées mises à jour avec succès !",
       "customOutdatedArgsUpdated": "Arguments outdated personnalisés mis à jour avec succès !",
       "adminUsernameUpdated": "Nom d'utilisateur administrateur mis à jour avec succès !",
@@ -544,10 +505,7 @@
       "title": "Répertoire d'applications Cask",
       "description": "Configurez le répertoire où les applications Homebrew Cask sont installées. Ceci définit la variable d'environnement HOMEBREW_CASK_OPTS avec l'option --appdir.",
       "currentDir": "Répertoire d'applications",
-      "placeholder": "/Applications/3rd-party",
       "default": "Par défaut (/Applications)",
-      "currentlyUsing": "Actuellement utilisé :",
-      "hint": "Cliquez sur l'icône de dossier pour sélectionner un répertoire. Laisser vide pour utiliser le répertoire par défaut /Applications.",
       "selectDirectory": "Sélectionner un répertoire",
       "newDirectory": "Nouveau répertoire",
       "note": "Note : Changer ce paramètre affectera l'emplacement des nouvelles installations et mises à jour de casks. Les installations existantes ne sont pas déplacées automatiquement."

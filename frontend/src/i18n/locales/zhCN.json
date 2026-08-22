@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "软件包",
-    "formulas": "Formulae",
     "browseInstall": "浏览 & 安装",
     "tools": "Tools",
     "installed": "已安装",
@@ -23,7 +22,6 @@
     "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
-    "settings": "软件设置",
     "refresh": "刷新",
     "sponsor": "赞助",
     "services": "服务"
@@ -98,8 +96,6 @@
     "update": "更新 \"{{name}}\"",
     "tap": "连接软件源",
     "updateAll": "更新所有",
-    "multiSelect": "多选",
-    "exitMultiSelect": "退出多选",
     "updateSelected": "更新 {{count}} 个已选",
     "selectAll": "全选",
     "deselectAll": "取消全选",
@@ -108,7 +104,6 @@
     "runDoctor": "执行 doctor",
     "runCleanup": "执行 cleanup",
     "runDryRun": "模拟运行",
-    "checkEstimate": "检查估算",
     "refresh": "刷新列表",
     "yes": "是",
     "cancel": "取消",
@@ -120,7 +115,6 @@
     "yesUntap": "是，取消连接",
     "yesTrust": "是，信任",
     "trustRepository": "信任 “{{name}}”",
-    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "关闭",
     "updateHomebrew": "更新 Homebrew",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "切换筛选：按需安装",
     "toggleAsDependency": "切换筛选：作为依赖安装"
   },
-  "multiSelect": {
-    "selectedCount": "已选 {{count}}/{{total}}"
-  },
   "logDialog": {
     "running": "正在执行...",
     "completed": "已完成",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(正在获取…)",
-    "description": "描述",
-    "homepage": "主页",
-    "version": "版本",
     "status": "状态",
-    "dependencies": "依赖",
-    "conflicts": "冲突",
     "installed": "已安装",
     "notInstalled": "未安装",
     "noSelection": "未选择软件包",
@@ -159,7 +145,6 @@
     "last30Days": "最近 30 天",
     "last90Days": "最近 90 天",
     "last365Days": "最近 365 天",
-    "brewPage": "Homebrew 页面",
     "loadingAnalytics": "加载统计数据...",
     "installedDepsTitle": "已安装的依赖项",
     "installedDepsNone": "没有已安装的依赖项",
@@ -198,7 +183,6 @@
     "updateAvailable": "有可用更新: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "预计可释放空间：{{size}}",
     "spaceToFree": "可释放 {{size}}"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "信任 “{{name}}” 失败：{{error}}",
     "updateLogs": "{{name}} 的更新日志",
     "updateAllLogs": "所有可更新软件包的更新日志",
-    "updateSelectedLogs": "已选软件包的更新日志",
     "installLogs": "{{name}} 的安装日志",
     "uninstallLogs": "{{name}} 的卸载日志",
     "untapLogs": "{{name}} 的取消连接日志",
@@ -234,10 +217,6 @@
     "tapInputUrlHint": "可选。当软件源不在默认的 GitHub homebrew-* 位置时需要填写。",
     "tapInputUrlInvalid": "URL 格式无效。请使用 https://、git@、ssh:// 等格式。",
     "repositoryInfo": "{{name}} 的信息",
-    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
-    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
-    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
-    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "{{name}} 的信息",
     "sessionLogs": "会话日志",
     "updating": "正在更新 \"{{name}}\"...\n请等待...",
@@ -254,8 +233,6 @@
     "runningCleanup": "正在执行 brew cleanup…\n请等待...",
     "runningDryRun": "正在执行 brew cleanup --dry-run…\n请等待...",
     "noHomebrewOutput": "暂无输出。请点击 \"更新 Homebrew\"。",
-    "installSuccess": "成功安装 \"{{name}}\"！",
-    "installFailed": "安装 \"{{name}}\" 失败：{{error}}",
     "noDoctorOutput": "暂无输出。请点击 \"执行 doctor\"。",
     "noCleanupOutput": "暂无输出。请点击 \"执行 cleanup\"。",
     "serviceActionLogs": "服务：{{name}}",
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – 极简的 Homebrew 图形用户界面",
     "createdBy": "由 Nico Wickersheim 开发",
-    "developedWith": "使用 {{wails}} 和 React 构建",
     "description": "WailBrew 是 Homebrew 的现代图形用户界面程序，可以轻松管理、安装和更新软件包。",
     "links": "相关链接：",
     "wailbrewWebsite": "WailBrew Website",
     "githubRepo": "GitHub Repository",
-    "reportBug": "Report Bug",
     "homebrewWebsite": "Homebrew Website",
     "acknowledgments": "致谢：",
-    "acknowledgmentText": "本项目受 Bruno Philipe 的 {{cakebrew}} 启发。\\n感谢他在原生 Homebrew 图形用户界面程序上的出色工作！",
     "translationTitle": "翻译贡献者：",
     "translationThanks": "衷心感谢所有为翻译做出贡献的人！",
     "improveTranslations": "→ 帮助改进翻译",
@@ -389,10 +363,7 @@
     "available": "有可用的更新！",
     "currentVersion": "当前版本",
     "newVersion": "新版本",
-    "published": "发布日期",
-    "size": "大小",
     "changes": "变更",
-    "viewReleaseNotes": "查看发布说明",
     "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "手动更新",
     "instruction": "要更新 WailBrew，请在终端中运行以下命令：",
@@ -401,12 +372,7 @@
     "upToDate": "您已更新到最新版本！",
     "currentVersionIs": "当前版本 {{version}}",
     "tryAgain": "重试",
-    "gotIt": "知道了",
-    "downloadAndInstall": "下载并安装",
-    "installing": "安装中...",
-    "updateInstalled": "更新已安装！",
-    "restartMessage": "更新已成功安装。请重启 WailBrew 以使用新版本。",
-    "restartNow": "立即重启"
+    "gotIt": "知道了"
   },
   "restartDialog": {
     "title": "需要重启",
@@ -445,9 +411,6 @@
     "subtitle": "配置您的 Homebrew 体验",
     "loading": "正在加载设置...",
     "footer": "配置 WailBrew 设置以定制您的 Homebrew 体验。",
-    "categories": {
-      "general": "通用"
-    },
     "landingTab": {
       "title": "启动标签页",
       "description": "选择 WailBrew 启动时显示的标签页。",
@@ -463,7 +426,6 @@
       "currentPath": "Homebrew 路径",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "自动检测 brew 路径",
-      "currentlyUsing": "当前使用：",
       "note": "注意：更改 brew 路径将刷新所有包数据以反映新的 Homebrew 安装。"
     },
     "buttons": {
@@ -481,7 +443,6 @@
       "outdatedFlagUpdated": "过时包检测设置更新成功！",
       "outdatedFlagReset": "过时包检测设置重置为当前值。",
       "caskAppDirUpdated": "Cask 应用程序目录设置更新成功！",
-      "caskAppDirReset": "Cask 应用程序目录设置重置为当前值。",
       "customCaskOptsUpdated": "自定义 Cask 选项更新成功！",
       "customOutdatedArgsUpdated": "自定义 outdated 参数更新成功！",
       "adminUsernameUpdated": "Admin username updated successfully!",
@@ -544,10 +505,7 @@
       "title": "Cask 应用程序目录",
       "description": "配置 Homebrew Cask 应用程序的安装目录。这将使用 --appdir 选项设置 HOMEBREW_CASK_OPTS 环境变量。",
       "currentDir": "应用程序目录",
-      "placeholder": "/Applications/3rd-party",
       "default": "默认 (/Applications)",
-      "currentlyUsing": "当前使用：",
-      "hint": "点击文件夹图标选择目录。留空以使用默认的 /Applications 目录。",
       "selectDirectory": "选择目录",
       "newDirectory": "新目录",
       "note": "注意：更改此设置将影响新 cask 安装和升级的放置位置。现有安装不会自动移动。"

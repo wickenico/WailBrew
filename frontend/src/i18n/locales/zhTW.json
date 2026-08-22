@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "軟體包",
-    "formulas": "套件",
     "browseInstall": "瀏覽 & 安裝",
     "tools": "工具",
     "installed": "已安裝",
@@ -23,7 +22,6 @@
     "homebrew": "Homebrew",
     "doctor": "診斷",
     "cleanup": "清理",
-    "settings": "設定",
     "refresh": "重新整理",
     "sponsor": "贊助",
     "services": "服務"
@@ -98,8 +96,6 @@
     "update": "更新 \"{{name}}\"",
     "tap": "連接軟體庫",
     "updateAll": "全部更新",
-    "multiSelect": "多選",
-    "exitMultiSelect": "退出多選",
     "updateSelected": "更新 {{count}} 個已選",
     "selectAll": "全選",
     "deselectAll": "取消全選",
@@ -108,7 +104,6 @@
     "runDoctor": "執行診斷",
     "runCleanup": "執行清理",
     "runDryRun": "模擬運行",
-    "checkEstimate": "檢查估算",
     "refresh": "重新整理套件",
     "yes": "是",
     "cancel": "取消",
@@ -120,7 +115,6 @@
     "yesUntap": "是，取消連接",
     "yesTrust": "是，信任",
     "trustRepository": "信任「{{name}}」",
-    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "確定",
     "close": "關閉",
     "updateHomebrew": "更新 Homebrew",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "切換篩選：按需安裝",
     "toggleAsDependency": "切換篩選：作為相依套件安裝"
   },
-  "multiSelect": {
-    "selectedCount": "已選 {{count}}/{{total}}"
-  },
   "logDialog": {
     "running": "執行中...",
     "completed": "已完成",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(載入中…)",
-    "description": "描述",
-    "homepage": "首頁",
-    "version": "版本",
     "status": "狀態",
-    "dependencies": "相依性",
-    "conflicts": "衝突",
     "installed": "已安裝",
     "notInstalled": "未安裝",
     "noSelection": "未選擇套件",
@@ -159,7 +145,6 @@
     "last30Days": "最近 30 天",
     "last90Days": "最近 90 天",
     "last365Days": "最近 365 天",
-    "brewPage": "Homebrew 頁面",
     "loadingAnalytics": "載入統計數據...",
     "installedDepsTitle": "已安裝的相依套件",
     "installedDepsNone": "沒有已安裝的相依套件",
@@ -198,7 +183,6 @@
     "updateAvailable": "有可用更新: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "預計可釋放空間：{{size}}",
     "spaceToFree": "可釋放 {{size}}"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "信任「{{name}}」失敗：{{error}}",
     "updateLogs": "{{name}} 的更新記錄",
     "updateAllLogs": "所有套件的更新記錄",
-    "updateSelectedLogs": "已選套件的更新記錄",
     "installLogs": "{{name}} 的安裝記錄",
     "uninstallLogs": "{{name}} 的解除安裝記錄",
     "untapLogs": "{{name}} 的取消連接記錄",
@@ -234,10 +217,6 @@
     "tapInputUrlHint": "選填。當軟體庫來源不在預設的 GitHub homebrew-* 位置時需要填寫。",
     "tapInputUrlInvalid": "URL 格式無效。請使用 https://、git@、ssh:// 等格式。",
     "repositoryInfo": "{{name}} 的資訊",
-    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
-    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
-    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
-    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "{{name}} 的資訊",
     "sessionLogs": "工作階段記錄",
     "updating": "正在更新 \"{{name}}\"...\n請稍候...",
@@ -254,8 +233,6 @@
     "runningCleanup": "正在執行 brew cleanup…\n請稍候...",
     "runningDryRun": "正在執行 brew cleanup --dry-run…\n請稍候...",
     "noHomebrewOutput": "尚無輸出。請點擊「更新 Homebrew」。",
-    "installSuccess": "成功安裝 \"{{name}}\"！",
-    "installFailed": "安裝 \"{{name}}\" 失敗：{{error}}",
     "noDoctorOutput": "尚無輸出。請點擊「執行診斷」。",
     "noCleanupOutput": "尚無輸出。請點擊「執行清理」。",
     "serviceActionLogs": "服務：{{name}}",
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – macOS 的極簡 Homebrew 圖形化介面",
     "createdBy": "由 Nico Wickersheim 製作",
-    "developedWith": "使用 {{wails}} 和 React 開發",
     "description": "WailBrew 是 Homebrew 的現代圖形化使用者介面，讓管理、安裝和更新套件變得簡單。",
     "links": "相關連結：",
     "wailbrewWebsite": "WailBrew 網站",
     "githubRepo": "GitHub 程式庫",
-    "reportBug": "回報問題",
     "homebrewWebsite": "Homebrew 網站",
     "acknowledgments": "致謝：",
-    "acknowledgmentText": "靈感來自 Bruno Philipe 的 {{cakebrew}}。\\n感謝他在原創 Homebrew 圖形化介面上的傑出工作！",
     "translationTitle": "翻譯貢獻者：",
     "translationThanks": "衷心感謝所有為翻譯做出貢獻的人！",
     "improveTranslations": "→ 協助改進翻譯",
@@ -389,10 +363,7 @@
     "available": "有可用的更新！",
     "currentVersion": "目前版本",
     "newVersion": "新版本",
-    "published": "發布日期",
-    "size": "大小",
     "changes": "變更",
-    "viewReleaseNotes": "檢視發布說明",
     "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "手動更新",
     "instruction": "要更新 WailBrew，請在終端機中執行以下指令：",
@@ -401,12 +372,7 @@
     "upToDate": "您已使用最新版本！",
     "currentVersionIs": "版本 {{version}} 是目前版本。",
     "tryAgain": "重試",
-    "gotIt": "了解",
-    "downloadAndInstall": "下載並安裝",
-    "installing": "安裝中...",
-    "updateInstalled": "更新已安裝！",
-    "restartMessage": "更新已成功安裝。請重新啟動 WailBrew 以使用新版本。",
-    "restartNow": "立即重新啟動"
+    "gotIt": "了解"
   },
   "restartDialog": {
     "title": "需要重新啟動",
@@ -445,9 +411,6 @@
     "subtitle": "配置您的 Homebrew 體驗",
     "loading": "載入設定中...",
     "footer": "設定 WailBrew 來自訂您的 Homebrew 體驗。",
-    "categories": {
-      "general": "一般"
-    },
     "landingTab": {
       "title": "啟動分頁",
       "description": "選擇 WailBrew 啟動時顯示的分頁。",
@@ -463,7 +426,6 @@
       "currentPath": "Homebrew 路徑",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "自動偵測 brew 路徑",
-      "currentlyUsing": "目前使用：",
       "note": "注意：變更 brew 路徑將重新整理所有套件資料以反映新的 Homebrew 安裝。"
     },
     "buttons": {
@@ -481,7 +443,6 @@
       "outdatedFlagUpdated": "過時套件偵測設定更新成功！",
       "outdatedFlagReset": "過時套件偵測設定已重設為目前值。",
       "caskAppDirUpdated": "Cask 應用程式目錄設定更新成功！",
-      "caskAppDirReset": "Cask 應用程式目錄設定已重設為目前值。",
       "customCaskOptsUpdated": "自訂 Cask 選項更新成功！",
       "customOutdatedArgsUpdated": "自訂 outdated 參數更新成功！",
       "adminUsernameUpdated": "管理員使用者名稱已成功更新！",
@@ -544,10 +505,7 @@
       "title": "Cask 應用程式目錄",
       "description": "設定 Homebrew Cask 應用程式的安裝目錄。這將使用 --appdir 選項設定 HOMEBREW_CASK_OPTS 環境變數。",
       "currentDir": "應用程式目錄",
-      "placeholder": "/Applications/3rd-party",
       "default": "預設 (/Applications)",
-      "currentlyUsing": "目前使用：",
-      "hint": "點擊資料夾圖示選擇目錄。留空以使用預設的 /Applications 目錄。",
       "selectDirectory": "選擇目錄",
       "newDirectory": "新目錄",
       "note": "注意：變更此設定將影響新 cask 安裝和升級的放置位置。現有安裝不會自動移動。"

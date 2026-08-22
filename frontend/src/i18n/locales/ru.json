@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "Пакеты",
-    "formulas": "Пакеты",
     "browseInstall": "Просмотр и установка",
     "tools": "Инструменты",
     "installed": "Установленные",
@@ -23,7 +22,6 @@
     "homebrew": "Homebrew",
     "doctor": "Диагностика",
     "cleanup": "Очистка",
-    "settings": "Настройки",
     "refresh": "Обновить",
     "sponsor": "Поддержать",
     "services": "Службы"
@@ -98,8 +96,6 @@
     "update": "Обновить \"{{name}}\"",
     "tap": "Подключить репозиторий",
     "updateAll": "Обновить всё",
-    "multiSelect": "Множественный выбор",
-    "exitMultiSelect": "Выйти из множественного выбора",
     "updateSelected": "Обновить {{count}} выбранных",
     "selectAll": "Выбрать все",
     "deselectAll": "Отменить выбор",
@@ -108,7 +104,6 @@
     "runDoctor": "Запустить диагностику",
     "runCleanup": "Запустить очистку",
     "runDryRun": "Пробный запуск",
-    "checkEstimate": "Проверить оценку",
     "refresh": "Обновить список",
     "yes": "Да",
     "cancel": "Отмена",
@@ -120,7 +115,6 @@
     "yesUntap": "Да, отключить",
     "yesTrust": "Да, доверять",
     "trustRepository": "Доверять \"{{name}}\"",
-    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "ОК",
     "close": "Закрыть",
     "updateHomebrew": "Обновить Homebrew",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "Переключить фильтр: установлено вручную",
     "toggleAsDependency": "Переключить фильтр: установлено как зависимость"
   },
-  "multiSelect": {
-    "selectedCount": "{{count}} из {{total}} выбрано"
-  },
   "logDialog": {
     "running": "Выполняется...",
     "completed": "Завершено",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(Загрузка…)",
-    "description": "Описание",
-    "homepage": "Сайт",
-    "version": "Версия",
     "status": "Статус",
-    "dependencies": "Зависимости",
-    "conflicts": "Конфликты",
     "installed": "Установлено",
     "notInstalled": "Не установлено",
     "noSelection": "Пакет не выбран",
@@ -159,7 +145,6 @@
     "last30Days": "Последние 30 дней",
     "last90Days": "Последние 90 дней",
     "last365Days": "Последние 365 дней",
-    "brewPage": "Страница Homebrew",
     "loadingAnalytics": "Загрузка статистики...",
     "installedDepsTitle": "Установленные зависимости",
     "installedDepsNone": "Нет установленных зависимостей",
@@ -198,7 +183,6 @@
     "updateAvailable": "Доступно обновление: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "Примерно можно освободить: {{size}}",
     "spaceToFree": "{{size}} можно освободить"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "Не удалось добавить \"{{name}}\" в доверенные: {{error}}",
     "updateLogs": "Журнал обновления {{name}}",
     "updateAllLogs": "Журнал обновления всех пакетов",
-    "updateSelectedLogs": "Журнал обновления выбранных пакетов",
     "installLogs": "Журнал установки {{name}}",
     "uninstallLogs": "Журнал удаления {{name}}",
     "untapLogs": "Журнал отключения {{name}}",
@@ -234,10 +217,6 @@
     "tapInputUrlHint": "Необязательно. Требуется, если источник tap не находится в стандартном расположении GitHub homebrew-*.",
     "tapInputUrlInvalid": "Неверный формат URL. Используйте https://, git@, ssh:// или аналогичный.",
     "repositoryInfo": "Информация о {{name}}",
-    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
-    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
-    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
-    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "Информация о {{name}}",
     "sessionLogs": "Журналы сеанса",
     "updating": "Обновление \"{{name}}\"...\nПожалуйста, подождите...",
@@ -254,8 +233,6 @@
     "runningCleanup": "Выполняется brew cleanup…\nПожалуйста, подождите...",
     "runningDryRun": "Выполняется brew cleanup --dry-run…\nПожалуйста, подождите...",
     "noHomebrewOutput": "Нет вывода. Нажмите \"Обновить Homebrew\".",
-    "installSuccess": "\"{{name}}\" успешно установлен!",
-    "installFailed": "Не удалось установить \"{{name}}\": {{error}}",
     "noDoctorOutput": "Нет вывода. Нажмите \"Запустить диагностику\".",
     "noCleanupOutput": "Нет вывода. Нажмите \"Запустить очистку\".",
     "serviceActionLogs": "Служба: {{name}}",
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – Минималистичный GUI для Homebrew на macOS",
     "createdBy": "Создано Нико Викершаймом",
-    "developedWith": "Разработано с помощью {{wails}} и React",
     "description": "WailBrew — это современный графический интерфейс для Homebrew, который упрощает управление, установку и обновление пакетов.",
     "links": "Ссылки:",
     "wailbrewWebsite": "Сайт WailBrew",
     "githubRepo": "Репозиторий на GitHub",
-    "reportBug": "Сообщить об ошибке",
     "homebrewWebsite": "Сайт Homebrew",
     "acknowledgments": "Благодарности:",
-    "acknowledgmentText": "Вдохновлено {{cakebrew}} от Бруно Филипе.\\nСпасибо за отличную работу над оригинальным GUI для Homebrew!",
     "translationTitle": "Переводы:",
     "translationThanks": "Огромное спасибо всем, кто внес вклад в переводы!",
     "improveTranslations": "→ Помочь улучшить переводы",
@@ -389,10 +363,7 @@
     "available": "Доступно обновление!",
     "currentVersion": "Текущая версия",
     "newVersion": "Новая версия",
-    "published": "Опубликовано",
-    "size": "Размер",
     "changes": "Изменения",
-    "viewReleaseNotes": "Просмотреть примечания к выпуску",
     "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Ручное обновление",
     "instruction": "Чтобы обновить WailBrew, выполните следующую команду в терминале:",
@@ -401,12 +372,7 @@
     "upToDate": "У вас последняя версия!",
     "currentVersionIs": "Версия {{version}} является текущей версией.",
     "tryAgain": "Повторить попытку",
-    "gotIt": "Понятно",
-    "downloadAndInstall": "Скачать и установить",
-    "installing": "Установка...",
-    "updateInstalled": "Обновление установлено!",
-    "restartMessage": "Обновление успешно установлено. Пожалуйста, перезапустите WailBrew для использования новой версии.",
-    "restartNow": "Перезапустить сейчас"
+    "gotIt": "Понятно"
   },
   "restartDialog": {
     "title": "Требуется перезапуск",
@@ -445,9 +411,6 @@
     "subtitle": "Настройте свой Homebrew",
     "loading": "Загрузка настроек...",
     "footer": "Настройте параметры WailBrew для персонализации работы с Homebrew.",
-    "categories": {
-      "general": "Общие"
-    },
     "landingTab": {
       "title": "Начальная вкладка",
       "description": "Выберите, какая вкладка будет отображаться при запуске WailBrew.",
@@ -463,7 +426,6 @@
       "currentPath": "Путь Homebrew",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "Автоматически определить путь brew",
-      "currentlyUsing": "Текущий путь:",
       "note": "Примечание: Изменение пути brew обновит все данные о пакетах для новой установки Homebrew."
     },
     "buttons": {
@@ -481,7 +443,6 @@
       "outdatedFlagUpdated": "Настройка обнаружения устаревших пакетов успешно обновлена!",
       "outdatedFlagReset": "Настройка обнаружения устаревших пакетов сброшена к текущему значению.",
       "caskAppDirUpdated": "Настройка директории приложений Cask успешно обновлена!",
-      "caskAppDirReset": "Настройка директории приложений Cask сброшена к текущему значению.",
       "customCaskOptsUpdated": "Пользовательские опции Cask успешно обновлены!",
       "customOutdatedArgsUpdated": "Пользовательские аргументы outdated успешно обновлены!",
       "adminUsernameUpdated": "Имя пользователя администратора успешно обновлено!",
@@ -544,10 +505,7 @@
       "title": "Директория приложений Cask",
       "description": "Настройте директорию, в которой устанавливаются приложения Homebrew Cask. Это устанавливает переменную окружения HOMEBREW_CASK_OPTS с опцией --appdir.",
       "currentDir": "Директория приложений",
-      "placeholder": "/Applications/3rd-party",
       "default": "По умолчанию (/Applications)",
-      "currentlyUsing": "В настоящее время используется:",
-      "hint": "Нажмите на значок папки, чтобы выбрать директорию. Оставьте пустым, чтобы использовать директорию по умолчанию /Applications.",
       "selectDirectory": "Выбрать директорию",
       "newDirectory": "Новая директория",
       "note": "Примечание: Изменение этой настройки повлияет на то, где размещаются новые установки и обновления casks. Существующие установки не перемещаются автоматически."

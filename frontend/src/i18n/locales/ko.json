@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "패키지",
-    "formulas": "Formulae",
     "browseInstall": "검색 & 설치",
     "tools": "도구",
     "installed": "설치됨",
@@ -23,7 +22,6 @@
     "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
-    "settings": "설정",
     "refresh": "새로고침",
     "sponsor": "후원",
     "services": "서비스"
@@ -98,8 +96,6 @@
     "update": "\"{{name}}\" 업데이트",
     "tap": "Tap 추가",
     "updateAll": "모두 업데이트",
-    "multiSelect": "다중 선택",
-    "exitMultiSelect": "다중 선택 종료",
     "updateSelected": "{{count}}개 선택 항목 업데이트",
     "selectAll": "모두 선택",
     "deselectAll": "모두 선택 해제",
@@ -108,7 +104,6 @@
     "runDoctor": "Doctor 실행",
     "runCleanup": "Cleanup 실행",
     "runDryRun": "시뮬레이션",
-    "checkEstimate": "예상 용량 확인",
     "refresh": "패키지 새로고침",
     "yes": "예",
     "cancel": "취소",
@@ -120,7 +115,6 @@
     "yesUntap": "예, Untap합니다",
     "yesTrust": "예, 신뢰",
     "trustRepository": "\"{{name}}\" 신뢰",
-    "yesUninstallAndUntap": "예, 제거 후 Untap합니다",
     "ok": "확인",
     "close": "닫기",
     "updateHomebrew": "Homebrew 업데이트",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "필터 전환: 요청으로 설치됨",
     "toggleAsDependency": "필터 전환: 의존성으로 설치됨"
   },
-  "multiSelect": {
-    "selectedCount": "{{total}}개 중 {{count}}개 선택됨"
-  },
   "logDialog": {
     "running": "실행 중...",
     "completed": "완료",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(로딩 중…)",
-    "description": "설명",
-    "homepage": "홈페이지",
-    "version": "버전",
     "status": "상태",
-    "dependencies": "Dependencies",
-    "conflicts": "충돌",
     "installed": "설치됨",
     "notInstalled": "설치 안 됨",
     "noSelection": "선택된 패키지 없음",
@@ -159,7 +145,6 @@
     "last30Days": "최근 30일",
     "last90Days": "최근 90일",
     "last365Days": "최근 365일",
-    "brewPage": "Homebrew 페이지",
     "loadingAnalytics": "통계 로딩 중...",
     "installedDepsTitle": "설치된 의존성",
     "installedDepsNone": "설치된 의존성 없음",
@@ -198,7 +183,6 @@
     "updateAvailable": "업데이트 가능: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "예상 확보 공간: {{size}}",
     "spaceToFree": "{{size}} 확보 가능"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "\"{{name}}\" 신뢰 실패: {{error}}",
     "updateLogs": "{{name}} 업데이트 로그",
     "updateAllLogs": "전체 패키지 업데이트 로그",
-    "updateSelectedLogs": "선택된 패키지 업데이트 로그",
     "installLogs": "{{name}} 설치 로그",
     "uninstallLogs": "{{name}} 제거 로그",
     "untapLogs": "{{name}} Untap 로그",
@@ -234,10 +217,6 @@
     "tapInputUrlHint": "선택 사항. Tap 소스가 기본 GitHub homebrew-* 위치에 없을 때 필요합니다.",
     "tapInputUrlInvalid": "잘못된 URL 형식입니다. https://, git@, ssh:// 등을 사용하세요.",
     "repositoryInfo": "{{name}} 정보",
-    "confirmUntapUninstall": "\"{{name}}\"에 {{count}}개의 설치된 패키지가 있어 Untap할 수 없습니다: {{packages}}\n\n먼저 제거한 후 Untap하시겠습니까?",
-    "uninstallingPackagesBeforeUntap": "\"{{name}}\" Untap 전 {{count}}개 패키지 제거 중...\n잠시 기다려 주세요...",
-    "uninstallingPackage": "{{name}} 제거 중 ({{current}}/{{total}})...",
-    "retryingUntap": "\"{{name}}\" Untap 재시도 중...\n잠시 기다려 주세요...",
     "packageInfo": "{{name}} 정보",
     "sessionLogs": "세션 로그",
     "updating": "\"{{name}}\" 업데이트 중...\n잠시 기다려 주세요...",
@@ -254,8 +233,6 @@
     "runningCleanup": "brew cleanup 실행 중…\n잠시 기다려 주세요...",
     "runningDryRun": "brew cleanup --dry-run 실행 중…\n잠시 기다려 주세요...",
     "noHomebrewOutput": "아직 출력이 없습니다. \"Homebrew 업데이트\"를 클릭하세요.",
-    "installSuccess": "\"{{name}}\" 설치 완료!",
-    "installFailed": "\"{{name}}\" 설치 실패: {{error}}",
     "noDoctorOutput": "아직 출력이 없습니다. \"Doctor 실행\"을 클릭하세요.",
     "noCleanupOutput": "아직 출력이 없습니다. \"Cleanup 실행\"을 클릭하세요.",
     "serviceActionLogs": "서비스: {{name}}",
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – macOS를 위한 미니멀 Homebrew GUI",
     "createdBy": "제작: Nico Wickersheim",
-    "developedWith": "{{wails}}와 React로 개발",
     "description": "WailBrew는 패키지를 쉽게 관리, 설치 및 업데이트할 수 있는 Homebrew용 현대적인 그래픽 사용자 인터페이스입니다.",
     "links": "링크:",
     "wailbrewWebsite": "WailBrew 웹사이트",
     "githubRepo": "GitHub 저장소",
-    "reportBug": "버그 신고",
     "homebrewWebsite": "Homebrew 웹사이트",
     "acknowledgments": "감사의 말:",
-    "acknowledgmentText": "Bruno Philipe의 {{cakebrew}}에서 영감을 받았습니다.\\n원본 Homebrew GUI의 훌륭한 작업에 감사드립니다!",
     "translationTitle": "번역:",
     "translationThanks": "번역에 기여해 주신 모든 분들께 감사드립니다!",
     "improveTranslations": "→ 번역 개선에 참여하기",
@@ -389,10 +363,7 @@
     "available": "Homebrew를 통해 업데이트 가능!",
     "currentVersion": "현재 버전",
     "newVersion": "새 버전",
-    "published": "게시일",
-    "size": "크기",
     "changes": "변경 사항",
-    "viewReleaseNotes": "릴리스 노트 보기",
     "availableViaHomebrew": "Homebrew Cask를 통해 새 버전을 사용할 수 있습니다",
     "manualUpdate": "수동 업데이트",
     "instruction": "WailBrew를 업데이트하려면 터미널에서 다음 명령을 실행하세요:",
@@ -401,12 +372,7 @@
     "upToDate": "최신 버전입니다!",
     "currentVersionIs": "버전 {{version}}이(가) Homebrew를 통해 제공되는 현재 버전입니다.",
     "tryAgain": "다시 시도",
-    "gotIt": "확인",
-    "downloadAndInstall": "다운로드 및 설치",
-    "installing": "설치 중...",
-    "updateInstalled": "업데이트 설치 완료!",
-    "restartMessage": "업데이트가 성공적으로 설치되었습니다. 새 버전을 사용하려면 WailBrew를 다시 시작하세요.",
-    "restartNow": "지금 다시 시작"
+    "gotIt": "확인"
   },
   "restartDialog": {
     "title": "다시 시작 필요",
@@ -445,9 +411,6 @@
     "subtitle": "Homebrew 환경을 구성하세요",
     "loading": "설정 로딩 중...",
     "footer": "Homebrew 경험을 커스터마이즈하기 위해 WailBrew 설정을 구성하세요.",
-    "categories": {
-      "general": "일반"
-    },
     "landingTab": {
       "title": "시작 탭",
       "description": "WailBrew 시작 시 표시할 탭을 선택하세요.",
@@ -463,7 +426,6 @@
       "currentPath": "Homebrew 경로",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "brew 경로 자동 감지",
-      "currentlyUsing": "현재 사용 중:",
       "note": "참고: brew 경로를 변경하면 새 Homebrew 설치를 반영하기 위해 모든 패키지 데이터가 새로고침됩니다."
     },
     "buttons": {
@@ -481,7 +443,6 @@
       "outdatedFlagUpdated": "오래된 패키지 감지 설정이 성공적으로 업데이트되었습니다!",
       "outdatedFlagReset": "오래된 패키지 감지 설정이 현재 값으로 초기화되었습니다.",
       "caskAppDirUpdated": "Cask 애플리케이션 디렉토리 설정이 성공적으로 업데이트되었습니다!",
-      "caskAppDirReset": "Cask 애플리케이션 디렉토리 설정이 현재 값으로 초기화되었습니다.",
       "customCaskOptsUpdated": "사용자 정의 Cask 옵션이 성공적으로 업데이트되었습니다!",
       "customOutdatedArgsUpdated": "사용자 정의 outdated 인수가 성공적으로 업데이트되었습니다!",
       "adminUsernameUpdated": "관리자 사용자 이름이 성공적으로 업데이트되었습니다!",
@@ -544,10 +505,7 @@
       "title": "Cask 애플리케이션 디렉토리",
       "description": "Homebrew Cask 애플리케이션이 설치되는 디렉토리를 구성합니다. 이것은 --appdir 옵션으로 HOMEBREW_CASK_OPTS 환경 변수를 설정합니다.",
       "currentDir": "애플리케이션 디렉토리",
-      "placeholder": "/Applications/3rd-party",
       "default": "기본값 (/Applications)",
-      "currentlyUsing": "현재 사용 중:",
-      "hint": "폴더 아이콘을 클릭하여 디렉토리를 선택하세요. 기본 /Applications 디렉토리를 사용하려면 비워 두세요.",
       "selectDirectory": "디렉토리 선택",
       "newDirectory": "새 디렉토리",
       "note": "참고: 이 설정을 변경하면 새로운 캐스크 설치 및 업그레이드가 배치되는 위치에 영향을 미칩니다. 기존 설치물은 자동으로 이동되지 않습니다."

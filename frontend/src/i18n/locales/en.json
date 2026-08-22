@@ -9,7 +9,6 @@
   },
   "sidebar": {
     "packages": "Packages",
-    "formulas": "Formulae",
     "browseInstall": "Browse & Install",
     "tools": "Tools",
     "installed": "Installed",
@@ -24,7 +23,6 @@
     "homebrew": "Homebrew",
     "doctor": "Doctor",
     "cleanup": "Cleanup",
-    "settings": "Settings",
     "refresh": "Refresh",
     "sponsor": "Sponsor"
   },
@@ -98,8 +96,6 @@
     "update": "Update \"{{name}}\"",
     "tap": "Tap Repository",
     "updateAll": "Update All",
-    "multiSelect": "Multi-Select",
-    "exitMultiSelect": "Exit Multi-Select",
     "updateSelected": "Update {{count}} Selected",
     "selectAll": "Select All",
     "deselectAll": "Deselect All",
@@ -108,7 +104,6 @@
     "runDoctor": "Run doctor",
     "runCleanup": "Run cleanup",
     "runDryRun": "Dry Run",
-    "checkEstimate": "Check Estimate",
     "refresh": "Refresh packages",
     "yes": "Yes",
     "cancel": "Cancel",
@@ -120,7 +115,6 @@
     "yesUntap": "Yes, untap",
     "yesTrust": "Yes, trust",
     "trustRepository": "Trust \"{{name}}\"",
-    "yesUninstallAndUntap": "Yes, uninstall and untap",
     "ok": "Ok",
     "close": "Close",
     "updateHomebrew": "Update Homebrew",
@@ -133,9 +127,6 @@
     "toggleOnRequest": "Toggle filter: installed on request",
     "toggleAsDependency": "Toggle filter: installed as dependency"
   },
-  "multiSelect": {
-    "selectedCount": "{{count}} of {{total}} selected"
-  },
   "logDialog": {
     "running": "Running...",
     "completed": "Completed",
@@ -146,12 +137,7 @@
   },
   "packageInfo": {
     "loading": "(Loading…)",
-    "description": "Description",
-    "homepage": "Homepage",
-    "version": "Version",
     "status": "Status",
-    "dependencies": "Dependencies",
-    "conflicts": "Conflicts",
     "installed": "Installed",
     "notInstalled": "Not installed",
     "noSelection": "No package selected",
@@ -159,7 +145,6 @@
     "last30Days": "Last 30 Days",
     "last90Days": "Last 90 Days",
     "last365Days": "Last 365 Days",
-    "brewPage": "Homebrew Page",
     "loadingAnalytics": "Loading analytics...",
     "installedDepsTitle": "Installed Dependencies",
     "installedDepsNone": "No installed dependencies",
@@ -198,7 +183,6 @@
     "updateAvailable": "Update available: v{{version}}"
   },
   "cleanup": {
-    "estimatedSpace": "Estimated space to free: {{size}}",
     "spaceToFree": "{{size}} can be freed"
   },
   "dialogs": {
@@ -218,7 +202,6 @@
     "trustFailed": "Failed to trust \"{{name}}\": {{error}}",
     "updateLogs": "Update logs for {{name}}",
     "updateAllLogs": "Update logs for all packages",
-    "updateSelectedLogs": "Update logs for selected packages",
     "installLogs": "Install logs for {{name}}",
     "uninstallLogs": "Uninstall logs for {{name}}",
     "untapLogs": "Untap logs for {{name}}",
@@ -236,10 +219,6 @@
     "repositoryInfo": "Info for {{name}}",
     "serviceActionLogs": "Service: {{name}}",
     "serviceInfo": "Service info for {{name}}",
-    "confirmUntapUninstall": "Cannot untap \"{{name}}\" because it contains {{count}} installed package(s): {{packages}}\n\nDo you want to uninstall them first and then untap?",
-    "uninstallingPackagesBeforeUntap": "Uninstalling {{count}} package(s) before untapping \"{{name}}\"...\nPlease wait...",
-    "uninstallingPackage": "Uninstalling {{name}} ({{current}}/{{total}})...",
-    "retryingUntap": "Retrying untap for \"{{name}}\"...\nPlease wait...",
     "packageInfo": "Info for {{name}}",
     "sessionLogs": "Session Logs",
     "updating": "Updating \"{{name}}\"...\nPlease wait...",
@@ -256,8 +235,6 @@
     "runningCleanup": "Running brew cleanup…\nPlease wait...",
     "runningDryRun": "Running brew cleanup --dry-run…\nPlease wait...",
     "noHomebrewOutput": "No output yet. Click \"Update Homebrew\".",
-    "installSuccess": "Successfully installed \"{{name}}\"!",
-    "installFailed": "Failed to install \"{{name}}\": {{error}}",
     "noDoctorOutput": "No output yet. Click \"Run doctor\".",
     "noCleanupOutput": "No output yet. Click \"Run cleanup\"."
   },
@@ -276,15 +253,12 @@
     "appName": "WailBrew",
     "subtitle": "WailBrew – Minimalist Homebrew GUI for macOS",
     "createdBy": "Created by Nico Wickersheim",
-    "developedWith": "Developed with {{wails}} and React",
     "description": "WailBrew is a modern graphical user interface for Homebrew that makes it easy to manage, install and update packages.",
     "links": "Links:",
     "wailbrewWebsite": "WailBrew Website",
     "githubRepo": "GitHub Repository",
-    "reportBug": "Report Bug",
     "homebrewWebsite": "Homebrew Website",
     "acknowledgments": "Acknowledgments:",
-    "acknowledgmentText": "Inspired by {{cakebrew}} by Bruno Philipe.\\nThanks for the great work on the original Homebrew GUI!",
     "translationTitle": "Translations:",
     "translationThanks": "A huge thank you to everyone who contributed translations!",
     "improveTranslations": "→ Help improve translations",
@@ -350,7 +324,7 @@
       "helpMessage": "Currently there is no help page available."
     }
   },
-    "table": {
+  "table": {
     "loadingFormulas": "Loading formulae…",
     "loadingRepositories": "Loading repositories…",
     "loadingServices": "Loading services…",
@@ -416,10 +390,7 @@
     "available": "Update available via Homebrew!",
     "currentVersion": "Current Version",
     "newVersion": "New Version",
-    "published": "Published",
-    "size": "Size",
     "changes": "Changes",
-    "viewReleaseNotes": "View Release Notes",
     "availableViaHomebrew": "A new version is available via Homebrew Cask",
     "manualUpdate": "Manual Update",
     "instruction": "To update WailBrew, please run the following commands in your terminal:",
@@ -428,12 +399,7 @@
     "upToDate": "You're up to date!",
     "currentVersionIs": "Version {{version}} is the current version available via Homebrew.",
     "tryAgain": "Try again",
-    "gotIt": "Got it",
-    "downloadAndInstall": "Download & Install",
-    "installing": "Installing...",
-    "updateInstalled": "Update Installed!",
-    "restartMessage": "The update has been successfully installed. Please restart WailBrew to use the new version.",
-    "restartNow": "Restart Now"
+    "gotIt": "Got it"
   },
   "restartDialog": {
     "title": "Restart Required",
@@ -472,9 +438,6 @@
     "subtitle": "Configure your Homebrew experience",
     "loading": "Loading settings...",
     "footer": "Configure WailBrew settings to customize your Homebrew experience.",
-    "categories": {
-      "general": "General"
-    },
     "landingTab": {
       "title": "Landing Tab",
       "description": "Choose which tab is displayed when WailBrew starts.",
@@ -502,7 +465,6 @@
       "currentPath": "Homebrew Path",
       "placeholder": "/opt/homebrew/bin/brew",
       "autoDetect": "Auto-detect brew path",
-      "currentlyUsing": "Currently using:",
       "note": "Note: Changing the brew path will refresh all package data to reflect the new Homebrew installation."
     },
     "buttons": {
@@ -520,7 +482,6 @@
       "outdatedFlagUpdated": "Outdated flag setting updated successfully!",
       "outdatedFlagReset": "Outdated flag reset to current value.",
       "caskAppDirUpdated": "Cask app directory setting updated successfully!",
-      "caskAppDirReset": "Cask app directory reset to current value.",
       "customCaskOptsUpdated": "Custom cask options updated successfully!",
       "customOutdatedArgsUpdated": "Custom outdated arguments updated successfully!",
       "adminUsernameUpdated": "Admin username updated successfully!",
@@ -583,10 +544,7 @@
       "title": "Cask Application Directory",
       "description": "Configure the directory where Homebrew Cask applications are installed. This sets the HOMEBREW_CASK_OPTS environment variable with --appdir option.",
       "currentDir": "Application Directory",
-      "placeholder": "/Applications/3rd-party",
       "default": "Default (/Applications)",
-      "currentlyUsing": "Currently using:",
-      "hint": "Click the folder icon to select a directory. Leave empty to use the default /Applications directory.",
       "selectDirectory": "Select directory",
       "newDirectory": "New directory",
       "note": "Note: Changing this setting will affect where new cask installations and upgrades are placed. Existing installations are not moved automatically."
