@@ -643,7 +643,7 @@ func (s *serviceImpl) CheckHomebrewUpdate() (map[string]interface{}, error) {
 }
 
 func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
-	startMessage := s.getBackendMsg("homebrewUpdateStart", map[string]string{})
+	startMessage := s.getBackendMsg("backend.homebrewUpdate.start", map[string]string{})
 	s.eventEmitter.Emit("homebrewUpdateProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, "update")
@@ -651,33 +651,33 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 
 	phase, err, _ := runStreamingCommand(cmd,
 		func(line string) {
-			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateOutput", map[string]string{"line": line}))
+			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("backend.homebrewUpdate.output", map[string]string{"line": line}))
 		},
 		func(line string) {
-			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("homebrewUpdateWarning", map[string]string{"line": line}))
+			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("backend.homebrewUpdate.warning", map[string]string{"line": line}))
 		},
 	)
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingHomebrewUpdate", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingHomebrewUpdate", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("homebrewUpdateProgress", errorMsg)
 		return errorMsg
 	}
 
 	var finalMessage string
 	if phase == phaseRun {
-		finalMessage = s.getBackendMsg("homebrewUpdateFailed", map[string]string{"error": err.Error()})
+		finalMessage = s.getBackendMsg("backend.homebrewUpdate.failed", map[string]string{"error": err.Error()})
 	} else {
-		finalMessage = s.getBackendMsg("homebrewUpdateSuccess", map[string]string{})
+		finalMessage = s.getBackendMsg("backend.homebrewUpdate.success", map[string]string{})
 	}
 
 	s.eventEmitter.Emit("homebrewUpdateComplete", finalMessage)

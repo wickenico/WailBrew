@@ -167,7 +167,7 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 			warning = w
 		}
 		if autoUpdateCasks[cask.Name] {
-			autoUpdateWarning := s.getBackendMsg("autoUpdateCaskWarning", nil)
+			autoUpdateWarning := s.getBackendMsg("backend.outdated.autoUpdateCask", nil)
 			if warning != "" {
 				warning = warning + "\n\n" + autoUpdateWarning
 			} else {

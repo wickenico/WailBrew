@@ -1143,7 +1143,7 @@ func (a *App) reconfigureBrew() {
 		func() error { return a.brewExecutor.ValidateInstallation() },
 		func(key string, params map[string]string) string {
 			if a.i18nManager != nil {
-				return a.i18nManager.GetBackendMessage(key, params)
+				return a.i18nManager.GetTranslation(key, params)
 			}
 			return key
 		},

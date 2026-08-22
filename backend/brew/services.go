@@ -143,7 +143,7 @@ func (s *ServicesService) RunBrewService(ctx context.Context, name string) strin
 // events, mirroring the tap/untap flow.
 func (s *ServicesService) runServiceAction(ctx context.Context, action, name string) string {
 	msgParams := map[string]string{"action": action, "name": name}
-	startMessage := s.getBackendMsg("serviceStart", msgParams)
+	startMessage := s.getBackendMsg("backend.service.start", msgParams)
 	s.eventEmitter.Emit("serviceActionProgress", startMessage)
 
 	cmd := exec.CommandContext(ctx, s.brewPath, "services", action, name)
@@ -156,28 +156,28 @@ func (s *ServicesService) runServiceAction(ctx context.Context, action, name str
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingService", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingService", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
 	case phaseRun:
-		errorMsg := s.getBackendMsg("serviceFailed", map[string]string{"action": action, "name": name, "error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.service.failed", map[string]string{"action": action, "name": name, "error": err.Error()})
 		s.eventEmitter.Emit("serviceActionProgress", errorMsg)
 		s.eventEmitter.Emit("serviceActionComplete", errorMsg)
 		return errorMsg
 	}
 
-	successMsg := s.getBackendMsg("serviceSuccess", msgParams)
+	successMsg := s.getBackendMsg("backend.service.success", msgParams)
 	s.eventEmitter.Emit("serviceActionProgress", successMsg)
 	s.eventEmitter.Emit("serviceActionComplete", successMsg)
 	return successMsg

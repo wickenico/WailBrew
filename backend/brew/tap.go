@@ -72,7 +72,7 @@ func NewTapService(
 // repositoryURL is optional; when provided it is passed as the second argument to brew tap.
 func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repositoryURL string) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("tapStart", map[string]string{"name": repositoryName})
+	startMessage := s.getBackendMsg("backend.tap.start", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryTapProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, BuildTapArgs(repositoryName, repositoryURL)...)
@@ -85,15 +85,15 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingTap", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingTap", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		return errorMsg
 	case phaseRun:
@@ -106,14 +106,14 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 			}
 			s.eventEmitter.Emit("repositoryTapTrustRequired", tapName)
 		}
-		errorMsg := s.getBackendMsg("tapFailed", map[string]string{"name": repositoryName, "error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.tap.failed", map[string]string{"name": repositoryName, "error": err.Error()})
 		s.eventEmitter.Emit("repositoryTapProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTapComplete", errorMsg)
 		return errorMsg
 	}
 
 	// Success
-	successMsg := s.getBackendMsg("tapSuccess", map[string]string{"name": repositoryName})
+	successMsg := s.getBackendMsg("backend.tap.success", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryTapProgress", successMsg)
 	s.eventEmitter.Emit("repositoryTapComplete", successMsg)
 	return successMsg
@@ -122,7 +122,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 // UntapBrewRepository untaps a repository with live progress updates
 func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName string) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("untapStart", map[string]string{"name": repositoryName})
+	startMessage := s.getBackendMsg("backend.untap.start", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryUntapProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, BuildUntapArgs(repositoryName)...)
@@ -135,26 +135,26 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingUntap", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingUntap", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		return errorMsg
 	case phaseRun:
-		errorMsg := s.getBackendMsg("untapFailed", map[string]string{"name": repositoryName, "error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.untap.failed", map[string]string{"name": repositoryName, "error": err.Error()})
 		s.eventEmitter.Emit("repositoryUntapProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryUntapComplete", errorMsg)
 		return errorMsg
 	}
 
 	// Success
-	successMsg := s.getBackendMsg("untapSuccess", map[string]string{"name": repositoryName})
+	successMsg := s.getBackendMsg("backend.untap.success", map[string]string{"name": repositoryName})
 	s.eventEmitter.Emit("repositoryUntapProgress", successMsg)
 	s.eventEmitter.Emit("repositoryUntapComplete", successMsg)
 	return successMsg
@@ -163,7 +163,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 // TrustBrewTap trusts a (non-official) tap so Homebrew 6 will load and install
 // from it. Streams progress via the "repositoryTrustProgress" event.
 func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
-	startMessage := s.getBackendMsg("trustStart", map[string]string{"name": tapName})
+	startMessage := s.getBackendMsg("backend.trust.start", map[string]string{"name": tapName})
 	s.eventEmitter.Emit("repositoryTrustProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, BuildTrustArgs(tapName)...)
@@ -176,28 +176,28 @@ func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingTrust", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingTrust", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
 	case phaseRun:
-		errorMsg := s.getBackendMsg("trustFailed", map[string]string{"name": tapName, "error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.trust.failed", map[string]string{"name": tapName, "error": err.Error()})
 		s.eventEmitter.Emit("repositoryTrustProgress", errorMsg)
 		s.eventEmitter.Emit("repositoryTrustComplete", errorMsg)
 		return errorMsg
 	}
 
-	successMsg := s.getBackendMsg("trustSuccess", map[string]string{"name": tapName})
+	successMsg := s.getBackendMsg("backend.trust.success", map[string]string{"name": tapName})
 	s.eventEmitter.Emit("repositoryTrustProgress", successMsg)
 	s.eventEmitter.Emit("repositoryTrustComplete", successMsg)
 	return successMsg

@@ -80,7 +80,7 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 	// Resolve the installed .app path from brew info
 	appPath, isPkg, err := system.ResolveCaskAppPath(s.brewPath, packageName, appDir)
 	if err != nil {
-		warnMsg := s.getBackendMsg("quarantine.resolveFailed", map[string]string{
+		warnMsg := s.getBackendMsg("backend.quarantine.resolveFailed", map[string]string{
 			"name":  packageName,
 			"error": err.Error(),
 		})
@@ -90,7 +90,7 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 
 	// .pkg-based cask — skip with informational message
 	if isPkg {
-		infoMsg := s.getBackendMsg("quarantine.skippedPkg", map[string]string{
+		infoMsg := s.getBackendMsg("backend.quarantine.skippedPkg", map[string]string{
 			"name": packageName,
 		})
 		s.eventEmitter.Emit(progressEvent, infoMsg)
@@ -102,11 +102,11 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 
 	// Quit the app gracefully if it is running and auto-relaunch is enabled
 	if s.getAutoRelaunch != nil && s.getAutoRelaunch() && system.IsAppRunning(appName) {
-		quitMsg := s.getBackendMsg("quarantine.quitting", map[string]string{"name": appName})
+		quitMsg := s.getBackendMsg("backend.quarantine.quitting", map[string]string{"name": appName})
 		s.eventEmitter.Emit(progressEvent, quitMsg)
 
 		if err := system.QuitAppGracefully(appName); err != nil {
-			warnMsg := s.getBackendMsg("quarantine.quitFailed", map[string]string{
+			warnMsg := s.getBackendMsg("backend.quarantine.quitFailed", map[string]string{
 				"name":  appName,
 				"error": err.Error(),
 			})
@@ -118,11 +118,11 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 	}
 
 	// Remove the quarantine attribute
-	removeMsg := s.getBackendMsg("quarantine.removing", map[string]string{"path": appPath})
+	removeMsg := s.getBackendMsg("backend.quarantine.removing", map[string]string{"path": appPath})
 	s.eventEmitter.Emit(progressEvent, removeMsg)
 
 	if err := system.RemoveQuarantine(appPath); err != nil {
-		warnMsg := s.getBackendMsg("quarantine.removeFailed", map[string]string{
+		warnMsg := s.getBackendMsg("backend.quarantine.removeFailed", map[string]string{
 			"path":  appPath,
 			"error": err.Error(),
 		})
@@ -130,17 +130,17 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 		// Still try to relaunch even if xattr had issues (attribute may not have
 		// been set at all, which xattr treats as a non-fatal error).
 	} else {
-		removedMsg := s.getBackendMsg("quarantine.removed", map[string]string{"path": appPath})
+		removedMsg := s.getBackendMsg("backend.quarantine.removed", map[string]string{"path": appPath})
 		s.eventEmitter.Emit(progressEvent, removedMsg)
 	}
 
 	// Relaunch the app if it was running before the upgrade
 	if wasRunning {
-		relaunchMsg := s.getBackendMsg("quarantine.relaunching", map[string]string{"name": appName})
+		relaunchMsg := s.getBackendMsg("backend.quarantine.relaunching", map[string]string{"name": appName})
 		s.eventEmitter.Emit(progressEvent, relaunchMsg)
 
 		if err := system.LaunchApp(appPath); err != nil {
-			warnMsg := s.getBackendMsg("quarantine.relaunchFailed", map[string]string{
+			warnMsg := s.getBackendMsg("backend.quarantine.relaunchFailed", map[string]string{
 				"name":  appName,
 				"error": err.Error(),
 			})
@@ -152,7 +152,7 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 // InstallBrewPackage installs a package with live progress updates
 func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName string) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("installStart", map[string]string{"name": packageName})
+	startMessage := s.getBackendMsg("backend.install.start", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageInstallProgress", startMessage)
 
 	cmd := exec.Command(s.brewPath, BuildInstallArgs(packageName)...)
@@ -165,17 +165,17 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingInstall", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingInstall", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
@@ -188,14 +188,14 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 				s.eventEmitter.Emit("packageInstallTrustRequired", string(payload))
 			}
 		}
-		errorMsg := s.getBackendMsg("installFailed", map[string]string{"name": packageName, "error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.install.failed", map[string]string{"name": packageName, "error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
 	}
 
 	// Success
-	successMsg := s.getBackendMsg("installSuccess", map[string]string{"name": packageName})
+	successMsg := s.getBackendMsg("backend.install.success", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageInstallProgress", successMsg)
 
 	// Post-install: remove quarantine attribute for casks
@@ -212,7 +212,7 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 // removes leftover preferences, caches and support files.
 func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("uninstallStart", map[string]string{"name": packageName})
+	startMessage := s.getBackendMsg("backend.uninstall.start", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUninstallProgress", startMessage)
 
 	// isPackageCask shells out to brew, so only probe when zap was requested.
@@ -229,29 +229,29 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingUninstall", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingUninstall", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
 	case phaseRun:
-		errorMsg := s.getBackendMsg("uninstallFailed", map[string]string{"name": packageName, "error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.uninstall.failed", map[string]string{"name": packageName, "error": err.Error()})
 		s.eventEmitter.Emit("packageUninstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageUninstallComplete", errorMsg)
 		return errorMsg
 	}
 
 	// Success
-	successMsg := s.getBackendMsg("uninstallSuccess", map[string]string{"name": packageName})
+	successMsg := s.getBackendMsg("backend.uninstall.success", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUninstallProgress", successMsg)
 	s.eventEmitter.Emit("packageUninstallComplete", successMsg)
 	return successMsg
@@ -271,15 +271,15 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		return errorMsg, false, false
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		return errorMsg, false, false
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingUpdate", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingUpdate", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		return errorMsg, false, false
 	case phaseRun:
@@ -287,12 +287,12 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 		if !useForce && s.isAppExistsError(stderrStr) {
 			return "", false, true
 		}
-		finalMessage = s.getBackendMsg("updateFailed", map[string]string{"name": packageName, "error": err.Error()})
+		finalMessage = s.getBackendMsg("backend.update.failed", map[string]string{"name": packageName, "error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 		return finalMessage, false, false
 	}
 
-	finalMessage = s.getBackendMsg("updateSuccess", map[string]string{"name": packageName})
+	finalMessage = s.getBackendMsg("backend.update.success", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 
 	// Post-upgrade: remove quarantine attribute for casks
@@ -311,7 +311,7 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 // UpdateBrewPackage upgrades a package with live progress updates
 func (s *ActionsService) UpdateBrewPackage(ctx context.Context, packageName string) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("updateStart", map[string]string{"name": packageName})
+	startMessage := s.getBackendMsg("backend.update.start", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUpdateProgress", startMessage)
 
 	// Try normal upgrade first
@@ -319,7 +319,7 @@ func (s *ActionsService) UpdateBrewPackage(ctx context.Context, packageName stri
 
 	// If update failed with "app already exists" error and it's a cask, retry with --force
 	if shouldRetry && s.isPackageCask(packageName) {
-		s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("updateRetryingWithForce", map[string]string{"name": packageName}))
+		s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("backend.update.retryingWithForce", map[string]string{"name": packageName}))
 		finalMessage, wailbrewUpdated, _ = s.RunUpdateCommand(packageName, true)
 	}
 
@@ -404,9 +404,9 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 
 			// Retry failed casks with --force
 			if len(failedCasks) > 0 {
-				s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("updateRetryingFailedCasks", map[string]string{"count": fmt.Sprintf("%d", len(failedCasks))}))
+				s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("backend.update.retryingFailedCasks", map[string]string{"count": fmt.Sprintf("%d", len(failedCasks))}))
 				for _, pkg := range failedCasks {
-					s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("updateRetryingWithForce", map[string]string{"name": pkg}))
+					s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("backend.update.retryingWithForce", map[string]string{"name": pkg}))
 					_, _, _ = s.RunUpdateCommand(pkg, true)
 				}
 				finalMessage = fmt.Sprintf("✅ Retried %d failed cask(s) with --force", len(failedCasks))
@@ -446,7 +446,7 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 // UpdateAllBrewPackages upgrades all outdated packages with live progress updates
 func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("updateAllStart", map[string]string{})
+	startMessage := s.getBackendMsg("backend.updateAll.start", map[string]string{})
 	s.eventEmitter.Emit("packageUpdateProgress", startMessage)
 
 	// Build upgrade command respecting the user's Outdated Detection Mode setting
@@ -469,17 +469,17 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 
 	switch phase {
 	case phaseStdoutPipe:
-		errorMsg := s.getBackendMsg("errorCreatingPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		s.eventEmitter.Emit("packageUpdateComplete", errorMsg)
 		return errorMsg
 	case phaseStderrPipe:
-		errorMsg := s.getBackendMsg("errorCreatingErrorPipe", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.creatingErrorPipe", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		s.eventEmitter.Emit("packageUpdateComplete", errorMsg)
 		return errorMsg
 	case phaseStart:
-		errorMsg := s.getBackendMsg("errorStartingUpdateAll", map[string]string{"error": err.Error()})
+		errorMsg := s.getBackendMsg("backend.errors.startingUpdateAll", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", errorMsg)
 		s.eventEmitter.Emit("packageUpdateComplete", errorMsg)
 		return errorMsg
@@ -487,10 +487,10 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 
 	var finalMessage string
 	if phase == phaseRun {
-		finalMessage = s.getBackendMsg("updateAllFailed", map[string]string{"error": err.Error()})
+		finalMessage = s.getBackendMsg("backend.updateAll.failed", map[string]string{"error": err.Error()})
 		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 	} else {
-		finalMessage = s.getBackendMsg("updateAllSuccess", map[string]string{})
+		finalMessage = s.getBackendMsg("backend.updateAll.success", map[string]string{})
 		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 	}
 
