@@ -1,32 +1,32 @@
-import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, X } from 'lucide-react';
+import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import {
+    CheckBrewLocation,
     CheckHomebrewUpdate,
     ClearBrewCache,
     GetAllBrewCasks,
     GetAllBrewPackages,
     GetAppVersion,
-    GetBrewCasks,
+    GetAutoCleanupAfterUpgrade,
     GetBrewCaskSizes,
+    GetBrewCasks,
     GetBrewCleanupDryRun,
-    GetBrewPackages,
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
     GetBrewPackageSizes,
-    GetBrewServices,
+    GetBrewPackages,
     GetBrewServiceInfo,
     GetBrewServicePid,
+    GetBrewServices,
     GetBrewTapInfo,
-    GetInstalledDependents,
-    GetAutoCleanupAfterUpgrade,
-    GetLandingTab,
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
-    CheckBrewLocation,
     GetDeprecatedFormulae,
     GetHomebrewVersion,
+    GetInstalledDependents,
+    GetLandingTab,
     GetSessionLogs,
     GetStartupDataWithUpdate,
     GetUninstallCaskWithZap,
@@ -51,14 +51,9 @@ import {
     UpdateAllBrewPackages,
     UpdateBrewPackage,
     UpdateHomebrew,
-    UpdateSelectedBrewPackages
+    UpdateSelectedBrewPackages,
 } from "../wailsjs/go/main/App";
-import {
-    EventsOn,
-    WindowGetPosition,
-    WindowGetSize,
-    WindowIsMaximised,
-} from "../wailsjs/runtime";
+import { EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import "./App.css";
 import "./style.css";
 
@@ -68,22 +63,22 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import DoctorView from "./components/DoctorView";
 import HeaderRow from "./components/HeaderRow";
 import HomebrewView from "./components/HomebrewView";
+import { LoadingTimer } from "./components/LoadingTimer";
 import LogDialog from "./components/LogDialog";
 import PackageInfo from "./components/PackageInfo";
 import PackageInfoDialog from "./components/PackageInfoDialog";
 import PackageTable from "./components/PackageTable";
 import RepositoryInfo from "./components/RepositoryInfo";
 import RepositoryTable from "./components/RepositoryTable";
-import ServiceInfo from "./components/ServiceInfo";
-import ServicesTable, { ServiceEntry } from "./components/ServicesTable";
 import RestartDialog from "./components/RestartDialog";
+import ServiceInfo from "./components/ServiceInfo";
+import ServicesTable, { type ServiceEntry } from "./components/ServicesTable";
 import SettingsView from "./components/SettingsView";
 import ShortcutsDialog from "./components/ShortcutsDialog";
 import Sidebar from "./components/Sidebar";
 import TapInputDialog from "./components/TapInputDialog";
 import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
-import { LoadingTimer } from "./components/LoadingTimer";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 import type { PackageEntry, RepositoryEntry, View } from "./types";
 
@@ -110,7 +105,9 @@ const WailBrewApp = () => {
     const [showServiceInfo, setShowServiceInfo] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [brewLocationSuggestion, setBrewLocationSuggestion] = useState<{ current: string; suggested: string } | null>(null);
+    const [brewLocationSuggestion, setBrewLocationSuggestion] = useState<{ current: string; suggested: string } | null>(
+        null,
+    );
     const [switchingBrewPath, setSwitchingBrewPath] = useState<boolean>(false);
     const [view, setView] = useState<View>("installed");
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
@@ -150,12 +147,15 @@ const WailBrewApp = () => {
     const [doctorLog, setDoctorLog] = useState<string>("");
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [selectedDeprecatedPackage, setSelectedDeprecatedPackage] = useState<PackageEntry | null>(null);
-    const [updatableError, setUpdatableError] = useState<string>("");
+    const [_updatableError, setUpdatableError] = useState<string>("");
     const [leavesError, setLeavesError] = useState<string>("");
     const [installedFilter, setInstalledFilter] = useState<"all" | "on_request" | "dependency">("all");
     const [homebrewLog, setHomebrewLog] = useState<string>("");
     const [homebrewVersion, setHomebrewVersion] = useState<string>("");
-    const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{ isUpToDate: boolean | null, latestVersion: string | null }>({ isUpToDate: null, latestVersion: null });
+    const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{
+        isUpToDate: boolean | null;
+        latestVersion: string | null;
+    }>({ isUpToDate: null, latestVersion: null });
     const [isUpdateRunning, setIsUpdateRunning] = useState<boolean>(false);
     const [isInstallRunning, setIsInstallRunning] = useState<boolean>(false);
     const [isUninstallRunning, setIsUninstallRunning] = useState<boolean>(false);
@@ -183,7 +183,7 @@ const WailBrewApp = () => {
     // Track update event listeners for cleanup (prevents duplicate listeners bug)
     const updateListenersRef = useRef<{ progress: (() => void) | null; complete: (() => void) | null }>({
         progress: null,
-        complete: null
+        complete: null,
     });
 
     // Track info request to prevent reopening dialog after close
@@ -191,22 +191,24 @@ const WailBrewApp = () => {
 
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
-        const saved = localStorage.getItem('sidebarWidth');
+        const saved = localStorage.getItem("sidebarWidth");
         return saved ? parseInt(saved, 10) : 220;
     });
     const [isResizing, setIsResizing] = useState<boolean>(false);
     const sidebarRef = useRef<HTMLElement>(null);
     const customToastStyle = {
-        background: 'transparent',
-        border: 'none',
-        boxShadow: 'none',
+        background: "transparent",
+        border: "none",
+        boxShadow: "none",
         padding: 0,
     } as const;
 
     useEffect(() => {
-        GetLandingTab().then((tab) => {
-            if (tab) setView(tab as typeof view);
-        }).catch(() => {});
+        GetLandingTab()
+            .then((tab) => {
+                if (tab) setView(tab as typeof view);
+            })
+            .catch(() => {});
     }, []);
 
     // Persist window geometry on resize/move so it survives force-quits and
@@ -238,11 +240,13 @@ const WailBrewApp = () => {
 
     useEffect(() => {
         // Get app version from backend
-        GetAppVersion().then(version => {
-            setAppVersion(version);
-        }).catch(err => {
-            console.error("Failed to get app version:", err);
-        });
+        GetAppVersion()
+            .then((version) => {
+                setAppVersion(version);
+            })
+            .catch((err) => {
+                console.error("Failed to get app version:", err);
+            });
 
         setLoading(true);
         // Start loading timer (DEV only)
@@ -261,21 +265,21 @@ const WailBrewApp = () => {
 
                 // Check for errors in the responses
                 if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
-                    throw new Error(`${t('errors.failedInstalledPackages')}: ${safeInstalled[0][1]}`);
+                    throw new Error(`${t("errors.failedInstalledPackages")}: ${safeInstalled[0][1]}`);
                 }
                 if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
-                    throw new Error(`${t('errors.failedInstalledCasks')}: ${safeInstalledCasks[0][1]}`);
+                    throw new Error(`${t("errors.failedInstalledCasks")}: ${safeInstalledCasks[0][1]}`);
                 }
                 const updatableErrorMessage =
                     safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error"
-                        ? `${t('errors.failedUpdatablePackages')}: ${safeUpdatable[0][1]}`
+                        ? `${t("errors.failedUpdatablePackages")}: ${safeUpdatable[0][1]}`
                         : "";
                 const leavesErrorMessage =
                     safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")
-                        ? `${t('errors.failedLeaves')}: ${safeLeaves[0]}`
+                        ? `${t("errors.failedLeaves")}: ${safeLeaves[0]}`
                         : "";
                 if (safeRepos.length === 1 && safeRepos[0][0] === "Error") {
-                    throw new Error(`${t('errors.failedRepositories')}: ${safeRepos[0][1]}`);
+                    throw new Error(`${t("errors.failedRepositories")}: ${safeRepos[0][1]}`);
                 }
 
                 const installedFormatted = safeInstalled.map(([name, installedVersion, size, installReason]) => ({
@@ -294,33 +298,38 @@ const WailBrewApp = () => {
                 const updatableFormatted = updatableErrorMessage
                     ? []
                     : safeUpdatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
-                        name,
-                        installedVersion,
-                        latestVersion,
-                        size,
-                        isInstalled: true,
-                        warning: warning || undefined,
-                        isCask: type === "cask",
-                    }));
+                          name,
+                          installedVersion,
+                          latestVersion,
+                          size,
+                          isInstalled: true,
+                          warning: warning || undefined,
+                          isCask: type === "cask",
+                      }));
                 // Format leaves packages with their versions and sizes from installed packages
-                const installedMap = new Map(installedFormatted.map(pkg => [pkg.name, { installedVersion: pkg.installedVersion, size: pkg.size }]));
+                const installedMap = new Map(
+                    installedFormatted.map((pkg) => [
+                        pkg.name,
+                        { installedVersion: pkg.installedVersion, size: pkg.size },
+                    ]),
+                );
                 const leavesFormatted = leavesErrorMessage
                     ? []
                     : safeLeaves.map((name) => {
-                        const data = installedMap.get(name);
-                        return {
-                            name,
-                            installedVersion: data?.installedVersion || t('common.notAvailable'),
-                            size: data?.size,
-                            isInstalled: true,
-                        };
-                    });
+                          const data = installedMap.get(name);
+                          return {
+                              name,
+                              installedVersion: data?.installedVersion || t("common.notAvailable"),
+                              size: data?.size,
+                              isInstalled: true,
+                          };
+                      });
 
                 // Format repositories
                 const reposFormatted = safeRepos.map(([name, status, trusted]) => ({
                     name,
                     status,
-                    desc: t('common.notAvailable'),
+                    desc: t("common.notAvailable"),
                     trusted: trusted === "true" ? true : trusted === "false" ? false : undefined,
                 }));
 
@@ -357,23 +366,23 @@ const WailBrewApp = () => {
 
                 // Lazy load sizes in the background
                 if (installedFormatted.length > 0) {
-                    const packageNames = installedFormatted.map(pkg => pkg.name);
+                    const packageNames = installedFormatted.map((pkg) => pkg.name);
                     GetBrewPackageSizes(packageNames)
                         .then((sizes: Record<string, string>) => {
-                            setPackages(prevPackages =>
-                                prevPackages.map(pkg => ({
+                            setPackages((prevPackages) =>
+                                prevPackages.map((pkg) => ({
                                     ...pkg,
-                                    size: sizes[pkg.name] || pkg.size || ""
-                                }))
+                                    size: sizes[pkg.name] || pkg.size || "",
+                                })),
                             );
                             // Update leaves packages if they include this package
-                            setLeavesPackages(prevLeaves =>
-                                prevLeaves.map(pkg => {
+                            setLeavesPackages((prevLeaves) =>
+                                prevLeaves.map((pkg) => {
                                     if (sizes[pkg.name]) {
                                         return { ...pkg, size: sizes[pkg.name] };
                                     }
                                     return pkg;
-                                })
+                                }),
                             );
                         })
                         .catch((err: unknown) => {
@@ -382,14 +391,14 @@ const WailBrewApp = () => {
                 }
 
                 if (casksFormatted.length > 0) {
-                    const caskNames = casksFormatted.map(cask => cask.name);
+                    const caskNames = casksFormatted.map((cask) => cask.name);
                     GetBrewCaskSizes(caskNames)
                         .then((sizes: Record<string, string>) => {
-                            setCasks(prevCasks =>
-                                prevCasks.map(cask => ({
+                            setCasks((prevCasks) =>
+                                prevCasks.map((cask) => ({
                                     ...cask,
-                                    size: sizes[cask.name] || cask.size || ""
-                                }))
+                                    size: sizes[cask.name] || cask.size || "",
+                                })),
                             );
                         })
                         .catch((err: unknown) => {
@@ -406,11 +415,12 @@ const WailBrewApp = () => {
                 setLeavesPackages([]);
                 setRepositories([]);
 
-                let errorMessage = `${t('errors.loadingFormulas')}: ${err.message || err}`;
+                let errorMessage = `${t("errors.loadingFormulas")}: ${err.message || err}`;
 
                 // Provide helpful error message for common issues on fresh installations
                 if (errorMessage.includes("validation failed") || errorMessage.includes("not found")) {
-                    errorMessage += "\n\n💡 This commonly happens on fresh Homebrew installations. Please:\n" +
+                    errorMessage +=
+                        "\n\n💡 This commonly happens on fresh Homebrew installations. Please:\n" +
                         "• Make sure Homebrew is properly installed\n" +
                         "• Try running 'brew doctor' in Terminal to check for issues\n" +
                         "• Wait a few minutes for Homebrew to finish setting up, then refresh\n" +
@@ -489,9 +499,8 @@ const WailBrewApp = () => {
         if (!allPackagesLoaded || !pendingDependencyRef.current) return;
         const name = pendingDependencyRef.current;
         pendingDependencyRef.current = null;
-        const pkg =
-            allPackages.find(p => p.name === name) ||
-            packages.find(p => p.name === name) || {
+        const pkg = allPackages.find((p) => p.name === name) ||
+            packages.find((p) => p.name === name) || {
                 name,
                 installedVersion: "",
                 isInstalled: false,
@@ -515,14 +524,14 @@ const WailBrewApp = () => {
         const updateBadge = async () => {
             const count = updatablePackages.length;
             console.log(`[WailBrew] Updating dock badge to: ${count}`);
-            
+
             try {
                 // Try async version first
                 await SetDockBadgeCount(count);
                 console.log(`[WailBrew] Dock badge set successfully (async)`);
             } catch (err) {
                 console.error("[WailBrew] Failed to update dock badge (async):", err);
-                
+
                 // Try sync version as fallback
                 try {
                     await SetDockBadgeCountSync(count);
@@ -532,7 +541,7 @@ const WailBrewApp = () => {
                 }
             }
         };
-        
+
         updateBadge();
     }, [updatablePackages.length]);
 
@@ -548,7 +557,7 @@ const WailBrewApp = () => {
             // Check for errors
             if (updatable.length === 1 && updatable[0][0] === "Error") {
                 console.error("Background check failed:", updatable[0][1]);
-                setUpdatableError(`${t('errors.failedUpdatablePackages')}: ${updatable[0][1]}`);
+                setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${updatable[0][1]}`);
                 return;
             }
 
@@ -582,11 +591,10 @@ const WailBrewApp = () => {
                                 <RefreshCw size={20} color="var(--accent)" />
                             </div>
                             <div style={{ flex: 1 }}>
-                                <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
+                                <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>
                                     {newPackagesCount === 1
-                                        ? t('toast.newOutdatedPackages_one', { count: newPackagesCount })
-                                        : t('toast.newOutdatedPackages_other', { count: newPackagesCount })
-                                    }
+                                        ? t("toast.newOutdatedPackages_one", { count: newPackagesCount })
+                                        : t("toast.newOutdatedPackages_other", { count: newPackagesCount })}
                                 </div>
                                 <button
                                     onClick={() => {
@@ -595,7 +603,7 @@ const WailBrewApp = () => {
                                     }}
                                     className="toast-action-btn"
                                 >
-                                    {t('toast.viewOutdated')}
+                                    {t("toast.viewOutdated")}
                                 </button>
                             </div>
                             <button
@@ -608,11 +616,11 @@ const WailBrewApp = () => {
                         </div>
                     ),
                     {
-                        id: 'startup-outdated-discovered',
+                        id: "startup-outdated-discovered",
                         duration: 8000,
-                        position: 'bottom-center',
+                        position: "bottom-center",
                         style: customToastStyle,
-                    }
+                    },
                 );
             }
 
@@ -635,9 +643,12 @@ const WailBrewApp = () => {
         }, 2000);
 
         // Set up interval for checking every 15 minutes
-        backgroundCheckInterval.current = setInterval(() => {
-            performBackgroundUpdateCheck();
-        }, 15 * 60 * 1000); // 15 minutes
+        backgroundCheckInterval.current = setInterval(
+            () => {
+                performBackgroundUpdateCheck();
+            },
+            15 * 60 * 1000,
+        ); // 15 minutes
     };
 
     // Get seconds until next background check (computed on demand, no re-renders)
@@ -649,14 +660,14 @@ const WailBrewApp = () => {
     // Check if WailBrew itself is outdated by looking at the updatable packages list.
     // This runs reactively once updatablePackages are loaded, avoiding a separate backend call.
     useEffect(() => {
-        if (updateCheckDone.current || updatablePackages.length === 0 && loading) return;
+        if (updateCheckDone.current || (updatablePackages.length === 0 && loading)) return;
         updateCheckDone.current = true;
 
-        const wailbrewPackage = updatablePackages.find(pkg => pkg.name.toLowerCase() === "wailbrew");
+        const wailbrewPackage = updatablePackages.find((pkg) => pkg.name.toLowerCase() === "wailbrew");
 
         if (wailbrewPackage) {
-            toast.dismiss('startup-up-to-date');
-            const upgradeCommand = 'brew update\nbrew upgrade --cask wailbrew';
+            toast.dismiss("startup-up-to-date");
+            const upgradeCommand = "brew update\nbrew upgrade --cask wailbrew";
 
             toast(
                 (t_obj) => {
@@ -672,49 +683,49 @@ const WailBrewApp = () => {
                                 <Sparkles size={20} color="#FFD700" />
                             </div>
                             <div style={{ flex: 1 }}>
-                                <div style={{ fontWeight: 600 }}>{t('toast.updateAvailable')}</div>
-                                <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
-                                    {t('toast.versionReady', { version: wailbrewPackage.latestVersion })}
+                                <div style={{ fontWeight: 600 }}>{t("toast.updateAvailable")}</div>
+                                <div style={{ fontSize: "0.85rem", opacity: 0.8, marginBottom: "0.5rem" }}>
+                                    {t("toast.versionReady", { version: wailbrewPackage.latestVersion })}
                                 </div>
                                 <div
                                     role="button"
                                     tabIndex={0}
                                     style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem',
-                                        marginTop: '0.5rem',
-                                        padding: '0.4rem 0.6rem',
-                                        background: 'rgba(0, 0, 0, 0.3)',
-                                        borderRadius: '6px',
-                                        fontSize: '0.8rem',
-                                        fontFamily: 'monospace',
-                                        cursor: 'pointer',
-                                        transition: 'background 0.2s',
-                                        outline: 'none',
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        marginTop: "0.5rem",
+                                        padding: "0.4rem 0.6rem",
+                                        background: "rgba(0, 0, 0, 0.3)",
+                                        borderRadius: "6px",
+                                        fontSize: "0.8rem",
+                                        fontFamily: "monospace",
+                                        cursor: "pointer",
+                                        transition: "background 0.2s",
+                                        outline: "none",
                                     }}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         navigator.clipboard.writeText(upgradeCommand);
-                                        toast.success('Copied to clipboard!', { duration: 2000 });
+                                        toast.success("Copied to clipboard!", { duration: 2000 });
                                     }}
                                     onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
+                                        if (e.key === "Enter" || e.key === " ") {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             navigator.clipboard.writeText(upgradeCommand);
-                                            toast.success('Copied to clipboard!', { duration: 2000 });
+                                            toast.success("Copied to clipboard!", { duration: 2000 });
                                         }
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                                        e.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                                        e.currentTarget.style.background = "rgba(0, 0, 0, 0.3)";
                                     }}
                                     title="Click to copy"
                                 >
-                                    <code style={{ flex: 1, fontSize: '0.8rem' }}>{upgradeCommand}</code>
+                                    <code style={{ flex: 1, fontSize: "0.8rem" }}>{upgradeCommand}</code>
                                     <Copy size={16} style={{ opacity: 0.7 }} />
                                 </div>
                                 <button
@@ -723,54 +734,54 @@ const WailBrewApp = () => {
                                         handleNavigateToOutdated();
                                     }}
                                     style={{
-                                        marginTop: '0.75rem',
-                                        padding: '0.5rem 1rem',
-                                        background: 'rgba(80, 180, 255, 0.2)',
-                                        border: '1px solid rgba(80, 180, 255, 0.4)',
-                                        borderRadius: '6px',
-                                        color: 'var(--accent)',
-                                        cursor: 'pointer',
-                                        fontSize: '0.85rem',
+                                        marginTop: "0.75rem",
+                                        padding: "0.5rem 1rem",
+                                        background: "rgba(80, 180, 255, 0.2)",
+                                        border: "1px solid rgba(80, 180, 255, 0.4)",
+                                        borderRadius: "6px",
+                                        color: "var(--accent)",
+                                        cursor: "pointer",
+                                        fontSize: "0.85rem",
                                         fontWeight: 500,
-                                        transition: 'all 0.2s',
-                                        width: '100%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.5rem',
+                                        transition: "all 0.2s",
+                                        width: "100%",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: "0.5rem",
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(80, 180, 255, 0.3)';
-                                        e.currentTarget.style.borderColor = 'rgba(80, 180, 255, 0.6)';
+                                        e.currentTarget.style.background = "rgba(80, 180, 255, 0.3)";
+                                        e.currentTarget.style.borderColor = "rgba(80, 180, 255, 0.6)";
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(80, 180, 255, 0.2)';
-                                        e.currentTarget.style.borderColor = 'rgba(80, 180, 255, 0.4)';
+                                        e.currentTarget.style.background = "rgba(80, 180, 255, 0.2)";
+                                        e.currentTarget.style.borderColor = "rgba(80, 180, 255, 0.4)";
                                     }}
                                 >
                                     <RefreshCw size={16} />
-                                    {t('toast.viewOutdated')}
+                                    {t("toast.viewOutdated")}
                                 </button>
                             </div>
                             <button
                                 onClick={() => toast.dismiss(t_obj.id)}
                                 style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: 'rgba(255, 255, 255, 0.6)',
-                                    cursor: 'pointer',
-                                    padding: '0.25rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    transition: 'color 0.2s',
+                                    background: "transparent",
+                                    border: "none",
+                                    color: "rgba(255, 255, 255, 0.6)",
+                                    cursor: "pointer",
+                                    padding: "0.25rem",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    transition: "color 0.2s",
                                     flexShrink: 0,
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                    e.currentTarget.style.color = "rgba(255, 255, 255, 1)";
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                    e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)";
                                 }}
                                 title="Dismiss"
                             >
@@ -780,41 +791,41 @@ const WailBrewApp = () => {
                     );
                 },
                 {
-                    id: 'startup-wailbrew-update',
+                    id: "startup-wailbrew-update",
                     duration: 6000,
-                    position: 'bottom-center',
+                    position: "bottom-center",
                     style: customToastStyle,
-                }
+                },
             );
         } else {
-            toast.dismiss('startup-wailbrew-update');
+            toast.dismiss("startup-wailbrew-update");
             toast(
                 (t_obj) => (
                     <div className="toast-notification">
                         <div className="toast-leading-icon">
                             <CheckSquare size={20} color="#4CAF50" />
                         </div>
-                        <span style={{ flex: 1 }}>{t('toast.upToDate')}</span>
+                        <span style={{ flex: 1 }}>{t("toast.upToDate")}</span>
                         <button
                             onClick={() => toast.dismiss(t_obj.id)}
                             style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: 'rgba(255, 255, 255, 0.6)',
-                                cursor: 'pointer',
-                                padding: '0.25rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'color 0.2s',
+                                background: "transparent",
+                                border: "none",
+                                color: "rgba(255, 255, 255, 0.6)",
+                                cursor: "pointer",
+                                padding: "0.25rem",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                transition: "color 0.2s",
                                 flexShrink: 0,
-                                marginLeft: 'auto',
+                                marginLeft: "auto",
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                e.currentTarget.style.color = "rgba(255, 255, 255, 1)";
                             }}
                             onMouseLeave={(e) => {
-                                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)";
                             }}
                             title="Dismiss"
                         >
@@ -823,18 +834,18 @@ const WailBrewApp = () => {
                     </div>
                 ),
                 {
-                    id: 'startup-up-to-date',
+                    id: "startup-up-to-date",
                     duration: 4000,
-                    position: 'bottom-center',
+                    position: "bottom-center",
                     style: customToastStyle,
-                }
+                },
             );
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatablePackages, loading]);
 
     // Refs for PackageTable components to focus on Cmd+T
-    const packageTableRef = useRef<import('./components/PackageTable').PackageTableRef | null>(null);
+    const packageTableRef = useRef<import("./components/PackageTable").PackageTableRef | null>(null);
 
     // Pending dependency selection: set when allPackages isn't loaded yet
     const pendingDependencyRef = useRef<string | null>(null);
@@ -843,15 +854,15 @@ const WailBrewApp = () => {
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             // Check for Cmd+Shift+S (Mac) or Ctrl+Shift+S (Windows/Linux) - Shortcuts
-            if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === 'S') {
+            if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === "S") {
                 event.preventDefault();
-                setShowShortcuts(prev => !prev);
+                setShowShortcuts((prev) => !prev);
             }
             // Check for Cmd+T (Mac) or Ctrl+T (Windows/Linux) - Focus table
-            if ((event.metaKey || event.ctrlKey) && event.key === 't') {
+            if ((event.metaKey || event.ctrlKey) && event.key === "t") {
                 // Don't trigger if user is typing in an input field
                 const target = event.target as HTMLElement;
-                if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+                if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
                     return;
                 }
                 event.preventDefault();
@@ -861,9 +872,9 @@ const WailBrewApp = () => {
             }
         };
 
-        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener("keydown", handleKeyDown);
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener("keydown", handleKeyDown);
         };
     }, []);
 
@@ -905,7 +916,7 @@ const WailBrewApp = () => {
             setShowRestart(true);
         });
         const unlistenShortcuts = EventsOn("showShortcuts", () => {
-            setShowShortcuts(prev => !prev);
+            setShowShortcuts((prev) => !prev);
         });
         const unlistenSessionLogs = EventsOn("showSessionLogs", async () => {
             try {
@@ -927,15 +938,17 @@ const WailBrewApp = () => {
                 // Only show toast on initial app load, not on manual refresh
                 if (totalNew > 0 && isInitialLoad.current) {
                     // Dismiss any existing new packages toast to prevent duplicates
-                    toast.dismiss('newPackagesDiscovered');
+                    toast.dismiss("newPackagesDiscovered");
 
-                    const formulaeText = newFormulae.length > 0
-                        ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
-                        : '';
-                    const casksText = newCasks.length > 0
-                        ? `${newCasks.length} ${t('toast.newCask', { count: newCasks.length })}`
-                        : '';
-                    const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
+                    const formulaeText =
+                        newFormulae.length > 0
+                            ? `${newFormulae.length} ${t("toast.newFormula", { count: newFormulae.length })}`
+                            : "";
+                    const casksText =
+                        newCasks.length > 0
+                            ? `${newCasks.length} ${t("toast.newCask", { count: newCasks.length })}`
+                            : "";
+                    const message = [formulaeText, casksText].filter(Boolean).join(t("toast.and"));
 
                     toast(
                         (t_obj) => (
@@ -944,21 +957,33 @@ const WailBrewApp = () => {
                                     <Sparkles size={20} color="#22C55E" />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
-                                        {t('toast.newPackagesDiscovered', { count: totalNew, message })}
+                                    <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>
+                                        {t("toast.newPackagesDiscovered", { count: totalNew, message })}
                                     </div>
                                     {(newFormulae.length > 0 || newCasks.length > 0) && (
-                                        <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
+                                        <div
+                                            style={{
+                                                fontSize: "0.8rem",
+                                                opacity: 0.9,
+                                                marginBottom: "0.5rem",
+                                                maxHeight: "100px",
+                                                overflowY: "auto",
+                                            }}
+                                        >
                                             {newFormulae.length > 0 && (
-                                                <div style={{ marginBottom: '0.25rem' }}>
-                                                    <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
-                                                    {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
+                                                <div style={{ marginBottom: "0.25rem" }}>
+                                                    <strong>{t("toast.newFormulaeLabel")}</strong>{" "}
+                                                    {newFormulae.slice(0, 5).join(", ")}
+                                                    {newFormulae.length > 5 &&
+                                                        ` ${t("toast.andMore", { count: newFormulae.length - 5 })}`}
                                                 </div>
                                             )}
                                             {newCasks.length > 0 && (
                                                 <div>
-                                                    <strong>{t('toast.newCasksLabel')}</strong> {newCasks.slice(0, 5).join(', ')}
-                                                    {newCasks.length > 5 && ` ${t('toast.andMore', { count: newCasks.length - 5 })}`}
+                                                    <strong>{t("toast.newCasksLabel")}</strong>{" "}
+                                                    {newCasks.slice(0, 5).join(", ")}
+                                                    {newCasks.length > 5 &&
+                                                        ` ${t("toast.andMore", { count: newCasks.length - 5 })}`}
                                                 </div>
                                             )}
                                         </div>
@@ -969,45 +994,45 @@ const WailBrewApp = () => {
                                             toast.dismiss(t_obj.id);
                                         }}
                                         style={{
-                                            padding: '0.5rem 1rem',
-                                            background: 'rgba(34, 197, 94, 0.8)',
-                                            border: 'none',
-                                            borderRadius: '6px',
-                                            color: '#fff',
-                                            cursor: 'pointer',
-                                            fontSize: '0.875rem',
+                                            padding: "0.5rem 1rem",
+                                            background: "rgba(34, 197, 94, 0.8)",
+                                            border: "none",
+                                            borderRadius: "6px",
+                                            color: "#fff",
+                                            cursor: "pointer",
+                                            fontSize: "0.875rem",
                                             fontWeight: 500,
-                                            transition: 'background 0.2s',
+                                            transition: "background 0.2s",
                                         }}
                                         onMouseEnter={(e) => {
-                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                            e.currentTarget.style.background = "rgba(34, 197, 94, 1)";
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                            e.currentTarget.style.background = "rgba(34, 197, 94, 0.8)";
                                         }}
                                     >
-                                        {t('toast.viewAllPackages')}
+                                        {t("toast.viewAllPackages")}
                                     </button>
                                 </div>
                                 <button
                                     onClick={() => toast.dismiss(t_obj.id)}
                                     style={{
-                                        background: 'transparent',
-                                        border: 'none',
-                                        color: 'rgba(255, 255, 255, 0.6)',
-                                        cursor: 'pointer',
-                                        padding: '0.25rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'color 0.2s',
+                                        background: "transparent",
+                                        border: "none",
+                                        color: "rgba(255, 255, 255, 0.6)",
+                                        cursor: "pointer",
+                                        padding: "0.25rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        transition: "color 0.2s",
                                         flexShrink: 0,
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                        e.currentTarget.style.color = "rgba(255, 255, 255, 1)";
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                        e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)";
                                     }}
                                     title="Dismiss"
                                 >
@@ -1016,11 +1041,11 @@ const WailBrewApp = () => {
                             </div>
                         ),
                         {
-                            id: 'newPackagesDiscovered',
+                            id: "newPackagesDiscovered",
                             duration: 10000,
-                            position: 'bottom-center',
+                            position: "bottom-center",
                             style: customToastStyle,
-                        }
+                        },
                     );
                 }
             } catch (error) {
@@ -1090,22 +1115,22 @@ const WailBrewApp = () => {
         const handleMouseUp = () => {
             if (isResizing) {
                 setIsResizing(false);
-                localStorage.setItem('sidebarWidth', sidebarWidth.toString());
+                localStorage.setItem("sidebarWidth", sidebarWidth.toString());
             }
         };
 
         if (isResizing) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-            document.body.style.cursor = 'col-resize';
-            document.body.style.userSelect = 'none';
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+            document.body.style.cursor = "col-resize";
+            document.body.style.userSelect = "none";
         }
 
         return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-            document.body.style.cursor = '';
-            document.body.style.userSelect = '';
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
         };
     }, [isResizing, sidebarWidth]);
 
@@ -1139,25 +1164,26 @@ const WailBrewApp = () => {
     const activePackages = getActivePackages();
     const activeRepositories = getActiveRepositories();
 
-    const installedFilteredPackages = view === "installed"
-        ? activePackages.filter((pkg) => {
-            if (installedFilter === "all") return true;
-            return pkg.installReason === installedFilter;
-        })
-        : activePackages;
+    const installedFilteredPackages =
+        view === "installed"
+            ? activePackages.filter((pkg) => {
+                  if (installedFilter === "all") return true;
+                  return pkg.installReason === installedFilter;
+              })
+            : activePackages;
 
     const filteredPackages = installedFilteredPackages.filter((pkg) =>
-        pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
+        pkg.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     const filteredRepositories = activeRepositories.filter((repo) =>
-        repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+        repo.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
     const filteredServices = services.filter((service) =>
-        service.name.toLowerCase().includes(searchQuery.toLowerCase())
+        service.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-    const installedOnRequestCount = packages.filter(pkg => pkg.installReason === "on_request").length;
-    const installedDependencyCount = packages.filter(pkg => pkg.installReason === "dependency").length;
+    const installedOnRequestCount = packages.filter((pkg) => pkg.installReason === "on_request").length;
+    const installedDependencyCount = packages.filter((pkg) => pkg.installReason === "dependency").length;
 
     const handleSelect = async (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
@@ -1173,13 +1199,13 @@ const WailBrewApp = () => {
 
         const enriched: PackageEntry = {
             ...pkg,
-            desc: (info["desc"] as string) || t('common.notAvailable'),
-            homepage: (info["homepage"] as string) || t('common.notAvailable'),
-            dependencies: (info["dependencies"] as string[]) || [],
-            conflicts: (info["conflicts_with"] as string[]) || [],
+            desc: (info.desc as string) || t("common.notAvailable"),
+            homepage: (info.homepage as string) || t("common.notAvailable"),
+            dependencies: (info.dependencies as string[]) || [],
+            conflicts: (info.conflicts_with as string[]) || [],
         };
 
-        setPackageCache(prev => new Map(prev).set(pkg.name, enriched));
+        setPackageCache((prev) => new Map(prev).set(pkg.name, enriched));
         setSelectedPackage(enriched);
         setLoadingDetailsFor(null);
     };
@@ -1201,10 +1227,10 @@ const WailBrewApp = () => {
         }
 
         const knownPackage =
-            packages.find(p => p.name === formula) ||
-            updatablePackages.find(p => p.name === formula) ||
-            leavesPackages.find(p => p.name === formula) ||
-            allPackages.find(p => p.name === formula);
+            packages.find((p) => p.name === formula) ||
+            updatablePackages.find((p) => p.name === formula) ||
+            leavesPackages.find((p) => p.name === formula) ||
+            allPackages.find((p) => p.name === formula);
 
         const basePackage: PackageEntry = knownPackage || {
             name: formula,
@@ -1220,14 +1246,14 @@ const WailBrewApp = () => {
             const info = await GetBrewPackageInfoAsJson(formula);
             const enriched: PackageEntry = {
                 ...basePackage,
-                desc: (info["desc"] as string) || t('common.notAvailable'),
-                homepage: (info["homepage"] as string) || t('common.notAvailable'),
-                dependencies: (info["dependencies"] as string[]) || [],
-                conflicts: (info["conflicts_with"] as string[]) || [],
+                desc: (info.desc as string) || t("common.notAvailable"),
+                homepage: (info.homepage as string) || t("common.notAvailable"),
+                dependencies: (info.dependencies as string[]) || [],
+                conflicts: (info.conflicts_with as string[]) || [],
                 isCask: false,
             };
 
-            setPackageCache(prev => {
+            setPackageCache((prev) => {
                 const next = new Map(prev);
                 next.set(formula, enriched);
                 return next;
@@ -1247,9 +1273,8 @@ const WailBrewApp = () => {
 
         if (allPackagesLoaded) {
             // Packages already loaded — find & select immediately
-            const pkg =
-                allPackages.find(p => p.name === dependencyName) ||
-                packages.find(p => p.name === dependencyName) || {
+            const pkg = allPackages.find((p) => p.name === dependencyName) ||
+                packages.find((p) => p.name === dependencyName) || {
                     name: dependencyName,
                     installedVersion: "",
                     isInstalled: false,
@@ -1268,33 +1293,33 @@ const WailBrewApp = () => {
         const packageName = selectedPackage.name;
         const zap = uninstallIsCask && zapUninstall;
         setShowConfirm(false);
-        setUninstallLogs(t('dialogs.uninstalling', { name: packageName }));
+        setUninstallLogs(t("dialogs.uninstalling", { name: packageName }));
         setIsUninstallRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageUninstallProgress", (progress: string) => {
-            setUninstallLogs(prevLogs => {
+            setUninstallLogs((prevLogs) => {
                 if (!prevLogs) {
-                    return `${t('dialogs.uninstallLogs', { name: packageName })}\n${progress}`;
+                    return `${t("dialogs.uninstallLogs", { name: packageName })}\n${progress}`;
                 }
-                return prevLogs + '\n' + progress;
+                return `${prevLogs}\n${progress}`;
             });
         });
 
-        const completeListener = EventsOn("packageUninstallComplete", async (finalMessage: string) => {
+        const completeListener = EventsOn("packageUninstallComplete", async (_finalMessage: string) => {
             // Update the package list after successful uninstall
             await handleRefreshPackages();
 
             // Clear stale selection and cached details for the removed package
-            setSelectedPackage(prev => (prev?.name === packageName ? null : prev));
-            setSelectedDeprecatedPackage(prev => (prev?.name === packageName ? null : prev));
-            setPackageCache(prev => {
+            setSelectedPackage((prev) => (prev?.name === packageName ? null : prev));
+            setSelectedDeprecatedPackage((prev) => (prev?.name === packageName ? null : prev));
+            setPackageCache((prev) => {
                 if (!prev.has(packageName)) return prev;
                 const next = new Map(prev);
                 next.delete(packageName);
                 return next;
             });
-            setLoadingDetailsFor(prev => (prev === packageName ? null : prev));
+            setLoadingDetailsFor((prev) => (prev === packageName ? null : prev));
 
             // If we're on the doctor view, refresh deprecated formulae
             if (view === "doctor" && doctorLog) {
@@ -1314,7 +1339,7 @@ const WailBrewApp = () => {
             await RemoveBrewPackage(packageName, zap);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
-            setUninstallLogs(prev => prev ? `${prev}\n${errorMsg}` : errorMsg);
+            setUninstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUninstallRunning(false);
             progressListener();
             completeListener();
@@ -1330,11 +1355,11 @@ const WailBrewApp = () => {
         setSearchQuery("");
 
         // Try to find the package in installed packages first
-        let pkg = packages.find(p => p.name === packageName);
+        let pkg = packages.find((p) => p.name === packageName);
 
         // If not found in installed packages, check all packages
         if (!pkg) {
-            pkg = allPackages.find(p => p.name === packageName);
+            pkg = allPackages.find((p) => p.name === packageName);
         }
 
         if (!pkg) {
@@ -1367,49 +1392,46 @@ const WailBrewApp = () => {
             const enabled = await GetAutoCleanupAfterUpgrade();
             if (!enabled) return;
 
-            setUpdateLogs(prev => {
-                const line = t('dialogs.autoCleanupRunning');
+            setUpdateLogs((prev) => {
+                const line = t("dialogs.autoCleanupRunning");
                 return prev ? `${prev}\n\n${line}` : line;
             });
 
             const output = await RunBrewCleanup();
-            setUpdateLogs(prev => (prev ? `${prev}\n${output}` : output));
+            setUpdateLogs((prev) => (prev ? `${prev}\n${output}` : output));
         } catch (error) {
-            const errorMsg = `❌ ${t('dialogs.autoCleanupFailed')}: ${String(error)}`;
-            setUpdateLogs(prev => (prev ? `${prev}\n${errorMsg}` : errorMsg));
+            const errorMsg = `❌ ${t("dialogs.autoCleanupFailed")}: ${String(error)}`;
+            setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
         }
     };
 
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
         const packageName = selectedPackage.name;
-        
+
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-        
+
         setShowUpdateConfirm(false);
         setIsUpdateAllOperation(false);
-        setUpdateLogs(t('dialogs.updating', { name: packageName }));
+        setUpdateLogs(t("dialogs.updating", { name: packageName }));
         setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
-            setUpdateLogs(prevLogs => {
+            setUpdateLogs((prevLogs) => {
                 if (!prevLogs) {
-                    return `${t('dialogs.updateLogs', { name: packageName })}\n${progress}`;
+                    return `${t("dialogs.updateLogs", { name: packageName })}\n${progress}`;
                 }
-                return prevLogs + '\n' + progress;
+                return `${prevLogs}\n${progress}`;
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+        const completeListener = EventsOn("packageUpdateComplete", async (_finalMessage: string) => {
             // Clear cache and update the package lists after successful update
             await ClearBrewCache();
-            const [updated, installedCasks] = await Promise.all([
-                GetBrewUpdatablePackages(),
-                GetBrewCasks(),
-            ]);
+            const [updated, installedCasks] = await Promise.all([GetBrewUpdatablePackages(), GetBrewCasks()]);
             const formatted = updated.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                 name,
                 installedVersion,
@@ -1422,12 +1444,14 @@ const WailBrewApp = () => {
             setUpdatablePackages(formatted);
 
             if (!(installedCasks.length === 1 && installedCasks[0][0] === "Error")) {
-                setCasks(installedCasks.map(([name, installedVersion, size]) => ({
-                    name,
-                    installedVersion,
-                    size,
-                    isInstalled: true,
-                })));
+                setCasks(
+                    installedCasks.map(([name, installedVersion, size]) => ({
+                        name,
+                        installedVersion,
+                        size,
+                        isInstalled: true,
+                    })),
+                );
             }
 
             await runAutoCleanupIfEnabled();
@@ -1448,7 +1472,7 @@ const WailBrewApp = () => {
             await UpdateBrewPackage(packageName);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
-            setUpdateLogs(prev => prev ? `${prev}\n${errorMsg}` : errorMsg);
+            setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUpdateRunning(false);
             updateListenersRef.current.progress?.();
             updateListenersRef.current.complete?.();
@@ -1460,11 +1484,11 @@ const WailBrewApp = () => {
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-        
+
         setShowUpdateAllConfirm(false);
         setIsUpdateAllOperation(true);
         setCurrentlyUpdatingPackage(null);
-        setUpdateLogs(t('dialogs.updatingAll'));
+        setUpdateLogs(t("dialogs.updatingAll"));
         setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
@@ -1479,15 +1503,15 @@ const WailBrewApp = () => {
                 setCurrentlyUpdatingPackage(packageName);
             }
 
-            setUpdateLogs(prevLogs => {
+            setUpdateLogs((prevLogs) => {
                 if (!prevLogs) {
-                    return `${t('dialogs.updateAllLogs')}\n${progress}`;
+                    return `${t("dialogs.updateAllLogs")}\n${progress}`;
                 }
-                return prevLogs + '\n' + progress;
+                return `${prevLogs}\n${progress}`;
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+        const completeListener = EventsOn("packageUpdateComplete", async (_finalMessage: string) => {
             // Update all package lists after successful update
             await handleRefreshPackages();
             await runAutoCleanupIfEnabled();
@@ -1508,7 +1532,7 @@ const WailBrewApp = () => {
             await UpdateAllBrewPackages();
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
-            setUpdateLogs(prev => prev ? `${prev}\n${errorMsg}` : errorMsg);
+            setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUpdateRunning(false);
             setCurrentlyUpdatingPackage(null);
             updateListenersRef.current.progress?.();
@@ -1525,7 +1549,7 @@ const WailBrewApp = () => {
 
         setInfoPackage(pkg);
         setIsInfoRunning(true);
-        setInfoLogs(t('dialogs.gettingInfo', { name: pkg.name }));
+        setInfoLogs(t("dialogs.gettingInfo", { name: pkg.name }));
 
         try {
             const info = await GetBrewPackageInfo(pkg.name);
@@ -1553,7 +1577,7 @@ const WailBrewApp = () => {
     };
 
     const selectAllPackages = () => {
-        const allNames = new Set(filteredPackages.map(pkg => pkg.name));
+        const allNames = new Set(filteredPackages.map((pkg) => pkg.name));
         setSelectedPackages(allNames);
     };
 
@@ -1570,17 +1594,17 @@ const WailBrewApp = () => {
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-        
+
         setShowUpdateSelectedConfirm(false);
         setIsUpdateAllOperation(true);
 
         const packageNames = Array.from(selectedPackages);
-        setUpdateLogs(t('dialogs.updatingSelected', { count: packageNames.length }));
+        setUpdateLogs(t("dialogs.updatingSelected", { count: packageNames.length }));
         setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
-            setUpdateLogs(prevLogs => {
+            setUpdateLogs((prevLogs) => {
                 if (!prevLogs) {
                     return progress;
                 }
@@ -1588,7 +1612,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+        const completeListener = EventsOn("packageUpdateComplete", async (_finalMessage: string) => {
             // Update the package list after successful update
             await handleRefreshPackages();
 
@@ -1613,7 +1637,7 @@ const WailBrewApp = () => {
             await UpdateSelectedBrewPackages(packageNames);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
-            setUpdateLogs(prev => prev ? `${prev}\n${errorMsg}` : errorMsg);
+            setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUpdateRunning(false);
             updateListenersRef.current.progress?.();
             updateListenersRef.current.complete?.();
@@ -1648,12 +1672,12 @@ const WailBrewApp = () => {
     // Helper to determine the update log dialog title
     const getUpdateLogTitle = () => {
         if (isUpdateAllOperation && currentlyUpdatingPackage) {
-            return t('dialogs.updateLogs', { name: currentlyUpdatingPackage });
+            return t("dialogs.updateLogs", { name: currentlyUpdatingPackage });
         }
         if (selectedPackage) {
-            return t('dialogs.updateLogs', { name: selectedPackage.name });
+            return t("dialogs.updateLogs", { name: selectedPackage.name });
         }
-        return t('dialogs.updateAllLogs');
+        return t("dialogs.updateAllLogs");
     };
 
     const handleUninstallPackage = async (pkg: PackageEntry) => {
@@ -1681,7 +1705,7 @@ const WailBrewApp = () => {
 
     const handleToggleZapUninstall = (checked: boolean) => {
         setZapUninstall(checked);
-        SetUninstallCaskWithZap(checked).catch(err => {
+        SetUninstallCaskWithZap(checked).catch((err) => {
             console.error("Failed to persist zap uninstall setting:", err);
         });
     };
@@ -1702,15 +1726,17 @@ const WailBrewApp = () => {
     const handleUntapConfirmed = async () => {
         if (!selectedRepository) return;
         setShowUntapConfirm(false);
-        setUntapLogs(t('dialogs.untapping', { name: selectedRepository.name }));
+        setUntapLogs(t("dialogs.untapping", { name: selectedRepository.name }));
 
         // Use a ref to accumulate logs for error checking
-        const logsRef = { current: t('dialogs.untapping', { name: selectedRepository.name }) };
+        const logsRef = { current: t("dialogs.untapping", { name: selectedRepository.name }) };
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("repositoryUntapProgress", (progress: string) => {
-            setUntapLogs(prevLogs => {
-                const newLogs = prevLogs ? prevLogs + '\n' + progress : `${t('dialogs.untapLogs', { name: selectedRepository.name })}\n${progress}`;
+            setUntapLogs((prevLogs) => {
+                const newLogs = prevLogs
+                    ? `${prevLogs}\n${progress}`
+                    : `${t("dialogs.untapLogs", { name: selectedRepository.name })}\n${progress}`;
                 logsRef.current = newLogs;
                 return newLogs;
             });
@@ -1718,17 +1744,17 @@ const WailBrewApp = () => {
 
         const completeListener = EventsOn("repositoryUntapComplete", async (finalMessage: string) => {
             // Get the final accumulated logs including the final message
-            const allLogs = logsRef.current + '\n' + finalMessage;
+            const allLogs = `${logsRef.current}\n${finalMessage}`;
 
             // Check if untap failed due to installed packages
             const isError = allLogs.includes("❌") || allLogs.includes("failed") || allLogs.includes("Error:");
-            const hasInstalledPackages = allLogs.includes("contains the following installed") ||
-                allLogs.includes("installed formulae or casks");
+            const hasInstalledPackages =
+                allLogs.includes("contains the following installed") || allLogs.includes("installed formulae or casks");
 
             if (isError && hasInstalledPackages) {
                 // Parse the error message to extract package names
                 const packages: string[] = [];
-                const lines = allLogs.split('\n');
+                const lines = allLogs.split("\n");
                 let inPackageList = false;
 
                 for (const line of lines) {
@@ -1742,18 +1768,20 @@ const WailBrewApp = () => {
                     if (inPackageList && trimmed.length > 0) {
                         // Remove emoji/icon prefixes and extract package name
                         const cleanName = trimmed
-                            .replace(/^⚠️\s*/, '')
-                            .replace(/^▲\s*/, '')
-                            .replace(/^🗑️\s*/, '')
-                            .replace(/^❌\s*/, '')
+                            .replace(/^⚠️\s*/, "")
+                            .replace(/^▲\s*/, "")
+                            .replace(/^🗑️\s*/, "")
+                            .replace(/^❌\s*/, "")
                             .trim();
                         // Skip if it's still an error message line
-                        if (!cleanName.includes("Error:") &&
+                        if (
+                            !cleanName.includes("Error:") &&
                             !cleanName.includes("failed") &&
                             cleanName.length > 0 &&
                             !cleanName.includes("exit status") &&
                             !cleanName.includes("Refusing to untap") &&
-                            !cleanName.includes("because it contains")) {
+                            !cleanName.includes("because it contains")
+                        ) {
                             packages.push(cleanName);
                         }
                     }
@@ -1795,37 +1823,34 @@ const WailBrewApp = () => {
 
     const handleShowRepositoryInfo = async (repo: RepositoryEntry) => {
         setShowRepositoryInfo(true);
-        setRepositoryInfoLogs(t('dialogs.gettingInfo', { name: repo.name }));
+        setRepositoryInfoLogs(t("dialogs.gettingInfo", { name: repo.name }));
 
         try {
             const info = await GetBrewTapInfo(repo.name);
             setRepositoryInfoLogs(info);
         } catch (error) {
-            setRepositoryInfoLogs(t('dialogs.packageInfo') + `\nError: ${error}`);
+            setRepositoryInfoLogs(`${t("dialogs.packageInfo")}\nError: ${error}`);
         }
     };
 
     const handleTapConfirmed = async (tapName: string, tapURL: string) => {
         setShowTapInput(false);
         setTappingRepository(tapName);
-        setTapLogs(t('dialogs.tapping', { name: tapName }));
+        setTapLogs(t("dialogs.tapping", { name: tapName }));
 
         // Store current package lists before tapping
-        const [oldAllPackages, oldCasks] = await Promise.all([
-            GetAllBrewPackages(),
-            GetBrewCasks()
-        ]);
+        const [oldAllPackages, oldCasks] = await Promise.all([GetAllBrewPackages(), GetBrewCasks()]);
 
         const oldAllPackagesSet = new Set(oldAllPackages.map(([name]: string[]) => name));
         const oldCasksSet = new Set(oldCasks.map(([name]: string[]) => name));
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("repositoryTapProgress", (progress: string) => {
-            setTapLogs(prevLogs => {
+            setTapLogs((prevLogs) => {
                 if (!prevLogs) {
-                    return `${t('dialogs.tapLogs', { name: tapName })}\n${progress}`;
+                    return `${t("dialogs.tapLogs", { name: tapName })}\n${progress}`;
                 }
-                return prevLogs + '\n' + progress;
+                return `${prevLogs}\n${progress}`;
             });
         });
 
@@ -1843,10 +1868,7 @@ const WailBrewApp = () => {
 
             if (isSuccess) {
                 // Get new package lists after tapping
-                const [newAllPackages, newCasks] = await Promise.all([
-                    GetAllBrewPackages(),
-                    GetBrewCasks()
-                ]);
+                const [newAllPackages, newCasks] = await Promise.all([GetAllBrewPackages(), GetBrewCasks()]);
 
                 // Find new packages
                 const newFormulae: string[] = [];
@@ -1868,15 +1890,17 @@ const WailBrewApp = () => {
 
                 // Show toast notification if new packages were discovered
                 if (totalNew > 0) {
-                    toast.dismiss('newPackagesDiscovered');
+                    toast.dismiss("newPackagesDiscovered");
 
-                    const formulaeText = newFormulae.length > 0
-                        ? `${newFormulae.length} ${t('toast.newFormula', { count: newFormulae.length })}`
-                        : '';
-                    const casksText = newCasksList.length > 0
-                        ? `${newCasksList.length} ${t('toast.newCask', { count: newCasksList.length })}`
-                        : '';
-                    const message = [formulaeText, casksText].filter(Boolean).join(t('toast.and'));
+                    const formulaeText =
+                        newFormulae.length > 0
+                            ? `${newFormulae.length} ${t("toast.newFormula", { count: newFormulae.length })}`
+                            : "";
+                    const casksText =
+                        newCasksList.length > 0
+                            ? `${newCasksList.length} ${t("toast.newCask", { count: newCasksList.length })}`
+                            : "";
+                    const message = [formulaeText, casksText].filter(Boolean).join(t("toast.and"));
 
                     toast(
                         (t_obj) => (
@@ -1885,21 +1909,33 @@ const WailBrewApp = () => {
                                     <Sparkles size={20} color="#22C55E" />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
-                                        {t('toast.newPackagesDiscovered', { count: totalNew, message })}
+                                    <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>
+                                        {t("toast.newPackagesDiscovered", { count: totalNew, message })}
                                     </div>
                                     {(newFormulae.length > 0 || newCasksList.length > 0) && (
-                                        <div style={{ fontSize: '0.8rem', opacity: 0.9, marginBottom: '0.5rem', maxHeight: '100px', overflowY: 'auto' }}>
+                                        <div
+                                            style={{
+                                                fontSize: "0.8rem",
+                                                opacity: 0.9,
+                                                marginBottom: "0.5rem",
+                                                maxHeight: "100px",
+                                                overflowY: "auto",
+                                            }}
+                                        >
                                             {newFormulae.length > 0 && (
-                                                <div style={{ marginBottom: '0.25rem' }}>
-                                                    <strong>{t('toast.newFormulaeLabel')}</strong> {newFormulae.slice(0, 5).join(', ')}
-                                                    {newFormulae.length > 5 && ` ${t('toast.andMore', { count: newFormulae.length - 5 })}`}
+                                                <div style={{ marginBottom: "0.25rem" }}>
+                                                    <strong>{t("toast.newFormulaeLabel")}</strong>{" "}
+                                                    {newFormulae.slice(0, 5).join(", ")}
+                                                    {newFormulae.length > 5 &&
+                                                        ` ${t("toast.andMore", { count: newFormulae.length - 5 })}`}
                                                 </div>
                                             )}
                                             {newCasksList.length > 0 && (
                                                 <div>
-                                                    <strong>{t('toast.newCasksLabel')}</strong> {newCasksList.slice(0, 5).join(', ')}
-                                                    {newCasksList.length > 5 && ` ${t('toast.andMore', { count: newCasksList.length - 5 })}`}
+                                                    <strong>{t("toast.newCasksLabel")}</strong>{" "}
+                                                    {newCasksList.slice(0, 5).join(", ")}
+                                                    {newCasksList.length > 5 &&
+                                                        ` ${t("toast.andMore", { count: newCasksList.length - 5 })}`}
                                                 </div>
                                             )}
                                         </div>
@@ -1910,45 +1946,45 @@ const WailBrewApp = () => {
                                             toast.dismiss(t_obj.id);
                                         }}
                                         style={{
-                                            padding: '0.5rem 1rem',
-                                            background: 'rgba(34, 197, 94, 0.8)',
-                                            border: 'none',
-                                            borderRadius: '6px',
-                                            color: '#fff',
-                                            cursor: 'pointer',
-                                            fontSize: '0.875rem',
+                                            padding: "0.5rem 1rem",
+                                            background: "rgba(34, 197, 94, 0.8)",
+                                            border: "none",
+                                            borderRadius: "6px",
+                                            color: "#fff",
+                                            cursor: "pointer",
+                                            fontSize: "0.875rem",
                                             fontWeight: 500,
-                                            transition: 'background 0.2s',
+                                            transition: "background 0.2s",
                                         }}
                                         onMouseEnter={(e) => {
-                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 1)';
+                                            e.currentTarget.style.background = "rgba(34, 197, 94, 1)";
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.currentTarget.style.background = 'rgba(34, 197, 94, 0.8)';
+                                            e.currentTarget.style.background = "rgba(34, 197, 94, 0.8)";
                                         }}
                                     >
-                                        {t('toast.viewAllPackages')}
+                                        {t("toast.viewAllPackages")}
                                     </button>
                                 </div>
                                 <button
                                     onClick={() => toast.dismiss(t_obj.id)}
                                     style={{
-                                        background: 'transparent',
-                                        border: 'none',
-                                        color: 'rgba(255, 255, 255, 0.6)',
-                                        cursor: 'pointer',
-                                        padding: '0.25rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'color 0.2s',
+                                        background: "transparent",
+                                        border: "none",
+                                        color: "rgba(255, 255, 255, 0.6)",
+                                        cursor: "pointer",
+                                        padding: "0.25rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        transition: "color 0.2s",
                                         flexShrink: 0,
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 1)';
+                                        e.currentTarget.style.color = "rgba(255, 255, 255, 1)";
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                                        e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)";
                                     }}
                                     title="Dismiss"
                                 >
@@ -1957,11 +1993,11 @@ const WailBrewApp = () => {
                             </div>
                         ),
                         {
-                            id: 'newPackagesDiscovered',
+                            id: "newPackagesDiscovered",
                             duration: 10000,
-                            position: 'bottom-center',
+                            position: "bottom-center",
                             style: customToastStyle,
-                        }
+                        },
                     );
                 }
             }
@@ -1990,16 +2026,16 @@ const WailBrewApp = () => {
         if (!selectedPackage) return;
         const packageName = selectedPackage.name;
         setShowInstallConfirm(false);
-        setInstallLogs(t('dialogs.installing', { name: packageName }));
+        setInstallLogs(t("dialogs.installing", { name: packageName }));
         setIsInstallRunning(true);
 
         // Set up event listeners for live progress
         const progressListener = EventsOn("packageInstallProgress", (progress: string) => {
-            setInstallLogs(prevLogs => {
+            setInstallLogs((prevLogs) => {
                 if (!prevLogs) {
-                    return `${t('dialogs.installLogs', { name: packageName })}\n${progress}`;
+                    return `${t("dialogs.installLogs", { name: packageName })}\n${progress}`;
                 }
-                return prevLogs + '\n' + progress;
+                return `${prevLogs}\n${progress}`;
             });
         });
 
@@ -2019,7 +2055,7 @@ const WailBrewApp = () => {
             }
         });
 
-        const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
+        const completeListener = EventsOn("packageInstallComplete", async (_finalMessage: string) => {
             // Update the package list after successful install
             await handleRefreshPackages();
 
@@ -2036,7 +2072,7 @@ const WailBrewApp = () => {
             await InstallBrewPackage(packageName);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
-            setInstallLogs(prev => prev ? `${prev}\n${errorMsg}` : errorMsg);
+            setInstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsInstallRunning(false);
             progressListener();
             completeListener();
@@ -2054,7 +2090,7 @@ const WailBrewApp = () => {
             }
             await retry();
         } catch (error) {
-            toast.error(t('dialogs.trustFailed', { name: tap, error: String(error) }));
+            toast.error(t("dialogs.trustFailed", { name: tap, error: String(error) }));
         }
     };
 
@@ -2095,8 +2131,8 @@ const WailBrewApp = () => {
         if (service.status === "started") {
             try {
                 const pid = await GetBrewServicePid(service.name);
-                setSelectedService(prev =>
-                    prev && prev.name === service.name ? { ...prev, pid: pid > 0 ? pid : undefined } : prev
+                setSelectedService((prev) =>
+                    prev && prev.name === service.name ? { ...prev, pid: pid > 0 ? pid : undefined } : prev,
                 );
             } catch (err) {
                 console.error("Failed to load service PID:", err);
@@ -2107,23 +2143,20 @@ const WailBrewApp = () => {
     const handleShowServiceInfo = async (service: ServiceEntry) => {
         setSelectedService(service);
         setShowServiceInfo(true);
-        setServiceInfoLogs(t('dialogs.gettingInfo', { name: service.name }));
+        setServiceInfoLogs(t("dialogs.gettingInfo", { name: service.name }));
         try {
             const info = await GetBrewServiceInfo(service.name);
             setServiceInfoLogs(info);
         } catch (error) {
-            setServiceInfoLogs(t('dialogs.packageInfo') + `\nError: ${error}`);
+            setServiceInfoLogs(`${t("dialogs.packageInfo")}\nError: ${error}`);
         }
     };
 
     // Run a service action (start/stop/restart/run) while streaming live output.
-    const runServiceAction = async (
-        service: ServiceEntry,
-        action: (name: string) => Promise<string>,
-    ) => {
+    const runServiceAction = async (service: ServiceEntry, action: (name: string) => Promise<string>) => {
         setSelectedService(service);
         setIsServiceActionRunning(true);
-        const initialLog = t('dialogs.serviceActionLogs', { name: service.name });
+        const initialLog = t("dialogs.serviceActionLogs", { name: service.name });
         setServiceActionLogs(initialLog);
 
         // Accumulate logs in a ref so we can inspect them for known failure
@@ -2131,8 +2164,8 @@ const WailBrewApp = () => {
         const logsRef = { current: initialLog };
 
         const progressListener = EventsOn("serviceActionProgress", (progress: string) => {
-            setServiceActionLogs(prevLogs => {
-                const next = prevLogs ? prevLogs + '\n' + progress : progress;
+            setServiceActionLogs((prevLogs) => {
+                const next = prevLogs ? `${prevLogs}\n${progress}` : progress;
                 logsRef.current = next;
                 return next;
             });
@@ -2141,10 +2174,11 @@ const WailBrewApp = () => {
         const completeListener = EventsOn("serviceActionComplete", async () => {
             // Surface a friendly hint when launchd refuses to bootstrap the
             // service (already loaded, or needs root for privileged ports).
-            const bootstrapFailure = /bootstrap failed: 5|input\/output error|exited with 5|as root for richer|re-running the command as root/i;
+            const bootstrapFailure =
+                /bootstrap failed: 5|input\/output error|exited with 5|as root for richer|re-running the command as root/i;
             if (bootstrapFailure.test(logsRef.current)) {
-                setServiceActionLogs(prevLogs =>
-                    (prevLogs ?? '') + '\n\n' + t('services.hints.bootstrapFailed', { name: service.name })
+                setServiceActionLogs(
+                    (prevLogs) => `${prevLogs ?? ""}\n\n${t("services.hints.bootstrapFailed", { name: service.name })}`,
                 );
             }
 
@@ -2177,25 +2211,20 @@ const WailBrewApp = () => {
         setLoadingAllPackages(true);
         try {
             // Fetch both all available and currently installed packages from backend
-            const [all, installed] = await Promise.all([
-                GetAllBrewPackages(),
-                GetBrewPackages(),
-            ]);
+            const [all, installed] = await Promise.all([GetAllBrewPackages(), GetBrewPackages()]);
             const safeAll = all || [];
 
             if (safeAll.length === 1 && safeAll[0][0] === "Error") {
-                setError(`${t('errors.failedAllPackages')}: ${safeAll[0][1]}`);
+                setError(`${t("errors.failedAllPackages")}: ${safeAll[0][1]}`);
                 setAllPackages([]);
                 setAllPackagesLoaded(false);
             } else if (safeAll.length === 0) {
-                setError(t('errors.failedAllPackages'));
+                setError(t("errors.failedAllPackages"));
                 setAllPackages([]);
                 setAllPackagesLoaded(false);
             } else {
                 const installedNames = new Set(
-                    (installed || [])
-                        .filter(pkg => pkg.length > 0 && pkg[0] !== "Error")
-                        .map(pkg => pkg[0])
+                    (installed || []).filter((pkg) => pkg.length > 0 && pkg[0] !== "Error").map((pkg) => pkg[0]),
                 );
                 const formatted = safeAll.map(([name, desc, size]) => ({
                     name,
@@ -2223,25 +2252,20 @@ const WailBrewApp = () => {
         setLoadingAllCasks(true);
         try {
             // Fetch both all available and currently installed casks from backend
-            const [all, installed] = await Promise.all([
-                GetAllBrewCasks(),
-                GetBrewCasks(),
-            ]);
+            const [all, installed] = await Promise.all([GetAllBrewCasks(), GetBrewCasks()]);
             const safeAll = all || [];
 
             if (safeAll.length === 1 && safeAll[0][0] === "Error") {
-                setError(`${t('errors.failedAllCasks')}: ${safeAll[0][1]}`);
+                setError(`${t("errors.failedAllCasks")}: ${safeAll[0][1]}`);
                 setAllCasksAll([]);
                 setAllCasksLoaded(false);
             } else if (safeAll.length === 0) {
-                setError(t('errors.failedAllCasks'));
+                setError(t("errors.failedAllCasks"));
                 setAllCasksAll([]);
                 setAllCasksLoaded(false);
             } else {
                 const installedNames = new Set(
-                    (installed || [])
-                        .filter(pkg => pkg.length > 0 && pkg[0] !== "Error")
-                        .map(pkg => pkg[0])
+                    (installed || []).filter((pkg) => pkg.length > 0 && pkg[0] !== "Error").map((pkg) => pkg[0]),
                 );
                 const formatted = safeAll.map(([name, desc, size]) => ({
                     name,
@@ -2291,7 +2315,7 @@ const WailBrewApp = () => {
             await handleRefreshPackages();
         } catch (err) {
             console.error("Error switching brew path:", err);
-            toast.error(t('brewLocation.switchFailed'));
+            toast.error(t("brewLocation.switchFailed"));
         } finally {
             setSwitchingBrewPath(false);
         }
@@ -2347,23 +2371,23 @@ const WailBrewApp = () => {
 
                 // Lazy load package sizes in the background
                 if (formatted.length > 0) {
-                    const packageNames = formatted.map(pkg => pkg.name);
+                    const packageNames = formatted.map((pkg) => pkg.name);
                     GetBrewPackageSizes(packageNames)
                         .then((sizes: Record<string, string>) => {
-                            setPackages(prevPackages =>
-                                prevPackages.map(pkg => ({
+                            setPackages((prevPackages) =>
+                                prevPackages.map((pkg) => ({
                                     ...pkg,
-                                    size: sizes[pkg.name] || pkg.size || ""
-                                }))
+                                    size: sizes[pkg.name] || pkg.size || "",
+                                })),
                             );
                             // Update leaves packages if they include this package
-                            setLeavesPackages(prevLeaves =>
-                                prevLeaves.map(pkg => {
+                            setLeavesPackages((prevLeaves) =>
+                                prevLeaves.map((pkg) => {
                                     if (sizes[pkg.name]) {
                                         return { ...pkg, size: sizes[pkg.name] };
                                     }
                                     return pkg;
-                                })
+                                }),
                             );
                         })
                         .catch((err: unknown) => {
@@ -2386,14 +2410,14 @@ const WailBrewApp = () => {
 
                 // Lazy load cask sizes in the background
                 if (casksFormatted.length > 0) {
-                    const caskNames = casksFormatted.map(cask => cask.name);
+                    const caskNames = casksFormatted.map((cask) => cask.name);
                     GetBrewCaskSizes(caskNames)
                         .then((sizes: Record<string, string>) => {
-                            setCasks(prevCasks =>
-                                prevCasks.map(cask => ({
+                            setCasks((prevCasks) =>
+                                prevCasks.map((cask) => ({
                                     ...cask,
-                                    size: sizes[cask.name] || cask.size || ""
-                                }))
+                                    size: sizes[cask.name] || cask.size || "",
+                                })),
                             );
                         })
                         .catch((err: unknown) => {
@@ -2404,7 +2428,7 @@ const WailBrewApp = () => {
 
             if (safeUpdatable.length === 1 && safeUpdatable[0][0] === "Error") {
                 setUpdatablePackages([]);
-                setUpdatableError(`${t('errors.failedUpdatablePackages')}: ${safeUpdatable[0][1]}`);
+                setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${safeUpdatable[0][1]}`);
             } else {
                 const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
                     name,
@@ -2423,14 +2447,16 @@ const WailBrewApp = () => {
 
             if (safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: ")) {
                 setLeavesPackages([]);
-                setLeavesError(`${t('errors.failedLeaves')}: ${safeLeaves[0]}`);
+                setLeavesError(`${t("errors.failedLeaves")}: ${safeLeaves[0]}`);
             } else {
-                const installedMap = new Map(safeInstalled.map(([name, installedVersion, size]) => [name, { installedVersion, size }]));
+                const installedMap = new Map(
+                    safeInstalled.map(([name, installedVersion, size]) => [name, { installedVersion, size }]),
+                );
                 const formatted = safeLeaves.map((name) => {
                     const data = installedMap.get(name);
                     return {
                         name,
-                        installedVersion: data?.installedVersion || t('common.notAvailable'),
+                        installedVersion: data?.installedVersion || t("common.notAvailable"),
                         size: data?.size,
                         isInstalled: true,
                     };
@@ -2455,8 +2481,8 @@ const WailBrewApp = () => {
                 checkBrewLocation();
             }
         } catch (error) {
-            console.error('Error refreshing packages:', error);
-            setError('Failed to refresh packages');
+            console.error("Error refreshing packages:", error);
+            setError("Failed to refresh packages");
             checkBrewLocation();
         } finally {
             setLoading(false);
@@ -2465,256 +2491,128 @@ const WailBrewApp = () => {
 
     // Table columns config
     const columnsInstalled = [
-        { key: "name", label: t('tableColumns.name'), sortable: true },
-        { key: "installedVersion", label: t('tableColumns.version'), sortable: false },
-        { key: "size", label: t('tableColumns.size'), sortable: true },
-        { key: "actions", label: t('tableColumns.actions'), sortable: false },
+        { key: "name", label: t("tableColumns.name"), sortable: true },
+        { key: "installedVersion", label: t("tableColumns.version"), sortable: false },
+        { key: "size", label: t("tableColumns.size"), sortable: true },
+        { key: "actions", label: t("tableColumns.actions"), sortable: false },
     ];
     const columnsUpdatable = [
-        { key: "name", label: t('tableColumns.name'), sortable: true },
-        { key: "installedVersion", label: t('tableColumns.version'), sortable: false },
-        { key: "latestVersion", label: t('tableColumns.latestVersion'), sortable: false },
-        { key: "size", label: t('tableColumns.size'), sortable: true },
-        { key: "actions", label: t('tableColumns.actions'), sortable: false },
+        { key: "name", label: t("tableColumns.name"), sortable: true },
+        { key: "installedVersion", label: t("tableColumns.version"), sortable: false },
+        { key: "latestVersion", label: t("tableColumns.latestVersion"), sortable: false },
+        { key: "size", label: t("tableColumns.size"), sortable: true },
+        { key: "actions", label: t("tableColumns.actions"), sortable: false },
     ];
     const columnsAll = [
-        { key: "name", label: t('tableColumns.name'), sortable: true },
-        { key: "isInstalled", label: t('tableColumns.status'), sortable: true },
-        { key: "actions", label: t('tableColumns.actions'), sortable: false },
+        { key: "name", label: t("tableColumns.name"), sortable: true },
+        { key: "isInstalled", label: t("tableColumns.status"), sortable: true },
+        { key: "actions", label: t("tableColumns.actions"), sortable: false },
     ];
     const columnsLeaves = columnsInstalled;
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
+        <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100vw" }}>
             <TitleBar />
-            <div className="wailbrew-container" style={{ flex: 1, height: 'auto', minHeight: 0 }}>
-            <Sidebar
-                view={view}
-                setView={setView}
-                packagesCount={packages.length}
-                casksCount={casks.length}
-                updatableCount={updatablePackages.length}
-                allCount={allPackagesLoaded ? allPackages.length : -1}
-                allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
-                leavesCount={leavesPackages.length}
-                repositoriesCount={repositories.length}
-                servicesCount={services.length}
-                onClearSelection={clearSelection}
-                sidebarWidth={sidebarWidth}
-                sidebarRef={sidebarRef}
-                isBackgroundCheckRunning={isBackgroundCheckRunning}
-                getSecondsUntilNextCheck={getSecondsUntilNextCheck}
-            />
-            <div
-                className="sidebar-resize-handle"
-                onMouseDown={handleResizeStart}
-            />
-            <main className="content">
-                {/* Loading timer for development only */}
-                {import.meta.env.DEV && loadingStartTime !== null && (
-                    <LoadingTimer startTime={loadingStartTime} />
-                )}
-                {brewLocationSuggestion && (
-                    <div className="brew-location-banner">
-                        <div className="brew-location-banner-text">
-                            <strong>{t('brewLocation.title')}</strong>
-                            <span>
-                                {t('brewLocation.message', {
-                                    current: brewLocationSuggestion.current,
-                                    suggested: brewLocationSuggestion.suggested,
-                                })}
-                            </span>
-                        </div>
-                        <div className="brew-location-banner-actions">
-                            <button
-                                className="brew-location-switch-btn"
-                                onClick={handleSwitchBrewPath}
-                                disabled={switchingBrewPath}
-                            >
-                                {switchingBrewPath ? t('brewLocation.switching') : t('brewLocation.switch')}
-                            </button>
-                            <button
-                                className="brew-location-dismiss-btn"
-                                onClick={() => setBrewLocationSuggestion(null)}
-                                disabled={switchingBrewPath}
-                            >
-                                {t('brewLocation.dismiss')}
-                            </button>
-                        </div>
-                    </div>
-                )}
-                {view === "installed" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.installedFormulas', { count: packages.length })}
-                            actions={
-                                <>
-                                    <button
-                                        className="refresh-button"
-                                        onClick={handleRefreshPackages}
-                                        disabled={loading}
-                                        title={t('buttons.refresh')}
-                                    >
-                                        <RefreshCw size={18} />
-                                    </button>
-                                </>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        <div className="installed-filter-pills-row">
-                            <button
-                                className={`installed-filter-pill ${installedFilter === "on_request" ? "active" : ""}`}
-                                onClick={() => setInstalledFilter(prev => prev === "on_request" ? "all" : "on_request")}
-                                title={t('filters.toggleOnRequest')}
-                            >
-                                {t('filters.onRequest', { count: installedOnRequestCount })}
-                            </button>
-                            <button
-                                className={`installed-filter-pill ${installedFilter === "dependency" ? "active" : ""}`}
-                                onClick={() => setInstalledFilter(prev => prev === "dependency" ? "all" : "dependency")}
-                                title={t('filters.toggleAsDependency')}
-                            >
-                                {t('filters.asDependency', { count: installedDependencyCount })}
-                            </button>
-                        </div>
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "installed" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={handleSelect}
-                            columns={columnsInstalled}
-                            onUninstall={handleUninstallPackage}
-                            onShowInfo={handleShowPackageInfo}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
+            <div className="wailbrew-container" style={{ flex: 1, height: "auto", minHeight: 0 }}>
+                <Sidebar
+                    view={view}
+                    setView={setView}
+                    packagesCount={packages.length}
+                    casksCount={casks.length}
+                    updatableCount={updatablePackages.length}
+                    allCount={allPackagesLoaded ? allPackages.length : -1}
+                    allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
+                    leavesCount={leavesPackages.length}
+                    repositoriesCount={repositories.length}
+                    servicesCount={services.length}
+                    onClearSelection={clearSelection}
+                    sidebarWidth={sidebarWidth}
+                    sidebarRef={sidebarRef}
+                    isBackgroundCheckRunning={isBackgroundCheckRunning}
+                    getSecondsUntilNextCheck={getSecondsUntilNextCheck}
+                />
+                <div className="sidebar-resize-handle" onMouseDown={handleResizeStart} />
+                <main className="content">
+                    {/* Loading timer for development only */}
+                    {import.meta.env.DEV && loadingStartTime !== null && <LoadingTimer startTime={loadingStartTime} />}
+                    {brewLocationSuggestion && (
+                        <div className="brew-location-banner">
+                            <div className="brew-location-banner-text">
+                                <strong>{t("brewLocation.title")}</strong>
+                                <span>
+                                    {t("brewLocation.message", {
+                                        current: brewLocationSuggestion.current,
+                                        suggested: brewLocationSuggestion.suggested,
+                                    })}
+                                </span>
                             </div>
-                            <div className="package-footer">
-                                {t('footers.installedFormulas')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "casks" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.installedCasks', { count: casks.length })}
-                            actions={
+                            <div className="brew-location-banner-actions">
                                 <button
-                                    className="refresh-button"
-                                    onClick={handleRefreshPackages}
-                                    disabled={loading}
-                                    title={t('buttons.refresh')}
+                                    className="brew-location-switch-btn"
+                                    onClick={handleSwitchBrewPath}
+                                    disabled={switchingBrewPath}
                                 >
-                                    <RefreshCw size={18} />
+                                    {switchingBrewPath ? t("brewLocation.switching") : t("brewLocation.switch")}
                                 </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "casks" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={handleSelect}
-                            columns={columnsInstalled}
-                            onUninstall={handleUninstallPackage}
-                            onShowInfo={handleShowPackageInfo}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.installedCasks')}
+                                <button
+                                    className="brew-location-dismiss-btn"
+                                    onClick={() => setBrewLocationSuggestion(null)}
+                                    disabled={switchingBrewPath}
+                                >
+                                    {t("brewLocation.dismiss")}
+                                </button>
                             </div>
                         </div>
-                    </>
-                )}
-                {view === "updatable" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.outdatedFormulas', { count: updatablePackages.length })}
-                            actions={
-                                <>
+                    )}
+                    {view === "installed" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.installedFormulas", { count: packages.length })}
+                                actions={
                                     <button
                                         className="refresh-button"
                                         onClick={handleRefreshPackages}
                                         disabled={loading}
-                                        title={t('buttons.refresh')}
+                                        title={t("buttons.refresh")}
                                     >
                                         <RefreshCw size={18} />
                                     </button>
-                                    {updatablePackages.length > 0 && (
-                                        <>
-                                            {selectedPackages.size > 0 ? (
-                                                <button
-                                                    className="update-selected-button"
-                                                    onClick={handleUpdateSelected}
-                                                    title={t('buttons.updateSelected', { count: selectedPackages.size })}
-                                                >
-                                                    {t('buttons.updateSelected', { count: selectedPackages.size })}
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    className="update-all-button"
-                                                    onClick={() => setShowUpdateAllConfirm(true)}
-                                                    title={t('buttons.updateAll')}
-                                                >
-                                                    {t('buttons.updateAll')}
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
-                                </>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        {updatablePackages.length === 0 && !loading ? (
-                            <div className="all-up-to-date">
-                                <PartyPopper size={48} strokeWidth={1.5} />
-                                <p>{t('table.allUpToDate')}</p>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            <div className="installed-filter-pills-row">
+                                <button
+                                    className={`installed-filter-pill ${installedFilter === "on_request" ? "active" : ""}`}
+                                    onClick={() =>
+                                        setInstalledFilter((prev) => (prev === "on_request" ? "all" : "on_request"))
+                                    }
+                                    title={t("filters.toggleOnRequest")}
+                                >
+                                    {t("filters.onRequest", { count: installedOnRequestCount })}
+                                </button>
+                                <button
+                                    className={`installed-filter-pill ${installedFilter === "dependency" ? "active" : ""}`}
+                                    onClick={() =>
+                                        setInstalledFilter((prev) => (prev === "dependency" ? "all" : "dependency"))
+                                    }
+                                    title={t("filters.toggleAsDependency")}
+                                >
+                                    {t("filters.asDependency", { count: installedDependencyCount })}
+                                </button>
                             </div>
-                        ) : (
+                            {error && <div className="result error">{error}</div>}
                             <PackageTable
-                                ref={view === "updatable" ? packageTableRef : null}
+                                ref={view === "installed" ? packageTableRef : null}
                                 packages={filteredPackages}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
                                 onSelect={handleSelect}
-                                columns={columnsUpdatable}
+                                columns={columnsInstalled}
                                 onUninstall={handleUninstallPackage}
-                                onShowInfo={handleShowInfoLogs}
-                                onUpdate={handleUpdate}
-                                multiSelectMode={true}
-                                selectedPackages={selectedPackages}
-                                onTogglePackageSelect={togglePackageSelection}
-                                onSelectAllPackages={selectAllPackages}
-                                onDeselectAllPackages={deselectAllPackages}
+                                onShowInfo={handleShowPackageInfo}
                             />
-                        )}
-                        {updatablePackages.length > 0 && (
                             <div className="info-footer-container">
                                 <div className="package-info">
                                     <PackageInfo
@@ -2724,583 +2622,703 @@ const WailBrewApp = () => {
                                         onSelectDependency={handleSelectDependency}
                                     />
                                 </div>
-                                <div className="package-footer">
-                                    {t('footers.outdatedFormulas')}
-                                </div>
+                                <div className="package-footer">{t("footers.installedFormulas")}</div>
                             </div>
-                        )}
-                    </>
-                )}
-                {view === "all" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.allFormulas', { count: allPackages.length })}
-                            actions={
-                                <button
-                                    className="refresh-button"
-                                    onClick={loadAllPackages}
-                                    disabled={loadingAllPackages}
-                                    title={t('buttons.refresh')}
-                                >
-                                    <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
-                                </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "all" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading || loadingAllPackages}
-                            onSelect={handleSelect}
-                            columns={columnsAll}
-                            onShowInfo={handleShowInfoLogs}
-                            onInstall={handleInstallPackage}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.allFormulas')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "allCasks" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.allCasks', { count: allCasksAll.length })}
-                            actions={
-                                <button
-                                    className="refresh-button"
-                                    onClick={loadAllCasks}
-                                    disabled={loadingAllCasks}
-                                    title={t('buttons.refresh')}
-                                >
-                                    <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
-                                </button>
-                            }
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <PackageTable
-                            ref={view === "allCasks" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading || loadingAllCasks}
-                            onSelect={handleSelect}
-                            columns={columnsAll}
-                            onShowInfo={handleShowInfoLogs}
-                            onInstall={handleInstallPackage}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.allCasks')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "leaves" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.leaves', { count: leavesPackages.length })}
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        {leavesError && <div className="result error">{leavesError}</div>}
-                        <PackageTable
-                            ref={view === "leaves" ? packageTableRef : null}
-                            packages={filteredPackages}
-                            selectedPackage={selectedPackage}
-                            loading={loading}
-                            onSelect={handleSelect}
-                            columns={columnsLeaves}
-                            onUninstall={handleUninstallPackage}
-                            onShowInfo={handleShowInfoLogs}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <PackageInfo
-                                    packageEntry={selectedPackage}
-                                    loadingDetailsFor={loadingDetailsFor}
-                                    view={view}
-                                    onSelectDependency={handleSelectDependency}
-                                />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.leaves')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "repositories" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.repositories', { count: repositories.length })}
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                            actions={
-                                <button className="doctor-button" onClick={handleTapRepository}>
-                                    {t('buttons.tap')}
-                                </button>
-                            }
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <RepositoryTable
-                            repositories={filteredRepositories}
-                            selectedRepository={selectedRepository}
-                            loading={loading}
-                            onSelect={handleRepositorySelect}
-                            onUntap={handleUntapRepository}
-                            onShowInfo={handleShowRepositoryInfo}
-                            onTrust={handleTrustRepository}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <RepositoryInfo repository={selectedRepository} />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.repositories')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "services" && (
-                    <>
-                        <HeaderRow
-                            title={t('headers.services', { count: services.length })}
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery}
-                            onClearSearch={() => setSearchQuery("")}
-                            actions={
-                                <button
-                                    className="doctor-button"
-                                    onClick={async () => {
-                                        setServicesLoaded(false);
-                                        await loadServices();
-                                    }}
-                                >
-                                    {t('buttons.refresh')}
-                                </button>
-                            }
-                        />
-                        {error && <div className="result error">{error}</div>}
-                        <ServicesTable
-                            services={filteredServices}
-                            selectedService={selectedService}
-                            loading={loadingServices}
-                            onSelect={handleServiceSelect}
-                            onStart={handleStartService}
-                            onStop={handleStopService}
-                            onRestart={handleRestartService}
-                            onRun={handleRunService}
-                            onShowInfo={handleShowServiceInfo}
-                        />
-                        <div className="info-footer-container">
-                            <div className="package-info">
-                                <ServiceInfo service={selectedService} />
-                            </div>
-                            <div className="package-footer">
-                                {t('footers.services')}
-                            </div>
-                        </div>
-                    </>
-                )}
-                {view === "homebrew" && (
-                    <HomebrewView
-                        homebrewLog={homebrewLog}
-                        homebrewVersion={homebrewVersion}
-                        isUpToDate={homebrewUpdateStatus.isUpToDate}
-                        latestVersion={homebrewUpdateStatus.latestVersion}
-                        onClearLog={() => setHomebrewLog("")}
-                        onUpdateHomebrew={async () => {
-                            setHomebrewLog(t('dialogs.runningHomebrewUpdate'));
-
-                            // Set up event listeners for live progress
-                            const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
-                                setHomebrewLog(prevLogs => {
-                                    if (!prevLogs) {
-                                        return `${t('dialogs.homebrewUpdateLogs')}\n${progress}`;
-                                    }
-                                    return prevLogs + '\n' + progress;
-                                });
-                            });
-
-                            const completeListener = EventsOn("homebrewUpdateComplete", async (finalMessage: string) => {
-                                setHomebrewLog(prevLogs => prevLogs + '\n' + finalMessage);
-
-                                // Refresh version after update
-                                try {
-                                    const newVersion = await GetHomebrewVersion();
-                                    setHomebrewVersion(newVersion);
-                                    const updateInfo = await CheckHomebrewUpdate();
-                                    if (updateInfo) {
-                                        setHomebrewUpdateStatus({
-                                            isUpToDate: updateInfo.isUpToDate as boolean,
-                                            latestVersion: updateInfo.latestVersion as string,
-                                        });
-                                    }
-                                } catch (error) {
-                                    console.error("Failed to refresh Homebrew version:", error);
+                        </>
+                    )}
+                    {view === "casks" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.installedCasks", { count: casks.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={handleRefreshPackages}
+                                        disabled={loading}
+                                        title={t("buttons.refresh")}
+                                    >
+                                        <RefreshCw size={18} />
+                                    </button>
                                 }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "casks" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading}
+                                onSelect={handleSelect}
+                                columns={columnsInstalled}
+                                onUninstall={handleUninstallPackage}
+                                onShowInfo={handleShowPackageInfo}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">{t("footers.installedCasks")}</div>
+                            </div>
+                        </>
+                    )}
+                    {view === "updatable" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.outdatedFormulas", { count: updatablePackages.length })}
+                                actions={
+                                    <>
+                                        <button
+                                            className="refresh-button"
+                                            onClick={handleRefreshPackages}
+                                            disabled={loading}
+                                            title={t("buttons.refresh")}
+                                        >
+                                            <RefreshCw size={18} />
+                                        </button>
+                                        {updatablePackages.length > 0 &&
+                                            (selectedPackages.size > 0 ? (
+                                                <button
+                                                    className="update-selected-button"
+                                                    onClick={handleUpdateSelected}
+                                                    title={t("buttons.updateSelected", {
+                                                        count: selectedPackages.size,
+                                                    })}
+                                                >
+                                                    {t("buttons.updateSelected", { count: selectedPackages.size })}
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="update-all-button"
+                                                    onClick={() => setShowUpdateAllConfirm(true)}
+                                                    title={t("buttons.updateAll")}
+                                                >
+                                                    {t("buttons.updateAll")}
+                                                </button>
+                                            ))}
+                                    </>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            {updatablePackages.length === 0 && !loading ? (
+                                <div className="all-up-to-date">
+                                    <PartyPopper size={48} strokeWidth={1.5} />
+                                    <p>{t("table.allUpToDate")}</p>
+                                </div>
+                            ) : (
+                                <PackageTable
+                                    ref={view === "updatable" ? packageTableRef : null}
+                                    packages={filteredPackages}
+                                    selectedPackage={selectedPackage}
+                                    loading={loading}
+                                    onSelect={handleSelect}
+                                    columns={columnsUpdatable}
+                                    onUninstall={handleUninstallPackage}
+                                    onShowInfo={handleShowInfoLogs}
+                                    onUpdate={handleUpdate}
+                                    multiSelectMode={true}
+                                    selectedPackages={selectedPackages}
+                                    onTogglePackageSelect={togglePackageSelection}
+                                    onSelectAllPackages={selectAllPackages}
+                                    onDeselectAllPackages={deselectAllPackages}
+                                />
+                            )}
+                            {updatablePackages.length > 0 && (
+                                <div className="info-footer-container">
+                                    <div className="package-info">
+                                        <PackageInfo
+                                            packageEntry={selectedPackage}
+                                            loadingDetailsFor={loadingDetailsFor}
+                                            view={view}
+                                            onSelectDependency={handleSelectDependency}
+                                        />
+                                    </div>
+                                    <div className="package-footer">{t("footers.outdatedFormulas")}</div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                    {view === "all" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.allFormulas", { count: allPackages.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={loadAllPackages}
+                                        disabled={loadingAllPackages}
+                                        title={t("buttons.refresh")}
+                                    >
+                                        <RefreshCw size={18} className={loadingAllPackages ? "spinning" : ""} />
+                                    </button>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "all" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading || loadingAllPackages}
+                                onSelect={handleSelect}
+                                columns={columnsAll}
+                                onShowInfo={handleShowInfoLogs}
+                                onInstall={handleInstallPackage}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">{t("footers.allFormulas")}</div>
+                            </div>
+                        </>
+                    )}
+                    {view === "allCasks" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.allCasks", { count: allCasksAll.length })}
+                                actions={
+                                    <button
+                                        className="refresh-button"
+                                        onClick={loadAllCasks}
+                                        disabled={loadingAllCasks}
+                                        title={t("buttons.refresh")}
+                                    >
+                                        <RefreshCw size={18} className={loadingAllCasks ? "spinning" : ""} />
+                                    </button>
+                                }
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <PackageTable
+                                ref={view === "allCasks" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading || loadingAllCasks}
+                                onSelect={handleSelect}
+                                columns={columnsAll}
+                                onShowInfo={handleShowInfoLogs}
+                                onInstall={handleInstallPackage}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">{t("footers.allCasks")}</div>
+                            </div>
+                        </>
+                    )}
+                    {view === "leaves" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.leaves", { count: leavesPackages.length })}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            {leavesError && <div className="result error">{leavesError}</div>}
+                            <PackageTable
+                                ref={view === "leaves" ? packageTableRef : null}
+                                packages={filteredPackages}
+                                selectedPackage={selectedPackage}
+                                loading={loading}
+                                onSelect={handleSelect}
+                                columns={columnsLeaves}
+                                onUninstall={handleUninstallPackage}
+                                onShowInfo={handleShowInfoLogs}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <PackageInfo
+                                        packageEntry={selectedPackage}
+                                        loadingDetailsFor={loadingDetailsFor}
+                                        view={view}
+                                        onSelectDependency={handleSelectDependency}
+                                    />
+                                </div>
+                                <div className="package-footer">{t("footers.leaves")}</div>
+                            </div>
+                        </>
+                    )}
+                    {view === "repositories" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.repositories", { count: repositories.length })}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                                actions={
+                                    <button className="doctor-button" onClick={handleTapRepository}>
+                                        {t("buttons.tap")}
+                                    </button>
+                                }
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <RepositoryTable
+                                repositories={filteredRepositories}
+                                selectedRepository={selectedRepository}
+                                loading={loading}
+                                onSelect={handleRepositorySelect}
+                                onUntap={handleUntapRepository}
+                                onShowInfo={handleShowRepositoryInfo}
+                                onTrust={handleTrustRepository}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <RepositoryInfo repository={selectedRepository} />
+                                </div>
+                                <div className="package-footer">{t("footers.repositories")}</div>
+                            </div>
+                        </>
+                    )}
+                    {view === "services" && (
+                        <>
+                            <HeaderRow
+                                title={t("headers.services", { count: services.length })}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onClearSearch={() => setSearchQuery("")}
+                                actions={
+                                    <button
+                                        className="doctor-button"
+                                        onClick={async () => {
+                                            setServicesLoaded(false);
+                                            await loadServices();
+                                        }}
+                                    >
+                                        {t("buttons.refresh")}
+                                    </button>
+                                }
+                            />
+                            {error && <div className="result error">{error}</div>}
+                            <ServicesTable
+                                services={filteredServices}
+                                selectedService={selectedService}
+                                loading={loadingServices}
+                                onSelect={handleServiceSelect}
+                                onStart={handleStartService}
+                                onStop={handleStopService}
+                                onRestart={handleRestartService}
+                                onRun={handleRunService}
+                                onShowInfo={handleShowServiceInfo}
+                            />
+                            <div className="info-footer-container">
+                                <div className="package-info">
+                                    <ServiceInfo service={selectedService} />
+                                </div>
+                                <div className="package-footer">{t("footers.services")}</div>
+                            </div>
+                        </>
+                    )}
+                    {view === "homebrew" && (
+                        <HomebrewView
+                            homebrewLog={homebrewLog}
+                            homebrewVersion={homebrewVersion}
+                            isUpToDate={homebrewUpdateStatus.isUpToDate}
+                            latestVersion={homebrewUpdateStatus.latestVersion}
+                            onClearLog={() => setHomebrewLog("")}
+                            onUpdateHomebrew={async () => {
+                                setHomebrewLog(t("dialogs.runningHomebrewUpdate"));
 
-                                // Clean up event listeners
-                                progressListener();
-                                completeListener();
-                            });
+                                // Set up event listeners for live progress
+                                const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
+                                    setHomebrewLog((prevLogs) => {
+                                        if (!prevLogs) {
+                                            return `${t("dialogs.homebrewUpdateLogs")}\n${progress}`;
+                                        }
+                                        return `${prevLogs}\n${progress}`;
+                                    });
+                                });
 
-                            // Start the update process
-                            await UpdateHomebrew();
-                        }}
-                    />
-                )}
-                {view === "doctor" && (
-                    <DoctorView
-                        doctorLog={doctorLog}
-                        deprecatedFormulae={deprecatedFormulae}
-                        selectedDeprecatedPackage={selectedDeprecatedPackage}
-                        loadingDetailsFor={loadingDetailsFor}
-                        onClearLog={() => {
-                            setDoctorLog("");
-                            setDeprecatedFormulae([]);
-                            setSelectedDeprecatedPackage(null);
-                        }}
-                        onRunDoctor={async () => {
-                            setDoctorLog(t('dialogs.runningDoctor'));
-                            setDeprecatedFormulae([]);
-                            setSelectedDeprecatedPackage(null);
-                            const result = await RunBrewDoctor();
-                            setDoctorLog(result);
-                            // Parse deprecated formulae from the output
-                            const deprecated = await GetDeprecatedFormulae(result);
-                            setDeprecatedFormulae(deprecated || []);
-                        }}
-                        onSelectDeprecated={handleSelectDeprecatedFormula}
-                        onSelectDependency={handleSelectDependency}
-                        onUninstallDeprecated={async (formula: string) => {
-                            setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
-                            setUninstallIsCask(false);
-                            setShowConfirm(true);
-                        }}
-                    />
-                )}
-                {view === "cleanup" && (
-                    <CleanupView
-                        cleanupLog={cleanupLog}
-                        cleanupEstimate={cleanupEstimate}
-                        onClearLog={() => setCleanupLog("")}
-                        onRunDryRun={async () => {
-                            setCleanupLog(t('dialogs.runningDryRun'));
-                            const result = await RunBrewCleanupDryRun();
-                            setCleanupLog(result);
-                            // Refresh estimate after dry run
-                            try {
-                                const estimate = await GetBrewCleanupDryRun();
-                                setCleanupEstimate(estimate);
-                            } catch (error) {
-                                console.error("Failed to get cleanup estimate:", error);
-                            }
-                        }}
-                        onRunCleanup={async () => {
-                            setCleanupLog(t('dialogs.runningCleanup'));
-                            const result = await RunBrewCleanup();
-                            setCleanupLog(result);
-                            // Clear estimate while recalculating
-                            setCleanupEstimate("");
-                            // Wait briefly for Homebrew to finish updating its state
-                            await new Promise(resolve => setTimeout(resolve, 1500));
-                            try {
-                                const estimate = await GetBrewCleanupDryRun();
-                                setCleanupEstimate(estimate);
-                            } catch (error) {
-                                console.error("Failed to get cleanup estimate:", error);
-                            }
-                        }}
-                        onCheckEstimate={async () => {
-                            try {
-                                const estimate = await GetBrewCleanupDryRun();
-                                setCleanupEstimate(estimate);
-                            } catch (error) {
-                                console.error("Failed to get cleanup estimate:", error);
+                                const completeListener = EventsOn(
+                                    "homebrewUpdateComplete",
+                                    async (finalMessage: string) => {
+                                        setHomebrewLog((prevLogs) => `${prevLogs}\n${finalMessage}`);
+
+                                        // Refresh version after update
+                                        try {
+                                            const newVersion = await GetHomebrewVersion();
+                                            setHomebrewVersion(newVersion);
+                                            const updateInfo = await CheckHomebrewUpdate();
+                                            if (updateInfo) {
+                                                setHomebrewUpdateStatus({
+                                                    isUpToDate: updateInfo.isUpToDate as boolean,
+                                                    latestVersion: updateInfo.latestVersion as string,
+                                                });
+                                            }
+                                        } catch (error) {
+                                            console.error("Failed to refresh Homebrew version:", error);
+                                        }
+
+                                        // Clean up event listeners
+                                        progressListener();
+                                        completeListener();
+                                    },
+                                );
+
+                                // Start the update process
+                                await UpdateHomebrew();
+                            }}
+                        />
+                    )}
+                    {view === "doctor" && (
+                        <DoctorView
+                            doctorLog={doctorLog}
+                            deprecatedFormulae={deprecatedFormulae}
+                            selectedDeprecatedPackage={selectedDeprecatedPackage}
+                            loadingDetailsFor={loadingDetailsFor}
+                            onClearLog={() => {
+                                setDoctorLog("");
+                                setDeprecatedFormulae([]);
+                                setSelectedDeprecatedPackage(null);
+                            }}
+                            onRunDoctor={async () => {
+                                setDoctorLog(t("dialogs.runningDoctor"));
+                                setDeprecatedFormulae([]);
+                                setSelectedDeprecatedPackage(null);
+                                const result = await RunBrewDoctor();
+                                setDoctorLog(result);
+                                // Parse deprecated formulae from the output
+                                const deprecated = await GetDeprecatedFormulae(result);
+                                setDeprecatedFormulae(deprecated || []);
+                            }}
+                            onSelectDeprecated={handleSelectDeprecatedFormula}
+                            onSelectDependency={handleSelectDependency}
+                            onUninstallDeprecated={async (formula: string) => {
+                                setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
+                                setUninstallIsCask(false);
+                                setShowConfirm(true);
+                            }}
+                        />
+                    )}
+                    {view === "cleanup" && (
+                        <CleanupView
+                            cleanupLog={cleanupLog}
+                            cleanupEstimate={cleanupEstimate}
+                            onClearLog={() => setCleanupLog("")}
+                            onRunDryRun={async () => {
+                                setCleanupLog(t("dialogs.runningDryRun"));
+                                const result = await RunBrewCleanupDryRun();
+                                setCleanupLog(result);
+                                // Refresh estimate after dry run
+                                try {
+                                    const estimate = await GetBrewCleanupDryRun();
+                                    setCleanupEstimate(estimate);
+                                } catch (error) {
+                                    console.error("Failed to get cleanup estimate:", error);
+                                }
+                            }}
+                            onRunCleanup={async () => {
+                                setCleanupLog(t("dialogs.runningCleanup"));
+                                const result = await RunBrewCleanup();
+                                setCleanupLog(result);
+                                // Clear estimate while recalculating
                                 setCleanupEstimate("");
+                                // Wait briefly for Homebrew to finish updating its state
+                                await new Promise((resolve) => setTimeout(resolve, 1500));
+                                try {
+                                    const estimate = await GetBrewCleanupDryRun();
+                                    setCleanupEstimate(estimate);
+                                } catch (error) {
+                                    console.error("Failed to get cleanup estimate:", error);
+                                }
+                            }}
+                            onCheckEstimate={async () => {
+                                try {
+                                    const estimate = await GetBrewCleanupDryRun();
+                                    setCleanupEstimate(estimate);
+                                } catch (error) {
+                                    console.error("Failed to get cleanup estimate:", error);
+                                    setCleanupEstimate("");
+                                }
+                            }}
+                        />
+                    )}
+                    {view === "settings" && <SettingsView onRefreshPackages={handleRefreshPackages} />}
+                    <ConfirmDialog
+                        open={showConfirm}
+                        message={t("dialogs.confirmUninstall", { name: selectedPackage?.name })}
+                        onConfirm={() => {
+                            setUninstallDependents([]);
+                            handleRemoveConfirmed();
+                            setUninstallIsCask(false);
+                        }}
+                        onCancel={() => {
+                            setShowConfirm(false);
+                            setUninstallDependents([]);
+                            setUninstallIsCask(false);
+                        }}
+                        confirmLabel={t("buttons.yesUninstall")}
+                        destructive={true}
+                        dependents={uninstallDependents}
+                        checkboxLabel={uninstallIsCask ? t("dialogs.zapUninstall") : undefined}
+                        checkboxHint={uninstallIsCask ? t("dialogs.zapUninstallHint") : undefined}
+                        checkboxChecked={zapUninstall}
+                        onCheckboxChange={uninstallIsCask ? handleToggleZapUninstall : undefined}
+                        commandSpec={{
+                            action: "uninstall",
+                            targets: selectedPackage ? [selectedPackage.name] : [],
+                            isCask: uninstallIsCask,
+                            zap: uninstallIsCask && zapUninstall,
+                        }}
+                    />
+                    <ConfirmDialog
+                        open={showInstallConfirm}
+                        message={t("dialogs.confirmInstall", { name: selectedPackage?.name })}
+                        onConfirm={handleInstallConfirmed}
+                        onCancel={() => setShowInstallConfirm(false)}
+                        confirmLabel={t("buttons.yesInstall")}
+                        commandSpec={{
+                            action: "install",
+                            targets: selectedPackage ? [selectedPackage.name] : [],
+                        }}
+                    />
+                    <ConfirmDialog
+                        open={showUpdateConfirm}
+                        message={t("dialogs.confirmUpdate", { name: selectedPackage?.name })}
+                        onConfirm={handleUpdateConfirmed}
+                        onCancel={() => setShowUpdateConfirm(false)}
+                        confirmLabel={t("buttons.yesUpdate")}
+                        commandSpec={{
+                            action: "upgrade",
+                            targets: selectedPackage ? [selectedPackage.name] : [],
+                            isCask: selectedPackage?.isCask ?? false,
+                        }}
+                    />
+                    <ConfirmDialog
+                        open={showUpdateAllConfirm}
+                        message={t("dialogs.confirmUpdateAll")}
+                        onConfirm={handleUpdateAllConfirmed}
+                        onCancel={() => setShowUpdateAllConfirm(false)}
+                        confirmLabel={t("buttons.yesUpdateAll")}
+                        commandSpec={{ action: "upgrade-all", targets: [] }}
+                    />
+                    <ConfirmDialog
+                        open={showUpdateSelectedConfirm}
+                        message={t("dialogs.confirmUpdateSelected", { count: selectedPackages.size })}
+                        onConfirm={handleUpdateSelectedConfirmed}
+                        onCancel={() => setShowUpdateSelectedConfirm(false)}
+                        confirmLabel={t("buttons.yesUpdateSelected", { count: selectedPackages.size })}
+                        commandSpec={{ action: "upgrade-selected", targets: Array.from(selectedPackages) }}
+                    />
+                    <ConfirmDialog
+                        open={showUntapConfirm}
+                        message={t("dialogs.confirmUntap", { name: selectedRepository?.name })}
+                        onConfirm={handleUntapConfirmed}
+                        onCancel={() => setShowUntapConfirm(false)}
+                        confirmLabel={t("buttons.yesUntap")}
+                        destructive={true}
+                        commandSpec={{
+                            action: "untap",
+                            targets: selectedRepository ? [selectedRepository.name] : [],
+                        }}
+                    />
+                    <ConfirmDialog
+                        open={trustPrompt !== null}
+                        message={t("dialogs.confirmTrustTap", { name: trustPrompt?.tap })}
+                        onConfirm={handleTrustConfirmed}
+                        onCancel={() => setTrustPrompt(null)}
+                        confirmLabel={t("buttons.yesTrust")}
+                        commandSpec={{
+                            action: "trust",
+                            targets: trustPrompt ? [trustPrompt.tap] : [],
+                        }}
+                    />
+                    <LogDialog
+                        open={updateLogs !== null}
+                        title={getUpdateLogTitle()}
+                        log={updateLogs}
+                        isRunning={isUpdateRunning}
+                        onClose={async () => {
+                            // Clean up any pending event listeners (prevents duplicate listeners bug)
+                            if (updateListenersRef.current.progress) updateListenersRef.current.progress();
+                            if (updateListenersRef.current.complete) updateListenersRef.current.complete();
+                            updateListenersRef.current = { progress: null, complete: null };
+
+                            setUpdateLogs(null);
+                            setIsUpdateRunning(false);
+                            setCurrentlyUpdatingPackage(null);
+                            // Refresh packages if this was an update all operation
+                            if (isUpdateAllOperation) {
+                                setIsUpdateAllOperation(false);
+                                await handleRefreshPackages();
                             }
                         }}
                     />
-                )}
-                {view === "settings" && (
-                    <SettingsView
-                        onRefreshPackages={handleRefreshPackages}
-                    />
-                )}
-                <ConfirmDialog
-                    open={showConfirm}
-                    message={t('dialogs.confirmUninstall', { name: selectedPackage?.name })}
-                    onConfirm={() => { setUninstallDependents([]); handleRemoveConfirmed(); setUninstallIsCask(false); }}
-                    onCancel={() => { setShowConfirm(false); setUninstallDependents([]); setUninstallIsCask(false); }}
-                    confirmLabel={t('buttons.yesUninstall')}
-                    destructive={true}
-                    dependents={uninstallDependents}
-                    checkboxLabel={uninstallIsCask ? t('dialogs.zapUninstall') : undefined}
-                    checkboxHint={uninstallIsCask ? t('dialogs.zapUninstallHint') : undefined}
-                    checkboxChecked={zapUninstall}
-                    onCheckboxChange={uninstallIsCask ? handleToggleZapUninstall : undefined}
-                    commandSpec={{
-                        action: 'uninstall',
-                        targets: selectedPackage ? [selectedPackage.name] : [],
-                        isCask: uninstallIsCask,
-                        zap: uninstallIsCask && zapUninstall,
-                    }}
-                />
-                <ConfirmDialog
-                    open={showInstallConfirm}
-                    message={t('dialogs.confirmInstall', { name: selectedPackage?.name })}
-                    onConfirm={handleInstallConfirmed}
-                    onCancel={() => setShowInstallConfirm(false)}
-                    confirmLabel={t('buttons.yesInstall')}
-                    commandSpec={{
-                        action: 'install',
-                        targets: selectedPackage ? [selectedPackage.name] : [],
-                    }}
-                />
-                <ConfirmDialog
-                    open={showUpdateConfirm}
-                    message={t('dialogs.confirmUpdate', { name: selectedPackage?.name })}
-                    onConfirm={handleUpdateConfirmed}
-                    onCancel={() => setShowUpdateConfirm(false)}
-                    confirmLabel={t('buttons.yesUpdate')}
-                    commandSpec={{
-                        action: 'upgrade',
-                        targets: selectedPackage ? [selectedPackage.name] : [],
-                        isCask: selectedPackage?.isCask ?? false,
-                    }}
-                />
-                <ConfirmDialog
-                    open={showUpdateAllConfirm}
-                    message={t('dialogs.confirmUpdateAll')}
-                    onConfirm={handleUpdateAllConfirmed}
-                    onCancel={() => setShowUpdateAllConfirm(false)}
-                    confirmLabel={t('buttons.yesUpdateAll')}
-                    commandSpec={{ action: 'upgrade-all', targets: [] }}
-                />
-                <ConfirmDialog
-                    open={showUpdateSelectedConfirm}
-                    message={t('dialogs.confirmUpdateSelected', { count: selectedPackages.size })}
-                    onConfirm={handleUpdateSelectedConfirmed}
-                    onCancel={() => setShowUpdateSelectedConfirm(false)}
-                    confirmLabel={t('buttons.yesUpdateSelected', { count: selectedPackages.size })}
-                    commandSpec={{ action: 'upgrade-selected', targets: Array.from(selectedPackages) }}
-                />
-                <ConfirmDialog
-                    open={showUntapConfirm}
-                    message={t('dialogs.confirmUntap', { name: selectedRepository?.name })}
-                    onConfirm={handleUntapConfirmed}
-                    onCancel={() => setShowUntapConfirm(false)}
-                    confirmLabel={t('buttons.yesUntap')}
-                    destructive={true}
-                    commandSpec={{
-                        action: 'untap',
-                        targets: selectedRepository ? [selectedRepository.name] : [],
-                    }}
-                />
-                <ConfirmDialog
-                    open={trustPrompt !== null}
-                    message={t('dialogs.confirmTrustTap', { name: trustPrompt?.tap })}
-                    onConfirm={handleTrustConfirmed}
-                    onCancel={() => setTrustPrompt(null)}
-                    confirmLabel={t('buttons.yesTrust')}
-                    commandSpec={{
-                        action: 'trust',
-                        targets: trustPrompt ? [trustPrompt.tap] : [],
-                    }}
-                />
-                <LogDialog
-                    open={updateLogs !== null}
-                    title={getUpdateLogTitle()}
-                    log={updateLogs}
-                    isRunning={isUpdateRunning}
-                    onClose={async () => {
-                        // Clean up any pending event listeners (prevents duplicate listeners bug)
-                        if (updateListenersRef.current.progress) updateListenersRef.current.progress();
-                        if (updateListenersRef.current.complete) updateListenersRef.current.complete();
-                        updateListenersRef.current = { progress: null, complete: null };
-                        
-                        setUpdateLogs(null);
-                        setIsUpdateRunning(false);
-                        setCurrentlyUpdatingPackage(null);
-                        // Refresh packages if this was an update all operation
-                        if (isUpdateAllOperation) {
-                            setIsUpdateAllOperation(false);
-                            await handleRefreshPackages();
+                    <LogDialog
+                        open={installLogs !== null}
+                        title={
+                            selectedPackage
+                                ? t("dialogs.installLogs", { name: selectedPackage.name })
+                                : t("dialogs.installLogs")
                         }
-                    }}
-                />
-                <LogDialog
-                    open={installLogs !== null}
-                    title={selectedPackage ? t('dialogs.installLogs', { name: selectedPackage.name }) : t('dialogs.installLogs')}
-                    log={installLogs}
-                    isRunning={isInstallRunning}
-                    onClose={() => {
-                        setInstallLogs(null);
-                        setIsInstallRunning(false);
-                    }}
-                />
-                <LogDialog
-                    open={uninstallLogs !== null}
-                    title={selectedPackage ? t('dialogs.uninstallLogs', { name: selectedPackage.name }) : t('dialogs.uninstallLogs')}
-                    log={uninstallLogs}
-                    isRunning={isUninstallRunning}
-                    onClose={() => {
-                        setUninstallLogs(null);
-                        setIsUninstallRunning(false);
-                    }}
-                />
-                <LogDialog
-                    open={untapLogs !== null}
-                    title={selectedRepository ? t('dialogs.untapLogs', { name: selectedRepository.name }) : t('dialogs.untapLogs')}
-                    log={untapLogs}
-                    isRunning={false}
-                    clickablePackages={untapLogPackages}
-                    onPackageClick={handleUntapPackageClick}
-                    onClose={() => {
-                        setUntapLogs(null);
-                        setUntapLogPackages([]);
-                    }}
-                />
-                <LogDialog
-                    open={tapLogs !== null}
-                    title={tappingRepository ? t('dialogs.tapLogs', { name: tappingRepository }) : t('dialogs.tapLogs')}
-                    log={tapLogs}
-                    isRunning={false}
-                    onClose={() => {
-                        setTapLogs(null);
-                        setTappingRepository(null);
-                    }}
-                />
-                <TapInputDialog
-                    open={showTapInput}
-                    onConfirm={handleTapConfirmed}
-                    onCancel={() => setShowTapInput(false)}
-                />
-                <PackageInfoDialog
-                    open={!!infoLogs}
-                    title={t('dialogs.packageInfo', { name: infoPackage?.name })}
-                    log={infoLogs}
-                    isRunning={isInfoRunning}
-                    onClose={() => {
-                        // Invalidate any pending info request (prevents dialog from reopening)
-                        infoRequestIdRef.current++;
-                        setInfoLogs(null);
-                        setInfoPackage(null);
-                        setIsInfoRunning(false);
-                    }}
-                />
-                <LogDialog
-                    open={showRepositoryInfo}
-                    title={t('dialogs.repositoryInfo', { name: selectedRepository?.name || '' })}
-                    log={repositoryInfoLogs}
-                    onClose={() => {
-                        setRepositoryInfoLogs(null);
-                        setShowRepositoryInfo(false);
-                    }}
-                    isRunning={false}
-                />
-                <LogDialog
-                    open={serviceActionLogs !== null}
-                    title={selectedService ? t('dialogs.serviceActionLogs', { name: selectedService.name }) : t('dialogs.serviceActionLogs')}
-                    log={serviceActionLogs}
-                    isRunning={isServiceActionRunning}
-                    onClose={() => {
-                        setServiceActionLogs(null);
-                        setIsServiceActionRunning(false);
-                    }}
-                />
-                <LogDialog
-                    open={showServiceInfo}
-                    title={t('dialogs.serviceInfo', { name: selectedService?.name || '' })}
-                    log={serviceInfoLogs}
-                    onClose={() => {
-                        setServiceInfoLogs(null);
-                        setShowServiceInfo(false);
-                    }}
-                    isRunning={false}
-                />
-                <LogDialog
-                    open={showSessionLogs}
-                    title={t('dialogs.sessionLogs')}
-                    log={sessionLogs}
-                    onClose={() => {
-                        setShowSessionLogs(false);
-                        setSessionLogs("");
-                    }}
-                />
-                <AboutDialog
-                    open={showAbout}
-                    onClose={() => setShowAbout(false)}
-                    appVersion={appVersion}
-                />
-                <UpdateDialog
-                    isOpen={showUpdate}
-                    onClose={() => setShowUpdate(false)}
-                />
-                <RestartDialog
-                    isOpen={showRestart}
-                    onClose={() => setShowRestart(false)}
-                />
-                <ShortcutsDialog
-                    open={showShortcuts}
-                    onClose={() => setShowShortcuts(false)}
-                />
-                <Toaster
-                    position="bottom-center"
-                    reverseOrder={false}
-                    gutter={8}
-                    containerStyle={{
-                        bottom: 16,
-                        left: 16,
-                        right: 16,
-                    }}
-                    toastOptions={{
-                        duration: 4000,
-                        style: {
-                            background: 'var(--toast-bg)',
-                            color: 'var(--toast-text)',
-                            border: '1px solid var(--glass-border-strong)',
-                            borderRadius: '12px',
-                            backdropFilter: 'blur(12px)',
-                            WebkitBackdropFilter: 'blur(12px)',
-                            boxShadow: 'var(--glass-shadow-strong)',
-                        },
-                        success: {
-                            iconTheme: {
-                                primary: '#4CAF50',
-                                secondary: '#fff',
+                        log={installLogs}
+                        isRunning={isInstallRunning}
+                        onClose={() => {
+                            setInstallLogs(null);
+                            setIsInstallRunning(false);
+                        }}
+                    />
+                    <LogDialog
+                        open={uninstallLogs !== null}
+                        title={
+                            selectedPackage
+                                ? t("dialogs.uninstallLogs", { name: selectedPackage.name })
+                                : t("dialogs.uninstallLogs")
+                        }
+                        log={uninstallLogs}
+                        isRunning={isUninstallRunning}
+                        onClose={() => {
+                            setUninstallLogs(null);
+                            setIsUninstallRunning(false);
+                        }}
+                    />
+                    <LogDialog
+                        open={untapLogs !== null}
+                        title={
+                            selectedRepository
+                                ? t("dialogs.untapLogs", { name: selectedRepository.name })
+                                : t("dialogs.untapLogs")
+                        }
+                        log={untapLogs}
+                        isRunning={false}
+                        clickablePackages={untapLogPackages}
+                        onPackageClick={handleUntapPackageClick}
+                        onClose={() => {
+                            setUntapLogs(null);
+                            setUntapLogPackages([]);
+                        }}
+                    />
+                    <LogDialog
+                        open={tapLogs !== null}
+                        title={
+                            tappingRepository ? t("dialogs.tapLogs", { name: tappingRepository }) : t("dialogs.tapLogs")
+                        }
+                        log={tapLogs}
+                        isRunning={false}
+                        onClose={() => {
+                            setTapLogs(null);
+                            setTappingRepository(null);
+                        }}
+                    />
+                    <TapInputDialog
+                        open={showTapInput}
+                        onConfirm={handleTapConfirmed}
+                        onCancel={() => setShowTapInput(false)}
+                    />
+                    <PackageInfoDialog
+                        open={!!infoLogs}
+                        title={t("dialogs.packageInfo", { name: infoPackage?.name })}
+                        log={infoLogs}
+                        isRunning={isInfoRunning}
+                        onClose={() => {
+                            // Invalidate any pending info request (prevents dialog from reopening)
+                            infoRequestIdRef.current++;
+                            setInfoLogs(null);
+                            setInfoPackage(null);
+                            setIsInfoRunning(false);
+                        }}
+                    />
+                    <LogDialog
+                        open={showRepositoryInfo}
+                        title={t("dialogs.repositoryInfo", { name: selectedRepository?.name || "" })}
+                        log={repositoryInfoLogs}
+                        onClose={() => {
+                            setRepositoryInfoLogs(null);
+                            setShowRepositoryInfo(false);
+                        }}
+                        isRunning={false}
+                    />
+                    <LogDialog
+                        open={serviceActionLogs !== null}
+                        title={
+                            selectedService
+                                ? t("dialogs.serviceActionLogs", { name: selectedService.name })
+                                : t("dialogs.serviceActionLogs")
+                        }
+                        log={serviceActionLogs}
+                        isRunning={isServiceActionRunning}
+                        onClose={() => {
+                            setServiceActionLogs(null);
+                            setIsServiceActionRunning(false);
+                        }}
+                    />
+                    <LogDialog
+                        open={showServiceInfo}
+                        title={t("dialogs.serviceInfo", { name: selectedService?.name || "" })}
+                        log={serviceInfoLogs}
+                        onClose={() => {
+                            setServiceInfoLogs(null);
+                            setShowServiceInfo(false);
+                        }}
+                        isRunning={false}
+                    />
+                    <LogDialog
+                        open={showSessionLogs}
+                        title={t("dialogs.sessionLogs")}
+                        log={sessionLogs}
+                        onClose={() => {
+                            setShowSessionLogs(false);
+                            setSessionLogs("");
+                        }}
+                    />
+                    <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} appVersion={appVersion} />
+                    <UpdateDialog isOpen={showUpdate} onClose={() => setShowUpdate(false)} />
+                    <RestartDialog isOpen={showRestart} onClose={() => setShowRestart(false)} />
+                    <ShortcutsDialog open={showShortcuts} onClose={() => setShowShortcuts(false)} />
+                    <Toaster
+                        position="bottom-center"
+                        reverseOrder={false}
+                        gutter={8}
+                        containerStyle={{
+                            bottom: 16,
+                            left: 16,
+                            right: 16,
+                        }}
+                        toastOptions={{
+                            duration: 4000,
+                            style: {
+                                background: "var(--toast-bg)",
+                                color: "var(--toast-text)",
+                                border: "1px solid var(--glass-border-strong)",
+                                borderRadius: "12px",
+                                backdropFilter: "blur(12px)",
+                                WebkitBackdropFilter: "blur(12px)",
+                                boxShadow: "var(--glass-shadow-strong)",
                             },
-                        },
-                    }}
-                />
-            </main>
+                            success: {
+                                iconTheme: {
+                                    primary: "#4CAF50",
+                                    secondary: "#fff",
+                                },
+                            },
+                        }}
+                    />
+                </main>
             </div>
         </div>
     );

@@ -1,10 +1,11 @@
 /// <reference types="react" />
 import { ChevronDown, Clock, Heart, Loader2 } from "lucide-react";
-import React, { useRef, useState, useEffect } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import appIcon from "../assets/images/appicon_256.png";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import appIcon from "../assets/images/appicon_256.png";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
 import type { View } from "../types";
 import ThemeToggle from "./ThemeToggle";
@@ -53,13 +54,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     // Format seconds into a readable countdown string
     const formatCountdown = (seconds: number): string => {
-        if (seconds <= 0) return t('backgroundCheck.checkingNow');
+        if (seconds <= 0) return t("backgroundCheck.checkingNow");
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         if (minutes > 0) {
-            return t('backgroundCheck.nextCheckIn', { minutes, seconds: remainingSeconds });
+            return t("backgroundCheck.nextCheckIn", { minutes, seconds: remainingSeconds });
         }
-        return t('backgroundCheck.nextCheckInSeconds', { seconds: remainingSeconds });
+        return t("backgroundCheck.nextCheckInSeconds", { seconds: remainingSeconds });
     };
 
     // Update tooltip position and start countdown only while tooltip is visible
@@ -89,40 +90,37 @@ const Sidebar: React.FC<SidebarProps> = ({
     }, [showTooltip]);
 
     // Detect if user is on Mac
-    const isMac = typeof navigator !== 'undefined' &&
-        (navigator.userAgent.includes('Mac') || navigator.userAgent.includes('macOS'));
-    const cmdKey = isMac ? '⌘' : 'Ctrl+';
+    const isMac =
+        typeof navigator !== "undefined" &&
+        (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"));
+    const cmdKey = isMac ? "⌘" : "Ctrl+";
 
     const changeLanguage = async (lng: string) => {
         const normalized = mapToSupportedLanguage(lng);
         try {
             await i18n.changeLanguage(normalized);
         } catch (error) {
-            console.error('Failed to change frontend language:', error);
+            console.error("Failed to change frontend language:", error);
         }
     };
 
     // Language options with flags
     const languageOptions = {
-        en: { flag: '🇬🇧', name: t('language.english') },
-        de: { flag: '🇩🇪', name: t('language.german') },
-        fr: { flag: '🇫🇷', name: t('language.french') },
-        tr: { flag: '🇹🇷', name: t('language.turkish') },
-        zhCN: { flag: '🇨🇳', name: t('language.simplified_chinese') },
-        zhTW: { flag: '🇹🇼', name: t('language.traditional_chinese') },
-        pt_BR: { flag: '🇧🇷', name: t('language.brazilian_portuguese') },
-        ru: { flag: '🇷🇺', name: t('language.russian') },
-        ko: { flag: '🇰🇷', name: t('language.korean') },
-        he: { flag: '🇮🇱', name: t('language.hebrew') },
-        es: { flag: '🇪🇸', name: t('language.spanish') },
+        en: { flag: "🇬🇧", name: t("language.english") },
+        de: { flag: "🇩🇪", name: t("language.german") },
+        fr: { flag: "🇫🇷", name: t("language.french") },
+        tr: { flag: "🇹🇷", name: t("language.turkish") },
+        zhCN: { flag: "🇨🇳", name: t("language.simplified_chinese") },
+        zhTW: { flag: "🇹🇼", name: t("language.traditional_chinese") },
+        pt_BR: { flag: "🇧🇷", name: t("language.brazilian_portuguese") },
+        ru: { flag: "🇷🇺", name: t("language.russian") },
+        ko: { flag: "🇰🇷", name: t("language.korean") },
+        he: { flag: "🇮🇱", name: t("language.hebrew") },
+        es: { flag: "🇪🇸", name: t("language.spanish") },
     };
 
     return (
-        <nav
-            className="sidebar"
-            ref={sidebarRef}
-            style={sidebarWidth ? { width: `${sidebarWidth}px` } : undefined}
-        >
+        <nav className="sidebar" ref={sidebarRef} style={sidebarWidth ? { width: `${sidebarWidth}px` } : undefined}>
             <div className="sidebar-title">
                 <img
                     src={appIcon}
@@ -148,7 +146,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 size={16}
                                 style={{
                                     color: "#3B82F6",
-                                    animation: "spin 1s linear infinite"
+                                    animation: "spin 1s linear infinite",
                                 }}
                             />
                         ) : (
@@ -160,7 +158,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }}
                             />
                         )}
-                        {showTooltip && getSecondsUntilNextCheck && ReactDOM.createPortal(
+                        {showTooltip &&
+                            getSecondsUntilNextCheck &&
+                            ReactDOM.createPortal(
                                 <div
                                     className="background-check-tooltip"
                                     style={{
@@ -173,107 +173,173 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 >
                                     {tooltipText}
                                 </div>,
-                                document.body
+                                document.body,
                             )}
-                        </div>
-                    )}
-                </div>
-                <div
-                    className="sidebar-sponsor"
-                    onClick={() => BrowserOpenURL("https://github.com/sponsors/wickenico")}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            BrowserOpenURL("https://github.com/sponsors/wickenico");
-                        }
-                    }}
-                >
-                    <Heart size={12} />
-                    <span>{t('sidebar.sponsor')}</span>
-                </div>
+                    </div>
+                )}
+            </div>
+            <div
+                className="sidebar-sponsor"
+                onClick={() => BrowserOpenURL("https://github.com/sponsors/wickenico")}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        BrowserOpenURL("https://github.com/sponsors/wickenico");
+                    }
+                }}
+            >
+                <Heart size={12} />
+                <span>{t("sidebar.sponsor")}</span>
+            </div>
             <div className="sidebar-section">
-                <h4>{t('sidebar.packages')}</h4>
+                <h4>{t("sidebar.packages")}</h4>
                 <ul>
-                    <li className={view === "installed" ? "active" : ""} onClick={() => { setView("installed"); onClearSelection(); }}>
+                    <li
+                        className={view === "installed" ? "active" : ""}
+                        onClick={() => {
+                            setView("installed");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}1</span>
-                        <span>📦 {t('sidebar.installed')}</span>
+                        <span>📦 {t("sidebar.installed")}</span>
                         <span className="badge">{packagesCount}</span>
                     </li>
-                    <li className={view === "casks" ? "active" : ""} onClick={() => { setView("casks"); onClearSelection(); }}>
+                    <li
+                        className={view === "casks" ? "active" : ""}
+                        onClick={() => {
+                            setView("casks");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}2</span>
-                        <span>🖥️ {t('sidebar.casks')}</span>
+                        <span>🖥️ {t("sidebar.casks")}</span>
                         <span className="badge">{casksCount}</span>
                     </li>
-                    <li className={view === "updatable" ? "active" : ""} onClick={() => { setView("updatable"); onClearSelection(); }}>
+                    <li
+                        className={view === "updatable" ? "active" : ""}
+                        onClick={() => {
+                            setView("updatable");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}3</span>
-                        <span>🔄 {t('sidebar.outdated')}</span>
+                        <span>🔄 {t("sidebar.outdated")}</span>
                         <span className="badge">{updatableCount}</span>
                     </li>
-                    <li className={view === "leaves" ? "active" : ""} onClick={() => { setView("leaves"); onClearSelection(); }}>
+                    <li
+                        className={view === "leaves" ? "active" : ""}
+                        onClick={() => {
+                            setView("leaves");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}4</span>
-                        <span>🍃 {t('sidebar.leaves')}</span>
+                        <span>🍃 {t("sidebar.leaves")}</span>
                         <span className="badge">{leavesCount}</span>
                     </li>
-                    <li className={view === "repositories" ? "active" : ""} onClick={() => { setView("repositories"); onClearSelection(); }}>
+                    <li
+                        className={view === "repositories" ? "active" : ""}
+                        onClick={() => {
+                            setView("repositories");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}5</span>
-                        <span>📂 {t('sidebar.repositories')}</span>
+                        <span>📂 {t("sidebar.repositories")}</span>
                         <span className="badge">{repositoriesCount}</span>
                     </li>
                 </ul>
             </div>
             <div className="sidebar-section">
-                <h4>{t('sidebar.browseInstall')}</h4>
+                <h4>{t("sidebar.browseInstall")}</h4>
                 <ul>
-                    <li className={view === "all" ? "active" : ""} onClick={() => { setView("all"); onClearSelection(); }}>
+                    <li
+                        className={view === "all" ? "active" : ""}
+                        onClick={() => {
+                            setView("all");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}6</span>
-                        <span>📚 {t('sidebar.allFormulae')}</span>
+                        <span>📚 {t("sidebar.allFormulae")}</span>
                         <span className="badge">{allCount === -1 ? "—" : allCount}</span>
                     </li>
-                    <li className={view === "allCasks" ? "active" : ""} onClick={() => { setView("allCasks"); onClearSelection(); }}>
+                    <li
+                        className={view === "allCasks" ? "active" : ""}
+                        onClick={() => {
+                            setView("allCasks");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}7</span>
-                        <span>🖥️ {t('sidebar.allCasks')}</span>
+                        <span>🖥️ {t("sidebar.allCasks")}</span>
                         <span className="badge">{allCasksCount === -1 ? "—" : allCasksCount}</span>
                     </li>
                 </ul>
             </div>
             <div className="sidebar-section">
-                <h4>{t('sidebar.tools')}</h4>
+                <h4>{t("sidebar.tools")}</h4>
                 <ul>
-                    <li className={view === "homebrew" ? "active" : ""} onClick={() => { setView("homebrew"); onClearSelection(); }}>
+                    <li
+                        className={view === "homebrew" ? "active" : ""}
+                        onClick={() => {
+                            setView("homebrew");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}8</span>
-                        <span>🍺 {t('sidebar.homebrew')}</span>
+                        <span>🍺 {t("sidebar.homebrew")}</span>
                     </li>
-                    <li className={view === "services" ? "active" : ""} onClick={() => { setView("services"); onClearSelection(); }}>
+                    <li
+                        className={view === "services" ? "active" : ""}
+                        onClick={() => {
+                            setView("services");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}P</span>
-                        <span>🚀 {t('sidebar.services')}</span>
+                        <span>🚀 {t("sidebar.services")}</span>
                         <span className="badge">{servicesCount}</span>
                     </li>
-                    <li className={view === "doctor" ? "active" : ""} onClick={() => { setView("doctor"); onClearSelection(); }}>
+                    <li
+                        className={view === "doctor" ? "active" : ""}
+                        onClick={() => {
+                            setView("doctor");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}9</span>
-                        <span>🩺 {t('sidebar.doctor')}</span>
+                        <span>🩺 {t("sidebar.doctor")}</span>
                     </li>
-                    <li className={view === "cleanup" ? "active" : ""} onClick={() => { setView("cleanup"); onClearSelection(); }}>
+                    <li
+                        className={view === "cleanup" ? "active" : ""}
+                        onClick={() => {
+                            setView("cleanup");
+                            onClearSelection();
+                        }}
+                    >
                         <span className="sidebar-shortcut">{cmdKey}0</span>
-                        <span>🧹 {t('sidebar.cleanup')}</span>
+                        <span>🧹 {t("sidebar.cleanup")}</span>
                     </li>
                 </ul>
             </div>
             <div className="sidebar-section keyboard-hints">
                 <div className="keyboard-hint">
-                    <span className="keyboard-hint-label">{t('sidebar.refresh')}</span>
+                    <span className="keyboard-hint-label">{t("sidebar.refresh")}</span>
                     <span className="keyboard-hint-shortcut">{cmdKey}⇧R</span>
                 </div>
             </div>
             <div className="sidebar-section language-switcher">
                 <div className="language-dropdown-wrapper">
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ position: 'relative', flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ position: "relative", flex: 1 }}>
                             <select
                                 className="language-dropdown"
                                 value={currentLanguage}
                                 onChange={(e) => changeLanguage(e.target.value)}
-                                aria-label={t('language.switchLanguage')}
+                                aria-label={t("language.switchLanguage")}
                             >
                                 {Object.entries(languageOptions).map(([code, { flag, name }]) => (
                                     <option key={code} value={code}>

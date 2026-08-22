@@ -8,7 +8,10 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "lint": "biome check src",
+    "lint:fix": "biome check --write src",
+    "format": "biome format --write src"
   },
   "dependencies": {
     "i18next": "^26.4.0",
@@ -21,6 +24,7 @@
     "react-icons": "^5.7.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.9",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "^6.1.0",

@@ -124,13 +124,13 @@ func Build(app AppInterface) *menu.Menu {
 		if err == nil && saveDialog != "" {
 			err := app.ExportBrewfile(saveDialog)
 			if err != nil {
-				rt.MessageDialog(ctx, rt.MessageDialogOptions{
+				_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
 					Type:    rt.ErrorDialog,
 					Title:   getT("menu.tools.exportFailed"),
 					Message: fmt.Sprintf("Failed to export Brewfile: %v", err),
 				})
 			} else {
-				rt.MessageDialog(ctx, rt.MessageDialogOptions{
+				_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
 					Type:    rt.InfoDialog,
 					Title:   getT("menu.tools.exportSuccess"),
 					Message: fmt.Sprintf(getT("menu.tools.exportMessage"), saveDialog),
@@ -142,7 +142,7 @@ func Build(app AppInterface) *menu.Menu {
 		ctx := getCtx()
 		err := app.OpenConfigFile()
 		if err != nil {
-			rt.MessageDialog(ctx, rt.MessageDialogOptions{
+			_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
 				Type:    rt.ErrorDialog,
 				Title:   getT("menu.tools.openConfigFailed"),
 				Message: fmt.Sprintf("Failed to open config file: %v", err),
@@ -163,7 +163,7 @@ func Build(app AppInterface) *menu.Menu {
 	HelpMenu := AppMenu.AddSubmenu(getT("menu.help.title"))
 	HelpMenu.AddText(getT("menu.help.wailbrewHelp"), nil, func(cd *menu.CallbackData) {
 		ctx := getCtx()
-		rt.MessageDialog(ctx, rt.MessageDialogOptions{
+		_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
 			Type:    rt.InfoDialog,
 			Title:   getT("menu.help.helpTitle"),
 			Message: getT("menu.help.helpMessage"),

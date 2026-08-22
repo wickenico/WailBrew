@@ -78,7 +78,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 	cmd := exec.Command(s.brewPath, BuildTapArgs(repositoryName, repositoryURL)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, stderrStr := runStreamingCommand(cmd,
+	phase, stderrStr, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("📦 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -128,7 +128,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	cmd := exec.Command(s.brewPath, BuildUntapArgs(repositoryName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, _ := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("🗑️ %s", line)) },
 		func(line string) { s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -169,7 +169,7 @@ func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
 	cmd := exec.Command(s.brewPath, BuildTrustArgs(tapName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, _ := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("🔐 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)

@@ -55,9 +55,10 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 	// Use the configured outdated flag setting
 	outdatedFlag := s.getOutdatedFlag()
 	args := []string{"outdated", "--json=v2"}
-	if outdatedFlag == "greedy" {
+	switch outdatedFlag {
+	case "greedy":
 		args = append(args, "--greedy")
-	} else if outdatedFlag == "greedy-auto-updates" {
+	case "greedy-auto-updates":
 		args = append(args, "--greedy-auto-updates")
 	}
 	// If outdatedFlag is "none", no additional flag is added

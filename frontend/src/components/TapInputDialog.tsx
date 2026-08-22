@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface TapInputDialogProps {
@@ -11,14 +12,14 @@ const tapNamePattern = /^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?\/[a-zA-Z0-9]([a
 const tapURLPattern = /^(https?:\/\/|git@|ssh:\/\/|git:\/\/|rsync:\/\/).+/;
 
 const inputStyle = (hasError: boolean): React.CSSProperties => ({
-    width: '100%',
-    padding: '0.5rem',
-    fontSize: '1rem',
-    border: hasError ? '2px solid #dc2626' : '1px solid #444',
-    borderRadius: '4px',
-    backgroundColor: '#1e293b',
-    color: '#fff',
-    outline: 'none',
+    width: "100%",
+    padding: "0.5rem",
+    fontSize: "1rem",
+    border: hasError ? "2px solid #dc2626" : "1px solid #444",
+    borderRadius: "4px",
+    backgroundColor: "#1e293b",
+    color: "#fff",
+    outline: "none",
 });
 
 const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCancel }) => {
@@ -52,17 +53,17 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
         setUrlError(null);
 
         if (!trimmedName) {
-            setNameError(t('dialogs.tapInputEmpty'));
+            setNameError(t("dialogs.tapInputEmpty"));
             return;
         }
 
         if (!tapNamePattern.test(trimmedName)) {
-            setNameError(t('dialogs.tapInputInvalid'));
+            setNameError(t("dialogs.tapInputInvalid"));
             return;
         }
 
         if (trimmedURL && !tapURLPattern.test(trimmedURL)) {
-            setUrlError(t('dialogs.tapInputUrlInvalid'));
+            setUrlError(t("dialogs.tapInputUrlInvalid"));
             return;
         }
 
@@ -70,10 +71,10 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             e.preventDefault();
             handleConfirm();
-        } else if (e.key === 'Escape') {
+        } else if (e.key === "Escape") {
             e.preventDefault();
             onCancel();
         }
@@ -88,22 +89,22 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
     };
 
     const handleOverlayKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Escape') {
+        if (e.key === "Escape") {
             onCancel();
         }
     };
 
     return (
-        <div 
-            className="confirm-overlay" 
+        <div
+            className="confirm-overlay"
             onClick={handleOverlayClick}
             onKeyDown={handleOverlayKeyDown}
             role="dialog"
             tabIndex={-1}
         >
             <div className="confirm-box" onClick={(e) => e.stopPropagation()}>
-                <p style={{ marginBottom: '1rem' }}>{t('dialogs.tapInputTitle')}</p>
-                <div style={{ marginBottom: '1rem' }}>
+                <p style={{ marginBottom: "1rem" }}>{t("dialogs.tapInputTitle")}</p>
+                <div style={{ marginBottom: "1rem" }}>
                     <input
                         ref={inputRef}
                         type="text"
@@ -113,26 +114,30 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
                             setNameError(null);
                         }}
                         onKeyDown={handleKeyDown}
-                        placeholder={t('dialogs.tapInputPlaceholder')}
+                        placeholder={t("dialogs.tapInputPlaceholder")}
                         style={inputStyle(!!nameError)}
                     />
                     {nameError && (
-                        <p style={{ 
-                            color: '#dc2626', 
-                            fontSize: '0.875rem', 
-                            marginTop: '0.5rem',
-                            marginBottom: 0
-                        }}>
+                        <p
+                            style={{
+                                color: "#dc2626",
+                                fontSize: "0.875rem",
+                                marginTop: "0.5rem",
+                                marginBottom: 0,
+                            }}
+                        >
                             {nameError}
                         </p>
                     )}
-                    <p style={{ 
-                        fontSize: '0.75rem', 
-                        color: '#888', 
-                        marginTop: '0.5rem',
-                        marginBottom: '0.75rem'
-                    }}>
-                        {t('dialogs.tapInputHint')}
+                    <p
+                        style={{
+                            fontSize: "0.75rem",
+                            color: "#888",
+                            marginTop: "0.5rem",
+                            marginBottom: "0.75rem",
+                        }}
+                    >
+                        {t("dialogs.tapInputHint")}
                     </p>
                     <input
                         type="text"
@@ -142,33 +147,35 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
                             setUrlError(null);
                         }}
                         onKeyDown={handleKeyDown}
-                        placeholder={t('dialogs.tapInputUrlPlaceholder')}
+                        placeholder={t("dialogs.tapInputUrlPlaceholder")}
                         style={inputStyle(!!urlError)}
                     />
                     {urlError && (
-                        <p style={{ 
-                            color: '#dc2626', 
-                            fontSize: '0.875rem', 
-                            marginTop: '0.5rem',
-                            marginBottom: 0
-                        }}>
+                        <p
+                            style={{
+                                color: "#dc2626",
+                                fontSize: "0.875rem",
+                                marginTop: "0.5rem",
+                                marginBottom: 0,
+                            }}
+                        >
                             {urlError}
                         </p>
                     )}
-                    <p style={{ 
-                        fontSize: '0.75rem', 
-                        color: '#888', 
-                        marginTop: '0.5rem',
-                        marginBottom: 0
-                    }}>
-                        {t('dialogs.tapInputUrlHint')}
+                    <p
+                        style={{
+                            fontSize: "0.75rem",
+                            color: "#888",
+                            marginTop: "0.5rem",
+                            marginBottom: 0,
+                        }}
+                    >
+                        {t("dialogs.tapInputUrlHint")}
                     </p>
                 </div>
                 <div className="confirm-actions">
-                    <button onClick={handleConfirm}>
-                        {t('buttons.tap')}
-                    </button>
-                    <button onClick={onCancel}>{t('buttons.cancel')}</button>
+                    <button onClick={handleConfirm}>{t("buttons.tap")}</button>
+                    <button onClick={onCancel}>{t("buttons.cancel")}</button>
                 </div>
             </div>
         </div>

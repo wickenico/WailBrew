@@ -118,13 +118,13 @@ func detectBrewPathByArchitecture() string {
 		}
 	case "amd64", "386":
 		// Intel Macs or Linux
-		if runtime.GOOS == "darwin" {
+		switch runtime.GOOS {
+		case "darwin":
 			// Intel Macs
 			if _, err := os.Stat("/usr/local/bin/brew"); err == nil {
 				return "/usr/local/bin/brew"
 			}
-		} else if runtime.GOOS == "linux" {
-			// Linux
+		case "linux":
 			if _, err := os.Stat("/home/linuxbrew/.linuxbrew/bin/brew"); err == nil {
 				return "/home/linuxbrew/.linuxbrew/bin/brew"
 			}
@@ -165,7 +165,7 @@ func detectBrewPath() string {
 func NewApp() *App {
 	brewPath := detectBrewPath()
 	cfg := &config.Config{}
-	cfg.Load() // Load config early to get admin username
+	_ = cfg.Load() // Load config early to get admin username; zero-value config is a safe fallback
 
 	// Get admin username from config, or current user as fallback
 	adminUsername := cfg.AdminUsername
@@ -931,7 +931,7 @@ func (a *App) TestProxyConnection(proxyStr, targetUrl string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("connection failed: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		return fmt.Sprintf("Success: HTTP %d", resp.StatusCode), nil
@@ -1265,10 +1265,10 @@ func compareVersions(version1, version2 string) bool {
 	for i := 0; i < maxLen; i++ {
 		var part1, part2 int
 		if i < len(parts1) {
-			fmt.Sscanf(parts1[i], "%d", &part1)
+			_, _ = fmt.Sscanf(parts1[i], "%d", &part1)
 		}
 		if i < len(parts2) {
-			fmt.Sscanf(parts2[i], "%d", &part2)
+			_, _ = fmt.Sscanf(parts2[i], "%d", &part2)
 		}
 
 		if part1 > part2 {
@@ -1316,21 +1316,23 @@ func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 
 func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 	tempDir := "/tmp/wailbrew_update"
-	os.RemoveAll(tempDir)
-	os.MkdirAll(tempDir, 0755)
+	_ = os.RemoveAll(tempDir) // best-effort cleanup of a leftover dir from a previous attempt
+	if err := os.MkdirAll(tempDir, 0755); err != nil {
+		return fmt.Errorf("failed to create temp dir: %w", err)
+	}
 
 	resp, err := http.Get(downloadURL)
 	if err != nil {
 		return fmt.Errorf("failed to download update: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	zipPath := fmt.Sprintf("%s/wailbrew_update.zip", tempDir)
 	zipFile, err := os.Create(zipPath)
 	if err != nil {
 		return fmt.Errorf("failed to create temp file: %w", err)
 	}
-	defer zipFile.Close()
+	defer func() { _ = zipFile.Close() }()
 
 	_, err = io.Copy(zipFile, resp.Body)
 	if err != nil {
@@ -1358,7 +1360,7 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 	}
 
 	backupPath := currentAppPath + ".backup"
-	os.RemoveAll(backupPath)
+	_ = os.RemoveAll(backupPath) // best-effort cleanup of a leftover backup from a previous attempt
 
 	script := fmt.Sprintf(`
 		osascript -e 'do shell script "rm -rf \\"%s\\" && mv \\"%s\\" \\"%s\\" && mv \\"%s\\" \\"%s\\"" with administrator privileges'
@@ -1369,7 +1371,7 @@ func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
 		return fmt.Errorf("failed to replace app: %w", err)
 	}
 
-	os.RemoveAll(tempDir)
+	_ = os.RemoveAll(tempDir) // best-effort cleanup; the update already succeeded at this point
 
 	return nil
 }

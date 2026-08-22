@@ -1,5 +1,6 @@
 import { Copy } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
@@ -15,13 +16,7 @@ interface PackageInfoDialogProps {
 
 type InfoTab = "log" | "parsed";
 
-const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
-    open,
-    title,
-    log,
-    onClose,
-    isRunning = false,
-}) => {
+const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log, onClose, isRunning = false }) => {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<InfoTab>("log");
     const parsed = useMemo(() => parseInfoLog(log), [log]);
@@ -56,18 +51,23 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
         <div className="confirm-overlay">
             <div className="confirm-box log-dialog-box">
                 <div className="log-dialog-header">
-                    <p style={{ margin: 0 }}><strong>{title}</strong></p>
+                    <p style={{ margin: 0 }}>
+                        <strong>{title}</strong>
+                    </p>
                     {isRunning && (
                         <div className="log-dialog-badge running">
-                            <span className="spinner" style={{
-                                display: "inline-block",
-                                width: "12px",
-                                height: "12px",
-                                border: "2px solid rgba(76, 175, 80, 0.3)",
-                                borderTopColor: "#4CAF50",
-                                borderRadius: "50%",
-                                animation: "spin 1s linear infinite"
-                            }}></span>
+                            <span
+                                className="spinner"
+                                style={{
+                                    display: "inline-block",
+                                    width: "12px",
+                                    height: "12px",
+                                    border: "2px solid rgba(76, 175, 80, 0.3)",
+                                    borderTopColor: "#4CAF50",
+                                    borderRadius: "50%",
+                                    animation: "spin 1s linear infinite",
+                                }}
+                            ></span>
                             <span>{t("logDialog.running")}</span>
                         </div>
                     )}
@@ -101,9 +101,7 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
                 </div>
 
                 <div className="log-content-wrapper">
-                    {activeTab === "log" && (
-                        <div className="log-output">{log}</div>
-                    )}
+                    {activeTab === "log" && <div className="log-output">{log}</div>}
 
                     {activeTab === "parsed" && (
                         <div className="log-output package-info-parsed">
@@ -119,7 +117,7 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
                                                 className="package-info-parsed-link"
                                                 onClick={() => BrowserOpenURL(parsed.homepage!)}
                                                 onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                    if (e.key === "Enter" || e.key === " ") {
                                                         e.preventDefault();
                                                         BrowserOpenURL(parsed.homepage!);
                                                     }
@@ -147,11 +145,7 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
                     )}
 
                     {log && (
-                        <button
-                            onClick={handleCopy}
-                            className="log-copy-button"
-                            title={t("logDialog.copyToClipboard")}
-                        >
+                        <button onClick={handleCopy} className="log-copy-button" title={t("logDialog.copyToClipboard")}>
                             <Copy size={16} />
                             {t("logDialog.copy")}
                         </button>
@@ -159,7 +153,9 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({
                 </div>
 
                 <div className="confirm-actions log-dialog-actions">
-                    <button onClick={onClose} className="log-dialog-btn">{t("buttons.ok")}</button>
+                    <button onClick={onClose} className="log-dialog-btn">
+                        {t("buttons.ok")}
+                    </button>
                 </div>
             </div>
         </div>

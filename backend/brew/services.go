@@ -149,7 +149,7 @@ func (s *ServicesService) runServiceAction(ctx context.Context, action, name str
 	cmd := exec.CommandContext(ctx, s.brewPath, "services", action, name)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, _ := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("📦 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)

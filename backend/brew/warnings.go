@@ -18,7 +18,7 @@ func ExtractJSONFromOutput(output string) (jsonOutput string, warnings string, e
 	// strip the leading '[' and produce malformed JSON.
 	braceIdx := strings.Index(outputStr, "{")
 	bracketIdx := strings.Index(outputStr, "[")
-	jsonStart := -1
+	var jsonStart int
 	switch {
 	case braceIdx == -1:
 		jsonStart = bracketIdx

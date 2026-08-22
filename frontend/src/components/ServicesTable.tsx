@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useCallback, useRef } from "react";
+import { ArrowDown, ArrowUp, Bug, Info, Play, RotateCw, Square } from "lucide-react";
+import type React from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUp, ArrowDown, Play, Square, RotateCw, Bug, Info } from "lucide-react";
 
 export interface ServiceEntry {
     name: string;
@@ -267,7 +268,10 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                         <table className="package-table">
                             <colgroup>
                                 {columns.map((col) => (
-                                    <col key={`col-${col.key}`} style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }} />
+                                    <col
+                                        key={`col-${col.key}`}
+                                        style={{ width: columnWidths[col.key] ?? getColumnWidth(col.key) }}
+                                    />
                                 ))}
                             </colgroup>
                             <thead>
@@ -292,8 +296,12 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                                                             <ArrowUp size={14} />
                                                         </div>
                                                     )}
-                                                    {isSortable && isCurrentSort && sortDirection === "asc" && <ArrowUp size={14} />}
-                                                    {isSortable && isCurrentSort && sortDirection === "desc" && <ArrowDown size={14} />}
+                                                    {isSortable && isCurrentSort && sortDirection === "asc" && (
+                                                        <ArrowUp size={14} />
+                                                    )}
+                                                    {isSortable && isCurrentSort && sortDirection === "desc" && (
+                                                        <ArrowDown size={14} />
+                                                    )}
                                                 </div>
                                                 {col.key !== "actions" && (
                                                     <div

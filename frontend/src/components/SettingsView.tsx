@@ -1,27 +1,61 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { 
-    Settings, 
-    Terminal, 
-    Globe, 
-    RefreshCw, 
-    FolderOpen,
-    ChevronRight,
-    Search,
+import {
     Check,
-    RotateCcw,
-    Loader2,
-    Info,
-    Sparkles,
+    ChevronRight,
     Code2,
-    Shield,
-    Network,
+    Eraser,
+    FolderOpen,
+    Globe,
     Home,
+    Info,
+    Loader2,
+    Network,
+    RefreshCw,
+    RotateCcw,
+    Search,
+    Settings,
+    Shield,
+    Sparkles,
+    Terminal,
     Trash2,
-    Eraser
 } from "lucide-react";
-import { GetBrewPath, SetBrewPath, CheckBrewLocation, GetMirrorSource, SetMirrorSource, GetOutdatedFlag, SetOutdatedFlag, GetCaskAppDir, SetCaskAppDir, SelectCaskAppDir, GetCustomCaskOpts, SetCustomCaskOpts, GetCustomOutdatedArgs, SetCustomOutdatedArgs, GetAdminUsername, SetAdminUsername, GetMacOSVersion, GetMacOSReleaseName, GetSystemArchitecture, GetProxy, SetProxy, TestProxyConnection, GetLandingTab, SetLandingTab, GetNoQuarantine, SetNoQuarantine, GetAutoRelaunch, SetAutoRelaunch, GetAutoCleanupAfterUpgrade, SetAutoCleanupAfterUpgrade, GetUninstallCaskWithZap, SetUninstallCaskWithZap } from "../../wailsjs/go/main/App";
-import toast from 'react-hot-toast';
+import type React from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import {
+    CheckBrewLocation,
+    GetAdminUsername,
+    GetAutoCleanupAfterUpgrade,
+    GetAutoRelaunch,
+    GetBrewPath,
+    GetCaskAppDir,
+    GetCustomCaskOpts,
+    GetCustomOutdatedArgs,
+    GetLandingTab,
+    GetMacOSReleaseName,
+    GetMacOSVersion,
+    GetMirrorSource,
+    GetNoQuarantine,
+    GetOutdatedFlag,
+    GetProxy,
+    GetSystemArchitecture,
+    GetUninstallCaskWithZap,
+    SelectCaskAppDir,
+    SetAdminUsername,
+    SetAutoCleanupAfterUpgrade,
+    SetAutoRelaunch,
+    SetBrewPath,
+    SetCaskAppDir,
+    SetCustomCaskOpts,
+    SetCustomOutdatedArgs,
+    SetLandingTab,
+    SetMirrorSource,
+    SetNoQuarantine,
+    SetOutdatedFlag,
+    SetProxy,
+    SetUninstallCaskWithZap,
+    TestProxyConnection,
+} from "../../wailsjs/go/main/App";
 
 interface SettingsViewProps {
     onRefreshPackages: () => void;
@@ -68,7 +102,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const [isProxyExpanded, setIsProxyExpanded] = useState<boolean>(false);
     const [testProxyUrl, setTestProxyUrl] = useState<string>("https://brew.sh");
     const [testingProxy, setTestingProxy] = useState<boolean>(false);
-    const [testProxyResult, setTestProxyResult] = useState<{success: boolean, message: string} | null>(null);
+    const [testProxyResult, setTestProxyResult] = useState<{ success: boolean; message: string } | null>(null);
 
     const [landingTab, setLandingTab] = useState<string>("installed");
     const [newLandingTab, setNewLandingTab] = useState<string>("installed");
@@ -105,7 +139,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             setNewBrewPath(currentPath);
         } catch (error) {
             console.error("Failed to get brew path:", error);
-            toast.error(t('settings.errors.failedToGetPath'));
+            toast.error(t("settings.errors.failedToGetPath"));
         } finally {
             setLoading(false);
         }
@@ -113,12 +147,12 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleSave = async () => {
         if (newBrewPath.trim() === "") {
-            toast.error(t('settings.errors.emptyPath'));
+            toast.error(t("settings.errors.emptyPath"));
             return;
         }
 
         if (newBrewPath === brewPath) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -126,11 +160,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             setSaving(true);
             await SetBrewPath(newBrewPath.trim());
             setBrewPath(newBrewPath.trim());
-            toast.success(t('settings.messages.pathUpdated'));
+            toast.success(t("settings.messages.pathUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set brew path:", error);
-            toast.error(t('settings.errors.invalidPath'));
+            toast.error(t("settings.errors.invalidPath"));
             setNewBrewPath(brewPath);
         } finally {
             setSaving(false);
@@ -139,7 +173,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleReset = () => {
         setNewBrewPath(brewPath);
-        toast.success(t('settings.messages.pathReset'));
+        toast.success(t("settings.messages.pathReset"));
     };
 
     const handleDetectPath = async () => {
@@ -151,7 +185,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 await SetBrewPath(suggestion.suggestedPath);
                 setNewBrewPath(suggestion.suggestedPath);
                 setBrewPath(suggestion.suggestedPath);
-                toast.success(t('settings.messages.pathDetected', { path: suggestion.suggestedPath }));
+                toast.success(t("settings.messages.pathDetected", { path: suggestion.suggestedPath }));
                 onRefreshPackages();
                 return;
             }
@@ -171,7 +205,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 await SetBrewPath(path);
                 setNewBrewPath(path);
                 setBrewPath(path);
-                toast.success(t('settings.messages.pathDetected', { path }));
+                toast.success(t("settings.messages.pathDetected", { path }));
                 onRefreshPackages();
                 return;
             } catch (error) {
@@ -179,7 +213,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             }
         }
 
-        toast.error(t('settings.errors.autoDetectionFailed'));
+        toast.error(t("settings.errors.autoDetectionFailed"));
     };
 
     const loadCurrentProxy = async () => {
@@ -195,7 +229,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const handleSaveProxy = async () => {
         const trimmedProxy = newProxy.trim();
         if (trimmedProxy === proxy) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -204,11 +238,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetProxy(trimmedProxy);
             setProxy(trimmedProxy);
             setNewProxy(trimmedProxy);
-            toast.success(t('settings.messages.proxyUpdated'));
+            toast.success(t("settings.messages.proxyUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set proxy:", error);
-            toast.error(t('settings.errors.failedToSetProxy'));
+            toast.error(t("settings.errors.failedToSetProxy"));
             setNewProxy(proxy);
         } finally {
             setSavingProxy(false);
@@ -221,28 +255,28 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleTestProxy = async () => {
         if (!testProxyUrl.trim()) {
-            toast.error(t('settings.errors.emptyTestUrl'));
+            toast.error(t("settings.errors.emptyTestUrl"));
             return;
         }
-        
+
         try {
             setTestingProxy(true);
             setTestProxyResult(null);
-            
+
             const proxyToTest = newProxy.trim() || proxy;
             if (!proxyToTest) {
-                toast.error(t('settings.errors.emptyProxyForTest'));
+                toast.error(t("settings.errors.emptyProxyForTest"));
                 setTestingProxy(false);
                 return;
             }
 
             const result = await TestProxyConnection(proxyToTest, testProxyUrl.trim());
             setTestProxyResult({ success: true, message: result });
-            toast.success(t('settings.messages.proxyTestSuccess'));
+            toast.success(t("settings.messages.proxyTestSuccess"));
         } catch (error: any) {
             console.error("Proxy test failed:", error);
             setTestProxyResult({ success: false, message: error.message || String(error) });
-            toast.error(t('settings.errors.proxyTestFailed'));
+            toast.error(t("settings.errors.proxyTestFailed"));
         } finally {
             setTestingProxy(false);
         }
@@ -257,9 +291,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 setCustomBottleDomain("");
             } else {
                 const knownMirrors = getKnownMirrors();
-                const foundMirror = knownMirrors.find(m => 
-                    m.gitRemote === currentMirror.gitRemote && 
-                    m.bottleDomain === currentMirror.bottleDomain
+                const foundMirror = knownMirrors.find(
+                    (m) => m.gitRemote === currentMirror.gitRemote && m.bottleDomain === currentMirror.bottleDomain,
                 );
                 if (foundMirror) {
                     setMirrorSource(foundMirror.id);
@@ -280,34 +313,34 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         return [
             {
                 id: "official",
-                name: t('settings.mirrorSource.mirrors.official'),
+                name: t("settings.mirrorSource.mirrors.official"),
                 gitRemote: "",
-                bottleDomain: ""
+                bottleDomain: "",
             },
             {
                 id: "tsinghua",
-                name: t('settings.mirrorSource.mirrors.tsinghua'),
+                name: t("settings.mirrorSource.mirrors.tsinghua"),
                 gitRemote: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git",
-                bottleDomain: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+                bottleDomain: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles",
             },
             {
                 id: "aliyun",
-                name: t('settings.mirrorSource.mirrors.aliyun'),
+                name: t("settings.mirrorSource.mirrors.aliyun"),
                 gitRemote: "https://mirrors.aliyun.com/homebrew/brew.git",
-                bottleDomain: "https://mirrors.aliyun.com/homebrew/homebrew-bottles"
+                bottleDomain: "https://mirrors.aliyun.com/homebrew/homebrew-bottles",
             },
             {
                 id: "ustc",
-                name: t('settings.mirrorSource.mirrors.ustc'),
+                name: t("settings.mirrorSource.mirrors.ustc"),
                 gitRemote: "https://mirrors.ustc.edu.cn/brew.git",
-                bottleDomain: "https://mirrors.ustc.edu.cn/homebrew-bottles"
+                bottleDomain: "https://mirrors.ustc.edu.cn/homebrew-bottles",
             },
             {
                 id: "tencent",
-                name: t('settings.mirrorSource.mirrors.tencent'),
+                name: t("settings.mirrorSource.mirrors.tencent"),
                 gitRemote: "https://mirrors.cloud.tencent.com/homebrew/brew.git",
-                bottleDomain: "https://mirrors.cloud.tencent.com/homebrew/homebrew-bottles"
-            }
+                bottleDomain: "https://mirrors.cloud.tencent.com/homebrew/homebrew-bottles",
+            },
         ];
     };
 
@@ -315,7 +348,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         setMirrorSource(sourceId);
         if (sourceId !== "custom") {
             const mirrors = getKnownMirrors();
-            const selectedMirror = mirrors.find(m => m.id === sourceId);
+            const selectedMirror = mirrors.find((m) => m.id === sourceId);
             if (selectedMirror) {
                 setCustomGitRemote(selectedMirror.gitRemote);
                 setCustomBottleDomain(selectedMirror.bottleDomain);
@@ -327,11 +360,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
         try {
             setSavingMirror(true);
             const mirrors = getKnownMirrors();
-            const selectedMirror = mirrors.find(m => m.id === mirrorSource);
-            
+            const selectedMirror = mirrors.find((m) => m.id === mirrorSource);
+
             let gitRemote = "";
             let bottleDomain = "";
-            
+
             if (mirrorSource === "custom") {
                 gitRemote = customGitRemote.trim();
                 bottleDomain = customBottleDomain.trim();
@@ -341,11 +374,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             }
 
             await SetMirrorSource(gitRemote, bottleDomain);
-            toast.success(t('settings.messages.mirrorSourceUpdated'));
+            toast.success(t("settings.messages.mirrorSourceUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set mirror source:", error);
-            toast.error(t('settings.errors.failedToSetMirrorSource'));
+            toast.error(t("settings.errors.failedToSetMirrorSource"));
         } finally {
             setSavingMirror(false);
         }
@@ -353,7 +386,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleResetMirrorSource = () => {
         loadCurrentMirrorSource();
-        toast.success(t('settings.messages.mirrorSourceReset'));
+        toast.success(t("settings.messages.mirrorSourceReset"));
     };
 
     const loadCurrentOutdatedFlag = async () => {
@@ -368,7 +401,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleSaveOutdatedFlag = async () => {
         if (newOutdatedFlag === outdatedFlag) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -376,11 +409,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             setSavingOutdatedFlag(true);
             await SetOutdatedFlag(newOutdatedFlag);
             setOutdatedFlag(newOutdatedFlag);
-            toast.success(t('settings.messages.outdatedFlagUpdated'));
+            toast.success(t("settings.messages.outdatedFlagUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set outdated flag:", error);
-            toast.error(t('settings.errors.failedToSetOutdatedFlag'));
+            toast.error(t("settings.errors.failedToSetOutdatedFlag"));
             setNewOutdatedFlag(outdatedFlag);
         } finally {
             setSavingOutdatedFlag(false);
@@ -389,17 +422,17 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleResetOutdatedFlag = () => {
         setNewOutdatedFlag(outdatedFlag);
-        toast.success(t('settings.messages.outdatedFlagReset'));
+        toast.success(t("settings.messages.outdatedFlagReset"));
     };
 
     const getOutdatedFlagLabel = (flag: string) => {
         switch (flag) {
             case "none":
-                return t('settings.outdatedFlag.options.none');
+                return t("settings.outdatedFlag.options.none");
             case "greedy":
-                return t('settings.outdatedFlag.options.greedy');
+                return t("settings.outdatedFlag.options.greedy");
             case "greedy-auto-updates":
-                return t('settings.outdatedFlag.options.greedyAutoUpdates');
+                return t("settings.outdatedFlag.options.greedyAutoUpdates");
             default:
                 return flag;
         }
@@ -420,7 +453,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const handleSaveCaskAppDir = async () => {
         const trimmedDir = newCaskAppDir.trim();
         if (trimmedDir === caskAppDir) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -429,11 +462,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetCaskAppDir(trimmedDir);
             setCaskAppDir(trimmedDir);
             setNewCaskAppDir(trimmedDir);
-            toast.success(t('settings.messages.caskAppDirUpdated'));
+            toast.success(t("settings.messages.caskAppDirUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set cask app directory:", error);
-            toast.error(t('settings.errors.failedToSetCaskAppDir'));
+            toast.error(t("settings.errors.failedToSetCaskAppDir"));
             setNewCaskAppDir(caskAppDir);
         } finally {
             setSavingCaskAppDir(false);
@@ -452,7 +485,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             }
         } catch (error) {
             console.error("Failed to select directory:", error);
-            toast.error(t('settings.errors.failedToSelectDirectory'));
+            toast.error(t("settings.errors.failedToSelectDirectory"));
         }
     };
 
@@ -471,7 +504,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const handleSaveCustomCaskOpts = async () => {
         const trimmedOpts = newCustomCaskOpts.trim();
         if (trimmedOpts === customCaskOpts) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -480,11 +513,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetCustomCaskOpts(trimmedOpts);
             setCustomCaskOpts(trimmedOpts);
             setNewCustomCaskOpts(trimmedOpts);
-            toast.success(t('settings.messages.customCaskOptsUpdated'));
+            toast.success(t("settings.messages.customCaskOptsUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set custom cask options:", error);
-            toast.error(t('settings.errors.failedToSetCustomCaskOpts'));
+            toast.error(t("settings.errors.failedToSetCustomCaskOpts"));
             setNewCustomCaskOpts(customCaskOpts);
         } finally {
             setSavingCustomCaskOpts(false);
@@ -510,7 +543,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const handleSaveCustomOutdatedArgs = async () => {
         const trimmedArgs = newCustomOutdatedArgs.trim();
         if (trimmedArgs === customOutdatedArgs) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -519,11 +552,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetCustomOutdatedArgs(trimmedArgs);
             setCustomOutdatedArgs(trimmedArgs);
             setNewCustomOutdatedArgs(trimmedArgs);
-            toast.success(t('settings.messages.customOutdatedArgsUpdated'));
+            toast.success(t("settings.messages.customOutdatedArgsUpdated"));
             onRefreshPackages();
         } catch (error) {
             console.error("Failed to set custom outdated args:", error);
-            toast.error(t('settings.errors.failedToSetCustomOutdatedArgs'));
+            toast.error(t("settings.errors.failedToSetCustomOutdatedArgs"));
             setNewCustomOutdatedArgs(customOutdatedArgs);
         } finally {
             setSavingCustomOutdatedArgs(false);
@@ -549,7 +582,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     const handleSaveAdminUsername = async () => {
         const trimmedUsername = newAdminUsername.trim();
         if (trimmedUsername === adminUsername) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
 
@@ -558,10 +591,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             await SetAdminUsername(trimmedUsername);
             setAdminUsername(trimmedUsername);
             setNewAdminUsername(trimmedUsername);
-            toast.success(t('settings.messages.adminUsernameUpdated'));
+            toast.success(t("settings.messages.adminUsernameUpdated"));
         } catch (error) {
             console.error("Failed to set admin username:", error);
-            toast.error(t('settings.errors.failedToSetAdminUsername'));
+            toast.error(t("settings.errors.failedToSetAdminUsername"));
             setNewAdminUsername(adminUsername);
         } finally {
             setSavingAdminUsername(false);
@@ -577,7 +610,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
             const [version, releaseName, architecture] = await Promise.all([
                 GetMacOSVersion().catch(() => ""),
                 GetMacOSReleaseName().catch(() => ""),
-                GetSystemArchitecture().catch(() => "")
+                GetSystemArchitecture().catch(() => ""),
             ]);
             setMacOSVersion(version);
             setMacOSReleaseName(releaseName);
@@ -588,16 +621,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     };
 
     const landingTabOptions = [
-        { id: "installed", label: t('sidebar.installed') },
-        { id: "casks", label: t('sidebar.casks') },
-        { id: "updatable", label: t('sidebar.outdated') },
-        { id: "leaves", label: t('sidebar.leaves') },
-        { id: "repositories", label: t('sidebar.repositories') },
-        { id: "all", label: t('sidebar.allFormulae') },
-        { id: "allCasks", label: t('sidebar.allCasks') },
-        { id: "homebrew", label: t('sidebar.homebrew') },
-        { id: "doctor", label: t('sidebar.doctor') },
-        { id: "cleanup", label: t('sidebar.cleanup') },
+        { id: "installed", label: t("sidebar.installed") },
+        { id: "casks", label: t("sidebar.casks") },
+        { id: "updatable", label: t("sidebar.outdated") },
+        { id: "leaves", label: t("sidebar.leaves") },
+        { id: "repositories", label: t("sidebar.repositories") },
+        { id: "all", label: t("sidebar.allFormulae") },
+        { id: "allCasks", label: t("sidebar.allCasks") },
+        { id: "homebrew", label: t("sidebar.homebrew") },
+        { id: "doctor", label: t("sidebar.doctor") },
+        { id: "cleanup", label: t("sidebar.cleanup") },
     ];
 
     const loadLandingTab = async () => {
@@ -612,17 +645,17 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleSaveLandingTab = async () => {
         if (newLandingTab === landingTab) {
-            toast.success(t('settings.messages.noChanges'));
+            toast.success(t("settings.messages.noChanges"));
             return;
         }
         try {
             setSavingLandingTab(true);
             await SetLandingTab(newLandingTab);
             setLandingTab(newLandingTab);
-            toast.success(t('settings.messages.landingTabUpdated'));
+            toast.success(t("settings.messages.landingTabUpdated"));
         } catch (error) {
             console.error("Failed to set landing tab:", error);
-            toast.error(t('settings.errors.failedToSetLandingTab'));
+            toast.error(t("settings.errors.failedToSetLandingTab"));
             setNewLandingTab(landingTab);
         } finally {
             setSavingLandingTab(false);
@@ -631,7 +664,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const handleResetLandingTab = () => {
         setNewLandingTab(landingTab);
-        toast.success(t('settings.messages.landingTabReset'));
+        toast.success(t("settings.messages.landingTabReset"));
     };
 
     const loadNoQuarantine = async () => {
@@ -716,25 +749,25 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
     const getMirrorDisplayName = () => {
         if (mirrorSource === "official") {
-            return t('settings.mirrorSource.mirrors.official');
+            return t("settings.mirrorSource.mirrors.official");
         }
         if (mirrorSource === "custom") {
-            return t('settings.mirrorSource.custom');
+            return t("settings.mirrorSource.custom");
         }
-        return getKnownMirrors().find(m => m.id === mirrorSource)?.name || "";
+        return getKnownMirrors().find((m) => m.id === mirrorSource)?.name || "";
     };
 
     if (loading) {
         return (
             <div className="settings-view-modern">
                 <div className="settings-header-modern">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                         <div className="settings-header-icon">
                             <Settings size={28} />
                         </div>
                         <div className="settings-header-text">
-                            <h2>{t('settings.title')}</h2>
-                            <p>{t('settings.loading')}</p>
+                            <h2>{t("settings.title")}</h2>
+                            <p>{t("settings.loading")}</p>
                         </div>
                     </div>
                     {(macOSVersion || macOSReleaseName || systemArchitecture) && (
@@ -760,13 +793,13 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
     return (
         <div className="settings-view-modern">
             <div className="settings-header-modern">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                     <div className="settings-header-icon">
                         <Settings size={28} />
                     </div>
                     <div className="settings-header-text">
-                        <h2>{t('settings.title')}</h2>
-                        <p>{t('settings.subtitle') || 'Configure your Homebrew experience'}</p>
+                        <h2>{t("settings.title")}</h2>
+                        <p>{t("settings.subtitle") || "Configure your Homebrew experience"}</p>
                     </div>
                 </div>
                 {(macOSVersion || macOSReleaseName || systemArchitecture) && (
@@ -785,7 +818,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
             <div className="settings-cards-container">
                 {/* Landing Tab Card */}
-                <div className={`settings-card ${isLandingTabExpanded ? 'expanded' : ''}`}>
+                <div className={`settings-card ${isLandingTabExpanded ? "expanded" : ""}`}>
                     <button
                         className="settings-card-header"
                         onClick={() => setIsLandingTabExpanded(!isLandingTabExpanded)}
@@ -795,27 +828,28 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <Home size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.landingTab.title')}</h3>
+                            <h3>{t("settings.landingTab.title")}</h3>
                             <span className="settings-card-value">
-                                {landingTabOptions.find(o => o.id === landingTab)?.label || landingTab}
+                                {landingTabOptions.find((o) => o.id === landingTab)?.label || landingTab}
                             </span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isLandingTabExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isLandingTabExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
 
-                    <div className={`settings-card-content ${isLandingTabExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.landingTab.description')}
-                        </p>
+                    <div className={`settings-card-content ${isLandingTabExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.landingTab.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t('settings.landingTab.label')}</label>
+                            <label>{t("settings.landingTab.label")}</label>
                             <select
                                 value={newLandingTab}
                                 onChange={(e) => setNewLandingTab(e.target.value)}
                                 disabled={savingLandingTab}
                             >
-                                {landingTabOptions.map(option => (
+                                {landingTabOptions.map((option) => (
                                     <option key={option.id} value={option.id}>
                                         {option.label}
                                     </option>
@@ -830,7 +864,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingLandingTab || newLandingTab === landingTab}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -838,26 +872,29 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingLandingTab || newLandingTab === landingTab}
                             >
                                 {savingLandingTab ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingLandingTab ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingLandingTab ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* No Quarantine Toggle Card */}
-                <div className={`settings-card ${noQuarantine ? 'expanded' : ''}`}>
-                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                <div className={`settings-card ${noQuarantine ? "expanded" : ""}`}>
+                    <div className="settings-card-header" style={{ cursor: "default" }}>
                         <div className="settings-card-icon">
                             <Shield size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.noQuarantine.title')}</h3>
-                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
-                                {t('settings.noQuarantine.description')}
+                            <h3>{t("settings.noQuarantine.title")}</h3>
+                            <span
+                                className="settings-card-value"
+                                style={{ whiteSpace: "normal", fontFamily: "inherit" }}
+                            >
+                                {t("settings.noQuarantine.description")}
                             </span>
                         </div>
                         <button
-                            className={`settings-toggle ${noQuarantine ? 'active' : ''}`}
+                            className={`settings-toggle ${noQuarantine ? "active" : ""}`}
                             onClick={handleToggleNoQuarantine}
                             aria-checked={noQuarantine}
                             role="switch"
@@ -866,19 +903,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 </div>
 
                 {/* Auto-Relaunch Toggle Card */}
-                <div className={`settings-card ${autoRelaunch ? 'expanded' : ''}`}>
-                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                <div className={`settings-card ${autoRelaunch ? "expanded" : ""}`}>
+                    <div className="settings-card-header" style={{ cursor: "default" }}>
                         <div className="settings-card-icon">
                             <RefreshCw size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.autoRelaunch.title')}</h3>
-                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
-                                {t('settings.autoRelaunch.description')}
+                            <h3>{t("settings.autoRelaunch.title")}</h3>
+                            <span
+                                className="settings-card-value"
+                                style={{ whiteSpace: "normal", fontFamily: "inherit" }}
+                            >
+                                {t("settings.autoRelaunch.description")}
                             </span>
                         </div>
                         <button
-                            className={`settings-toggle ${autoRelaunch ? 'active' : ''}`}
+                            className={`settings-toggle ${autoRelaunch ? "active" : ""}`}
                             onClick={handleToggleAutoRelaunch}
                             aria-checked={autoRelaunch}
                             role="switch"
@@ -888,19 +928,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 </div>
 
                 {/* Auto-Cleanup After Upgrade Toggle Card */}
-                <div className={`settings-card ${autoCleanup ? 'expanded' : ''}`}>
-                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                <div className={`settings-card ${autoCleanup ? "expanded" : ""}`}>
+                    <div className="settings-card-header" style={{ cursor: "default" }}>
                         <div className="settings-card-icon">
                             <Trash2 size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.autoCleanupAfterUpgrade.title')}</h3>
-                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
-                                {t('settings.autoCleanupAfterUpgrade.description')}
+                            <h3>{t("settings.autoCleanupAfterUpgrade.title")}</h3>
+                            <span
+                                className="settings-card-value"
+                                style={{ whiteSpace: "normal", fontFamily: "inherit" }}
+                            >
+                                {t("settings.autoCleanupAfterUpgrade.description")}
                             </span>
                         </div>
                         <button
-                            className={`settings-toggle ${autoCleanup ? 'active' : ''}`}
+                            className={`settings-toggle ${autoCleanup ? "active" : ""}`}
                             onClick={handleToggleAutoCleanup}
                             aria-checked={autoCleanup}
                             role="switch"
@@ -910,19 +953,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 </div>
 
                 {/* Uninstall Casks With Zap Toggle Card */}
-                <div className={`settings-card ${uninstallCaskWithZap ? 'expanded' : ''}`}>
-                    <div className="settings-card-header" style={{ cursor: 'default' }}>
+                <div className={`settings-card ${uninstallCaskWithZap ? "expanded" : ""}`}>
+                    <div className="settings-card-header" style={{ cursor: "default" }}>
                         <div className="settings-card-icon">
                             <Eraser size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.uninstallCaskWithZap.title')}</h3>
-                            <span className="settings-card-value" style={{ whiteSpace: 'normal', fontFamily: 'inherit' }}>
-                                {t('settings.uninstallCaskWithZap.description')}
+                            <h3>{t("settings.uninstallCaskWithZap.title")}</h3>
+                            <span
+                                className="settings-card-value"
+                                style={{ whiteSpace: "normal", fontFamily: "inherit" }}
+                            >
+                                {t("settings.uninstallCaskWithZap.description")}
                             </span>
                         </div>
                         <button
-                            className={`settings-toggle ${uninstallCaskWithZap ? 'active' : ''}`}
+                            className={`settings-toggle ${uninstallCaskWithZap ? "active" : ""}`}
                             onClick={handleToggleUninstallCaskWithZap}
                             aria-checked={uninstallCaskWithZap}
                             role="switch"
@@ -932,8 +978,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                 </div>
 
                 {/* Brew Path Card */}
-                <div className={`settings-card ${isBrewPathExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isBrewPathExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsBrewPathExpanded(!isBrewPathExpanded)}
                         aria-expanded={isBrewPathExpanded}
@@ -942,32 +988,33 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <Terminal size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.brewPath.title')}</h3>
+                            <h3>{t("settings.brewPath.title")}</h3>
                             <span className="settings-card-value">{brewPath}</span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isBrewPathExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isBrewPathExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isBrewPathExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.brewPath.description')}
-                        </p>
-                        
+
+                    <div className={`settings-card-content ${isBrewPathExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.brewPath.description")}</p>
+
                         <div className="settings-input-group">
-                            <label>{t('settings.brewPath.currentPath')}</label>
+                            <label>{t("settings.brewPath.currentPath")}</label>
                             <div className="settings-input-row">
                                 <input
                                     type="text"
                                     value={newBrewPath}
                                     onChange={(e) => setNewBrewPath(e.target.value)}
-                                    placeholder={t('settings.brewPath.placeholder')}
+                                    placeholder={t("settings.brewPath.placeholder")}
                                     disabled={saving}
                                 />
                                 <button
                                     className="settings-icon-btn"
                                     onClick={handleDetectPath}
                                     disabled={saving}
-                                    title={t('settings.brewPath.autoDetect')}
+                                    title={t("settings.brewPath.autoDetect")}
                                 >
                                     <Search size={18} />
                                 </button>
@@ -976,7 +1023,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
                         <div className="settings-info-box">
                             <Info size={16} />
-                            <span>{t('settings.brewPath.note')}</span>
+                            <span>{t("settings.brewPath.note")}</span>
                         </div>
 
                         <div className="settings-card-actions">
@@ -986,7 +1033,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={saving || newBrewPath === brewPath}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -994,15 +1041,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={saving || newBrewPath.trim() === ""}
                             >
                                 {saving ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {saving ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {saving ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Mirror Source Card */}
-                <div className={`settings-card ${isMirrorSourceExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isMirrorSourceExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsMirrorSourceExpanded(!isMirrorSourceExpanded)}
                         aria-expanded={isMirrorSourceExpanded}
@@ -1012,39 +1059,40 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                         </div>
                         <div className="settings-card-info">
                             <h3>
-                                {t('settings.mirrorSource.title')}
+                                {t("settings.mirrorSource.title")}
                                 <span className="settings-badge">BETA</span>
                             </h3>
                             <span className="settings-card-value">{getMirrorDisplayName()}</span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isMirrorSourceExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isMirrorSourceExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isMirrorSourceExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.mirrorSource.description')}
-                        </p>
-                        
+
+                    <div className={`settings-card-content ${isMirrorSourceExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.mirrorSource.description")}</p>
+
                         <div className="settings-input-group">
-                            <label>{t('settings.mirrorSource.selectMirror')}</label>
+                            <label>{t("settings.mirrorSource.selectMirror")}</label>
                             <select
                                 value={mirrorSource}
                                 onChange={(e) => handleMirrorSourceChange(e.target.value)}
                                 disabled={savingMirror}
                             >
-                                {getKnownMirrors().map(mirror => (
+                                {getKnownMirrors().map((mirror) => (
                                     <option key={mirror.id} value={mirror.id}>
                                         {mirror.name}
                                     </option>
                                 ))}
-                                <option value="custom">{t('settings.mirrorSource.custom')}</option>
+                                <option value="custom">{t("settings.mirrorSource.custom")}</option>
                             </select>
                         </div>
 
                         {mirrorSource === "custom" && (
                             <div className="settings-custom-fields">
                                 <div className="settings-input-group">
-                                    <label>{t('settings.mirrorSource.customGitRemote')}</label>
+                                    <label>{t("settings.mirrorSource.customGitRemote")}</label>
                                     <input
                                         type="text"
                                         value={customGitRemote}
@@ -1054,7 +1102,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                     />
                                 </div>
                                 <div className="settings-input-group">
-                                    <label>{t('settings.mirrorSource.customBottleDomain')}</label>
+                                    <label>{t("settings.mirrorSource.customBottleDomain")}</label>
                                     <input
                                         type="text"
                                         value={customBottleDomain}
@@ -1068,7 +1116,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
 
                         <div className="settings-info-box">
                             <Info size={16} />
-                            <span>{t('settings.mirrorSource.note')}</span>
+                            <span>{t("settings.mirrorSource.note")}</span>
                         </div>
 
                         <div className="settings-card-actions">
@@ -1078,7 +1126,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingMirror}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -1086,15 +1134,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingMirror}
                             >
                                 {savingMirror ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingMirror ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingMirror ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Proxy Card */}
-                <div className={`settings-card ${isProxyExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isProxyExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsProxyExpanded(!isProxyExpanded)}
                         aria-expanded={isProxyExpanded}
@@ -1103,21 +1151,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <Network size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.proxy.title')}</h3>
+                            <h3>{t("settings.proxy.title")}</h3>
                             <span className="settings-card-value">
-                                {proxy ? proxy : t('settings.proxy.none', 'None')}
+                                {proxy ? proxy : t("settings.proxy.none", "None")}
                             </span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isProxyExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isProxyExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isProxyExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.proxy.description')}
-                        </p>
-                        
+
+                    <div className={`settings-card-content ${isProxyExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.proxy.description")}</p>
+
                         <div className="settings-input-group">
-                            <label>{t('settings.proxy.currentProxy')}</label>
+                            <label>{t("settings.proxy.currentProxy")}</label>
                             <input
                                 type="text"
                                 value={newProxy}
@@ -1125,58 +1174,76 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                     setNewProxy(e.target.value);
                                     setTestProxyResult(null);
                                 }}
-                                placeholder={t('settings.proxy.placeholder')}
+                                placeholder={t("settings.proxy.placeholder")}
                                 disabled={savingProxy || testingProxy}
                             />
                         </div>
 
-                        <div className="settings-input-group" style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--wails-border, #eee)' }}>
-                            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span>{t('settings.proxy.testConnection')}</span>
+                        <div
+                            className="settings-input-group"
+                            style={{
+                                marginTop: "16px",
+                                paddingTop: "16px",
+                                borderTop: "1px solid var(--wails-border, #eee)",
+                            }}
+                        >
+                            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <span>{t("settings.proxy.testConnection")}</span>
                             </label>
                             <div className="settings-input-row">
                                 <input
                                     type="text"
                                     value={testProxyUrl}
                                     onChange={(e) => setTestProxyUrl(e.target.value)}
-                                    placeholder={t('settings.proxy.testUrlPlaceholder')}
+                                    placeholder={t("settings.proxy.testUrlPlaceholder")}
                                     disabled={savingProxy || testingProxy}
                                 />
                                 <button
                                     className="settings-btn-secondary"
                                     onClick={handleTestProxy}
                                     disabled={savingProxy || testingProxy || !testProxyUrl.trim()}
-                                    style={{ whiteSpace: 'nowrap' }}
-                                    title={t('settings.proxy.testButton')}
+                                    style={{ whiteSpace: "nowrap" }}
+                                    title={t("settings.proxy.testButton")}
                                 >
                                     {testingProxy ? <Loader2 className="spin" size={16} /> : <Globe size={16} />}
-                                    <span style={{marginLeft: '6px'}}>{testingProxy ? t('settings.proxy.testing') : t('settings.proxy.testButton')}</span>
+                                    <span style={{ marginLeft: "6px" }}>
+                                        {testingProxy ? t("settings.proxy.testing") : t("settings.proxy.testButton")}
+                                    </span>
                                 </button>
                             </div>
                             {testProxyResult && (
-                                <div style={{ 
-                                    marginTop: '12px', 
-                                    padding: '10px 12px', 
-                                    borderRadius: '6px', 
-                                    fontSize: '13px',
-                                    color: testProxyResult.success ? 'var(--success-color, #10b981)' : 'var(--error-color, #ef4444)',
-                                    backgroundColor: testProxyResult.success ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                    display: 'flex',
-                                    alignItems: 'flex-start',
-                                    gap: '8px'
-                                }}>
-                                    {testProxyResult.success ? 
-                                        <Check size={16} style={{flexShrink: 0, marginTop: '1px'}} /> : 
-                                        <Info size={16} style={{flexShrink: 0, marginTop: '1px'}} />
-                                    }
-                                    <span style={{wordBreak: 'break-all', lineHeight: '1.4'}}>{testProxyResult.message}</span>
+                                <div
+                                    style={{
+                                        marginTop: "12px",
+                                        padding: "10px 12px",
+                                        borderRadius: "6px",
+                                        fontSize: "13px",
+                                        color: testProxyResult.success
+                                            ? "var(--success-color, #10b981)"
+                                            : "var(--error-color, #ef4444)",
+                                        backgroundColor: testProxyResult.success
+                                            ? "rgba(16, 185, 129, 0.1)"
+                                            : "rgba(239, 68, 68, 0.1)",
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                        gap: "8px",
+                                    }}
+                                >
+                                    {testProxyResult.success ? (
+                                        <Check size={16} style={{ flexShrink: 0, marginTop: "1px" }} />
+                                    ) : (
+                                        <Info size={16} style={{ flexShrink: 0, marginTop: "1px" }} />
+                                    )}
+                                    <span style={{ wordBreak: "break-all", lineHeight: "1.4" }}>
+                                        {testProxyResult.message}
+                                    </span>
                                 </div>
                             )}
                         </div>
 
-                        <div className="settings-info-box" style={{ marginTop: '16px' }}>
+                        <div className="settings-info-box" style={{ marginTop: "16px" }}>
                             <Info size={16} />
-                            <span>{t('settings.proxy.note')}</span>
+                            <span>{t("settings.proxy.note")}</span>
                         </div>
 
                         <div className="settings-card-actions">
@@ -1186,7 +1253,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingProxy || testingProxy || newProxy === proxy}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -1194,15 +1261,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingProxy || testingProxy || newProxy === proxy}
                             >
                                 {savingProxy ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingProxy ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingProxy ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Outdated Detection Card */}
-                <div className={`settings-card ${isOutdatedFlagExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isOutdatedFlagExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsOutdatedFlagExpanded(!isOutdatedFlagExpanded)}
                         aria-expanded={isOutdatedFlagExpanded}
@@ -1211,39 +1278,43 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <RefreshCw size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.outdatedFlag.title')}</h3>
+                            <h3>{t("settings.outdatedFlag.title")}</h3>
                             <span className="settings-card-value">{getOutdatedFlagLabel(outdatedFlag)}</span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isOutdatedFlagExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isOutdatedFlagExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isOutdatedFlagExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.outdatedFlag.description')}
-                        </p>
-                        
+
+                    <div className={`settings-card-content ${isOutdatedFlagExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.outdatedFlag.description")}</p>
+
                         <div className="settings-input-group">
-                            <label>{t('settings.outdatedFlag.selectFlag')}</label>
+                            <label>{t("settings.outdatedFlag.selectFlag")}</label>
                             <select
                                 value={newOutdatedFlag}
                                 onChange={(e) => setNewOutdatedFlag(e.target.value)}
                                 disabled={savingOutdatedFlag}
                             >
-                                <option value="none">{t('settings.outdatedFlag.options.none')}</option>
-                                <option value="greedy">{t('settings.outdatedFlag.options.greedy')}</option>
-                                <option value="greedy-auto-updates">{t('settings.outdatedFlag.options.greedyAutoUpdates')}</option>
+                                <option value="none">{t("settings.outdatedFlag.options.none")}</option>
+                                <option value="greedy">{t("settings.outdatedFlag.options.greedy")}</option>
+                                <option value="greedy-auto-updates">
+                                    {t("settings.outdatedFlag.options.greedyAutoUpdates")}
+                                </option>
                             </select>
                         </div>
 
                         <div className="settings-option-hint">
-                            {newOutdatedFlag === "none" && t('settings.outdatedFlag.descriptions.none')}
-                            {newOutdatedFlag === "greedy" && t('settings.outdatedFlag.descriptions.greedy')}
-                            {newOutdatedFlag === "greedy-auto-updates" && t('settings.outdatedFlag.descriptions.greedyAutoUpdates')}
+                            {newOutdatedFlag === "none" && t("settings.outdatedFlag.descriptions.none")}
+                            {newOutdatedFlag === "greedy" && t("settings.outdatedFlag.descriptions.greedy")}
+                            {newOutdatedFlag === "greedy-auto-updates" &&
+                                t("settings.outdatedFlag.descriptions.greedyAutoUpdates")}
                         </div>
 
                         <div className="settings-info-box">
                             <Info size={16} />
-                            <span>{t('settings.outdatedFlag.note')}</span>
+                            <span>{t("settings.outdatedFlag.note")}</span>
                         </div>
 
                         <div className="settings-card-actions">
@@ -1253,7 +1324,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -1261,15 +1332,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
                             >
                                 {savingOutdatedFlag ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingOutdatedFlag ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingOutdatedFlag ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Cask App Directory Card */}
-                <div className={`settings-card ${isCaskAppDirExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isCaskAppDirExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsCaskAppDirExpanded(!isCaskAppDirExpanded)}
                         aria-expanded={isCaskAppDirExpanded}
@@ -1278,23 +1349,26 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <FolderOpen size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.caskAppDir.title')}</h3>
-                            <span className="settings-card-value">{caskAppDir || t('settings.caskAppDir.default')}</span>
+                            <h3>{t("settings.caskAppDir.title")}</h3>
+                            <span className="settings-card-value">
+                                {caskAppDir || t("settings.caskAppDir.default")}
+                            </span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isCaskAppDirExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isCaskAppDirExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isCaskAppDirExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.caskAppDir.description')}
-                        </p>
-                        
+
+                    <div className={`settings-card-content ${isCaskAppDirExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.caskAppDir.description")}</p>
+
                         <div className="settings-input-group">
-                            <label>{t('settings.caskAppDir.currentDir')}</label>
+                            <label>{t("settings.caskAppDir.currentDir")}</label>
                             <div className="settings-input-row">
                                 <input
                                     type="text"
-                                    value={newCaskAppDir || t('settings.caskAppDir.default')}
+                                    value={newCaskAppDir || t("settings.caskAppDir.default")}
                                     readOnly
                                     disabled={savingCaskAppDir}
                                 />
@@ -1302,7 +1376,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                     className="settings-icon-btn"
                                     onClick={handleSelectCaskAppDir}
                                     disabled={savingCaskAppDir}
-                                    title={t('settings.caskAppDir.selectDirectory')}
+                                    title={t("settings.caskAppDir.selectDirectory")}
                                 >
                                     <FolderOpen size={18} />
                                 </button>
@@ -1312,13 +1386,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                         {newCaskAppDir !== caskAppDir && (
                             <div className="settings-preview-box">
                                 <Sparkles size={16} />
-                                <span>{t('settings.caskAppDir.newDirectory')}: <code>{newCaskAppDir || t('settings.caskAppDir.default')}</code></span>
+                                <span>
+                                    {t("settings.caskAppDir.newDirectory")}:{" "}
+                                    <code>{newCaskAppDir || t("settings.caskAppDir.default")}</code>
+                                </span>
                             </div>
                         )}
 
                         <div className="settings-info-box">
                             <Info size={16} />
-                            <span>{t('settings.caskAppDir.note')}</span>
+                            <span>{t("settings.caskAppDir.note")}</span>
                         </div>
 
                         <div className="settings-card-actions">
@@ -1328,7 +1405,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingCaskAppDir || newCaskAppDir === caskAppDir}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -1336,15 +1413,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingCaskAppDir || newCaskAppDir.trim() === caskAppDir}
                             >
                                 {savingCaskAppDir ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingCaskAppDir ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingCaskAppDir ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Admin Username Card */}
-                <div className={`settings-card ${isAdminUsernameExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isAdminUsernameExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsAdminUsernameExpanded(!isAdminUsernameExpanded)}
                         aria-expanded={isAdminUsernameExpanded}
@@ -1353,31 +1430,32 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <Shield size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.adminUsername.title')}</h3>
+                            <h3>{t("settings.adminUsername.title")}</h3>
                             <span className="settings-card-value">
-                                {adminUsername || t('settings.adminUsername.currentUser')}
+                                {adminUsername || t("settings.adminUsername.currentUser")}
                             </span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isAdminUsernameExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isAdminUsernameExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isAdminUsernameExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.adminUsername.description')}
-                        </p>
-                        
-                        <div className="settings-info-box" style={{marginBottom: "1rem"}}>
+
+                    <div className={`settings-card-content ${isAdminUsernameExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.adminUsername.description")}</p>
+
+                        <div className="settings-info-box" style={{ marginBottom: "1rem" }}>
                             <Info size={16} />
-                            <span>{t('settings.adminUsername.info')}</span>
+                            <span>{t("settings.adminUsername.info")}</span>
                         </div>
 
                         <div className="settings-input-group">
-                            <label>{t('settings.adminUsername.label')}</label>
+                            <label>{t("settings.adminUsername.label")}</label>
                             <input
                                 type="text"
                                 value={newAdminUsername}
                                 onChange={(e) => setNewAdminUsername(e.target.value)}
-                                placeholder={t('settings.adminUsername.placeholder')}
+                                placeholder={t("settings.adminUsername.placeholder")}
                                 disabled={savingAdminUsername}
                             />
                         </div>
@@ -1389,7 +1467,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingAdminUsername || newAdminUsername === adminUsername}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -1397,15 +1475,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingAdminUsername || newAdminUsername.trim() === adminUsername}
                             >
                                 {savingAdminUsername ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingAdminUsername ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingAdminUsername ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Advanced Options Card */}
-                <div className={`settings-card ${isAdvancedOptsExpanded ? 'expanded' : ''}`}>
-                    <button 
+                <div className={`settings-card ${isAdvancedOptsExpanded ? "expanded" : ""}`}>
+                    <button
                         className="settings-card-header"
                         onClick={() => setIsAdvancedOptsExpanded(!isAdvancedOptsExpanded)}
                         aria-expanded={isAdvancedOptsExpanded}
@@ -1414,41 +1492,45 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                             <Code2 size={20} />
                         </div>
                         <div className="settings-card-info">
-                            <h3>{t('settings.advancedOptions.title')}</h3>
-                            <span className="settings-card-value">{t('settings.advancedOptions.subtitle')}</span>
+                            <h3>{t("settings.advancedOptions.title")}</h3>
+                            <span className="settings-card-value">{t("settings.advancedOptions.subtitle")}</span>
                         </div>
-                        <ChevronRight className={`settings-card-chevron ${isAdvancedOptsExpanded ? 'rotated' : ''}`} size={20} />
+                        <ChevronRight
+                            className={`settings-card-chevron ${isAdvancedOptsExpanded ? "rotated" : ""}`}
+                            size={20}
+                        />
                     </button>
-                    
-                    <div className={`settings-card-content ${isAdvancedOptsExpanded ? 'show' : ''}`}>
-                        <p className="settings-card-description">
-                            {t('settings.advancedOptions.description')}
-                        </p>
-                        
-                        <div className="settings-info-box" style={{marginBottom: "1rem"}}>
+
+                    <div className={`settings-card-content ${isAdvancedOptsExpanded ? "show" : ""}`}>
+                        <p className="settings-card-description">{t("settings.advancedOptions.description")}</p>
+
+                        <div className="settings-info-box" style={{ marginBottom: "1rem" }}>
                             <Info size={16} />
-                            <span>{t('settings.advancedOptions.warning')}</span>
+                            <span>{t("settings.advancedOptions.warning")}</span>
                         </div>
 
                         {/* Custom Cask Options */}
                         <div className="settings-input-group">
-                            <label>{t('settings.advancedOptions.customCaskOpts.label')}</label>
+                            <label>{t("settings.advancedOptions.customCaskOpts.label")}</label>
                             <input
                                 type="text"
                                 value={newCustomCaskOpts}
                                 onChange={(e) => setNewCustomCaskOpts(e.target.value)}
-                                placeholder={t('settings.advancedOptions.customCaskOpts.placeholder')}
+                                placeholder={t("settings.advancedOptions.customCaskOpts.placeholder")}
                                 disabled={savingCustomCaskOpts}
                             />
                             <small className="settings-input-hint">
-                                {t('settings.advancedOptions.customCaskOpts.hint')}
+                                {t("settings.advancedOptions.customCaskOpts.hint")}
                             </small>
                         </div>
 
                         {newCustomCaskOpts !== customCaskOpts && (
                             <div className="settings-preview-box">
                                 <Sparkles size={16} />
-                                <span>{t('settings.advancedOptions.customCaskOpts.preview')}: <code>{newCustomCaskOpts || t('settings.advancedOptions.none')}</code></span>
+                                <span>
+                                    {t("settings.advancedOptions.customCaskOpts.preview")}:{" "}
+                                    <code>{newCustomCaskOpts || t("settings.advancedOptions.none")}</code>
+                                </span>
                             </div>
                         )}
 
@@ -1459,7 +1541,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingCustomCaskOpts || newCustomCaskOpts === customCaskOpts}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
@@ -1467,31 +1549,34 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingCustomCaskOpts || newCustomCaskOpts.trim() === customCaskOpts}
                             >
                                 {savingCustomCaskOpts ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingCustomCaskOpts ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingCustomCaskOpts ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
 
-                        <div className="settings-divider" style={{margin: "1.5rem 0"}}></div>
+                        <div className="settings-divider" style={{ margin: "1.5rem 0" }}></div>
 
                         {/* Custom Outdated Arguments */}
                         <div className="settings-input-group">
-                            <label>{t('settings.advancedOptions.customOutdatedArgs.label')}</label>
+                            <label>{t("settings.advancedOptions.customOutdatedArgs.label")}</label>
                             <input
                                 type="text"
                                 value={newCustomOutdatedArgs}
                                 onChange={(e) => setNewCustomOutdatedArgs(e.target.value)}
-                                placeholder={t('settings.advancedOptions.customOutdatedArgs.placeholder')}
+                                placeholder={t("settings.advancedOptions.customOutdatedArgs.placeholder")}
                                 disabled={savingCustomOutdatedArgs}
                             />
                             <small className="settings-input-hint">
-                                {t('settings.advancedOptions.customOutdatedArgs.hint')}
+                                {t("settings.advancedOptions.customOutdatedArgs.hint")}
                             </small>
                         </div>
 
                         {newCustomOutdatedArgs !== customOutdatedArgs && (
                             <div className="settings-preview-box">
                                 <Sparkles size={16} />
-                                <span>{t('settings.advancedOptions.customOutdatedArgs.preview')}: <code>{newCustomOutdatedArgs || t('settings.advancedOptions.none')}</code></span>
+                                <span>
+                                    {t("settings.advancedOptions.customOutdatedArgs.preview")}:{" "}
+                                    <code>{newCustomOutdatedArgs || t("settings.advancedOptions.none")}</code>
+                                </span>
                             </div>
                         )}
 
@@ -1502,15 +1587,21 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages }) => {
                                 disabled={savingCustomOutdatedArgs || newCustomOutdatedArgs === customOutdatedArgs}
                             >
                                 <RotateCcw size={16} />
-                                {t('settings.buttons.reset')}
+                                {t("settings.buttons.reset")}
                             </button>
                             <button
                                 className="settings-btn-primary"
                                 onClick={handleSaveCustomOutdatedArgs}
-                                disabled={savingCustomOutdatedArgs || newCustomOutdatedArgs.trim() === customOutdatedArgs}
+                                disabled={
+                                    savingCustomOutdatedArgs || newCustomOutdatedArgs.trim() === customOutdatedArgs
+                                }
                             >
-                                {savingCustomOutdatedArgs ? <Loader2 className="spin" size={16} /> : <Check size={16} />}
-                                {savingCustomOutdatedArgs ? t('settings.buttons.saving') : t('settings.buttons.save')}
+                                {savingCustomOutdatedArgs ? (
+                                    <Loader2 className="spin" size={16} />
+                                ) : (
+                                    <Check size={16} />
+                                )}
+                                {savingCustomOutdatedArgs ? t("settings.buttons.saving") : t("settings.buttons.save")}
                             </button>
                         </div>
                     </div>

@@ -84,10 +84,8 @@ func Get(translations map[string]string, key string, params map[string]string) s
 		return key
 	}
 
-	if params != nil {
-		for param, paramValue := range params {
-			value = strings.ReplaceAll(value, "{{"+param+"}}", paramValue)
-		}
+	for param, paramValue := range params {
+		value = strings.ReplaceAll(value, "{{"+param+"}}", paramValue)
 	}
 
 	return value

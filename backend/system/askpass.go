@@ -87,12 +87,12 @@ func (m *Manager) Setup() error {
 // Cleanup removes the askpass helper script
 func (m *Manager) Cleanup() {
 	if m.askpassPath != "" {
-		os.Remove(m.askpassPath)
+		_ = os.Remove(m.askpassPath)
 		m.askpassPath = ""
 	}
 	// Clean up temporary username file
 	tmpFile := fmt.Sprintf("/tmp/wailbrew-sudo-user-%d.tmp", os.Getpid())
-	os.Remove(tmpFile)
+	_ = os.Remove(tmpFile)
 }
 
 // GetPath returns the path to the askpass helper script

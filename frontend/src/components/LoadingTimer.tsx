@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 interface LoadingTimerProps {
     readonly startTime: number;
@@ -12,9 +12,5 @@ export function LoadingTimer({ startTime }: LoadingTimerProps) {
         return () => clearInterval(id);
     }, [startTime]);
 
-    return (
-        <div className="loading-timer">
-            ⏱️ {(elapsed / 1000).toFixed(2)}s
-        </div>
-    );
+    return <div className="loading-timer">⏱️ {(elapsed / 1000).toFixed(2)}s</div>;
 }

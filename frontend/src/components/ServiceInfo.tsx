@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Check, Copy } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { ServiceEntry } from "./ServicesTable";
+import { useTranslation } from "react-i18next";
+import type { ServiceEntry } from "./ServicesTable";
 
 interface ServiceInfoProps {
     service: ServiceEntry | null;
@@ -18,13 +19,15 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({ service }) => {
     }, [service?.name, service?.pid]);
 
     if (!service) {
-        return <p><strong>{t("services.noSelection")}</strong></p>;
+        return (
+            <p>
+                <strong>{t("services.noSelection")}</strong>
+            </p>
+        );
     }
 
     const known = ["started", "stopped", "error", "scheduled", "none", "other", "unknown"];
-    const statusLabel = known.includes(service.status)
-        ? t(`services.status.${service.status}`)
-        : service.status;
+    const statusLabel = known.includes(service.status) ? t(`services.status.${service.status}`) : service.status;
 
     const handleCopyPid = async () => {
         if (!service.pid) return;
@@ -47,9 +50,15 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({ service }) => {
 
     return (
         <>
-            <p><strong>{service.name}</strong></p>
-            <p>{t("services.statusLabel")}: {statusLabel || t("common.notAvailable")}</p>
-            <p>{t("services.user")}: {service.user || t("common.notAvailable")}</p>
+            <p>
+                <strong>{service.name}</strong>
+            </p>
+            <p>
+                {t("services.statusLabel")}: {statusLabel || t("common.notAvailable")}
+            </p>
+            <p>
+                {t("services.user")}: {service.user || t("common.notAvailable")}
+            </p>
             {service.status === "started" && service.pid ? (
                 <p style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     {t("services.pid")}: {service.pid}

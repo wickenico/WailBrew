@@ -8,7 +8,7 @@ package system
 void setDockBadge(const char* label) {
     // Convert to NSString BEFORE dispatch to avoid race condition
     NSString *badgeLabel = label != NULL ? [NSString stringWithUTF8String:label] : @"";
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         @autoreleasepool {
             NSApplication *app = [NSApplication sharedApplication];
@@ -16,16 +16,16 @@ void setDockBadge(const char* label) {
                 NSLog(@"WailBrew: NSApplication not available for dock badge");
                 return;
             }
-            
+
             NSDockTile *dockTile = [app dockTile];
             if (dockTile == nil) {
                 NSLog(@"WailBrew: DockTile not available");
                 return;
             }
-            
+
             [dockTile setBadgeLabel:badgeLabel];
             [dockTile display]; // Force refresh
-            
+
             NSLog(@"WailBrew: Dock badge set to '%@'", badgeLabel);
         }
     });
@@ -39,17 +39,17 @@ void setDockBadgeSync(const char* label) {
             NSLog(@"WailBrew: NSApplication not available for dock badge (sync)");
             return;
         }
-        
+
         NSDockTile *dockTile = [app dockTile];
         if (dockTile == nil) {
             NSLog(@"WailBrew: DockTile not available (sync)");
             return;
         }
-        
+
         NSString *badgeLabel = label != NULL ? [NSString stringWithUTF8String:label] : @"";
         [dockTile setBadgeLabel:badgeLabel];
         [dockTile display]; // Force refresh
-        
+
         NSLog(@"WailBrew: Dock badge set to '%@' (sync)", badgeLabel);
     }
 }

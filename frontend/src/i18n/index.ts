@@ -1,69 +1,67 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-
-import en from './locales/en.json';
-import de from './locales/de.json';
-import fr from './locales/fr.json';
-import tr from './locales/tr.json';
+import i18n from "i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from "react-i18next";
+import de from "./locales/de.json";
+import en from "./locales/en.json";
+import es from "./locales/es.json";
+import fr from "./locales/fr.json";
+import he from "./locales/he.json";
+import ko from "./locales/ko.json";
+import pt_BR from "./locales/pt_BR.json";
+import ru from "./locales/ru.json";
+import tr from "./locales/tr.json";
 import zhCN from "./locales/zhCN.json";
 import zhTW from "./locales/zhTW.json";
-import pt_BR from './locales/pt_BR.json';
-import ru from './locales/ru.json';
-import ko from './locales/ko.json';
-import he from './locales/he.json';
-import es from './locales/es.json';
 
 const resources = {
-  en: {
-    translation: en
-  },
-  de: {
-    translation: de
-  },
-  fr: {
-    translation: fr
-  },
-  tr: {
-    translation: tr,
-  },
-  zhCN: {
-    translation: zhCN,
-  },
-  zhTW: {
-    translation: zhTW,
-  },
-  pt_BR: {
-    translation: pt_BR,
-  },
-  ru: {
-    translation: ru,
-  },
-  ko: {
-    translation: ko,
-  },
-  he: {
-    translation: he,
-  },
-  es: {
-    translation: es,
-  },
+    en: {
+        translation: en,
+    },
+    de: {
+        translation: de,
+    },
+    fr: {
+        translation: fr,
+    },
+    tr: {
+        translation: tr,
+    },
+    zhCN: {
+        translation: zhCN,
+    },
+    zhTW: {
+        translation: zhTW,
+    },
+    pt_BR: {
+        translation: pt_BR,
+    },
+    ru: {
+        translation: ru,
+    },
+    ko: {
+        translation: ko,
+    },
+    he: {
+        translation: he,
+    },
+    es: {
+        translation: es,
+    },
 };
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: 'en',
-    debug: false,
-    interpolation: {
-      escapeValue: false,
-    },
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-    },
-  });
+i18n.use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+        resources,
+        fallbackLng: "en",
+        debug: false,
+        interpolation: {
+            escapeValue: false,
+        },
+        detection: {
+            order: ["localStorage", "navigator", "htmlTag"],
+            caches: ["localStorage"],
+        },
+    });
 
 export default i18n;

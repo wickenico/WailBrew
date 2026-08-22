@@ -1,5 +1,6 @@
 import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, TrendingUp } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GetInstalledDependencies, GetInstalledDependents } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
@@ -21,7 +22,10 @@ interface AnalyticsData {
 }
 
 // Session-level cache: survives re-renders, reset on page reload
-interface CacheEntry { analytics: AnalyticsData | null; brewPageUrl: string | null; }
+interface CacheEntry {
+    analytics: AnalyticsData | null;
+    brewPageUrl: string | null;
+}
 const analyticsCache = new Map<string, CacheEntry>();
 
 const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view, onSelectDependency }) => {
@@ -39,13 +43,12 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const dependencies = packageEntry?.dependencies || [];
     const conflicts = packageEntry?.conflicts?.filter(Boolean) || [];
 
-    const isValidUrl = (url: string) =>
-        url && (url.startsWith('http://') || url.startsWith('https://'));
+    const isValidUrl = (url: string) => url && (url.startsWith("http://") || url.startsWith("https://"));
 
     const shortenUrl = (url: string) => {
         try {
             const u = new URL(url);
-            return u.hostname + (u.pathname !== '/' ? u.pathname : '');
+            return u.hostname + (u.pathname !== "/" ? u.pathname : "");
         } catch {
             return url;
         }
@@ -143,7 +146,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         if (!showInstalledDeps || !packageEntry?.name) return;
         setLoadingInstalledDeps(true);
         GetInstalledDependencies(packageEntry.name)
-            .then(deps => setInstalledDeps(deps ?? []))
+            .then((deps) => setInstalledDeps(deps ?? []))
             .catch(() => setInstalledDeps([]))
             .finally(() => setLoadingInstalledDeps(false));
     }, [showInstalledDeps, packageEntry?.name]);
@@ -153,7 +156,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         if (!showInstalledDependents || !packageEntry?.name) return;
         setLoadingInstalledDependents(true);
         GetInstalledDependents(packageEntry.name)
-            .then(deps => setInstalledDependents(deps ?? []))
+            .then((deps) => setInstalledDependents(deps ?? []))
             .catch(() => setInstalledDependents([]))
             .finally(() => setLoadingInstalledDependents(false));
     }, [showInstalledDependents, packageEntry?.name]);
@@ -163,7 +166,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const getInstallCount = (period: "30d" | "90d" | "365d"): number => {
         if (!analytics?.install?.[period]) return 0;
         const periodData = analytics.install[period];
-        const mainPackage = Object.keys(periodData).find(key => !key.includes('--HEAD'));
+        const mainPackage = Object.keys(periodData).find((key) => !key.includes("--HEAD"));
         return mainPackage ? periodData[mainPackage] : 0;
     };
 
@@ -173,32 +176,29 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             <div className="pi-container">
                 <div className="pi-empty">
                     <span className="pi-empty-icon">📦</span>
-                    <span className="pi-empty-text">{t('packageInfo.noSelection')}</span>
+                    <span className="pi-empty-text">{t("packageInfo.noSelection")}</span>
                 </div>
             </div>
         );
     }
 
     const isLoading = loadingDetailsFor === packageEntry.name;
-    const typeLabel = packageEntry.isCask ? 'Cask' : 'Formula';
-    const typeBadgeClass = packageEntry.isCask ? 'pi-type-badge cask' : 'pi-type-badge formula';
+    const typeLabel = packageEntry.isCask ? "Cask" : "Formula";
+    const typeBadgeClass = packageEntry.isCask ? "pi-type-badge cask" : "pi-type-badge formula";
 
     return (
         <div className="pi-container">
             {/* ── Left: main info ──────────────────────────────── */}
             <div className="pi-main">
-
                 {/* Header — always visible immediately */}
                 <div className="pi-header">
                     <div className="pi-header-left">
                         <span className="pi-name">{packageEntry.name}</span>
-                        {packageEntry.isCask !== undefined && (
-                            <span className={typeBadgeClass}>{typeLabel}</span>
-                        )}
+                        {packageEntry.isCask !== undefined && <span className={typeBadgeClass}>{typeLabel}</span>}
                         {packageEntry.isInstalled && (
-                            <span className="pi-installed-badge">{t('packageInfo.installed')}</span>
+                            <span className="pi-installed-badge">{t("packageInfo.installed")}</span>
                         )}
-                        {view !== 'all' && packageEntry.installedVersion && (
+                        {view !== "all" && packageEntry.installedVersion && (
                             <span className="pi-version-badge">{packageEntry.installedVersion}</span>
                         )}
                     </div>
@@ -214,23 +214,25 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                 {/* Meta rows — always show structure, skeleton values while loading */}
                 <div className="pi-meta">
                     {/* Version/Status row */}
-                    {view === 'all' ? (
+                    {view === "all" ? (
                         <div className="pi-row">
-                            <span className="pi-row-label">{t('packageInfo.status')}</span>
-                            <span className={`pi-status-value ${packageEntry.isInstalled ? 'installed' : 'not-installed'}`}>
-                                {packageEntry.isInstalled ? t('packageInfo.installed') : t('packageInfo.notInstalled')}
+                            <span className="pi-row-label">{t("packageInfo.status")}</span>
+                            <span
+                                className={`pi-status-value ${packageEntry.isInstalled ? "installed" : "not-installed"}`}
+                            >
+                                {packageEntry.isInstalled ? t("packageInfo.installed") : t("packageInfo.notInstalled")}
                             </span>
                         </div>
                     ) : packageEntry.latestVersion && packageEntry.latestVersion !== packageEntry.installedVersion ? (
                         <div className="pi-row">
-                            <span className="pi-row-label">{t('packageInfo.labelLatest')}</span>
+                            <span className="pi-row-label">{t("packageInfo.labelLatest")}</span>
                             <span className="pi-latest-badge standalone">→ {packageEntry.latestVersion}</span>
                         </div>
                     ) : null}
 
                     {/* Homepage */}
                     <div className="pi-row">
-                        <span className="pi-row-label">{t('packageInfo.labelHomepage')}</span>
+                        <span className="pi-row-label">{t("packageInfo.labelHomepage")}</span>
                         {isLoading ? (
                             <span className="pi-skel pi-skel-url" />
                         ) : packageEntry.homepage && isValidUrl(packageEntry.homepage) ? (
@@ -242,73 +244,87 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                                 {shortenUrl(packageEntry.homepage)}
                                 <ExternalLink size={10} className="pi-link-icon" />
                             </span>
-                        ) : <span className="pi-row-value" style={{ opacity: 0.35 }}>--</span>}
+                        ) : (
+                            <span className="pi-row-value" style={{ opacity: 0.35 }}>
+                                --
+                            </span>
+                        )}
                     </div>
 
                     {/* Brew page */}
                     <div className="pi-row">
-                        <span className="pi-row-label">{t('packageInfo.labelBrewPage')}</span>
+                        <span className="pi-row-label">{t("packageInfo.labelBrewPage")}</span>
                         {loadingAnalytics ? (
                             <span className="pi-skel pi-skel-url" />
                         ) : brewPageUrl ? (
-                            <span
-                                className="pi-link"
-                                onClick={() => BrowserOpenURL(brewPageUrl)}
-                                title={brewPageUrl}
-                            >
+                            <span className="pi-link" onClick={() => BrowserOpenURL(brewPageUrl)} title={brewPageUrl}>
                                 {shortenUrl(brewPageUrl)}
                                 <ExternalLink size={10} className="pi-link-icon" />
                             </span>
-                        ) : <span className="pi-row-value" style={{ opacity: 0.35 }}>--</span>}
+                        ) : (
+                            <span className="pi-row-value" style={{ opacity: 0.35 }}>
+                                --
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 {/* ── Dependencies — skeleton chips while loading ── */}
                 <div className="pi-section">
                     <div className="pi-chips-row">
-                        <span className="pi-chips-label">{t('packageInfo.labelDeps')}</span>
+                        <span className="pi-chips-label">{t("packageInfo.labelDeps")}</span>
                         <div className="pi-chips">
                             {isLoading ? (
                                 <>
-                                    <span className="pi-skel pi-skel-chip" style={{ width: '52px' }} />
-                                    <span className="pi-skel pi-skel-chip" style={{ width: '72px' }} />
-                                    <span className="pi-skel pi-skel-chip" style={{ width: '40px' }} />
+                                    <span className="pi-skel pi-skel-chip" style={{ width: "52px" }} />
+                                    <span className="pi-skel pi-skel-chip" style={{ width: "72px" }} />
+                                    <span className="pi-skel pi-skel-chip" style={{ width: "40px" }} />
                                 </>
                             ) : dependencies.length > 0 ? (
-                                dependencies.map(dep => (
+                                dependencies.map((dep) =>
                                     onSelectDependency ? (
                                         <span
                                             key={dep}
                                             className="pi-chip clickable"
                                             onClick={() => onSelectDependency(dep)}
                                             title={dep}
-                                        >{dep}</span>
+                                        >
+                                            {dep}
+                                        </span>
                                     ) : (
-                                        <span key={dep} className="pi-chip" title={dep}>{dep}</span>
-                                    )
-                                ))
+                                        <span key={dep} className="pi-chip" title={dep}>
+                                            {dep}
+                                        </span>
+                                    ),
+                                )
                             ) : (
-                                <span className="pi-chip" style={{ opacity: 0.35 }}>--</span>
+                                <span className="pi-chip" style={{ opacity: 0.35 }}>
+                                    --
+                                </span>
                             )}
                         </div>
                     </div>
 
                     {!isLoading && conflicts.length > 0 && (
                         <div className="pi-chips-row">
-                            <span className="pi-chips-label">{t('packageInfo.labelConflicts')}</span>
+                            <span className="pi-chips-label">{t("packageInfo.labelConflicts")}</span>
                             <div className="pi-chips">
-                                {conflicts.map(c => (
+                                {conflicts.map((c) =>
                                     onSelectDependency ? (
                                         <span
                                             key={c}
                                             className="pi-chip conflict clickable"
                                             onClick={() => onSelectDependency(c)}
                                             title={c}
-                                        >{c}</span>
+                                        >
+                                            {c}
+                                        </span>
                                     ) : (
-                                        <span key={c} className="pi-chip conflict" title={c}>{c}</span>
-                                    )
-                                ))}
+                                        <span key={c} className="pi-chip conflict" title={c}>
+                                            {c}
+                                        </span>
+                                    ),
+                                )}
                             </div>
                         </div>
                     )}
@@ -320,25 +336,28 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                         {/* Dependencies: brew deps --installed */}
                         <div className="installed-deps-section">
                             <button
-                                className={`installed-deps-toggle${showInstalledDeps ? ' open' : ''}`}
+                                className={`installed-deps-toggle${showInstalledDeps ? " open" : ""}`}
                                 onClick={() => {
-                                    setShowInstalledDeps(prev => !prev);
+                                    setShowInstalledDeps((prev) => !prev);
                                     setShowInstalledDependents(false);
                                 }}
                             >
                                 <GitBranch size={11} />
-                                <span>{t('packageInfo.installedDepsTitle')}</span>
-                                <ChevronDown size={11} className={`installed-deps-chevron${showInstalledDeps ? ' rotated' : ''}`} />
+                                <span>{t("packageInfo.installedDepsTitle")}</span>
+                                <ChevronDown
+                                    size={11}
+                                    className={`installed-deps-chevron${showInstalledDeps ? " rotated" : ""}`}
+                                />
                             </button>
 
                             {showInstalledDeps && (
                                 <div className="installed-deps-list">
                                     {loadingInstalledDeps ? (
-                                        <span className="installed-dep-loading">{t('common.loading')}</span>
+                                        <span className="installed-dep-loading">{t("common.loading")}</span>
                                     ) : installedDeps.length === 0 ? (
-                                        <span className="installed-dep-none">{t('packageInfo.installedDepsNone')}</span>
+                                        <span className="installed-dep-none">{t("packageInfo.installedDepsNone")}</span>
                                     ) : (
-                                        installedDeps.map(dep => (
+                                        installedDeps.map((dep) => (
                                             <span
                                                 key={dep}
                                                 className="installed-dep-chip"
@@ -356,25 +375,30 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                         {/* Dependents: brew uses --installed */}
                         <div className="installed-deps-section">
                             <button
-                                className={`installed-deps-toggle${showInstalledDependents ? ' open' : ''}`}
+                                className={`installed-deps-toggle${showInstalledDependents ? " open" : ""}`}
                                 onClick={() => {
-                                    setShowInstalledDependents(prev => !prev);
+                                    setShowInstalledDependents((prev) => !prev);
                                     setShowInstalledDeps(false);
                                 }}
                             >
-                                <GitBranch size={11} style={{ transform: 'scaleY(-1)' }} />
-                                <span>{t('packageInfo.installedDependentsTitle')}</span>
-                                <ChevronDown size={11} className={`installed-deps-chevron${showInstalledDependents ? ' rotated' : ''}`} />
+                                <GitBranch size={11} style={{ transform: "scaleY(-1)" }} />
+                                <span>{t("packageInfo.installedDependentsTitle")}</span>
+                                <ChevronDown
+                                    size={11}
+                                    className={`installed-deps-chevron${showInstalledDependents ? " rotated" : ""}`}
+                                />
                             </button>
 
                             {showInstalledDependents && (
                                 <div className="installed-deps-list">
                                     {loadingInstalledDependents ? (
-                                        <span className="installed-dep-loading">{t('common.loading')}</span>
+                                        <span className="installed-dep-loading">{t("common.loading")}</span>
                                     ) : installedDependents.length === 0 ? (
-                                        <span className="installed-dep-none">{t('packageInfo.installedDependentsNone')}</span>
+                                        <span className="installed-dep-none">
+                                            {t("packageInfo.installedDependentsNone")}
+                                        </span>
                                     ) : (
-                                        installedDependents.map(dep => (
+                                        installedDependents.map((dep) => (
                                             <span
                                                 key={dep}
                                                 className="installed-dep-chip"
@@ -395,25 +419,38 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             {/* ── Right: Analytics (layout unchanged) ─────────── */}
             <div className="package-analytics">
                 {loadingAnalytics ? (
-                    <div className="analytics-loading">{t('packageInfo.loadingAnalytics')}</div>
+                    <div className="analytics-loading">{t("packageInfo.loadingAnalytics")}</div>
                 ) : (
                     <>
                         <div className="analytics-header">
                             <BarChart3 size={16} />
-                            <span>{t('packageInfo.downloadStatistics')}</span>
+                            <span>{t("packageInfo.downloadStatistics")}</span>
                         </div>
                         <div className="analytics-stats">
                             {(["30d", "90d", "365d"] as const).map((period, i) => {
                                 const count = getInstallCount(period);
                                 const isPlaceholder = !analytics;
-                                const icons = [<Calendar size={18} />, <TrendingUp size={18} />, <BarChart3 size={18} />];
-                                const labels = [t('packageInfo.last30Days'), t('packageInfo.last90Days'), t('packageInfo.last365Days')];
+                                const icons = [
+                                    <Calendar key="30d" size={18} />,
+                                    <TrendingUp key="90d" size={18} />,
+                                    <BarChart3 key="365d" size={18} />,
+                                ];
+                                const labels = [
+                                    t("packageInfo.last30Days"),
+                                    t("packageInfo.last90Days"),
+                                    t("packageInfo.last365Days"),
+                                ];
                                 return (
-                                    <div key={period} className={`analytics-stat${isPlaceholder ? ' analytics-stat-placeholder' : ''}`}>
+                                    <div
+                                        key={period}
+                                        className={`analytics-stat${isPlaceholder ? " analytics-stat-placeholder" : ""}`}
+                                    >
                                         <div className="stat-icon">{icons[i]}</div>
                                         <div className="stat-content">
                                             <div className="stat-label">{labels[i]}</div>
-                                            <div className="stat-value">{isPlaceholder ? '--' : formatNumber(count)}</div>
+                                            <div className="stat-value">
+                                                {isPlaceholder ? "--" : formatNumber(count)}
+                                            </div>
                                         </div>
                                     </div>
                                 );

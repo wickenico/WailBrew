@@ -1,5 +1,6 @@
 import { Copy } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { PreviewBrewCommand } from "../../wailsjs/go/main/App";
@@ -27,7 +28,21 @@ interface ConfirmDialogProps {
     commandSpec?: CommandSpec;
 }
 
-const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm, onCancel, confirmLabel, cancelLabel, destructive, dependents, checkboxLabel, checkboxHint, checkboxChecked, onCheckboxChange, commandSpec }) => {
+const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
+    open,
+    message,
+    onConfirm,
+    onCancel,
+    confirmLabel,
+    cancelLabel,
+    destructive,
+    dependents,
+    checkboxLabel,
+    checkboxHint,
+    checkboxChecked,
+    onCheckboxChange,
+    commandSpec,
+}) => {
     const { t } = useTranslation();
     const [command, setCommand] = useState<string>("");
 
@@ -55,26 +70,28 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
                 if (!cancelled) setCommand("");
             });
 
-        return () => { cancelled = true; };
+        return () => {
+            cancelled = true;
+        };
     }, [open, action, targetKey, isCask, zap]);
 
     if (!open) return null;
 
-    const defaultConfirmLabel = confirmLabel || t('buttons.yes');
-    const defaultCancelLabel = cancelLabel || t('buttons.cancel');
+    const defaultConfirmLabel = confirmLabel || t("buttons.yes");
+    const defaultCancelLabel = cancelLabel || t("buttons.cancel");
 
     const handleCopyCommand = async () => {
         try {
             await navigator.clipboard.writeText(command);
-            toast.success(t('dialogs.commandCopied'), {
+            toast.success(t("dialogs.commandCopied"), {
                 duration: 2000,
-                position: 'bottom-center',
+                position: "bottom-center",
             });
         } catch (err) {
-            console.error('Failed to copy command:', err);
-            toast.error(t('logDialog.copyFailed'), {
+            console.error("Failed to copy command:", err);
+            toast.error(t("logDialog.copyFailed"), {
                 duration: 2000,
-                position: 'bottom-center',
+                position: "bottom-center",
             });
         }
     };
@@ -86,11 +103,13 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
                 {dependents && dependents.length > 0 && (
                     <div className="confirm-dependents-warning">
                         <span className="confirm-dependents-title">
-                            ⚠ {t('dialogs.dependentsWarning', { count: dependents.length })}
+                            ⚠ {t("dialogs.dependentsWarning", { count: dependents.length })}
                         </span>
                         <div className="confirm-dependents-chips">
-                            {dependents.map(dep => (
-                                <span key={dep} className="confirm-dependent-chip">{dep}</span>
+                            {dependents.map((dep) => (
+                                <span key={dep} className="confirm-dependent-chip">
+                                    {dep}
+                                </span>
                             ))}
                         </div>
                     </div>
@@ -110,15 +129,17 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
                 )}
                 {command && (
                     <div className="confirm-command">
-                        <span className="confirm-command-label">{t('dialogs.commandPreview')}</span>
+                        <span className="confirm-command-label">{t("dialogs.commandPreview")}</span>
                         <div className="confirm-command-row">
-                            <code className="confirm-command-text" dir="ltr">{command}</code>
+                            <code className="confirm-command-text" dir="ltr">
+                                {command}
+                            </code>
                             <button
                                 type="button"
                                 className="confirm-command-copy"
                                 onClick={handleCopyCommand}
-                                title={t('dialogs.copyCommand')}
-                                aria-label={t('dialogs.copyCommand')}
+                                title={t("dialogs.copyCommand")}
+                                aria-label={t("dialogs.copyCommand")}
                             >
                                 <Copy size={14} />
                             </button>
@@ -126,10 +147,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
                     </div>
                 )}
                 <div className="confirm-actions">
-                    <button
-                        className={destructive ? "destructive" : ""}
-                        onClick={onConfirm}
-                    >
+                    <button className={destructive ? "destructive" : ""} onClick={onConfirm}>
                         {defaultConfirmLabel}
                     </button>
                     <button onClick={onCancel}>{defaultCancelLabel}</button>
@@ -139,4 +157,4 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, message, onConfirm,
     );
 };
 
-export default ConfirmDialog; 
+export default ConfirmDialog;

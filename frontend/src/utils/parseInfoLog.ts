@@ -15,7 +15,10 @@ export interface ParsedInfo {
 export function parseInfoLog(log: string | null): ParsedInfo | null {
     if (!log) return null;
 
-    const lines = log.split("\n").map((line) => line.trim()).filter(Boolean);
+    const lines = log
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
     if (lines.length === 0) return null;
 
     const entries: Array<{ label: string; value: string }> = [];
@@ -60,7 +63,6 @@ export function parseInfoLog(log: string | null): ParsedInfo | null {
 
         if (line.startsWith("/")) {
             entries.push({ label: "Path", value: line });
-            continue;
         }
     }
 

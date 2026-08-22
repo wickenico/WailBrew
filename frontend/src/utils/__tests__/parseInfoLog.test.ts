@@ -171,9 +171,7 @@ describe("parseInfoLog", () => {
 
         it("does not produce entries with garbled PATH variable content from Caveats", () => {
             const result = parseInfoLog(RUSTUP_INFO);
-            const garbledEntry = result?.entries.find(
-                (e) => e.label.includes("echo") || e.value.includes("$PATH"),
-            );
+            const garbledEntry = result?.entries.find((e) => e.label.includes("echo") || e.value.includes("$PATH"));
             expect(garbledEntry).toBeUndefined();
         });
     });

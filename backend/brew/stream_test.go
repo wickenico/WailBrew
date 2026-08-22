@@ -9,7 +9,7 @@ func TestRunStreamingCommand_Success(t *testing.T) {
 	cmd := exec.Command("/bin/sh", "-c", "echo out1; echo err1 >&2; echo out2")
 
 	var stdoutLines, stderrLines []string
-	phase, err, stderrText := runStreamingCommand(cmd,
+	phase, stderrText, err := runStreamingCommand(cmd,
 		func(line string) { stdoutLines = append(stdoutLines, line) },
 		func(line string) { stderrLines = append(stderrLines, line) },
 	)
@@ -34,7 +34,7 @@ func TestRunStreamingCommand_Success(t *testing.T) {
 func TestRunStreamingCommand_RunFailure(t *testing.T) {
 	cmd := exec.Command("/bin/sh", "-c", "echo boom >&2; exit 1")
 
-	phase, err, stderrText := runStreamingCommand(cmd, nil, nil)
+	phase, stderrText, err := runStreamingCommand(cmd, nil, nil)
 
 	if phase != phaseRun {
 		t.Fatalf("expected phaseRun, got %v", phase)
@@ -50,7 +50,7 @@ func TestRunStreamingCommand_RunFailure(t *testing.T) {
 func TestRunStreamingCommand_StartFailure(t *testing.T) {
 	cmd := exec.Command("/nonexistent-binary-should-not-exist")
 
-	phase, err, _ := runStreamingCommand(cmd, nil, nil)
+	phase, _, err := runStreamingCommand(cmd, nil, nil)
 
 	if phase != phaseStart {
 		t.Fatalf("expected phaseStart, got %v", phase)

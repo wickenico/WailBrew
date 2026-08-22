@@ -649,7 +649,7 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 	cmd := exec.Command(s.brewPath, "update")
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, _ := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommand(cmd,
 		func(line string) {
 			s.eventEmitter.Emit("homebrewUpdateProgress", s.getBackendMsg("backend.homebrewUpdate.output", map[string]string{"line": line}))
 		},
@@ -686,7 +686,7 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 
 func (s *serviceImpl) GetHomebrewCaskVersion() (string, error) {
 	if err := s.validateFunc(); err != nil {
-		return "", fmt.Errorf("Homebrew validation failed: %v", err)
+		return "", fmt.Errorf("homebrew validation failed: %v", err)
 	}
 
 	infoOutput, err := s.executor.RunStdoutOnly("info", "--cask", "--json=v2", "wailbrew")

@@ -158,7 +158,7 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 	cmd := exec.Command(s.brewPath, BuildInstallArgs(packageName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, stderrStr := runStreamingCommand(cmd,
+	phase, stderrStr, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("📦 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("packageInstallProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -222,7 +222,7 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, _ := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("packageUninstallProgress", fmt.Sprintf("🗑️ %s", line)) },
 		func(line string) { s.eventEmitter.Emit("packageUninstallProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -264,7 +264,7 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, err, stderrStr := runStreamingCommand(cmd,
+	phase, stderrStr, err := runStreamingCommand(cmd,
 		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -360,7 +360,7 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 	// Track which packages were updated (especially wailbrew)
 	updatedPackages := make(map[string]bool)
 
-	phase, err, stderrStr := runStreamingCommand(cmd,
+	phase, stderrStr, err := runStreamingCommand(cmd,
 		func(line string) {
 			s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
 			if detectWailbrewSelfUpdate(line) {
@@ -457,7 +457,7 @@ func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
 	// Track which packages are being updated
 	updatedPackages := make(map[string]bool)
 
-	phase, err, _ := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommand(cmd,
 		func(line string) {
 			s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
 			if detectWailbrewSelfUpdate(line) {
