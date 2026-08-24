@@ -400,9 +400,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
         const virtualRows = rowVirtualizer.getVirtualItems();
         const columnCount = multiSelectMode ? columns.length + 1 : columns.length;
         const bottomSpacerHeight =
-            virtualRows.length > 0
-                ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
-                : 0;
+            virtualRows.length > 0 ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end : 0;
 
         const renderCellContent = (pkg: PackageEntry, col: { key: string; label: string }) => {
             if (col.key === "favorite") {
@@ -638,8 +636,11 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                 </thead>
                                 <tbody>
                                     {virtualRows.length > 0 && virtualRows[0].start > 0 && (
-                                        <tr aria-hidden="true" className="virtual-row-spacer">
-                                            <td colSpan={columnCount} style={{ height: virtualRows[0].start, padding: 0, border: "none" }} />
+                                        <tr className="virtual-row-spacer">
+                                            <td
+                                                colSpan={columnCount}
+                                                style={{ height: virtualRows[0].start, padding: 0, border: "none" }}
+                                            />
                                         </tr>
                                     )}
                                     {virtualRows.map((virtualRow) => {
@@ -738,8 +739,11 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                         );
                                     })}
                                     {virtualRows.length > 0 && bottomSpacerHeight > 0 && (
-                                        <tr aria-hidden="true" className="virtual-row-spacer">
-                                            <td colSpan={columnCount} style={{ height: bottomSpacerHeight, padding: 0, border: "none" }} />
+                                        <tr className="virtual-row-spacer">
+                                            <td
+                                                colSpan={columnCount}
+                                                style={{ height: bottomSpacerHeight, padding: 0, border: "none" }}
+                                            />
                                         </tr>
                                     )}
                                 </tbody>

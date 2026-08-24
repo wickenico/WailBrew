@@ -1248,7 +1248,9 @@ const WailBrewApp = () => {
         const query = debouncedSearchQuery.toLowerCase();
         return installedFilteredPackages
             .filter((pkg) => pkg.name.toLowerCase().includes(query))
-            .map((pkg) => (favorites.has(pkg.name) === !!pkg.isFavorite ? pkg : { ...pkg, isFavorite: favorites.has(pkg.name) }))
+            .map((pkg) =>
+                favorites.has(pkg.name) === !!pkg.isFavorite ? pkg : { ...pkg, isFavorite: favorites.has(pkg.name) },
+            )
             .filter((pkg) => !showFavoritesOnly || favorites.has(pkg.name));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [installedFilteredPackages, debouncedSearchQuery, favorites, showFavoritesOnly]);
