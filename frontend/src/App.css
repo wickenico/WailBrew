@@ -1273,7 +1273,7 @@ body {
   background: rgba(21, 101, 192, 0.2);
 }
 
-.package-table tbody tr:nth-child(even) {
+.package-table tbody tr.row-stripe {
   background: var(--table-row-stripe);
 }
 

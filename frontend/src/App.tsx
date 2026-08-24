@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import {
@@ -57,6 +57,7 @@ import {
     UpdateSelectedBrewPackages,
 } from "../wailsjs/go/main/App";
 import { EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
+import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import "./App.css";
 import "./style.css";
 
@@ -1232,19 +1233,25 @@ const WailBrewApp = () => {
 
     const activePackages = getActivePackages();
     const activeRepositories = getActiveRepositories();
+    const debouncedSearchQuery = useDebouncedValue(searchQuery, 200);
 
-    const installedFilteredPackages =
-        view === "installed"
-            ? activePackages.filter((pkg) => {
-                  if (installedFilter === "all") return true;
-                  return pkg.installReason === installedFilter;
-              })
-            : activePackages;
+    const installedFilteredPackages = useMemo(() => {
+        if (view !== "installed") return activePackages;
+        return activePackages.filter((pkg) => {
+            if (installedFilter === "all") return true;
+            return pkg.installReason === installedFilter;
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [view, activePackages, installedFilter]);
 
-    const filteredPackages = installedFilteredPackages
-        .filter((pkg) => pkg.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        .map((pkg) => ({ ...pkg, isFavorite: favorites.has(pkg.name) }))
-        .filter((pkg) => !showFavoritesOnly || pkg.isFavorite);
+    const filteredPackages = useMemo(() => {
+        const query = debouncedSearchQuery.toLowerCase();
+        return installedFilteredPackages
+            .filter((pkg) => pkg.name.toLowerCase().includes(query))
+            .map((pkg) => (favorites.has(pkg.name) === !!pkg.isFavorite ? pkg : { ...pkg, isFavorite: favorites.has(pkg.name) }))
+            .filter((pkg) => !showFavoritesOnly || favorites.has(pkg.name));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [installedFilteredPackages, debouncedSearchQuery, favorites, showFavoritesOnly]);
 
     const filteredRepositories = activeRepositories.filter((repo) =>
         repo.name.toLowerCase().includes(searchQuery.toLowerCase()),

@@ -1,3 +1,4 @@
+import { useVirtualizer } from "@tanstack/react-virtual";
 import {
     ArrowDown,
     ArrowUp,
@@ -15,6 +16,9 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import type { PackageEntry } from "../types";
+
+// Estimated row height in px, used as a starting point before rows are measured.
+const ESTIMATED_ROW_HEIGHT = 41;
 
 interface PackageTableProps {
     packages: PackageEntry[];
@@ -160,8 +164,11 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
         const selectedRowRef = useRef<HTMLTableRowElement>(null);
         const firstRowRef = useRef<HTMLTableRowElement>(null);
         const tableContainerRef = useRef<HTMLDivElement>(null);
+        const scrollContainerRef = useRef<HTMLDivElement>(null);
         const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
         const isKeyboardNavigating = useRef<boolean>(false);
+        // Pending focus request for a row that may not be mounted yet (virtualized list)
+        const pendingFocusIndexRef = useRef<number | null>(null);
 
         // Helper function to get column width based on key
         const getColumnWidth = (key: string): string => {
@@ -249,46 +256,6 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             });
         }, []);
 
-        // Expose focus method via ref
-        React.useImperativeHandle(
-            ref,
-            () =>
-                ({
-                    focus: () => {
-                        if (sortedPackages.length > 0) {
-                            setFocusedRowIndex(0);
-                            const firstRow = rowRefs.current.get(0);
-                            if (firstRow) {
-                                firstRow.focus();
-                                firstRow.scrollIntoView({ behavior: "smooth", block: "center" });
-                            }
-                        }
-                    },
-                }) as any,
-        );
-
-        // Handle arrow key navigation
-        const handleArrowKeyNavigation = (currentIndex: number, direction: "up" | "down") => {
-            const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-
-            // Don't go beyond boundaries
-            if (newIndex < 0 || newIndex >= sortedPackages.length) {
-                return;
-            }
-
-            isKeyboardNavigating.current = true;
-            setFocusedRowIndex(newIndex);
-            const targetRow = rowRefs.current.get(newIndex);
-            if (targetRow) {
-                targetRow.focus();
-                targetRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            }
-            // Reset flag after a short delay to allow scroll to complete
-            setTimeout(() => {
-                isKeyboardNavigating.current = false;
-            }, 300);
-        };
-
         // Handle column header click for sorting
         const handleSort = (key: string, sortable: boolean = true) => {
             // Don't sort on non-sortable columns
@@ -351,6 +318,63 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             sortedPackages.length > 0 &&
             sortedPackages.every((pkg) => selectedPackages.has(pkg.name));
 
+        // Virtualize rows so only the visible slice of a potentially huge (thousands of
+        // formulae) list is mounted in the DOM at any time.
+        const rowVirtualizer = useVirtualizer({
+            count: sortedPackages.length,
+            getScrollElement: () => scrollContainerRef.current,
+            estimateSize: () => ESTIMATED_ROW_HEIGHT,
+            overscan: 12,
+        });
+
+        // Focus a row by index, scrolling it into view first if it isn't mounted yet.
+        // Virtualized rows may not exist in the DOM, so the actual .focus() call happens
+        // either immediately (row already mounted) or from the row's ref callback once it mounts.
+        const focusRow = useCallback(
+            (index: number, align: "auto" | "center" | "start" | "end" = "auto") => {
+                pendingFocusIndexRef.current = index;
+                rowVirtualizer.scrollToIndex(index, { align });
+                const row = rowRefs.current.get(index);
+                if (row) {
+                    row.focus();
+                    pendingFocusIndexRef.current = null;
+                }
+            },
+            [rowVirtualizer],
+        );
+
+        // Expose focus method via ref
+        React.useImperativeHandle(
+            ref,
+            () =>
+                ({
+                    focus: () => {
+                        if (sortedPackages.length > 0) {
+                            setFocusedRowIndex(0);
+                            focusRow(0, "center");
+                        }
+                    },
+                }) as any,
+        );
+
+        // Handle arrow key navigation
+        const handleArrowKeyNavigation = (currentIndex: number, direction: "up" | "down") => {
+            const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+            // Don't go beyond boundaries
+            if (newIndex < 0 || newIndex >= sortedPackages.length) {
+                return;
+            }
+
+            isKeyboardNavigating.current = true;
+            setFocusedRowIndex(newIndex);
+            focusRow(newIndex, "auto");
+            // Reset flag after a short delay to allow scroll to complete
+            setTimeout(() => {
+                isKeyboardNavigating.current = false;
+            }, 300);
+        };
+
         // Scroll to selected row when selectedPackage changes (but not during keyboard navigation)
         const prevSelectedPackageRef = useRef<PackageEntry | null>(null);
         useEffect(() => {
@@ -366,17 +390,19 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                 const selectedIndex = sortedPackages.findIndex((pkg) => pkg.name === selectedPackage.name);
                 if (selectedIndex >= 0) {
                     setFocusedRowIndex(selectedIndex);
-                    const selectedRow = rowRefs.current.get(selectedIndex);
-                    if (selectedRow) {
-                        selectedRow.scrollIntoView({
-                            behavior: "smooth",
-                            block: "center",
-                        });
-                    }
+                    rowVirtualizer.scrollToIndex(selectedIndex, { align: "center" });
                 }
             }
             prevSelectedPackageRef.current = selectedPackage;
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [selectedPackage, sortedPackages]);
+
+        const virtualRows = rowVirtualizer.getVirtualItems();
+        const columnCount = multiSelectMode ? columns.length + 1 : columns.length;
+        const bottomSpacerHeight =
+            virtualRows.length > 0
+                ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
+                : 0;
 
         const renderCellContent = (pkg: PackageEntry, col: { key: string; label: string }) => {
             if (col.key === "favorite") {
@@ -501,7 +527,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                 )}
                 {packages.length > 0 && (
                     <div className="table-split-wrapper">
-                        <div className="table-scroll-x">
+                        <div className="table-scroll-x" ref={scrollContainerRef}>
                             <table className="package-table">
                                 <colgroup>
                                     {multiSelectMode && <col style={{ width: "50px" }} />}
@@ -611,7 +637,14 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedPackages.map((pkg, index) => {
+                                    {virtualRows.length > 0 && virtualRows[0].start > 0 && (
+                                        <tr aria-hidden="true" className="virtual-row-spacer">
+                                            <td colSpan={columnCount} style={{ height: virtualRows[0].start, padding: 0, border: "none" }} />
+                                        </tr>
+                                    )}
+                                    {virtualRows.map((virtualRow) => {
+                                        const index = virtualRow.index;
+                                        const pkg = sortedPackages[index];
                                         const isSelected = multiSelectMode
                                             ? selectedPackages.has(pkg.name)
                                             : selectedPackage?.name === pkg.name;
@@ -619,8 +652,10 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                         return (
                                             <tr
                                                 key={pkg.name}
+                                                data-index={index}
                                                 ref={(el) => {
                                                     if (el) {
+                                                        rowVirtualizer.measureElement(el);
                                                         rowRefs.current.set(index, el);
                                                         if (index === 0) {
                                                             firstRowRef.current = el;
@@ -628,11 +663,15 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                                         if (!multiSelectMode && selectedPackage?.name === pkg.name) {
                                                             selectedRowRef.current = el;
                                                         }
+                                                        if (pendingFocusIndexRef.current === index) {
+                                                            el.focus();
+                                                            pendingFocusIndexRef.current = null;
+                                                        }
                                                     } else {
                                                         rowRefs.current.delete(index);
                                                     }
                                                 }}
-                                                className={isSelected ? "selected" : ""}
+                                                className={`${isSelected ? "selected" : ""} ${index % 2 === 1 ? "row-stripe" : ""}`.trim()}
                                                 onClick={() => {
                                                     setFocusedRowIndex(index);
                                                     onSelect(pkg);
@@ -698,6 +737,11 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                             </tr>
                                         );
                                     })}
+                                    {virtualRows.length > 0 && bottomSpacerHeight > 0 && (
+                                        <tr aria-hidden="true" className="virtual-row-spacer">
+                                            <td colSpan={columnCount} style={{ height: bottomSpacerHeight, padding: 0, border: "none" }} />
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
