@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 interface LogDialogProps {
     open: boolean;
@@ -25,6 +26,9 @@ const LogDialog: React.FC<LogDialogProps> = ({
 }) => {
     const { t } = useTranslation();
     const logRef = useRef<HTMLDivElement>(null);
+    const boxRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(open, onClose, boxRef);
 
     // Auto-scroll to bottom when log content changes
     useEffect(() => {
@@ -133,10 +137,17 @@ const LogDialog: React.FC<LogDialogProps> = ({
 
     return (
         <div className="confirm-overlay">
-            <div className="confirm-box log-dialog-box">
+            <div
+                className="confirm-box log-dialog-box"
+                ref={boxRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="log-dialog-title"
+                tabIndex={-1}
+            >
                 {/* Title and badge - left aligned with badge beside */}
                 <div className="log-dialog-header">
-                    <p style={{ margin: 0 }}>
+                    <p id="log-dialog-title" style={{ margin: 0 }}>
                         <strong>{title}</strong>
                     </p>
                     {isRunning && (

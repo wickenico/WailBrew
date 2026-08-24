@@ -104,6 +104,18 @@ const Sidebar: React.FC<SidebarProps> = ({
         }
     };
 
+    const navigate = (v: View) => {
+        setView(v);
+        onClearSelection();
+    };
+
+    const handleNavKeyDown = (e: React.KeyboardEvent, v: View) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            navigate(v);
+        }
+    };
+
     // Language options with flags
     const languageOptions = {
         en: { flag: "🇬🇧", name: t("language.english") },
@@ -197,10 +209,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <ul>
                     <li
                         className={view === "installed" ? "active" : ""}
-                        onClick={() => {
-                            setView("installed");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("installed")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "installed")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}1</span>
                         <span>📦 {t("sidebar.installed")}</span>
@@ -208,10 +220,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "casks" ? "active" : ""}
-                        onClick={() => {
-                            setView("casks");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("casks")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "casks")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}2</span>
                         <span>🖥️ {t("sidebar.casks")}</span>
@@ -219,10 +231,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "updatable" ? "active" : ""}
-                        onClick={() => {
-                            setView("updatable");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("updatable")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "updatable")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}3</span>
                         <span>🔄 {t("sidebar.outdated")}</span>
@@ -230,10 +242,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "leaves" ? "active" : ""}
-                        onClick={() => {
-                            setView("leaves");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("leaves")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "leaves")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}4</span>
                         <span>🍃 {t("sidebar.leaves")}</span>
@@ -241,10 +253,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "repositories" ? "active" : ""}
-                        onClick={() => {
-                            setView("repositories");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("repositories")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "repositories")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}5</span>
                         <span>📂 {t("sidebar.repositories")}</span>
@@ -257,10 +269,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <ul>
                     <li
                         className={view === "all" ? "active" : ""}
-                        onClick={() => {
-                            setView("all");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("all")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "all")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}6</span>
                         <span>📚 {t("sidebar.allFormulae")}</span>
@@ -268,10 +280,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "allCasks" ? "active" : ""}
-                        onClick={() => {
-                            setView("allCasks");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("allCasks")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "allCasks")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}7</span>
                         <span>🖥️ {t("sidebar.allCasks")}</span>
@@ -284,20 +296,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <ul>
                     <li
                         className={view === "homebrew" ? "active" : ""}
-                        onClick={() => {
-                            setView("homebrew");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("homebrew")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "homebrew")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}8</span>
                         <span>🍺 {t("sidebar.homebrew")}</span>
                     </li>
                     <li
                         className={view === "services" ? "active" : ""}
-                        onClick={() => {
-                            setView("services");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("services")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "services")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}P</span>
                         <span>🚀 {t("sidebar.services")}</span>
@@ -305,20 +317,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "doctor" ? "active" : ""}
-                        onClick={() => {
-                            setView("doctor");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("doctor")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "doctor")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}9</span>
                         <span>🩺 {t("sidebar.doctor")}</span>
                     </li>
                     <li
                         className={view === "cleanup" ? "active" : ""}
-                        onClick={() => {
-                            setView("cleanup");
-                            onClearSelection();
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate("cleanup")}
+                        onKeyDown={(e) => handleNavKeyDown(e, "cleanup")}
                     >
                         <span className="sidebar-shortcut">{cmdKey}0</span>
                         <span>🧹 {t("sidebar.cleanup")}</span>

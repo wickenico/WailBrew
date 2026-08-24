@@ -1,9 +1,10 @@
 import { Copy } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { PreviewBrewCommand } from "../../wailsjs/go/main/App";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 export interface CommandSpec {
     action: "install" | "uninstall" | "upgrade" | "upgrade-selected" | "upgrade-all" | "tap" | "untap" | "trust";
@@ -45,6 +46,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
     const { t } = useTranslation();
     const [command, setCommand] = useState<string>("");
+    const boxRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(open, onCancel, boxRef);
 
     const action = commandSpec?.action;
     const targets = commandSpec?.targets;
@@ -98,8 +102,15 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
     return (
         <div className="confirm-overlay">
-            <div className="confirm-box">
-                <p>{message}</p>
+            <div
+                className="confirm-box"
+                ref={boxRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="confirm-dialog-message"
+                tabIndex={-1}
+            >
+                <p id="confirm-dialog-message">{message}</p>
                 {dependents && dependents.length > 0 && (
                     <div className="confirm-dependents-warning">
                         <span className="confirm-dependents-title">

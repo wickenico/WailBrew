@@ -550,6 +550,15 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                                 <th
                                                     key={col.key}
                                                     onClick={() => handleSort(col.key, isSortable)}
+                                                    aria-sort={
+                                                        isSortable
+                                                            ? isCurrentSort
+                                                                ? sortDirection === "asc"
+                                                                    ? "ascending"
+                                                                    : "descending"
+                                                                : "none"
+                                                            : undefined
+                                                    }
                                                     style={{
                                                         cursor: isSortable ? "pointer" : "default",
                                                         userSelect: "none",
