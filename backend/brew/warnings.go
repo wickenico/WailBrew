@@ -60,8 +60,10 @@ func ParseWarnings(warnings string) map[string]string {
 	var currentPackage string
 
 	for _, line := range lines {
-		// Check if line contains a formula/cask file path
-		// Format: /path/to/Taps/username/homebrew-tap/Formula/package-name.rb:12
+		// Check if line contains a formula/cask file path.
+		// homebrew-core and homebrew-cask (and other large taps) shard their
+		// Formula/Casks directory by the package's first character, so the
+		// path looks like .../Formula/j/jq.rb:12 rather than .../Formula/jq.rb:12.
 		if strings.Contains(line, "/Formula/") || strings.Contains(line, "/Casks/") {
 			// Save accumulated warning for the previous package before switching
 			if currentPackage != "" {
@@ -77,13 +79,16 @@ func ParseWarnings(warnings string) map[string]string {
 			}
 
 			if formulaPath != "" {
-				// Extract package name (remove .rb extension and line numbers)
+				// Extract package name (remove line numbers and .rb extension)
 				packageName := formulaPath
-				if idx := strings.Index(packageName, ".rb"); idx != -1 {
-					packageName = packageName[:idx]
-				}
 				if idx := strings.Index(packageName, ":"); idx != -1 {
 					packageName = packageName[:idx]
+				}
+				packageName = strings.TrimSuffix(packageName, ".rb")
+				// Drop any shard subdirectory (e.g. "j/jq" -> "jq") so the
+				// name matches the plain package names brew outdated reports.
+				if idx := strings.LastIndex(packageName, "/"); idx != -1 {
+					packageName = packageName[idx+1:]
 				}
 				currentPackage = packageName
 				currentWarning.Reset()
