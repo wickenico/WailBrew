@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile exported successfully to:\n%s",
       "openConfigFile": "Open Config File",
       "openConfigFailed": "Failed to Open Config",
+      "clearConfigFile": "Clear Config File",
+      "clearConfigConfirmTitle": "Clear Config File?",
+      "clearConfigConfirmMessage": "This will permanently delete your saved settings, including brew path, proxy, and window position. WailBrew will fall back to its defaults. This cannot be undone.",
+      "clearConfigFailed": "Failed to Clear Config",
+      "clearConfigSuccess": "Config Cleared",
+      "clearConfigSuccessMessage": "The config file has been removed. Defaults will be used from now on.",
       "viewSessionLogs": "View Session Logs..."
     },
     "help": {

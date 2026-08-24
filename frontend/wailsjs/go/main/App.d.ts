@@ -14,6 +14,8 @@ export function CheckHomebrewUpdate():Promise<Record<string, any>>;
 
 export function ClearBrewCache():Promise<void>;
 
+export function ClearConfigFile():Promise<void>;
+
 export function DownloadAndInstallUpdate(arg1:string):Promise<void>;
 
 export function ExportBrewfile(arg1:string):Promise<void>;

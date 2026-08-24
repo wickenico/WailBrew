@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile erfolgreich exportiert nach:\n%s",
       "openConfigFile": "Konfigurationsdatei öffnen",
       "openConfigFailed": "Fehler beim Öffnen der Konfiguration",
+      "clearConfigFile": "Konfigurationsdatei löschen",
+      "clearConfigConfirmTitle": "Konfigurationsdatei löschen?",
+      "clearConfigConfirmMessage": "Dadurch werden Ihre gespeicherten Einstellungen dauerhaft gelöscht, einschließlich Brew-Pfad, Proxy und Fensterposition. WailBrew verwendet danach wieder die Standardeinstellungen. Dies kann nicht rückgängig gemacht werden.",
+      "clearConfigFailed": "Fehler beim Löschen der Konfiguration",
+      "clearConfigSuccess": "Konfiguration gelöscht",
+      "clearConfigSuccessMessage": "Die Konfigurationsdatei wurde entfernt. Ab jetzt werden die Standardeinstellungen verwendet.",
       "viewSessionLogs": "Sitzungsprotokolle anzeigen..."
     },
     "help": {

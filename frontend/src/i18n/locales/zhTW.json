@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile 已成功匯出至：\n%s",
       "openConfigFile": "開啟設定檔",
       "openConfigFailed": "開啟設定失敗",
+      "clearConfigFile": "清除設定檔",
+      "clearConfigConfirmTitle": "確定要清除設定檔嗎？",
+      "clearConfigConfirmMessage": "此操作將永久刪除已儲存的設定，包括 brew 路徑、代理伺服器與視窗位置。WailBrew 將回復為預設設定。此操作無法復原。",
+      "clearConfigFailed": "清除設定失敗",
+      "clearConfigSuccess": "設定已清除",
+      "clearConfigSuccessMessage": "設定檔已移除。此後將使用預設設定。",
       "viewSessionLogs": "檢視工作階段記錄..."
     },
     "help": {

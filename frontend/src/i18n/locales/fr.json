@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile exporté avec succès vers :\n%s",
       "openConfigFile": "Ouvrir le fichier de configuration",
       "openConfigFailed": "Échec de l'ouverture de la configuration",
+      "clearConfigFile": "Effacer le fichier de configuration",
+      "clearConfigConfirmTitle": "Effacer le fichier de configuration ?",
+      "clearConfigConfirmMessage": "Cela supprimera définitivement vos paramètres enregistrés, y compris le chemin de brew, le proxy et la position de la fenêtre. WailBrew reviendra à ses valeurs par défaut. Cette action est irréversible.",
+      "clearConfigFailed": "Échec de l'effacement de la configuration",
+      "clearConfigSuccess": "Configuration effacée",
+      "clearConfigSuccessMessage": "Le fichier de configuration a été supprimé. Les valeurs par défaut seront désormais utilisées.",
       "viewSessionLogs": "Afficher les journaux de session..."
     },
     "help": {

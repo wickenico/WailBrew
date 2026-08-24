@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile 已成功导出到：\n%s",
       "openConfigFile": "打开配置文件",
       "openConfigFailed": "打开配置失败",
+      "clearConfigFile": "清除配置文件",
+      "clearConfigConfirmTitle": "确定要清除配置文件吗？",
+      "clearConfigConfirmMessage": "此操作将永久删除已保存的设置，包括 brew 路径、代理和窗口位置。WailBrew 将恢复为默认设置。此操作无法撤销。",
+      "clearConfigFailed": "清除配置失败",
+      "clearConfigSuccess": "配置已清除",
+      "clearConfigSuccessMessage": "配置文件已删除。此后将使用默认设置。",
       "viewSessionLogs": "查看会话日志..."
     },
     "help": {

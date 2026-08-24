@@ -17,6 +17,7 @@ type AppInterface interface {
 	GetTranslation(key string, params map[string]string) string
 	ExportBrewfile(filePath string) error
 	OpenConfigFile() error
+	ClearConfigFile() error
 }
 
 // Build creates the application menu
@@ -148,6 +149,33 @@ func Build(app AppInterface) *menu.Menu {
 				Message: fmt.Sprintf("Failed to open config file: %v", err),
 			})
 		}
+	})
+	ToolsMenu.AddText(getT("menu.tools.clearConfigFile"), nil, func(cd *menu.CallbackData) {
+		ctx := getCtx()
+		result, _ := rt.MessageDialog(ctx, rt.MessageDialogOptions{
+			Type:          rt.QuestionDialog,
+			Title:         getT("menu.tools.clearConfigConfirmTitle"),
+			Message:       getT("menu.tools.clearConfigConfirmMessage"),
+			Buttons:       []string{getT("buttons.yes"), getT("buttons.cancel")},
+			DefaultButton: getT("buttons.cancel"),
+			CancelButton:  getT("buttons.cancel"),
+		})
+		if result != getT("buttons.yes") {
+			return
+		}
+		if err := app.ClearConfigFile(); err != nil {
+			_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
+				Type:    rt.ErrorDialog,
+				Title:   getT("menu.tools.clearConfigFailed"),
+				Message: fmt.Sprintf("Failed to clear config file: %v", err),
+			})
+			return
+		}
+		_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
+			Type:    rt.InfoDialog,
+			Title:   getT("menu.tools.clearConfigSuccess"),
+			Message: getT("menu.tools.clearConfigSuccessMessage"),
+		})
 	})
 	ToolsMenu.AddSeparator()
 	ToolsMenu.AddText(getT("menu.tools.viewSessionLogs"), nil, func(cd *menu.CallbackData) {

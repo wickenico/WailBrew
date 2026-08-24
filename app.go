@@ -812,6 +812,24 @@ func (a *App) OpenConfigFile() error {
 	return nil
 }
 
+func (a *App) ClearConfigFile() error {
+	configPath, err := a.config.ResolvedPath()
+	if err != nil {
+		return fmt.Errorf("failed to get config path: %w", err)
+	}
+
+	if err := os.Remove(configPath); err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("failed to remove config file: %w", err)
+	}
+
+	*a.config = config.Config{}
+	if err := a.config.Load(); err != nil {
+		return fmt.Errorf("failed to reset config: %w", err)
+	}
+
+	return nil
+}
+
 // CONFIG OPERATIONS - Simple delegation to config
 
 var validLandingTabs = map[string]bool{

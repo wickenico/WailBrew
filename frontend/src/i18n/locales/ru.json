@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile успешно экспортирован в:\n%s",
       "openConfigFile": "Открыть файл конфигурации",
       "openConfigFailed": "Ошибка открытия конфигурации",
+      "clearConfigFile": "Очистить файл конфигурации",
+      "clearConfigConfirmTitle": "Очистить файл конфигурации?",
+      "clearConfigConfirmMessage": "Это безвозвратно удалит ваши сохранённые настройки, включая путь к brew, proxy и положение окна. WailBrew вернётся к значениям по умолчанию. Это действие нельзя отменить.",
+      "clearConfigFailed": "Не удалось очистить конфигурацию",
+      "clearConfigSuccess": "Конфигурация очищена",
+      "clearConfigSuccessMessage": "Файл конфигурации удалён. Отныне будут использоваться значения по умолчанию.",
       "viewSessionLogs": "Просмотр журналов сеанса..."
     },
     "help": {

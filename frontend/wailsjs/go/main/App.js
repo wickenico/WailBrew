@@ -22,6 +22,10 @@ export function ClearBrewCache() {
   return window['go']['main']['App']['ClearBrewCache']();
 }
 
+export function ClearConfigFile() {
+  return window['go']['main']['App']['ClearConfigFile']();
+}
+
 export function DownloadAndInstallUpdate(arg1) {
   return window['go']['main']['App']['DownloadAndInstallUpdate'](arg1);
 }

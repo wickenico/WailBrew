@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile יוצא בהצלחה אל:\n%s",
       "openConfigFile": "פתח קובץ הגדרות",
       "openConfigFailed": "פתיחת קובץ ההגדרות נכשלה",
+      "clearConfigFile": "נקה קובץ הגדרות",
+      "clearConfigConfirmTitle": "לנקות את קובץ ההגדרות?",
+      "clearConfigConfirmMessage": "פעולה זו תמחק לצמיתות את ההגדרות השמורות שלך, כולל נתיב ה-brew, ה-proxy ומיקום החלון. WailBrew יחזור לברירות המחדל שלו. לא ניתן לבטל פעולה זו.",
+      "clearConfigFailed": "ניקוי ההגדרות נכשל",
+      "clearConfigSuccess": "ההגדרות נוקו",
+      "clearConfigSuccessMessage": "קובץ ההגדרות הוסר. מעתה ואילך יעשה שימוש בברירות המחדל.",
       "viewSessionLogs": "צפה ביומני הפעלה..."
     },
     "help": {

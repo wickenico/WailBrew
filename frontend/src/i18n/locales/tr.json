@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile başarıyla dışa aktarıldı:\n%s",
       "openConfigFile": "Yapılandırma Dosyasını Aç",
       "openConfigFailed": "Yapılandırma Açılamadı",
+      "clearConfigFile": "Yapılandırma Dosyasını Temizle",
+      "clearConfigConfirmTitle": "Yapılandırma Dosyası Temizlensin mi?",
+      "clearConfigConfirmMessage": "Bu işlem, brew yolu, proxy ve pencere konumu dahil olmak üzere kaydedilmiş ayarlarınızı kalıcı olarak siler. WailBrew varsayılan ayarlara dönecektir. Bu işlem geri alınamaz.",
+      "clearConfigFailed": "Yapılandırma Temizlenemedi",
+      "clearConfigSuccess": "Yapılandırma Temizlendi",
+      "clearConfigSuccessMessage": "Yapılandırma dosyası kaldırıldı. Bundan sonra varsayılan ayarlar kullanılacak.",
       "viewSessionLogs": "Oturum Günlüklerini Görüntüle..."
     },
     "help": {

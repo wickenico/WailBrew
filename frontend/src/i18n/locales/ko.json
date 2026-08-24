@@ -318,6 +318,12 @@
       "exportMessage": "Brewfile이 다음 위치로 성공적으로 내보내졌습니다:\n%s",
       "openConfigFile": "구성 파일 열기",
       "openConfigFailed": "구성 열기 실패",
+      "clearConfigFile": "구성 파일 지우기",
+      "clearConfigConfirmTitle": "구성 파일을 지우시겠습니까?",
+      "clearConfigConfirmMessage": "brew 경로, 프록시, 창 위치를 포함한 저장된 설정이 영구적으로 삭제됩니다. WailBrew는 기본값으로 되돌아갑니다. 이 작업은 취소할 수 없습니다.",
+      "clearConfigFailed": "구성 지우기 실패",
+      "clearConfigSuccess": "구성이 지워졌습니다",
+      "clearConfigSuccessMessage": "구성 파일이 삭제되었습니다. 이제부터 기본값이 사용됩니다.",
       "viewSessionLogs": "세션 로그 보기..."
     },
     "help": {
