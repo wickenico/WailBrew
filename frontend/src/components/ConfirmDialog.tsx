@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -46,6 +46,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
     const { t } = useTranslation();
     const [command, setCommand] = useState<string>("");
+    const [copied, setCopied] = useState(false);
     const boxRef = useRef<HTMLDivElement>(null);
 
     useModalA11y(open, onCancel, boxRef);
@@ -60,6 +61,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     useEffect(() => {
         if (!open || !action) {
             setCommand("");
+            setCopied(false);
             return;
         }
 
@@ -87,6 +89,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     const handleCopyCommand = async () => {
         try {
             await navigator.clipboard.writeText(command);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
             toast.success(t("dialogs.commandCopied"), {
                 duration: 2000,
                 position: "bottom-center",
@@ -152,7 +156,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                                 title={t("dialogs.copyCommand")}
                                 aria-label={t("dialogs.copyCommand")}
                             >
-                                <Copy size={14} />
+                                {copied ? <Check size={14} /> : <Copy size={14} />}
                             </button>
                         </div>
                     </div>
