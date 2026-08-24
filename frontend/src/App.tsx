@@ -2784,8 +2784,8 @@ const WailBrewApp = () => {
                                 <PackageTable
                                     ref={view === "updatable" ? packageTableRef : null}
                                     packages={filteredPackages}
-                                onToggleFavorite={handleToggleFavorite}
-                                sortFavoritesToTop={sortFavoritesToTop}
+                                    onToggleFavorite={handleToggleFavorite}
+                                    sortFavoritesToTop={sortFavoritesToTop}
                                     selectedPackage={selectedPackage}
                                     loading={loading}
                                     onSelect={handleSelect}

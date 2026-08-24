@@ -541,7 +541,9 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                         )}
                                         {columns.map((col) => {
                                             const isSortable =
-                                                col.sortable !== false && col.key !== "actions" && col.key !== "favorite";
+                                                col.sortable !== false &&
+                                                col.key !== "actions" &&
+                                                col.key !== "favorite";
                                             const isCurrentSort = sortKey === col.key;
 
                                             return (
