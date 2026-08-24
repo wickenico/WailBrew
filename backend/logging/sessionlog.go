@@ -55,6 +55,17 @@ func (m *Manager) Get() string {
 	return strings.Join(m.logs, "\n")
 }
 
+// GetEntries returns a copy of the individual session log entries, in the
+// order they were appended, so callers can display or copy each one on its own.
+func (m *Manager) GetEntries() []string {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	entries := make([]string, len(m.logs))
+	copy(entries, m.logs)
+	return entries
+}
+
 // Clear clears all session logs
 func (m *Manager) Clear() {
 	m.mutex.Lock()

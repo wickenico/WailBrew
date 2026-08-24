@@ -100,6 +100,8 @@ export function GetOutdatedFlag():Promise<string>;
 
 export function GetProxy():Promise<string>;
 
+export function GetSessionLogEntries():Promise<Array<string>>;
+
 export function GetSessionLogs():Promise<string>;
 
 export function GetSortFavoritesToTop():Promise<boolean>;

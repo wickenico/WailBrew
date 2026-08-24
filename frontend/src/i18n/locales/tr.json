@@ -136,7 +136,10 @@
     "copy": "Kopyala",
     "copyToClipboard": "Günlükleri panoya kopyala",
     "copiedToClipboard": "Günlükler panoya kopyalandı!",
-    "copyFailed": "Günlükler kopyalanamadı"
+    "copyFailed": "Günlükler kopyalanamadı",
+    "copyEntry": "Bu girişi kopyala",
+    "noLogs": "Kullanılabilir günlük yok.",
+    "reportBug": "Hata bildir"
   },
   "packageInfo": {
     "loading": "(Yükleniyor...)",
@@ -408,7 +411,9 @@
     "newCask_other": "yeni casks",
     "and": " ve ",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "Yeni bir hata günlüğe kaydedildi",
+    "viewSessionLogs": "Günlükleri görüntüle"
   },
   "backgroundCheck": {
     "checkingNow": "Şimdi güncellemeler kontrol ediliyor...",

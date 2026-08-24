@@ -136,7 +136,10 @@
     "copy": "복사",
     "copyToClipboard": "로그를 클립보드에 복사",
     "copiedToClipboard": "로그가 클립보드에 복사되었습니다!",
-    "copyFailed": "로그 복사 실패"
+    "copyFailed": "로그 복사 실패",
+    "copyEntry": "이 항목 복사",
+    "noLogs": "사용 가능한 로그가 없습니다.",
+    "reportBug": "버그 신고"
   },
   "packageInfo": {
     "loading": "(로딩 중…)",
@@ -408,7 +411,9 @@
     "newCask_other": "새 Casks",
     "and": " 및 ",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "새로운 오류가 기록되었습니다",
+    "viewSessionLogs": "로그 보기"
   },
   "backgroundCheck": {
     "checkingNow": "지금 업데이트 확인 중...",

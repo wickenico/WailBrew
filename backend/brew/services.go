@@ -26,6 +26,7 @@ type ServicesService struct {
 	getBrewEnvFunc func() []string
 	getBackendMsg  func(string, map[string]string) string
 	eventEmitter   EventEmitter
+	logCallback    func(string)
 }
 
 // NewServicesService creates a new services service.
@@ -35,6 +36,7 @@ func NewServicesService(
 	getBrewEnvFunc func() []string,
 	getBackendMsg func(string, map[string]string) string,
 	eventEmitter EventEmitter,
+	logCallback func(string),
 ) *ServicesService {
 	return &ServicesService{
 		executor:       executor,
@@ -42,6 +44,7 @@ func NewServicesService(
 		getBrewEnvFunc: getBrewEnvFunc,
 		getBackendMsg:  getBackendMsg,
 		eventEmitter:   eventEmitter,
+		logCallback:    logCallback,
 	}
 }
 
@@ -149,7 +152,7 @@ func (s *ServicesService) runServiceAction(ctx context.Context, action, name str
 	cmd := exec.CommandContext(ctx, s.brewPath, "services", action, name)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, _, err := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommandLogged(s.logCallback, cmd,
 		func(line string) { s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("📦 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("serviceActionProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)

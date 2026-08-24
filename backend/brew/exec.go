@@ -12,6 +12,12 @@ import (
 	"WailBrew/backend/system"
 )
 
+// maxLoggedErrorOutput caps how much failure output is kept in the session
+// log per entry. Homebrew errors (dependency conflicts, Ruby backtraces) are
+// often several KB, so this is generous rather than the previous 500 chars,
+// while still bounding memory use given the log buffer keeps up to 10000 entries.
+const maxLoggedErrorOutput = 4000
+
 // cacheEntry holds a cached command result
 type cacheEntry struct {
 	output    []byte
@@ -157,8 +163,8 @@ func (e *Executor) runActual(timeout time.Duration, stdoutOnly bool, args ...str
 	if e.logCallback != nil {
 		if err != nil {
 			outputStr := brewCommandErrorOutput(output, err)
-			if len(outputStr) > 500 {
-				outputStr = outputStr[:500] + "... (truncated)"
+			if len(outputStr) > maxLoggedErrorOutput {
+				outputStr = outputStr[:maxLoggedErrorOutput] + "... (truncated)"
 			}
 			go e.logCallback(fmt.Sprintf("ERROR: %s failed: %v\nOutput: %s", cmdStr, err, outputStr))
 		} else {

@@ -136,7 +136,10 @@
     "copy": "העתק",
     "copyToClipboard": "העתק יומן ללוח",
     "copiedToClipboard": "היומן הועתק ללוח!",
-    "copyFailed": "העתקת היומן נכשלה"
+    "copyFailed": "העתקת היומן נכשלה",
+    "copyEntry": "העתק רשומה זו",
+    "noLogs": "אין יומנים זמינים.",
+    "reportBug": "דווח על באג"
   },
   "packageInfo": {
     "loading": "(טוען…)",
@@ -408,7 +411,9 @@
     "newCask_other": "casks חדשים",
     "and": " ו-",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "נרשמה שגיאה חדשה",
+    "viewSessionLogs": "הצג יומנים"
   },
   "backgroundCheck": {
     "checkingNow": "בודק עדכונים עכשיו...",

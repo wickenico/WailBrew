@@ -136,7 +136,10 @@
     "copy": "複製",
     "copyToClipboard": "複製日誌到剪貼簿",
     "copiedToClipboard": "日誌已複製到剪貼簿！",
-    "copyFailed": "複製日誌失敗"
+    "copyFailed": "複製日誌失敗",
+    "copyEntry": "複製此條目",
+    "noLogs": "暫無日誌。",
+    "reportBug": "回報錯誤"
   },
   "packageInfo": {
     "loading": "(載入中…)",
@@ -408,7 +411,9 @@
     "newCask_other": "個新 casks",
     "and": "和",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "記錄了一個新錯誤",
+    "viewSessionLogs": "查看日誌"
   },
   "backgroundCheck": {
     "checkingNow": "正在檢查更新...",

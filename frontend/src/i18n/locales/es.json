@@ -136,7 +136,10 @@
     "copy": "Copiar",
     "copyToClipboard": "Copiar logs a portapapeles",
     "copiedToClipboard": "Logs copiados al portapapeles!",
-    "copyFailed": "No se pudo copiar logs"
+    "copyFailed": "No se pudo copiar logs",
+    "copyEntry": "Copiar esta entrada",
+    "noLogs": "No hay logs disponibles.",
+    "reportBug": "Informar de un error"
   },
   "packageInfo": {
     "loading": "(Cargando…)",
@@ -408,7 +411,9 @@
     "newCask_other": "Nuevas programas GUI",
     "and": " y ",
     "newFormula": "programa CLI",
-    "newCask": "programa GUI"
+    "newCask": "programa GUI",
+    "sessionLogError": "Se ha registrado un nuevo error",
+    "viewSessionLogs": "Ver logs"
   },
   "backgroundCheck": {
     "checkingNow": "Buscando actualizaciones ahora...",

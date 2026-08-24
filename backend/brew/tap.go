@@ -66,6 +66,7 @@ type TapService struct {
 	getBrewEnvFunc func() []string
 	getBackendMsg  func(string, map[string]string) string
 	eventEmitter   EventEmitter
+	logCallback    func(string)
 }
 
 // NewTapService creates a new tap service
@@ -74,12 +75,14 @@ func NewTapService(
 	getBrewEnvFunc func() []string,
 	getBackendMsg func(string, map[string]string) string,
 	eventEmitter EventEmitter,
+	logCallback func(string),
 ) *TapService {
 	return &TapService{
 		brewPath:       brewPath,
 		getBrewEnvFunc: getBrewEnvFunc,
 		getBackendMsg:  getBackendMsg,
 		eventEmitter:   eventEmitter,
+		logCallback:    logCallback,
 	}
 }
 
@@ -93,7 +96,7 @@ func (s *TapService) TapBrewRepository(ctx context.Context, repositoryName, repo
 	cmd := exec.Command(s.brewPath, BuildTapArgs(repositoryName, repositoryURL)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, stderrStr, err := runStreamingCommand(cmd,
+	phase, stderrStr, err := runStreamingCommandLogged(s.logCallback, cmd,
 		func(line string) { s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("📦 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("repositoryTapProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -143,7 +146,7 @@ func (s *TapService) UntapBrewRepository(ctx context.Context, repositoryName str
 	cmd := exec.Command(s.brewPath, BuildUntapArgs(repositoryName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, _, err := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommandLogged(s.logCallback, cmd,
 		func(line string) { s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("🗑️ %s", line)) },
 		func(line string) { s.eventEmitter.Emit("repositoryUntapProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)
@@ -184,7 +187,7 @@ func (s *TapService) TrustBrewTap(ctx context.Context, tapName string) string {
 	cmd := exec.Command(s.brewPath, BuildTrustArgs(tapName)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
-	phase, _, err := runStreamingCommand(cmd,
+	phase, _, err := runStreamingCommandLogged(s.logCallback, cmd,
 		func(line string) { s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("🔐 %s", line)) },
 		func(line string) { s.eventEmitter.Emit("repositoryTrustProgress", fmt.Sprintf("⚠️ %s", line)) },
 	)

@@ -2140,6 +2140,79 @@ body {
   box-sizing: border-box;
 }
 
+.log-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 8px;
+  margin: 0 -8px;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  transition: background var(--transition);
+}
+
+.log-entry:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.log-entry--error {
+  border-left-color: #ef5350;
+}
+
+.log-entry--error .log-entry-text {
+  color: #ef9a9a;
+}
+
+.log-entry--success {
+  border-left-color: #4CAF50;
+}
+
+.log-entry--success .log-entry-text {
+  color: #a5d6a7;
+}
+
+.log-entry--cache {
+  border-left-color: var(--accent);
+}
+
+.log-entry--cache .log-entry-text {
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+.log-entry-text {
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.log-entry-copy-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  padding: 3px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.log-entry:hover .log-entry-copy-btn,
+.log-entry:focus-within .log-entry-copy-btn,
+.log-entry-copy-btn:focus-visible {
+  opacity: 1;
+}
+
+.log-entry-copy-btn:hover {
+  background: rgba(80, 180, 255, 0.15);
+  border-color: rgba(80, 180, 255, 0.3);
+  color: var(--accent);
+}
+
 .log-output::-webkit-scrollbar {
   width: 14px;
   background: transparent;
@@ -2245,6 +2318,27 @@ body {
   border-color: rgba(80, 180, 255, 0.3);
   color: var(--accent);
   transform: translateY(-1px);
+}
+
+.log-report-bug-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.log-report-bug-button:hover {
+  background: rgba(239, 83, 80, 0.15);
+  border-color: rgba(239, 83, 80, 0.4);
+  color: #ef5350;
 }
 
 .log-dialog-actions {

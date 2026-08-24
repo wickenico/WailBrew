@@ -136,7 +136,10 @@
     "copy": "Копировать",
     "copyToClipboard": "Копировать логи в буфер обмена",
     "copiedToClipboard": "Логи скопированы в буфер обмена!",
-    "copyFailed": "Не удалось скопировать логи"
+    "copyFailed": "Не удалось скопировать логи",
+    "copyEntry": "Копировать эту запись",
+    "noLogs": "Логи отсутствуют.",
+    "reportBug": "Сообщить об ошибке"
   },
   "packageInfo": {
     "loading": "(Загрузка…)",
@@ -408,7 +411,9 @@
     "newCask_other": "новые casks",
     "and": " и ",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "Зафиксирована новая ошибка",
+    "viewSessionLogs": "Показать логи"
   },
   "backgroundCheck": {
     "checkingNow": "Проверка обновлений...",

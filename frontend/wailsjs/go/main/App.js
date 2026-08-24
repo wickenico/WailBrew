@@ -194,6 +194,10 @@ export function GetProxy() {
   return window['go']['main']['App']['GetProxy']();
 }
 
+export function GetSessionLogEntries() {
+  return window['go']['main']['App']['GetSessionLogEntries']();
+}
+
 export function GetSessionLogs() {
   return window['go']['main']['App']['GetSessionLogs']();
 }

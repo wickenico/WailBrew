@@ -1,4 +1,4 @@
-import { CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
+import { AlertTriangle, CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import {
     GetHomebrewVersion,
     GetInstalledDependents,
     GetLandingTab,
-    GetSessionLogs,
+    GetSessionLogEntries,
     GetSortFavoritesToTop,
     GetStartupDataWithUpdate,
     GetUninstallCaskWithZap,
@@ -171,7 +171,7 @@ const WailBrewApp = () => {
     const [showUpdate, setShowUpdate] = useState<boolean>(false);
     const [showRestart, setShowRestart] = useState<boolean>(false);
     const [showSessionLogs, setShowSessionLogs] = useState<boolean>(false);
-    const [sessionLogs, setSessionLogs] = useState<string>("");
+    const [sessionLogs, setSessionLogs] = useState<string[]>([]);
     const [appVersion, setAppVersion] = useState<string>("0.5.0");
     const updateCheckDone = useRef<boolean>(false);
     const lastSyncedLanguage = useRef<string>("en");
@@ -202,6 +202,19 @@ const WailBrewApp = () => {
     });
     const [isResizing, setIsResizing] = useState<boolean>(false);
     const sidebarRef = useRef<HTMLElement>(null);
+
+    const openSessionLogs = async () => {
+        try {
+            const logs = await GetSessionLogEntries();
+            setSessionLogs(logs || []);
+            setShowSessionLogs(true);
+        } catch (error) {
+            console.error("Failed to get session logs:", error);
+            setSessionLogs(["Failed to load session logs."]);
+            setShowSessionLogs(true);
+        }
+    };
+
     const customToastStyle = {
         background: "transparent",
         border: "none",
@@ -951,16 +964,38 @@ const WailBrewApp = () => {
         const unlistenShortcuts = EventsOn("showShortcuts", () => {
             setShowShortcuts((prev) => !prev);
         });
-        const unlistenSessionLogs = EventsOn("showSessionLogs", async () => {
-            try {
-                const logs = await GetSessionLogs();
-                setSessionLogs(logs || "No logs available.");
-                setShowSessionLogs(true);
-            } catch (error) {
-                console.error("Failed to get session logs:", error);
-                setSessionLogs("Failed to load session logs.");
-                setShowSessionLogs(true);
-            }
+        const unlistenSessionLogs = EventsOn("showSessionLogs", openSessionLogs);
+        const unlistenSessionLogError = EventsOn("sessionLogError", () => {
+            toast(
+                (t_obj) => (
+                    <div className="toast-notification">
+                        <div className="toast-leading-icon">
+                            <AlertTriangle size={20} color="#ef5350" />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>{t("toast.sessionLogError")}</div>
+                            <button
+                                onClick={() => {
+                                    toast.dismiss(t_obj.id);
+                                    openSessionLogs();
+                                }}
+                                className="toast-action-btn"
+                            >
+                                {t("toast.viewSessionLogs")}
+                            </button>
+                        </div>
+                        <button onClick={() => toast.dismiss(t_obj.id)} className="toast-dismiss-btn" title="Dismiss">
+                            <X size={18} />
+                        </button>
+                    </div>
+                ),
+                {
+                    id: "session-log-error",
+                    duration: 8000,
+                    position: "bottom-center",
+                    style: customToastStyle,
+                },
+            );
         });
         const unlistenNewPackages = EventsOn("newPackagesDiscovered", (data: string) => {
             try {
@@ -1095,6 +1130,7 @@ const WailBrewApp = () => {
             unlistenWailbrewUpdated();
             unlistenShortcuts();
             unlistenSessionLogs();
+            unlistenSessionLogError();
             unlistenNewPackages();
         };
     }, []);
@@ -3386,10 +3422,12 @@ const WailBrewApp = () => {
                     <LogDialog
                         open={showSessionLogs}
                         title={t("dialogs.sessionLogs")}
-                        log={sessionLogs}
+                        log={sessionLogs.join("\n")}
+                        entries={sessionLogs}
+                        appVersion={appVersion}
                         onClose={() => {
                             setShowSessionLogs(false);
-                            setSessionLogs("");
+                            setSessionLogs([]);
                         }}
                     />
                     <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} appVersion={appVersion} />

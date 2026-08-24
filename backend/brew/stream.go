@@ -2,6 +2,7 @@ package brew
 
 import (
 	"bufio"
+	"fmt"
 	"os/exec"
 	"strings"
 	"sync"
@@ -82,6 +83,41 @@ func runStreamingCommand(cmd *exec.Cmd, onStdout, onStderr func(line string)) (p
 		return phaseRun, stderrOutput.String(), waitErr
 	}
 	return phaseNone, stderrOutput.String(), nil
+}
+
+// runStreamingCommandLogged wraps runStreamingCommand with the same
+// session-log entries Executor.runActual writes for cached/pooled commands,
+// so streaming install/uninstall/update/tap/service flows also show up in
+// the session log instead of being invisible to it. logCallback may be nil.
+func runStreamingCommandLogged(logCallback func(string), cmd *exec.Cmd, onStdout, onStderr func(line string)) (phase streamPhase, stderrText string, err error) {
+	cmdStr := "brew"
+	if len(cmd.Args) > 1 {
+		cmdStr = fmt.Sprintf("brew %s", joinArgs(cmd.Args[1:]))
+	}
+
+	if logCallback != nil {
+		go logCallback(fmt.Sprintf("Executing: %s", cmdStr))
+	}
+
+	phase, stderrText, err = runStreamingCommand(cmd, onStdout, onStderr)
+
+	if logCallback != nil {
+		if phase == phaseNone {
+			go logCallback(fmt.Sprintf("SUCCESS: %s completed", cmdStr))
+		} else {
+			outputStr := stderrText
+			if len(outputStr) > maxLoggedErrorOutput {
+				outputStr = outputStr[:maxLoggedErrorOutput] + "... (truncated)"
+			}
+			msg := fmt.Sprintf("ERROR: %s failed: %v", cmdStr, err)
+			if outputStr != "" {
+				msg += fmt.Sprintf("\nOutput: %s", outputStr)
+			}
+			go logCallback(msg)
+		}
+	}
+
+	return phase, stderrText, err
 }
 
 // detectWailbrewSelfUpdate reports whether a line of `brew upgrade`/`brew

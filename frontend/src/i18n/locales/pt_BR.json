@@ -136,7 +136,10 @@
     "copy": "Copiar",
     "copyToClipboard": "Copiar logs para a área de transferência",
     "copiedToClipboard": "Logs copiados para a área de transferência!",
-    "copyFailed": "Falha ao copiar logs"
+    "copyFailed": "Falha ao copiar logs",
+    "copyEntry": "Copiar esta entrada",
+    "noLogs": "Nenhum log disponível.",
+    "reportBug": "Reportar erro"
   },
   "packageInfo": {
     "loading": "(Carregando…)",
@@ -408,7 +411,9 @@
     "newCask_other": "novos casks",
     "and": " e ",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "Um novo erro foi registrado",
+    "viewSessionLogs": "Ver logs"
   },
   "backgroundCheck": {
     "checkingNow": "Verificando atualizações agora...",

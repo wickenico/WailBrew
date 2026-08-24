@@ -189,7 +189,7 @@ func NewApp() *App {
 		brewEnvNoAutoUpdate,
 	}
 	basicEnv = append(basicEnv, brew.HomebrewConfigEnv()...)
-	app.brewExecutor = brew.NewExecutor(brewPath, basicEnv, app.sessionLogManager.Append)
+	app.brewExecutor = brew.NewExecutor(brewPath, basicEnv, app.appendSessionLog)
 
 	// Initialize i18n manager
 	var err error
@@ -464,6 +464,30 @@ func (a *App) GetSessionLogs() string {
 		return a.sessionLogManager.Get()
 	}
 	return ""
+}
+
+// GetSessionLogEntries returns the individual session log entries so the
+// frontend can display and copy each logged command on its own.
+func (a *App) GetSessionLogEntries() []string {
+	if a.sessionLogManager != nil {
+		return a.sessionLogManager.GetEntries()
+	}
+	return []string{}
+}
+
+// appendSessionLog appends an entry to the session log and, when it is an
+// error, emits "sessionLogError" so the frontend can surface a discoverable
+// indicator instead of the user having to already know that
+// Tools -> View Session Logs exists.
+func (a *App) appendSessionLog(entry string) {
+	if a.sessionLogManager == nil {
+		return
+	}
+	a.sessionLogManager.Append(entry)
+
+	if a.eventEmitter != nil && strings.HasPrefix(entry, "ERROR:") {
+		a.eventEmitter.Emit("sessionLogError", entry)
+	}
 }
 
 // BREW OPERATIONS - Delegation to brew.Service
@@ -946,7 +970,7 @@ func (a *App) SetProxy(proxy string) error {
 
 	// Update brew executor with new environment
 	if a.brewExecutor != nil {
-		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.appendSessionLog)
 	}
 
 	return nil
@@ -1015,7 +1039,7 @@ func (a *App) SetMirrorSource(gitRemote string, bottleDomain string) error {
 
 	// Update brew executor with new environment
 	if a.brewExecutor != nil {
-		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.appendSessionLog)
 	}
 
 	return nil
@@ -1081,7 +1105,7 @@ func (a *App) SetCaskAppDir(appDir string) error {
 
 	// Update brew executor with new environment
 	if a.brewExecutor != nil {
-		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.appendSessionLog)
 	}
 
 	return nil
@@ -1123,7 +1147,7 @@ func (a *App) SetCustomCaskOpts(opts string) error {
 
 	// Update brew executor with new environment
 	if a.brewExecutor != nil {
-		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+		a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.appendSessionLog)
 	}
 
 	return nil
@@ -1181,13 +1205,13 @@ func (a *App) SetAdminUsername(username string) error {
 // again at runtime (e.g. after SetBrewPath) so a path change fully propagates to
 // the service layer without requiring an app restart.
 func (a *App) reconfigureBrew() {
-	a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.sessionLogManager.Append)
+	a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.appendSessionLog)
 
 	a.brewService = brew.NewService(
 		a.brewExecutor,
 		a.brewPath,
 		a.getBrewEnv,
-		a.sessionLogManager.Append,
+		a.appendSessionLog,
 		func() error { return a.brewExecutor.ValidateInstallation() },
 		func(key string, params map[string]string) string {
 			if a.i18nManager != nil {

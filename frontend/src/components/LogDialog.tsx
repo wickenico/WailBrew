@@ -1,9 +1,22 @@
-import { Copy } from "lucide-react";
+import { Bug, Check, Copy } from "lucide-react";
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { BrowserOpenURL, Environment } from "../../wailsjs/runtime";
 import { useModalA11y } from "../hooks/useModalA11y";
+
+// GitHub silently truncates very long prefilled issue bodies, so the embedded
+// log is capped and cut from the end (the most recent, most relevant entries).
+const MAX_BUG_REPORT_LOG_CHARS = 3000;
+const WAILBREW_ISSUES_URL = "https://github.com/wickenico/WailBrew/issues/new";
+
+// encodeURIComponent deliberately leaves ! ~ * ' ( ) unescaped (they're valid
+// unreserved URI characters), but Wails' BrowserOpenURL rejects any of them
+// outright as shell metacharacters before shelling out to `open`. Escape them
+// too so a log entry or template containing one doesn't break the whole link.
+const strictEncodeURIComponent = (value: string): string =>
+    encodeURIComponent(value).replace(/[!'()*~]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
 
 interface LogDialogProps {
     open: boolean;
@@ -13,7 +26,21 @@ interface LogDialogProps {
     isRunning?: boolean;
     clickablePackages?: string[];
     onPackageClick?: (packageName: string) => void;
+    /** When provided, each entry is rendered in its own hoverable, individually copyable row. */
+    entries?: string[];
+    /** Shown alongside the session log when reporting a bug from `entries`. */
+    appVersion?: string;
 }
+
+// Session log entries look like "[2026-08-24 12:00:00] ERROR: ...". Classify
+// by the marker right after the timestamp so rows can be color-coded.
+const getEntrySeverity = (entry: string): "error" | "success" | "cache" | "info" => {
+    const afterTimestamp = entry.replace(/^\[[^\]]*\]\s*/, "");
+    if (afterTimestamp.startsWith("ERROR:")) return "error";
+    if (afterTimestamp.startsWith("SUCCESS:")) return "success";
+    if (afterTimestamp.startsWith("CACHE HIT:")) return "cache";
+    return "info";
+};
 
 const LogDialog: React.FC<LogDialogProps> = ({
     open,
@@ -23,12 +50,47 @@ const LogDialog: React.FC<LogDialogProps> = ({
     isRunning = false,
     clickablePackages = [],
     onPackageClick,
+    entries,
+    appVersion,
 }) => {
     const { t } = useTranslation();
     const logRef = useRef<HTMLDivElement>(null);
     const boxRef = useRef<HTMLDivElement>(null);
+    const [copiedEntryIndex, setCopiedEntryIndex] = useState<number | null>(null);
 
     useModalA11y(open, onClose, boxRef);
+
+    const handleReportBug = async () => {
+        const fullLog = (entries ?? []).join("\n");
+        const truncated = fullLog.length > MAX_BUG_REPORT_LOG_CHARS;
+        const logExcerpt = truncated ? fullLog.slice(-MAX_BUG_REPORT_LOG_CHARS) : fullLog;
+
+        let platformLine = "";
+        try {
+            const env = await Environment();
+            platformLine = `- Platform: ${env.platform} (${env.arch})\n`;
+        } catch {
+            // Environment info is a nice-to-have; proceed without it if it fails.
+        }
+
+        const body = [
+            "### Description",
+            "<!-- What happened? What did you expect to happen? -->",
+            "",
+            "### Environment",
+            appVersion ? `- WailBrew version: ${appVersion}\n${platformLine}` : platformLine,
+            "### Session Log",
+            truncated ? `_(showing the last ${MAX_BUG_REPORT_LOG_CHARS} characters)_` : "",
+            "```",
+            logExcerpt,
+            "```",
+        ]
+            .filter(Boolean)
+            .join("\n");
+
+        const url = `${WAILBREW_ISSUES_URL}?title=${strictEncodeURIComponent("Bug: ")}&body=${strictEncodeURIComponent(body)}`;
+        BrowserOpenURL(url);
+    };
 
     // Auto-scroll to bottom when log content changes
     useEffect(() => {
@@ -37,8 +99,57 @@ const LogDialog: React.FC<LogDialogProps> = ({
         }
     }, [log]);
 
+    const handleCopyEntry = async (entry: string, index: number) => {
+        try {
+            await navigator.clipboard.writeText(entry);
+            setCopiedEntryIndex(index);
+            setTimeout(() => setCopiedEntryIndex((current) => (current === index ? null : current)), 2000);
+            toast.success(t("logDialog.copiedToClipboard"), {
+                duration: 2000,
+                position: "bottom-center",
+            });
+        } catch (err) {
+            console.error("Failed to copy log entry:", err);
+            toast.error(t("logDialog.copyFailed"), {
+                duration: 2000,
+                position: "bottom-center",
+            });
+        }
+    };
+
+    // Render each session log entry in its own hoverable, individually copyable row
+    const renderEntries = () => {
+        if (!entries || entries.length === 0) {
+            return <div className="log-output">{t("logDialog.noLogs")}</div>;
+        }
+
+        return (
+            <div className="log-output" ref={logRef}>
+                {entries.map((entry, index) => (
+                    <div
+                        className={`log-entry log-entry--${getEntrySeverity(entry)}`}
+                        key={`entry-${index}-${entry.substring(0, 32)}`}
+                    >
+                        <span className="log-entry-text">{entry}</span>
+                        <button
+                            type="button"
+                            className="log-entry-copy-btn"
+                            onClick={() => handleCopyEntry(entry, index)}
+                            title={t("logDialog.copyEntry")}
+                            aria-label={t("logDialog.copyEntry")}
+                        >
+                            {copiedEntryIndex === index ? <Check size={13} /> : <Copy size={13} />}
+                        </button>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     // Render log with clickable package links
     const renderLogContent = () => {
+        if (entries) return renderEntries();
+
         if (!log) return null;
 
         // If no clickable packages, render as plain text
@@ -172,6 +283,17 @@ const LogDialog: React.FC<LogDialogProps> = ({
                             <span>✓</span>
                             <span>{t("logDialog.completed")}</span>
                         </div>
+                    )}
+                    {entries && entries.length > 0 && (
+                        <button
+                            type="button"
+                            onClick={handleReportBug}
+                            className="log-report-bug-button"
+                            title={t("logDialog.reportBug")}
+                        >
+                            <Bug size={14} />
+                            {t("logDialog.reportBug")}
+                        </button>
                     )}
                 </div>
 

@@ -136,7 +136,10 @@
     "copy": "Copy",
     "copyToClipboard": "Copy logs to clipboard",
     "copiedToClipboard": "Logs copied to clipboard!",
-    "copyFailed": "Failed to copy logs"
+    "copyFailed": "Failed to copy logs",
+    "copyEntry": "Copy this entry",
+    "noLogs": "No logs available.",
+    "reportBug": "Report Bug"
   },
   "packageInfo": {
     "loading": "(Loading…)",
@@ -435,7 +438,9 @@
     "newCask_other": "new casks",
     "and": " and ",
     "newFormula": "new formula(e)",
-    "newCask": "new cask(s)"
+    "newCask": "new cask(s)",
+    "sessionLogError": "A new error was logged",
+    "viewSessionLogs": "View Logs"
   },
   "backgroundCheck": {
     "checkingNow": "Checking for updates now...",

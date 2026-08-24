@@ -193,13 +193,14 @@ func NewService(
 		getOutdatedFlag,
 		getNoQuarantine,
 		getAutoRelaunch,
+		logFunc,
 	)
 
 	// Create tap service
-	tapService := NewTapService(brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter)
+	tapService := NewTapService(brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter, logFunc)
 
 	// Create services service
-	servicesService := NewServicesService(executor, brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter)
+	servicesService := NewServicesService(executor, brewPath, getBrewEnvFunc, getBackendMsg, eventEmitter, logFunc)
 
 	// Create startup service for optimized initial data loading
 	startupService := NewStartupService(listService, outdatedService, databaseService)
