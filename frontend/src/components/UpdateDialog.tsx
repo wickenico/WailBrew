@@ -1,9 +1,10 @@
 import { CheckCircle2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CheckForUpdates } from "../../wailsjs/go/main/App";
 import type { main } from "../../wailsjs/go/models";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 interface UpdateDialogProps {
     isOpen: boolean;
@@ -16,6 +17,9 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
     const [isChecking, setIsChecking] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [copySuccess, setCopySuccess] = useState(false);
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(isOpen, onClose, dialogRef);
 
     const checkForUpdates = async () => {
         setIsChecking(true);
@@ -85,9 +89,17 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
 
     return (
         <div className="about-overlay" onClick={onClose}>
-            <div className="about-dialog update-dialog" onClick={(e) => e.stopPropagation()}>
+            <div
+                className="about-dialog update-dialog"
+                ref={dialogRef}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="update-dialog-title"
+                tabIndex={-1}
+            >
                 <div className="about-header">
-                    <h2>{t("updateDialog.title")}</h2>
+                    <h2 id="update-dialog-title">{t("updateDialog.title")}</h2>
                 </div>
 
                 <div className="about-content">

@@ -1,7 +1,9 @@
 import type React from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import appIcon from "../assets/images/appicon_256.png";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 interface AboutDialogProps {
     open: boolean;
@@ -11,6 +13,9 @@ interface AboutDialogProps {
 
 const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) => {
     const { t } = useTranslation();
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(open, onClose, dialogRef);
 
     const handleLinkClick = (url: string) => {
         BrowserOpenURL(url);
@@ -27,9 +32,17 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
 
     return (
         <div className="about-overlay" onClick={onClose}>
-            <div className="about-dialog" onClick={(e) => e.stopPropagation()}>
+            <div
+                className="about-dialog"
+                ref={dialogRef}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="about-dialog-title"
+                tabIndex={-1}
+            >
                 <div className="about-header">
-                    <h2>{t("about.title")}</h2>
+                    <h2 id="about-dialog-title">{t("about.title")}</h2>
                 </div>
 
                 <div className="about-content">

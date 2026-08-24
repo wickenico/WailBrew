@@ -1,7 +1,8 @@
 import { Keyboard, X } from "lucide-react";
 import type React from "react";
-import { useEffect } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 interface ShortcutsDialogProps {
     open: boolean;
@@ -18,6 +19,9 @@ interface ShortcutSection {
 
 const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
     const { t } = useTranslation();
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(open, onClose, dialogRef);
 
     // Detect if user is on Mac
     const isMac =
@@ -25,23 +29,6 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
         (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"));
     const cmdKey = isMac ? "⌘" : "Ctrl";
     const shiftKey = isMac ? "⇧" : "Shift";
-
-    // Handle ESC key to close dialog
-    useEffect(() => {
-        if (!open) return;
-
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                event.preventDefault();
-                onClose();
-            }
-        };
-
-        globalThis.addEventListener("keydown", handleKeyDown);
-        return () => {
-            globalThis.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [open, onClose]);
 
     const sections: ShortcutSection[] = [
         {
@@ -98,19 +85,15 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
     if (!open) return null;
 
     return (
-        <div
-            className="shortcuts-dialog-overlay"
-            onClick={onClose}
-            role="button"
-            tabIndex={-1}
-            aria-label={t("buttons.close")}
-        >
+        <div className="shortcuts-dialog-overlay" onClick={onClose}>
             <div
                 className="shortcuts-dialog"
+                ref={dialogRef}
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("shortcuts.title")}
+                tabIndex={-1}
             >
                 <div className="shortcuts-dialog-header">
                     <div className="shortcuts-dialog-header-content">

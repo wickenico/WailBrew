@@ -1498,6 +1498,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 
 .clear-icon:hover {
@@ -4407,6 +4411,8 @@ body {
 
 .settings-card-header:focus {
   outline: none;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 2px rgba(79, 195, 247, 0.4);
 }
 
 .settings-card-icon {

@@ -870,8 +870,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         <p className="settings-card-description">{t("settings.landingTab.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.landingTab.label")}</label>
+                            <label htmlFor="settings-landing-tab">{t("settings.landingTab.label")}</label>
                             <select
+                                id="settings-landing-tab"
                                 value={newLandingTab}
                                 onChange={(e) => setNewLandingTab(e.target.value)}
                                 disabled={savingLandingTab}
@@ -1053,9 +1054,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         <p className="settings-card-description">{t("settings.brewPath.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.brewPath.currentPath")}</label>
+                            <label htmlFor="settings-brew-path">{t("settings.brewPath.currentPath")}</label>
                             <div className="settings-input-row">
                                 <input
+                                    id="settings-brew-path"
                                     type="text"
                                     value={newBrewPath}
                                     onChange={(e) => setNewBrewPath(e.target.value)}
@@ -1126,8 +1128,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         <p className="settings-card-description">{t("settings.mirrorSource.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.mirrorSource.selectMirror")}</label>
+                            <label htmlFor="settings-mirror-source">{t("settings.mirrorSource.selectMirror")}</label>
                             <select
+                                id="settings-mirror-source"
                                 value={mirrorSource}
                                 onChange={(e) => handleMirrorSourceChange(e.target.value)}
                                 disabled={savingMirror}
@@ -1144,8 +1147,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         {mirrorSource === "custom" && (
                             <div className="settings-custom-fields">
                                 <div className="settings-input-group">
-                                    <label>{t("settings.mirrorSource.customGitRemote")}</label>
+                                    <label htmlFor="settings-mirror-git-remote">
+                                        {t("settings.mirrorSource.customGitRemote")}
+                                    </label>
                                     <input
+                                        id="settings-mirror-git-remote"
                                         type="text"
                                         value={customGitRemote}
                                         onChange={(e) => setCustomGitRemote(e.target.value)}
@@ -1154,8 +1160,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                     />
                                 </div>
                                 <div className="settings-input-group">
-                                    <label>{t("settings.mirrorSource.customBottleDomain")}</label>
+                                    <label htmlFor="settings-mirror-bottle-domain">
+                                        {t("settings.mirrorSource.customBottleDomain")}
+                                    </label>
                                     <input
+                                        id="settings-mirror-bottle-domain"
                                         type="text"
                                         value={customBottleDomain}
                                         onChange={(e) => setCustomBottleDomain(e.target.value)}
@@ -1218,8 +1227,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         <p className="settings-card-description">{t("settings.proxy.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.proxy.currentProxy")}</label>
+                            <label htmlFor="settings-proxy">{t("settings.proxy.currentProxy")}</label>
                             <input
+                                id="settings-proxy"
                                 type="text"
                                 value={newProxy}
                                 onChange={(e) => {
@@ -1239,11 +1249,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 borderTop: "1px solid var(--wails-border, #eee)",
                             }}
                         >
-                            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <label
+                                htmlFor="settings-proxy-test-url"
+                                style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                            >
                                 <span>{t("settings.proxy.testConnection")}</span>
                             </label>
                             <div className="settings-input-row">
                                 <input
+                                    id="settings-proxy-test-url"
                                     type="text"
                                     value={testProxyUrl}
                                     onChange={(e) => setTestProxyUrl(e.target.value)}
@@ -1343,8 +1357,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         <p className="settings-card-description">{t("settings.outdatedFlag.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.outdatedFlag.selectFlag")}</label>
+                            <label htmlFor="settings-outdated-flag">{t("settings.outdatedFlag.selectFlag")}</label>
                             <select
+                                id="settings-outdated-flag"
                                 value={newOutdatedFlag}
                                 onChange={(e) => setNewOutdatedFlag(e.target.value)}
                                 disabled={savingOutdatedFlag}
@@ -1416,9 +1431,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         <p className="settings-card-description">{t("settings.caskAppDir.description")}</p>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.caskAppDir.currentDir")}</label>
+                            <label htmlFor="settings-cask-app-dir">{t("settings.caskAppDir.currentDir")}</label>
                             <div className="settings-input-row">
                                 <input
+                                    id="settings-cask-app-dir"
                                     type="text"
                                     value={newCaskAppDir || t("settings.caskAppDir.default")}
                                     readOnly
@@ -1502,8 +1518,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                         </div>
 
                         <div className="settings-input-group">
-                            <label>{t("settings.adminUsername.label")}</label>
+                            <label htmlFor="settings-admin-username">{t("settings.adminUsername.label")}</label>
                             <input
+                                id="settings-admin-username"
                                 type="text"
                                 value={newAdminUsername}
                                 onChange={(e) => setNewAdminUsername(e.target.value)}
@@ -1563,8 +1580,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         {/* Custom Cask Options */}
                         <div className="settings-input-group">
-                            <label>{t("settings.advancedOptions.customCaskOpts.label")}</label>
+                            <label htmlFor="settings-custom-cask-opts">
+                                {t("settings.advancedOptions.customCaskOpts.label")}
+                            </label>
                             <input
+                                id="settings-custom-cask-opts"
                                 type="text"
                                 value={newCustomCaskOpts}
                                 onChange={(e) => setNewCustomCaskOpts(e.target.value)}
@@ -1609,8 +1629,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         {/* Custom Outdated Arguments */}
                         <div className="settings-input-group">
-                            <label>{t("settings.advancedOptions.customOutdatedArgs.label")}</label>
+                            <label htmlFor="settings-custom-outdated-args">
+                                {t("settings.advancedOptions.customOutdatedArgs.label")}
+                            </label>
                             <input
+                                id="settings-custom-outdated-args"
                                 type="text"
                                 value={newCustomOutdatedArgs}
                                 onChange={(e) => setNewCustomOutdatedArgs(e.target.value)}

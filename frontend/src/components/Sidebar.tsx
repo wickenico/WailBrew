@@ -209,7 +209,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <ul>
                     <li
                         className={view === "installed" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("installed")}
                         onKeyDown={(e) => handleNavKeyDown(e, "installed")}
@@ -220,7 +219,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "casks" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("casks")}
                         onKeyDown={(e) => handleNavKeyDown(e, "casks")}
@@ -231,7 +229,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "updatable" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("updatable")}
                         onKeyDown={(e) => handleNavKeyDown(e, "updatable")}
@@ -242,7 +239,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "leaves" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("leaves")}
                         onKeyDown={(e) => handleNavKeyDown(e, "leaves")}
@@ -253,7 +249,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "repositories" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("repositories")}
                         onKeyDown={(e) => handleNavKeyDown(e, "repositories")}
@@ -269,7 +264,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <ul>
                     <li
                         className={view === "all" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("all")}
                         onKeyDown={(e) => handleNavKeyDown(e, "all")}
@@ -280,7 +274,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "allCasks" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("allCasks")}
                         onKeyDown={(e) => handleNavKeyDown(e, "allCasks")}
@@ -296,7 +289,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <ul>
                     <li
                         className={view === "homebrew" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("homebrew")}
                         onKeyDown={(e) => handleNavKeyDown(e, "homebrew")}
@@ -306,7 +298,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "services" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("services")}
                         onKeyDown={(e) => handleNavKeyDown(e, "services")}
@@ -317,7 +308,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "doctor" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("doctor")}
                         onKeyDown={(e) => handleNavKeyDown(e, "doctor")}
@@ -327,7 +317,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </li>
                     <li
                         className={view === "cleanup" ? "active" : ""}
-                        role="button"
                         tabIndex={0}
                         onClick={() => navigate("cleanup")}
                         onKeyDown={(e) => handleNavKeyDown(e, "cleanup")}

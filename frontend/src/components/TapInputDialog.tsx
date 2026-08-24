@@ -1,6 +1,7 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 interface TapInputDialogProps {
     open: boolean;
@@ -29,12 +30,9 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
     const [nameError, setNameError] = useState<string | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const boxRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (open && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [open]);
+    useModalA11y(open, onCancel, boxRef);
 
     useEffect(() => {
         if (!open) {
@@ -74,9 +72,6 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
         if (e.key === "Enter") {
             e.preventDefault();
             handleConfirm();
-        } else if (e.key === "Escape") {
-            e.preventDefault();
-            onCancel();
         }
     };
 
@@ -88,22 +83,20 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
         }
     };
 
-    const handleOverlayKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === "Escape") {
-            onCancel();
-        }
-    };
-
     return (
-        <div
-            className="confirm-overlay"
-            onClick={handleOverlayClick}
-            onKeyDown={handleOverlayKeyDown}
-            role="dialog"
-            tabIndex={-1}
-        >
-            <div className="confirm-box" onClick={(e) => e.stopPropagation()}>
-                <p style={{ marginBottom: "1rem" }}>{t("dialogs.tapInputTitle")}</p>
+        <div className="confirm-overlay" onClick={handleOverlayClick}>
+            <div
+                className="confirm-box"
+                ref={boxRef}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="tap-input-title"
+                tabIndex={-1}
+            >
+                <p id="tap-input-title" style={{ marginBottom: "1rem" }}>
+                    {t("dialogs.tapInputTitle")}
+                </p>
                 <div style={{ marginBottom: "1rem" }}>
                     <input
                         ref={inputRef}

@@ -24,13 +24,23 @@ const TitleBar = () => {
                 <span className="titlebar-title">WailBrew</span>
             </div>
             <div className="titlebar-controls" style={{ "--wails-draggable": "no-drag" } as any}>
-                <button className="titlebar-btn minimize" onClick={WindowMinimise} title="Minimize">
+                <button
+                    className="titlebar-btn minimize"
+                    onClick={WindowMinimise}
+                    title="Minimize"
+                    aria-label="Minimize"
+                >
                     <Minus size={16} />
                 </button>
-                <button className="titlebar-btn maximize" onClick={WindowToggleMaximise} title="Maximize">
+                <button
+                    className="titlebar-btn maximize"
+                    onClick={WindowToggleMaximise}
+                    title="Maximize"
+                    aria-label="Maximize"
+                >
                     <Square size={13} />
                 </button>
-                <button className="titlebar-btn close" onClick={Quit} title="Close">
+                <button className="titlebar-btn close" onClick={Quit} title="Close" aria-label="Close">
                     <X size={16} />
                 </button>
             </div>

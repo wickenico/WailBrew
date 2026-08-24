@@ -26,6 +26,9 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
     const { t } = useTranslation();
     const [sortKey, setSortKey] = useState<string | null>("name"); // Default sort by name
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+    // Starts at 0 (roving tabindex) so the table is Tab-reachable before any row is clicked.
+    const [focusedRowIndex, setFocusedRowIndex] = useState<number>(0);
+    const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
 
     const columns = [
         { key: "name", label: t("tableColumns.name"), sortable: true },
@@ -91,6 +94,28 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
     }, []);
+
+    const handleResizeKeyDown = useCallback((e: React.KeyboardEvent, colKey: string) => {
+        if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+        e.preventDefault();
+        const step = e.key === "ArrowRight" ? 10 : -10;
+        setColumnWidths((prev) => {
+            const current = prev[colKey] ?? getColumnWidth(colKey);
+            const currentPx = current.endsWith("px") ? Number.parseFloat(current) : 150;
+            return { ...prev, [colKey]: `${Math.max(60, currentPx + step)}px` };
+        });
+    }, []);
+
+    // Handle arrow key navigation between rows
+    const handleArrowKeyNavigation = (currentIndex: number, direction: "up" | "down") => {
+        const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+        if (newIndex < 0 || newIndex >= sortedRepositories.length) return;
+
+        setFocusedRowIndex(newIndex);
+        const targetRow = rowRefs.current.get(newIndex);
+        targetRow?.focus();
+        targetRow?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
 
     // Handle column header click for sorting
     const handleSort = (key: string, sortable: boolean = true) => {
@@ -230,6 +255,26 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                                             <th
                                                 key={col.key}
                                                 onClick={() => handleSort(col.key, isSortable)}
+                                                tabIndex={isSortable ? 0 : undefined}
+                                                onKeyDown={
+                                                    isSortable
+                                                        ? (e) => {
+                                                              if (e.key === "Enter" || e.key === " ") {
+                                                                  e.preventDefault();
+                                                                  handleSort(col.key, isSortable);
+                                                              }
+                                                          }
+                                                        : undefined
+                                                }
+                                                aria-sort={
+                                                    isSortable
+                                                        ? isCurrentSort
+                                                            ? sortDirection === "asc"
+                                                                ? "ascending"
+                                                                : "descending"
+                                                            : "none"
+                                                        : undefined
+                                                }
                                                 style={{
                                                     cursor: isSortable ? "pointer" : "default",
                                                     userSelect: "none",
@@ -253,6 +298,16 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                                                     <div
                                                         className="col-resize-handle"
                                                         onMouseDown={(e) => handleResizeMouseDown(e, col.key)}
+                                                        role="separator"
+                                                        aria-orientation="vertical"
+                                                        aria-label={`Resize ${col.label} column`}
+                                                        aria-valuenow={
+                                                            Number.parseFloat(
+                                                                columnWidths[col.key] ?? getColumnWidth(col.key),
+                                                            ) || 150
+                                                        }
+                                                        tabIndex={0}
+                                                        onKeyDown={(e) => handleResizeKeyDown(e, col.key)}
                                                     />
                                                 )}
                                             </th>
@@ -261,17 +316,42 @@ const RepositoryTable: React.FC<RepositoryTableProps> = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {sortedRepositories.map((repo) => (
-                                    <tr
-                                        key={repo.name}
-                                        className={selectedRepository?.name === repo.name ? "selected" : ""}
-                                        onClick={() => onSelect(repo)}
-                                    >
-                                        {columns.map((col) => (
-                                            <td key={col.key}>{renderCellContent(repo, col)}</td>
-                                        ))}
-                                    </tr>
-                                ))}
+                                {sortedRepositories.map((repo, index) => {
+                                    const isFocused = focusedRowIndex === index;
+                                    return (
+                                        <tr
+                                            key={repo.name}
+                                            ref={(el) => {
+                                                if (el) rowRefs.current.set(index, el);
+                                                else rowRefs.current.delete(index);
+                                            }}
+                                            className={selectedRepository?.name === repo.name ? "selected" : ""}
+                                            onClick={() => {
+                                                setFocusedRowIndex(index);
+                                                onSelect(repo);
+                                            }}
+                                            tabIndex={isFocused ? 0 : -1}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    e.preventDefault();
+                                                    setFocusedRowIndex(index);
+                                                    onSelect(repo);
+                                                } else if (e.key === "ArrowDown") {
+                                                    e.preventDefault();
+                                                    handleArrowKeyNavigation(index, "down");
+                                                } else if (e.key === "ArrowUp") {
+                                                    e.preventDefault();
+                                                    handleArrowKeyNavigation(index, "up");
+                                                }
+                                            }}
+                                            onFocus={() => setFocusedRowIndex(index)}
+                                        >
+                                            {columns.map((col) => (
+                                                <td key={col.key}>{renderCellContent(repo, col)}</td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

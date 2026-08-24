@@ -53,6 +53,9 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
     const { t } = useTranslation();
     const [sortKey, setSortKey] = useState<string | null>("name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+    // Starts at 0 (roving tabindex) so the table is Tab-reachable before any row is clicked.
+    const [focusedRowIndex, setFocusedRowIndex] = useState<number>(0);
+    const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
 
     const hasActions = !!(onStart || onStop || onRestart || onRun || onShowInfo);
 
@@ -122,6 +125,28 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
     }, []);
+
+    const handleResizeKeyDown = useCallback((e: React.KeyboardEvent, colKey: string) => {
+        if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+        e.preventDefault();
+        const step = e.key === "ArrowRight" ? 10 : -10;
+        setColumnWidths((prev) => {
+            const current = prev[colKey] ?? getColumnWidth(colKey);
+            const currentPx = current.endsWith("px") ? Number.parseFloat(current) : 150;
+            return { ...prev, [colKey]: `${Math.max(60, currentPx + step)}px` };
+        });
+    }, []);
+
+    // Handle arrow key navigation between rows
+    const handleArrowKeyNavigation = (currentIndex: number, direction: "up" | "down") => {
+        const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+        if (newIndex < 0 || newIndex >= sortedServices.length) return;
+
+        setFocusedRowIndex(newIndex);
+        const targetRow = rowRefs.current.get(newIndex);
+        targetRow?.focus();
+        targetRow?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
 
     const handleSort = (key: string, sortable: boolean = true) => {
         if (!sortable) return;
@@ -284,6 +309,26 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                                             <th
                                                 key={col.key}
                                                 onClick={() => handleSort(col.key, isSortable)}
+                                                tabIndex={isSortable ? 0 : undefined}
+                                                onKeyDown={
+                                                    isSortable
+                                                        ? (e) => {
+                                                              if (e.key === "Enter" || e.key === " ") {
+                                                                  e.preventDefault();
+                                                                  handleSort(col.key, isSortable);
+                                                              }
+                                                          }
+                                                        : undefined
+                                                }
+                                                aria-sort={
+                                                    isSortable
+                                                        ? isCurrentSort
+                                                            ? sortDirection === "asc"
+                                                                ? "ascending"
+                                                                : "descending"
+                                                            : "none"
+                                                        : undefined
+                                                }
                                                 style={{
                                                     cursor: isSortable ? "pointer" : "default",
                                                     userSelect: "none",
@@ -307,6 +352,16 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                                                     <div
                                                         className="col-resize-handle"
                                                         onMouseDown={(e) => handleResizeMouseDown(e, col.key)}
+                                                        role="separator"
+                                                        aria-orientation="vertical"
+                                                        aria-label={`Resize ${col.label} column`}
+                                                        aria-valuenow={
+                                                            Number.parseFloat(
+                                                                columnWidths[col.key] ?? getColumnWidth(col.key),
+                                                            ) || 150
+                                                        }
+                                                        tabIndex={0}
+                                                        onKeyDown={(e) => handleResizeKeyDown(e, col.key)}
                                                     />
                                                 )}
                                             </th>
@@ -315,17 +370,42 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {sortedServices.map((service) => (
-                                    <tr
-                                        key={service.name}
-                                        className={selectedService?.name === service.name ? "selected" : ""}
-                                        onClick={() => onSelect(service)}
-                                    >
-                                        {columns.map((col) => (
-                                            <td key={col.key}>{renderCellContent(service, col)}</td>
-                                        ))}
-                                    </tr>
-                                ))}
+                                {sortedServices.map((service, index) => {
+                                    const isFocused = focusedRowIndex === index;
+                                    return (
+                                        <tr
+                                            key={service.name}
+                                            ref={(el) => {
+                                                if (el) rowRefs.current.set(index, el);
+                                                else rowRefs.current.delete(index);
+                                            }}
+                                            className={selectedService?.name === service.name ? "selected" : ""}
+                                            onClick={() => {
+                                                setFocusedRowIndex(index);
+                                                onSelect(service);
+                                            }}
+                                            tabIndex={isFocused ? 0 : -1}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    e.preventDefault();
+                                                    setFocusedRowIndex(index);
+                                                    onSelect(service);
+                                                } else if (e.key === "ArrowDown") {
+                                                    e.preventDefault();
+                                                    handleArrowKeyNavigation(index, "down");
+                                                } else if (e.key === "ArrowUp") {
+                                                    e.preventDefault();
+                                                    handleArrowKeyNavigation(index, "up");
+                                                }
+                                            }}
+                                            onFocus={() => setFocusedRowIndex(index)}
+                                        >
+                                            {columns.map((col) => (
+                                                <td key={col.key}>{renderCellContent(service, col)}</td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

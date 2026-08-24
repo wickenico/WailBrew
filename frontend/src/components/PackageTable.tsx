@@ -238,6 +238,17 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             document.addEventListener("mouseup", onMouseUp);
         }, []);
 
+        const handleResizeKeyDown = useCallback((e: React.KeyboardEvent, colKey: string) => {
+            if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+            e.preventDefault();
+            const step = e.key === "ArrowRight" ? 10 : -10;
+            setColumnWidths((prev) => {
+                const current = prev[colKey] ?? getColumnWidth(colKey);
+                const currentPx = current.endsWith("px") ? Number.parseFloat(current) : 150;
+                return { ...prev, [colKey]: `${Math.max(60, currentPx + step)}px` };
+            });
+        }, []);
+
         // Expose focus method via ref
         React.useImperativeHandle(
             ref,
@@ -582,6 +593,16 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                                         <div
                                                             className="col-resize-handle"
                                                             onMouseDown={(e) => handleResizeMouseDown(e, col.key)}
+                                                            role="separator"
+                                                            aria-orientation="vertical"
+                                                            aria-label={`Resize ${col.label} column`}
+                                                            aria-valuenow={
+                                                                Number.parseFloat(
+                                                                    columnWidths[col.key] ?? getColumnWidth(col.key),
+                                                                ) || 150
+                                                            }
+                                                            tabIndex={0}
+                                                            onKeyDown={(e) => handleResizeKeyDown(e, col.key)}
                                                         />
                                                     )}
                                                 </th>

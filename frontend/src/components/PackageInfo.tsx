@@ -43,6 +43,13 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
     const dependencies = packageEntry?.dependencies || [];
     const conflicts = packageEntry?.conflicts?.filter(Boolean) || [];
 
+    const activateOnKey = (e: React.KeyboardEvent, action: () => void) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            action();
+        }
+    };
+
     const isValidUrl = (url: string) => url && (url.startsWith("http://") || url.startsWith("https://"));
 
     const shortenUrl = (url: string) => {
@@ -239,6 +246,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                             <span
                                 className="pi-link"
                                 onClick={() => BrowserOpenURL(packageEntry.homepage!)}
+                                onKeyDown={(e) => activateOnKey(e, () => BrowserOpenURL(packageEntry.homepage!))}
+                                role="link"
+                                tabIndex={0}
                                 title={packageEntry.homepage}
                             >
                                 {shortenUrl(packageEntry.homepage)}
@@ -257,7 +267,14 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                         {loadingAnalytics ? (
                             <span className="pi-skel pi-skel-url" />
                         ) : brewPageUrl ? (
-                            <span className="pi-link" onClick={() => BrowserOpenURL(brewPageUrl)} title={brewPageUrl}>
+                            <span
+                                className="pi-link"
+                                onClick={() => BrowserOpenURL(brewPageUrl)}
+                                onKeyDown={(e) => activateOnKey(e, () => BrowserOpenURL(brewPageUrl))}
+                                role="link"
+                                tabIndex={0}
+                                title={brewPageUrl}
+                            >
                                 {shortenUrl(brewPageUrl)}
                                 <ExternalLink size={10} className="pi-link-icon" />
                             </span>
@@ -287,6 +304,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                                             key={dep}
                                             className="pi-chip clickable"
                                             onClick={() => onSelectDependency(dep)}
+                                            onKeyDown={(e) => activateOnKey(e, () => onSelectDependency(dep))}
+                                            role="button"
+                                            tabIndex={0}
                                             title={dep}
                                         >
                                             {dep}
@@ -315,6 +335,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                                             key={c}
                                             className="pi-chip conflict clickable"
                                             onClick={() => onSelectDependency(c)}
+                                            onKeyDown={(e) => activateOnKey(e, () => onSelectDependency(c))}
+                                            role="button"
+                                            tabIndex={0}
                                             title={c}
                                         >
                                             {c}
@@ -362,6 +385,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                                                 key={dep}
                                                 className="installed-dep-chip"
                                                 onClick={() => onSelectDependency?.(dep)}
+                                                onKeyDown={(e) => activateOnKey(e, () => onSelectDependency?.(dep))}
+                                                role="button"
+                                                tabIndex={0}
                                                 title={dep}
                                             >
                                                 {dep}
@@ -403,6 +429,9 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                                                 key={dep}
                                                 className="installed-dep-chip"
                                                 onClick={() => onSelectDependency?.(dep)}
+                                                onKeyDown={(e) => activateOnKey(e, () => onSelectDependency?.(dep))}
+                                                role="button"
+                                                tabIndex={0}
                                                 title={dep}
                                             >
                                                 {dep}

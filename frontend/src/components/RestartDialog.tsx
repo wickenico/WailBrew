@@ -1,7 +1,9 @@
 import { CheckCircle2 } from "lucide-react";
 import type React from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { RestartApp } from "../../wailsjs/go/main/App";
+import { useModalA11y } from "../hooks/useModalA11y";
 
 interface RestartDialogProps {
     isOpen: boolean;
@@ -10,6 +12,9 @@ interface RestartDialogProps {
 
 const RestartDialog: React.FC<RestartDialogProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(isOpen, onClose, dialogRef);
 
     const handleRestart = async () => {
         try {
@@ -27,23 +32,19 @@ const RestartDialog: React.FC<RestartDialogProps> = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleOverlayKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === "Escape") {
-            onClose();
-        }
-    };
-
     return (
-        <div
-            className="about-overlay"
-            onClick={handleOverlayClick}
-            onKeyDown={handleOverlayKeyDown}
-            role="dialog"
-            tabIndex={-1}
-        >
-            <div className="about-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="about-overlay" onClick={handleOverlayClick}>
+            <div
+                className="about-dialog"
+                ref={dialogRef}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="restart-dialog-title"
+                tabIndex={-1}
+            >
                 <div className="about-header">
-                    <h2>{t("restartDialog.title")}</h2>
+                    <h2 id="restart-dialog-title">{t("restartDialog.title")}</h2>
                 </div>
 
                 <div className="about-content">

@@ -1,9 +1,10 @@
 import { Copy } from "lucide-react";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { useModalA11y } from "../hooks/useModalA11y";
 import { parseInfoLog } from "../utils/parseInfoLog";
 
 interface PackageInfoDialogProps {
@@ -20,6 +21,9 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log,
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<InfoTab>("log");
     const parsed = useMemo(() => parseInfoLog(log), [log]);
+    const boxRef = useRef<HTMLDivElement>(null);
+
+    useModalA11y(open, onClose, boxRef);
 
     useEffect(() => {
         if (open) {
@@ -49,9 +53,16 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log,
 
     return (
         <div className="confirm-overlay">
-            <div className="confirm-box log-dialog-box">
+            <div
+                className="confirm-box log-dialog-box"
+                ref={boxRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="package-info-dialog-title"
+                tabIndex={-1}
+            >
                 <div className="log-dialog-header">
-                    <p style={{ margin: 0 }}>
+                    <p id="package-info-dialog-title" style={{ margin: 0 }}>
                         <strong>{title}</strong>
                     </p>
                     {isRunning && (

@@ -234,9 +234,15 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                     />
                     {!searchQuery && <span className="search-shortcut-hint">{shortcutKey}</span>}
                     {searchQuery && (
-                        <span className="clear-icon" onClick={onClearSearch} title={t("search.clearSearch")}>
+                        <button
+                            type="button"
+                            className="clear-icon"
+                            onClick={onClearSearch}
+                            title={t("search.clearSearch")}
+                            aria-label={t("search.clearSearch")}
+                        >
                             <X size={16} />
-                        </span>
+                        </button>
                     )}
                 </div>
                 {showHistory && searchHistory.length > 0 && (
@@ -248,9 +254,10 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                         {searchHistory
                             .filter((item) => !searchQuery || item.toLowerCase().includes(searchQuery.toLowerCase()))
                             .map((item, index) => (
-                                <button
+                                <div
                                     key={`${item}-${index}`}
-                                    type="button"
+                                    role="button"
+                                    tabIndex={0}
                                     className="search-history-item"
                                     onClick={() => handleSelectHistory(item)}
                                     onKeyDown={(e) => {
@@ -296,7 +303,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                                     >
                                         <Trash2 size={14} />
                                     </button>
-                                </button>
+                                </div>
                             ))}
                     </div>
                 )}
