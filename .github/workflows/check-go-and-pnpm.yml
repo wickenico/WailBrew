@@ -62,4 +62,4 @@ jobs:
         run: go test ./...
 
       - name: Lint Go
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v9
