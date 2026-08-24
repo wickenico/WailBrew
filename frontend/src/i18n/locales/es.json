@@ -24,7 +24,9 @@
     "cleanup": "Limpiar",
     "refresh": "Refrescar",
     "sponsor": "Patrocinador",
-    "services": "Servicios"
+    "services": "Servicios",
+    "collapse": "Contraer barra lateral",
+    "expand": "Expandir barra lateral"
   },
   "headers": {
     "installedFormulas": "Programas CLI instalados",

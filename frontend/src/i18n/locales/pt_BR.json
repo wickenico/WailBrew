@@ -24,7 +24,9 @@
     "cleanup": "Limpeza",
     "refresh": "Atualizar",
     "sponsor": "Patrocinar",
-    "services": "Serviços"
+    "services": "Serviços",
+    "collapse": "Recolher barra lateral",
+    "expand": "Expandir barra lateral"
   },
   "headers": {
     "installedFormulas": "Fórmulas Instaladas",

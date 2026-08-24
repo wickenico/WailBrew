@@ -56,7 +56,7 @@ import {
     UpdateHomebrew,
     UpdateSelectedBrewPackages,
 } from "../wailsjs/go/main/App";
-import { EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
+import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import "./App.css";
 import "./style.css";
@@ -202,6 +202,29 @@ const WailBrewApp = () => {
         return saved ? parseInt(saved, 10) : 220;
     });
     const [isResizing, setIsResizing] = useState<boolean>(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+        return localStorage.getItem("sidebarCollapsed") === "true";
+    });
+
+    const toggleSidebarCollapsed = () => {
+        setIsSidebarCollapsed((prev) => {
+            const next = !prev;
+            localStorage.setItem("sidebarCollapsed", next.toString());
+            return next;
+        });
+    };
+
+    // macOS uses an inset, transparent title bar so the sidebar's collapse
+    // toggle can sit next to the traffic lights; other platforms keep their
+    // normal title bar and don't need the extra top clearance.
+    const [isMacInsetTitleBar, setIsMacInsetTitleBar] = useState(false);
+    useEffect(() => {
+        Environment()
+            .then((env) => {
+                if (env.platform === "darwin") setIsMacInsetTitleBar(true);
+            })
+            .catch(() => {});
+    }, []);
     const sidebarRef = useRef<HTMLElement>(null);
 
     const openSessionLogs = async () => {
@@ -2595,7 +2618,10 @@ const WailBrewApp = () => {
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100vw" }}>
             <TitleBar />
-            <div className="wailbrew-container" style={{ flex: 1, height: "auto", minHeight: 0 }}>
+            <div
+                className={`wailbrew-container${isMacInsetTitleBar ? " mac-inset-titlebar" : ""}`}
+                style={{ flex: 1, height: "auto", minHeight: 0 }}
+            >
                 <Sidebar
                     view={view}
                     setView={setView}
@@ -2612,8 +2638,10 @@ const WailBrewApp = () => {
                     sidebarRef={sidebarRef}
                     isBackgroundCheckRunning={isBackgroundCheckRunning}
                     getSecondsUntilNextCheck={getSecondsUntilNextCheck}
+                    isCollapsed={isSidebarCollapsed}
+                    onToggleCollapse={toggleSidebarCollapsed}
                 />
-                <div className="sidebar-resize-handle" onMouseDown={handleResizeStart} />
+                {!isSidebarCollapsed && <div className="sidebar-resize-handle" onMouseDown={handleResizeStart} />}
                 <main className="content">
                     {/* Loading timer for development only */}
                     {import.meta.env.DEV && loadingStartTime !== null && <LoadingTimer startTime={loadingStartTime} />}

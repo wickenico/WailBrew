@@ -24,7 +24,9 @@
     "cleanup": "Cleanup",
     "refresh": "새로고침",
     "sponsor": "후원",
-    "services": "서비스"
+    "services": "서비스",
+    "collapse": "사이드바 접기",
+    "expand": "사이드바 펼치기"
   },
   "headers": {
     "installedFormulas": "설치된 Formulae",

@@ -24,7 +24,9 @@
     "cleanup": "Cleanup",
     "refresh": "Aktualisieren",
     "sponsor": "Unterstützen",
-    "services": "Dienste"
+    "services": "Dienste",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen"
   },
   "headers": {
     "installedFormulas": "Installierte Formeln",

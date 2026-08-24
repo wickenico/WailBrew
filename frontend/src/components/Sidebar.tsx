@@ -1,5 +1,23 @@
 /// <reference types="react" />
-import { ChevronDown, Clock, Heart, Loader2 } from "lucide-react";
+import {
+    AppWindow,
+    Beer,
+    ChevronDown,
+    Clock,
+    FolderGit2,
+    Heart,
+    Layers,
+    Leaf,
+    Library,
+    Loader2,
+    Package,
+    PanelLeftClose,
+    PanelLeftOpen,
+    RefreshCw,
+    Rocket,
+    Sparkles,
+    Stethoscope,
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
@@ -26,6 +44,8 @@ interface SidebarProps {
     sidebarRef?: React.RefObject<HTMLElement | null>;
     isBackgroundCheckRunning?: boolean;
     getSecondsUntilNextCheck?: () => number;
+    isCollapsed?: boolean;
+    onToggleCollapse?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -44,6 +64,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     sidebarRef,
     isBackgroundCheckRunning = false,
     getSecondsUntilNextCheck,
+    isCollapsed = false,
+    onToggleCollapse,
 }) => {
     const { t, i18n } = useTranslation();
     const currentLanguage = mapToSupportedLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -132,68 +154,97 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
 
     return (
-        <nav className="sidebar" ref={sidebarRef} style={sidebarWidth ? { width: `${sidebarWidth}px` } : undefined}>
-            <div className="sidebar-title">
+        <nav
+            className={`sidebar${isCollapsed ? " collapsed" : ""}`}
+            ref={sidebarRef}
+            style={!isCollapsed && sidebarWidth ? { width: `${sidebarWidth}px` } : undefined}
+        >
+            <div className="sidebar-title" style={{ "--wails-draggable": "drag" } as React.CSSProperties}>
+                {onToggleCollapse && (
+                    <button
+                        type="button"
+                        className="sidebar-collapse-toggle"
+                        onClick={onToggleCollapse}
+                        title={isCollapsed ? t("sidebar.expand") : t("sidebar.collapse")}
+                        style={{ "--wails-draggable": "no-drag" } as React.CSSProperties}
+                    >
+                        {isCollapsed ? (
+                            <PanelLeftOpen size={16} strokeWidth={2} />
+                        ) : (
+                            <PanelLeftClose size={16} strokeWidth={2} />
+                        )}
+                    </button>
+                )}
                 <img
                     src={appIcon}
                     alt="Logo"
-                    style={{ width: "28px", height: "28px", marginRight: "8px", verticalAlign: "middle" }}
+                    style={{
+                        width: "28px",
+                        height: "28px",
+                        marginRight: isCollapsed ? "0" : "8px",
+                        verticalAlign: "middle",
+                    }}
                 />
-                WailBrew
-                {isBackgroundCheckRunning !== undefined && (
-                    <div
-                        ref={iconRef}
-                        className="background-check-icon"
-                        style={{
-                            position: "relative",
-                            display: "inline-block",
-                            marginLeft: "8px",
-                            verticalAlign: "middle",
-                        }}
-                        onMouseEnter={() => setShowTooltip(true)}
-                        onMouseLeave={() => setShowTooltip(false)}
-                    >
-                        {isBackgroundCheckRunning ? (
-                            <Loader2
-                                size={16}
+                {!isCollapsed && (
+                    <>
+                        WailBrew
+                        {isBackgroundCheckRunning !== undefined && (
+                            <div
+                                ref={iconRef}
+                                className="background-check-icon"
                                 style={{
-                                    color: "#3B82F6",
-                                    animation: "spin 1s linear infinite",
+                                    position: "relative",
+                                    display: "inline-block",
+                                    marginLeft: "8px",
+                                    verticalAlign: "middle",
                                 }}
-                            />
-                        ) : (
-                            <Clock
-                                size={16}
-                                style={{
-                                    color: "#3B82F6",
-                                    opacity: 0.7,
-                                }}
-                            />
+                                onMouseEnter={() => setShowTooltip(true)}
+                                onMouseLeave={() => setShowTooltip(false)}
+                            >
+                                {isBackgroundCheckRunning ? (
+                                    <Loader2
+                                        size={16}
+                                        style={{
+                                            color: "#3B82F6",
+                                            animation: "spin 1s linear infinite",
+                                        }}
+                                    />
+                                ) : (
+                                    <Clock
+                                        size={16}
+                                        style={{
+                                            color: "#3B82F6",
+                                            opacity: 0.7,
+                                        }}
+                                    />
+                                )}
+                                {showTooltip &&
+                                    getSecondsUntilNextCheck &&
+                                    ReactDOM.createPortal(
+                                        <div
+                                            className="background-check-tooltip"
+                                            style={{
+                                                position: "fixed",
+                                                top: tooltipPosition.top,
+                                                left: tooltipPosition.left,
+                                                transform: "translateX(-50%)",
+                                                zIndex: 99999,
+                                            }}
+                                        >
+                                            {tooltipText}
+                                        </div>,
+                                        document.body,
+                                    )}
+                            </div>
                         )}
-                        {showTooltip &&
-                            getSecondsUntilNextCheck &&
-                            ReactDOM.createPortal(
-                                <div
-                                    className="background-check-tooltip"
-                                    style={{
-                                        position: "fixed",
-                                        top: tooltipPosition.top,
-                                        left: tooltipPosition.left,
-                                        transform: "translateX(-50%)",
-                                        zIndex: 99999,
-                                    }}
-                                >
-                                    {tooltipText}
-                                </div>,
-                                document.body,
-                            )}
-                    </div>
+                    </>
                 )}
             </div>
             <div
                 className="sidebar-sponsor"
                 onClick={() => BrowserOpenURL("https://github.com/sponsors/wickenico")}
                 tabIndex={0}
+                title={isCollapsed ? t("sidebar.sponsor") : undefined}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
@@ -202,7 +253,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 }}
             >
                 <Heart size={12} />
-                <span>{t("sidebar.sponsor")}</span>
+                {!isCollapsed && <span>{t("sidebar.sponsor")}</span>}
             </div>
             <div className="sidebar-section">
                 <h4>{t("sidebar.packages")}</h4>
@@ -212,50 +263,60 @@ const Sidebar: React.FC<SidebarProps> = ({
                         tabIndex={0}
                         onClick={() => navigate("installed")}
                         onKeyDown={(e) => handleNavKeyDown(e, "installed")}
+                        title={isCollapsed ? t("sidebar.installed") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}1</span>
-                        <span>📦 {t("sidebar.installed")}</span>
+                        <Package className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.installed")}</span>
                         <span className="badge">{packagesCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}1</span>
                     </li>
                     <li
                         className={view === "casks" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("casks")}
                         onKeyDown={(e) => handleNavKeyDown(e, "casks")}
+                        title={isCollapsed ? t("sidebar.casks") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}2</span>
-                        <span>🖥️ {t("sidebar.casks")}</span>
+                        <AppWindow className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.casks")}</span>
                         <span className="badge">{casksCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}2</span>
                     </li>
                     <li
                         className={view === "updatable" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("updatable")}
                         onKeyDown={(e) => handleNavKeyDown(e, "updatable")}
+                        title={isCollapsed ? t("sidebar.outdated") : undefined}
                     >
+                        <RefreshCw className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.outdated")}</span>
+                        <span className={`badge${updatableCount > 0 ? " badge-attention" : ""}`}>{updatableCount}</span>
                         <span className="sidebar-shortcut">{cmdKey}3</span>
-                        <span>🔄 {t("sidebar.outdated")}</span>
-                        <span className="badge">{updatableCount}</span>
                     </li>
                     <li
                         className={view === "leaves" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("leaves")}
                         onKeyDown={(e) => handleNavKeyDown(e, "leaves")}
+                        title={isCollapsed ? t("sidebar.leaves") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}4</span>
-                        <span>🍃 {t("sidebar.leaves")}</span>
+                        <Leaf className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.leaves")}</span>
                         <span className="badge">{leavesCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}4</span>
                     </li>
                     <li
                         className={view === "repositories" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("repositories")}
                         onKeyDown={(e) => handleNavKeyDown(e, "repositories")}
+                        title={isCollapsed ? t("sidebar.repositories") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}5</span>
-                        <span>📂 {t("sidebar.repositories")}</span>
+                        <FolderGit2 className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.repositories")}</span>
                         <span className="badge">{repositoriesCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}5</span>
                     </li>
                 </ul>
             </div>
@@ -267,20 +328,24 @@ const Sidebar: React.FC<SidebarProps> = ({
                         tabIndex={0}
                         onClick={() => navigate("all")}
                         onKeyDown={(e) => handleNavKeyDown(e, "all")}
+                        title={isCollapsed ? t("sidebar.allFormulae") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}6</span>
-                        <span>📚 {t("sidebar.allFormulae")}</span>
+                        <Library className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.allFormulae")}</span>
                         <span className="badge">{allCount === -1 ? "—" : allCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}6</span>
                     </li>
                     <li
                         className={view === "allCasks" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("allCasks")}
                         onKeyDown={(e) => handleNavKeyDown(e, "allCasks")}
+                        title={isCollapsed ? t("sidebar.allCasks") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}7</span>
-                        <span>🖥️ {t("sidebar.allCasks")}</span>
+                        <Layers className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.allCasks")}</span>
                         <span className="badge">{allCasksCount === -1 ? "—" : allCasksCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}7</span>
                     </li>
                 </ul>
             </div>
@@ -292,64 +357,76 @@ const Sidebar: React.FC<SidebarProps> = ({
                         tabIndex={0}
                         onClick={() => navigate("homebrew")}
                         onKeyDown={(e) => handleNavKeyDown(e, "homebrew")}
+                        title={isCollapsed ? t("sidebar.homebrew") : undefined}
                     >
+                        <Beer className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.homebrew")}</span>
                         <span className="sidebar-shortcut">{cmdKey}8</span>
-                        <span>🍺 {t("sidebar.homebrew")}</span>
                     </li>
                     <li
                         className={view === "services" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("services")}
                         onKeyDown={(e) => handleNavKeyDown(e, "services")}
+                        title={isCollapsed ? t("sidebar.services") : undefined}
                     >
-                        <span className="sidebar-shortcut">{cmdKey}P</span>
-                        <span>🚀 {t("sidebar.services")}</span>
+                        <Rocket className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.services")}</span>
                         <span className="badge">{servicesCount}</span>
+                        <span className="sidebar-shortcut">{cmdKey}P</span>
                     </li>
                     <li
                         className={view === "doctor" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("doctor")}
                         onKeyDown={(e) => handleNavKeyDown(e, "doctor")}
+                        title={isCollapsed ? t("sidebar.doctor") : undefined}
                     >
+                        <Stethoscope className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.doctor")}</span>
                         <span className="sidebar-shortcut">{cmdKey}9</span>
-                        <span>🩺 {t("sidebar.doctor")}</span>
                     </li>
                     <li
                         className={view === "cleanup" ? "active" : ""}
                         tabIndex={0}
                         onClick={() => navigate("cleanup")}
                         onKeyDown={(e) => handleNavKeyDown(e, "cleanup")}
+                        title={isCollapsed ? t("sidebar.cleanup") : undefined}
                     >
+                        <Sparkles className="sidebar-icon" size={16} strokeWidth={2} />
+                        <span className="sidebar-label">{t("sidebar.cleanup")}</span>
                         <span className="sidebar-shortcut">{cmdKey}0</span>
-                        <span>🧹 {t("sidebar.cleanup")}</span>
                     </li>
                 </ul>
             </div>
-            <div className="sidebar-section keyboard-hints">
-                <div className="keyboard-hint">
-                    <span className="keyboard-hint-label">{t("sidebar.refresh")}</span>
-                    <span className="keyboard-hint-shortcut">{cmdKey}⇧R</span>
+            {!isCollapsed && (
+                <div className="sidebar-section keyboard-hints">
+                    <div className="keyboard-hint">
+                        <span className="keyboard-hint-label">{t("sidebar.refresh")}</span>
+                        <span className="keyboard-hint-shortcut">{cmdKey}⇧R</span>
+                    </div>
                 </div>
-            </div>
+            )}
             <div className="sidebar-section language-switcher">
                 <div className="language-dropdown-wrapper">
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ position: "relative", flex: 1 }}>
-                            <select
-                                className="language-dropdown"
-                                value={currentLanguage}
-                                onChange={(e) => changeLanguage(e.target.value)}
-                                aria-label={t("language.switchLanguage")}
-                            >
-                                {Object.entries(languageOptions).map(([code, { flag, name }]) => (
-                                    <option key={code} value={code}>
-                                        {flag} {name}
-                                    </option>
-                                ))}
-                            </select>
-                            <ChevronDown className="language-dropdown-arrow" size={16} strokeWidth={2} />
-                        </div>
+                        {!isCollapsed && (
+                            <div style={{ position: "relative", flex: 1 }}>
+                                <select
+                                    className="language-dropdown"
+                                    value={currentLanguage}
+                                    onChange={(e) => changeLanguage(e.target.value)}
+                                    aria-label={t("language.switchLanguage")}
+                                >
+                                    {Object.entries(languageOptions).map(([code, { flag, name }]) => (
+                                        <option key={code} value={code}>
+                                            {flag} {name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <ChevronDown className="language-dropdown-arrow" size={16} strokeWidth={2} />
+                            </div>
+                        )}
                         <ThemeToggle />
                     </div>
                 </div>

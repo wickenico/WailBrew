@@ -24,7 +24,9 @@
     "cleanup": "Cleanup",
     "refresh": "刷新",
     "sponsor": "赞助",
-    "services": "服务"
+    "services": "服务",
+    "collapse": "收起侧边栏",
+    "expand": "展开侧边栏"
   },
   "headers": {
     "installedFormulas": "已安装的 Formulae",
