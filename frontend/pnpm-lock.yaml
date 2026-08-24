@@ -46,8 +46,8 @@ importers:
         specifier: 19.2.18
         version: 19.2.18
       '@types/react-dom':
-        specifier: 19.2.4
-        version: 19.2.4(@types/react@19.2.18)
+        specifier: 19.2.5
+        version: 19.2.5(@types/react@19.2.18)
       '@vitejs/plugin-react':
         specifier: ^6.1.0
         version: 6.1.0(vite@8.2.2(yaml@2.9.0))
@@ -253,8 +253,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/react-dom@19.2.4':
-    resolution: {integrity: sha512-Bsc+QHgp+P/F02XDzNCY9jnZNCUuLki36KT7VKrTXXLdHf+vHMNZnW1rVu5DNW/rCK+fya3DATySbLM4yhtKUw==}
+  '@types/react-dom@19.2.5':
+    resolution: {integrity: sha512-fMPwH9v7r/pp43yUd2/Mbiex5KouJwwR3dzHkhLREUC6764VyDsqxhAxv6OFEYR1RhjOyD1naqba8ECDBe7ZQg==}
     peerDependencies:
       '@types/react': ^19.2.0
 
@@ -767,7 +767,7 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/react-dom@19.2.4(@types/react@19.2.18)':
+  '@types/react-dom@19.2.5(@types/react@19.2.18)':
     dependencies:
       '@types/react': 19.2.18
 
