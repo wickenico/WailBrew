@@ -24,7 +24,9 @@
     "cleanup": "ניקוי",
     "refresh": "רענון",
     "sponsor": "תמיכה",
-    "services": "שירותים"
+    "services": "שירותים",
+    "collapse": "כווץ סרגל צד",
+    "expand": "הרחב סרגל צד"
   },
   "headers": {
     "installedFormulas": "נוסחאות מותקנות",

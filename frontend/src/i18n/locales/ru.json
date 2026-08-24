@@ -24,7 +24,9 @@
     "cleanup": "Очистка",
     "refresh": "Обновить",
     "sponsor": "Поддержать",
-    "services": "Службы"
+    "services": "Службы",
+    "collapse": "Свернуть боковую панель",
+    "expand": "Развернуть боковую панель"
   },
   "headers": {
     "installedFormulas": "Установленные пакеты",

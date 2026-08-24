@@ -24,7 +24,9 @@
     "cleanup": "清理",
     "refresh": "重新整理",
     "sponsor": "贊助",
-    "services": "服務"
+    "services": "服務",
+    "collapse": "收合側邊欄",
+    "expand": "展開側邊欄"
   },
   "headers": {
     "installedFormulas": "已安裝套件",

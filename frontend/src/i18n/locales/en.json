@@ -24,7 +24,9 @@
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "refresh": "Refresh",
-    "sponsor": "Sponsor"
+    "sponsor": "Sponsor",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar"
   },
   "headers": {
     "installedFormulas": "Installed Formulae",

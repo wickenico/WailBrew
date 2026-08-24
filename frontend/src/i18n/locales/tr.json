@@ -24,7 +24,9 @@
     "cleanup": "Temizlik",
     "refresh": "Yenile",
     "sponsor": "Destekle",
-    "services": "Hizmetler"
+    "services": "Hizmetler",
+    "collapse": "Kenar çubuğunu daralt",
+    "expand": "Kenar çubuğunu genişlet"
   },
   "headers": {
     "installedFormulas": "Yüklü Formüller",
