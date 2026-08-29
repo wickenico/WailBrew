@@ -30,6 +30,10 @@ export function DownloadAndInstallUpdate(arg1) {
   return window['go']['main']['App']['DownloadAndInstallUpdate'](arg1);
 }
 
+export function ExecuteBrewDoctorCommand(arg1) {
+  return window['go']['main']['App']['ExecuteBrewDoctorCommand'](arg1);
+}
+
 export function ExportBrewfile(arg1) {
   return window['go']['main']['App']['ExportBrewfile'](arg1);
 }

@@ -87,6 +87,12 @@ func (e *Executor) RunNoCache(args ...string) ([]byte, error) {
 	return e.runActual(30*time.Second, false, args...)
 }
 
+// RunNoCacheWithTimeout executes a potentially long-running mutating command
+// without caching it.
+func (e *Executor) RunNoCacheWithTimeout(timeout time.Duration, args ...string) ([]byte, error) {
+	return e.runActual(timeout, false, args...)
+}
+
 // RunNoCacheStdoutOnly executes a brew command without cache, stdout only.
 func (e *Executor) RunNoCacheStdoutOnly(args ...string) ([]byte, error) {
 	return e.runActual(30*time.Second, true, args...)

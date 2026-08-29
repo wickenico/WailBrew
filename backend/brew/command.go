@@ -1,7 +1,9 @@
 package brew
 
 import (
+	"fmt"
 	"strings"
+	"unicode"
 )
 
 // Outdated detection modes as stored in the configuration. They control which
@@ -101,6 +103,92 @@ func FormatCommand(args []string) string {
 		parts = append(parts, quoteArg(arg))
 	}
 	return strings.Join(parts, " ")
+}
+
+// ParseBrewCommand turns a command printed by Homebrew into brew arguments.
+// It deliberately does not invoke a shell: quotes and backslashes are only
+// interpreted to preserve arguments, while shell operators remain plain text.
+func ParseBrewCommand(command string) ([]string, error) {
+	words, err := splitCommandWords(strings.TrimSpace(command))
+	if err != nil {
+		return nil, err
+	}
+	if len(words) < 2 || words[0] != "brew" {
+		return nil, fmt.Errorf("expected a brew command")
+	}
+	if brewSubcommandNeedsTarget(words[1]) && len(words) < 3 {
+		return nil, fmt.Errorf("brew %s requires a target", words[1])
+	}
+	return words[1:], nil
+}
+
+func brewSubcommandNeedsTarget(subcommand string) bool {
+	switch subcommand {
+	case "install", "uninstall", "remove", "reinstall", "link", "unlink", "pin", "unpin", "extract":
+		return true
+	default:
+		return false
+	}
+}
+
+func splitCommandWords(command string) ([]string, error) {
+	var words []string
+	var current strings.Builder
+	var quote rune
+	escaped := false
+	tokenStarted := false
+
+	flush := func() {
+		if tokenStarted {
+			words = append(words, current.String())
+			current.Reset()
+			tokenStarted = false
+		}
+	}
+
+	for _, r := range command {
+		if escaped {
+			current.WriteRune(r)
+			tokenStarted = true
+			escaped = false
+			continue
+		}
+
+		if quote != 0 {
+			if r == quote {
+				quote = 0
+			} else if r == '\\' && quote == '"' {
+				escaped = true
+			} else {
+				current.WriteRune(r)
+			}
+			tokenStarted = true
+			continue
+		}
+
+		switch {
+		case r == '\'' || r == '"':
+			quote = r
+			tokenStarted = true
+		case r == '\\':
+			escaped = true
+			tokenStarted = true
+		case unicode.IsSpace(r):
+			flush()
+		default:
+			current.WriteRune(r)
+			tokenStarted = true
+		}
+	}
+
+	if escaped {
+		return nil, fmt.Errorf("unfinished escape sequence")
+	}
+	if quote != 0 {
+		return nil, fmt.Errorf("unterminated quote")
+	}
+	flush()
+	return words, nil
 }
 
 // quoteArg single-quotes an argument when it contains characters a shell would

@@ -1,7 +1,8 @@
-import { CircleX } from "lucide-react";
+import { CircleX, LoaderCircle, Play } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import type { PackageEntry } from "../types";
+import { parseDoctorLogLine } from "../utils/parseDoctorLog";
 import PackageInfo from "./PackageInfo";
 
 interface DoctorViewProps {
@@ -9,8 +10,10 @@ interface DoctorViewProps {
     deprecatedFormulae: string[];
     selectedDeprecatedPackage: PackageEntry | null;
     loadingDetailsFor: string | null;
+    runningCommand: string | null;
     onClearLog: () => void;
     onRunDoctor: () => void;
+    onRunCommand: (command: string) => void;
     onSelectDeprecated: (formula: string) => void;
     onSelectDependency: (dependencyName: string) => void;
     onUninstallDeprecated: (formula: string) => void;
@@ -21,8 +24,10 @@ const DoctorView: React.FC<DoctorViewProps> = ({
     deprecatedFormulae,
     selectedDeprecatedPackage,
     loadingDetailsFor,
+    runningCommand,
     onClearLog,
     onRunDoctor,
+    onRunCommand,
     onSelectDeprecated,
     onSelectDependency,
     onUninstallDeprecated,
@@ -36,10 +41,10 @@ const DoctorView: React.FC<DoctorViewProps> = ({
                     <h3>{t("headers.homebrewDoctor")}</h3>
                 </div>
                 <div className="header-actions">
-                    <button className="doctor-button" onClick={onClearLog}>
+                    <button type="button" className="doctor-button" onClick={onClearLog}>
                         {t("buttons.clearLog")}
                     </button>
-                    <button className="doctor-button" onClick={onRunDoctor}>
+                    <button type="button" className="doctor-button" onClick={onRunDoctor}>
                         {t("buttons.runDoctor")}
                     </button>
                 </div>
@@ -67,6 +72,7 @@ const DoctorView: React.FC<DoctorViewProps> = ({
                             >
                                 <span className="deprecated-formula-name">{formula}</span>
                                 <button
+                                    type="button"
                                     className="deprecated-uninstall-button"
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -92,7 +98,34 @@ const DoctorView: React.FC<DoctorViewProps> = ({
                     )}
                 </div>
             )}
-            <pre className="doctor-log">{doctorLog || t("dialogs.noDoctorOutput")}</pre>
+            <div className="doctor-log" role="log" aria-live="polite">
+                {(doctorLog || t("dialogs.noDoctorOutput")).split("\n").map((line, lineIndex) => (
+                    <div className="doctor-log-line" key={`${lineIndex}-${line}`}>
+                        {parseDoctorLogLine(line).map((part, partIndex) =>
+                            part.type === "command" ? (
+                                <button
+                                    type="button"
+                                    className="doctor-command"
+                                    disabled={runningCommand !== null}
+                                    key={`${partIndex}-${part.value}`}
+                                    onClick={() => onRunCommand(part.value)}
+                                    title={t("buttons.runDoctorCommand", { command: part.value })}
+                                >
+                                    {runningCommand === part.value ? (
+                                        <LoaderCircle className="doctor-command-spinner" size={15} />
+                                    ) : (
+                                        <Play size={14} fill="currentColor" />
+                                    )}
+                                    <code>{part.value}</code>
+                                </button>
+                            ) : (
+                                <span key={`${partIndex}-${part.value}`}>{part.value}</span>
+                            ),
+                        )}
+                        {line.length === 0 && "\u00a0"}
+                    </div>
+                ))}
+            </div>
             <div className="package-footer">{t("footers.doctor")}</div>
         </>
     );

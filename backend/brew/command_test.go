@@ -159,3 +159,34 @@ func TestFormatCommand(t *testing.T) {
 		})
 	}
 }
+
+func TestParseBrewCommand(t *testing.T) {
+	tests := []struct {
+		name      string
+		command   string
+		expected  []string
+		wantError bool
+	}{
+		{"doctor suggestion", "brew install libassuan libgpg-error pinentry-mac", []string{"install", "libassuan", "libgpg-error", "pinentry-mac"}, false},
+		{"quoted argument", `brew install "formula with spaces"`, []string{"install", "formula with spaces"}, false},
+		{"escaped whitespace", `brew install formula\ with\ spaces`, []string{"install", "formula with spaces"}, false},
+		{"shell syntax stays an argument", `brew install foo; rm`, []string{"install", "foo;", "rm"}, false},
+		{"not brew", "sudo brew install wget", nil, true},
+		{"no subcommand", "brew", nil, true},
+		{"install without package", "brew install", nil, true},
+		{"missing needs no target", "brew missing", []string{"missing"}, false},
+		{"unterminated quote", `brew install "wget`, nil, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseBrewCommand(tt.command)
+			if (err != nil) != tt.wantError {
+				t.Fatalf("ParseBrewCommand() error = %v, wantError %v", err, tt.wantError)
+			}
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("ParseBrewCommand() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

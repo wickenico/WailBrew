@@ -18,6 +18,8 @@ export function ClearConfigFile():Promise<void>;
 
 export function DownloadAndInstallUpdate(arg1:string):Promise<void>;
 
+export function ExecuteBrewDoctorCommand(arg1:string):Promise<string>;
+
 export function ExportBrewfile(arg1:string):Promise<void>;
 
 export function GetAdminUsername():Promise<string>;

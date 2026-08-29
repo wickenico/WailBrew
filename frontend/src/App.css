@@ -1537,13 +1537,60 @@ body {
   padding: 16px 20px;
   color: var(--text-secondary);
   font-family: monospace;
-  white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: break-all;
   overflow-y: auto;
   min-height: 220px;
   border-radius: var(--radius);
   box-shadow: var(--glass-shadow);
+}
+
+.doctor-log-line {
+  min-height: 1.35em;
+  white-space: pre-wrap;
+}
+
+.doctor-command {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  margin: 2px 1px;
+  padding: 4px 9px;
+  border: 1px solid rgba(79, 195, 247, 0.48);
+  border-radius: 7px;
+  background: rgba(79, 195, 247, 0.12);
+  color: var(--accent);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.doctor-command code {
+  overflow-wrap: anywhere;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.doctor-command:hover:not(:disabled) {
+  background: rgba(79, 195, 247, 0.22);
+  border-color: var(--accent);
+  color: var(--accent-hover);
+}
+
+.doctor-command:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.doctor-command:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.doctor-command-spinner {
+  animation: spin 0.9s linear infinite;
 }
 
 .doctor-log::-webkit-scrollbar {

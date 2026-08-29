@@ -766,6 +766,10 @@ func (a *App) RunBrewDoctor() string {
 	return a.brewService.RunBrewDoctor()
 }
 
+func (a *App) ExecuteBrewDoctorCommand(command string) string {
+	return a.brewService.ExecuteBrewDoctorCommand(command)
+}
+
 func (a *App) GetDeprecatedFormulae(doctorOutput string) []string {
 	return a.brewService.GetDeprecatedFormulae(doctorOutput)
 }

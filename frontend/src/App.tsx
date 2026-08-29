@@ -6,6 +6,7 @@ import {
     CheckBrewLocation,
     CheckHomebrewUpdate,
     ClearBrewCache,
+    ExecuteBrewDoctorCommand,
     GetAllBrewCasks,
     GetAllBrewPackages,
     GetAppVersion,
@@ -216,6 +217,7 @@ const WailBrewApp = () => {
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
+    const [runningDoctorCommand, setRunningDoctorCommand] = useState<string | null>(null);
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [selectedDeprecatedPackage, setSelectedDeprecatedPackage] = useState<PackageEntry | null>(null);
     const [_updatableError, setUpdatableError] = useState<string>("");
@@ -3195,6 +3197,7 @@ const WailBrewApp = () => {
                             deprecatedFormulae={deprecatedFormulae}
                             selectedDeprecatedPackage={selectedDeprecatedPackage}
                             loadingDetailsFor={loadingDetailsFor}
+                            runningCommand={runningDoctorCommand}
                             onClearLog={() => {
                                 setDoctorLog("");
                                 setDeprecatedFormulae([]);
@@ -3209,6 +3212,23 @@ const WailBrewApp = () => {
                                 // Parse deprecated formulae from the output
                                 const deprecated = await GetDeprecatedFormulae(result);
                                 setDeprecatedFormulae(deprecated || []);
+                            }}
+                            onRunCommand={async (command: string) => {
+                                setRunningDoctorCommand(command);
+                                try {
+                                    const commandResult = await ExecuteBrewDoctorCommand(command);
+                                    const doctorResult = await RunBrewDoctor();
+                                    setDoctorLog(
+                                        `$ ${command}\n${commandResult}\n\n${t("dialogs.doctorAfterCommand")}\n${doctorResult}`,
+                                    );
+                                    const deprecated = await GetDeprecatedFormulae(doctorResult);
+                                    setDeprecatedFormulae(deprecated || []);
+                                    await handleRefreshPackages();
+                                } catch (error) {
+                                    toast.error(t("dialogs.doctorCommandFailed", { error: String(error) }));
+                                } finally {
+                                    setRunningDoctorCommand(null);
+                                }
                             }}
                             onSelectDeprecated={handleSelectDeprecatedFormula}
                             onSelectDependency={handleSelectDependency}

@@ -74,6 +74,7 @@ type Service interface {
 
 	// Other operations
 	RunBrewDoctor() string
+	ExecuteBrewDoctorCommand(command string) string
 	GetDeprecatedFormulae(doctorOutput string) []string
 	GetBrewCleanupDryRun() (string, error)
 	RunBrewCleanupDryRun() string
@@ -498,6 +499,32 @@ func (s *serviceImpl) RunBrewDoctor() string {
 			return outputStr
 		}
 		return fmt.Sprintf("Error running brew doctor: %v\n\nOutput:\n%s", err, outputStr)
+	}
+	return outputStr
+}
+
+// ExecuteBrewDoctorCommand runs a brew command suggested by `brew doctor`.
+// The command is parsed into arguments and passed directly to the configured
+// brew executable, so no shell expansion or command chaining can occur.
+func (s *serviceImpl) ExecuteBrewDoctorCommand(command string) string {
+	args, err := ParseBrewCommand(command)
+	if err != nil {
+		return fmt.Sprintf("Invalid brew command: %v", err)
+	}
+
+	output, runErr := s.executor.RunNoCacheWithTimeout(30*time.Minute, args...)
+	// Any suggested command may change installed packages or Homebrew state.
+	// Invalidate cached reads before the UI reruns doctor and refreshes lists.
+	s.executor.ClearCache()
+	outputStr := strings.TrimSpace(string(output))
+	if runErr != nil {
+		if outputStr != "" {
+			return outputStr
+		}
+		return fmt.Sprintf("Command failed: %v", runErr)
+	}
+	if outputStr == "" {
+		return "Command completed successfully."
 	}
 	return outputStr
 }
