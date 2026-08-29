@@ -1,4 +1,4 @@
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, TriangleAlert } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -118,7 +118,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                 {dependents && dependents.length > 0 && (
                     <div className="confirm-dependents-warning">
                         <span className="confirm-dependents-title">
-                            ⚠ {t("dialogs.dependentsWarning", { count: dependents.length })}
+                            <TriangleAlert size={14} strokeWidth={2} />
+                            {t("dialogs.dependentsWarning", { count: dependents.length })}
                         </span>
                         <div className="confirm-dependents-chips">
                             {dependents.map((dep) => (

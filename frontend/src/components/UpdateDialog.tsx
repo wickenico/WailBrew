@@ -1,4 +1,4 @@
-import { CheckCircle2 } from "lucide-react";
+import { Check, CheckCircle2, Copy, PartyPopper, TriangleAlert } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CheckForUpdates } from "../../wailsjs/go/main/App";
@@ -112,7 +112,9 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
 
                     {error && (
                         <div className="update-error">
-                            <div className="error-icon">⚠️</div>
+                            <div className="error-icon">
+                                <TriangleAlert size={52} strokeWidth={1.75} />
+                            </div>
                             <div>
                                 <h3>{t("updateDialog.error")}</h3>
                                 <p>{error}</p>
@@ -124,7 +126,9 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                         <div className="update-info">
                             {updateInfo.available ? (
                                 <div className="update-available">
-                                    <div className="update-icon">🎉</div>
+                                    <div className="update-icon">
+                                        <PartyPopper size={36} strokeWidth={1.75} />
+                                    </div>
                                     <div className="update-details">
                                         <h3>{t("updateDialog.available")}</h3>
                                         <div className="version-comparison">
@@ -169,7 +173,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                                                     onClick={copyBrewCommand}
                                                     title={t("updateDialog.copyCommand")}
                                                 >
-                                                    {copySuccess ? "✓" : "📋"}
+                                                    {copySuccess ? <Check size={18} /> : <Copy size={18} />}
                                                 </button>
                                             </div>
                                             {copySuccess && <p className="copy-success">{t("updateDialog.copied")}</p>}

@@ -1,5 +1,6 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
+    AppWindow,
     ArrowDown,
     ArrowUp,
     ArrowUpCircle,
@@ -8,6 +9,7 @@ import {
     CirclePlus,
     CircleX,
     Info,
+    Package,
     Square,
     Star,
     TriangleAlert,
@@ -490,11 +492,12 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             if (col.key === "name") {
                 const typeIcon =
                     pkg.isCask !== undefined ? (
-                        <span
-                            title={pkg.isCask ? "Cask" : "Formula"}
-                            style={{ display: "inline-flex", alignItems: "center", fontSize: "14px", flexShrink: 0 }}
-                        >
-                            {pkg.isCask ? "🖥️" : "📦"}
+                        <span title={pkg.isCask ? "Cask" : "Formula"} style={{ display: "inline-flex", flexShrink: 0 }}>
+                            {pkg.isCask ? (
+                                <AppWindow size={16} strokeWidth={1.75} />
+                            ) : (
+                                <Package size={16} strokeWidth={1.75} />
+                            )}
                         </span>
                     ) : null;
                 if (pkg.warning || typeIcon) {
