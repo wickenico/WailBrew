@@ -1,0 +1,34 @@
+.titlebar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.titlebar-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.titlebar-action-btn:hover {
+    background: var(--hover-bg);
+    color: var(--accent);
+}
+
+.titlebar-sponsor-btn {
+    color: #e74c8b;
+}
+
+.titlebar-sponsor-btn:hover {
+    background: var(--hover-bg);
+    color: #ff6ba3;
+}

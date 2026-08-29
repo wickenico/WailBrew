@@ -210,7 +210,7 @@ body {
   border-right: 1px solid var(--glass-border);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  transition: background var(--transition), width var(--transition), padding var(--transition);
+  transition: background var(--transition);
   flex-shrink: 0;
   container-type: inline-size;
   overflow-y: auto;
@@ -221,31 +221,49 @@ body {
   width: 64px !important;
   min-width: 64px;
   max-width: 64px;
-  padding: 32px 10px 18px 10px;
+  /* Keep the same left padding as expanded so icons don't shift horizontally
+     when collapsing; only the right side shrinks. */
+  padding: 32px 10px 18px 18px;
 }
 
-.sidebar.collapsed .sidebar-title {
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.sidebar.collapsed .sidebar-sponsor {
-  justify-content: center;
-}
-
+/* Fade the section title to a plain divider line instead of collapsing its
+   height to 0 — keeps the same height/margin always, so nothing below it
+   (the icons) ever shifts vertically when collapsing. */
 .sidebar.collapsed .sidebar-section h4 {
-  display: none;
+  opacity: 0;
+  transition-delay: 0s;
 }
 
-.sidebar.collapsed .sidebar ul li {
-  justify-content: center;
-  padding: 10px;
+.sidebar.collapsed .sidebar-section h4::after {
+  opacity: 1;
+}
+
+.sidebar.collapsed ul li {
+  /* padding-left is untouched (same as the base rule) so the icon's position
+     never moves. font-size/padding-top/padding-right/gap are pinned here so
+     they snap once instead of being retargeted repeatedly mid-transition as
+     the shrinking width crosses the @container breakpoints below. */
+  font-size: 13px;
+  padding-top: 8px;
+  padding-right: 12px;
+  padding-bottom: 8px;
   gap: 0;
 }
 
-.sidebar.collapsed .sidebar-label,
-.sidebar.collapsed .badge,
+.sidebar.collapsed .sidebar-label {
+  max-width: 0;
+  opacity: 0;
+  transition-delay: 0s, 0s, 0s;
+}
+
+.sidebar.collapsed .badge {
+  opacity: 0;
+  padding: 2px 0;
+  margin-left: 0;
+  max-width: 0;
+  transition-delay: 0s, 0s, 0s, 0s;
+}
+
 .sidebar.collapsed .sidebar-shortcut {
   display: none;
 }
@@ -297,75 +315,8 @@ body {
   right: -4px;
 }
 
-.sidebar-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--accent);
-  letter-spacing: 1px;
-}
-
-.sidebar-sponsor {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 11px;
-  line-height: 1;
-  color: var(--text-secondary);
-  cursor: pointer;
-  margin-bottom: 12px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  opacity: 0.7;
-  width: 100%;
-}
-
-.sidebar-sponsor:hover {
-  opacity: 1;
-  color: #e74c8b;
-}
-
-.sidebar-sponsor:hover svg {
-  fill: #e74c8b;
-  color: #e74c8b;
-}
-
-.sidebar-sponsor svg {
-  flex-shrink: 0;
-  width: 11px;
-  height: 11px;
-  position: relative;
-  top: -1px;
-  transition: all 0.2s ease;
-}
-
-.sidebar-collapse-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.sidebar-collapse-toggle:hover {
-  background: var(--hover-bg);
-  color: var(--accent);
-}
-
-.sidebar-collapse-toggle svg {
+.sidebar-drag-region {
+  height: 12px;
   flex-shrink: 0;
 }
 
@@ -390,171 +341,67 @@ body {
   margin-bottom: 24px;
 }
 
-.sidebar-section.keyboard-hints {
-  margin-top: auto;
-  padding-bottom: 12px;
-  margin-bottom: 0;
-  flex-shrink: 0;
-}
-
-.keyboard-hint {
+.sidebar-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
-  font-size: 11px;
-  color: var(--text-secondary);
-}
-
-.keyboard-hint-label {
-  flex: 1;
-  text-align: left;
-}
-
-.keyboard-hint-shortcut {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
-  font-size: 10px;
-  color: var(--text-secondary);
-  opacity: 0.7;
-  margin-left: 8px;
-}
-
-.sidebar-section.language-switcher {
-  margin-top: 0;
-  padding-top: 12px;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
   border-top: 1px solid var(--glass-border);
-  margin-bottom: 0;
-  flex-shrink: 0;
-}
-
-.language-dropdown-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.language-dropdown {
-  width: 100%;
-  padding: 10px 36px 10px 12px;
-  background: var(--input-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  color: var(--text-main);
-  font-size: 14px;
-  font-family: inherit;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  outline: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.language-dropdown:hover {
-  background: var(--hover-bg);
-  border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-.language-dropdown:focus {
-  background: var(--hover-bg);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.language-dropdown option {
-  background: var(--bg-secondary-strong);
-  color: var(--text-main);
-  padding: 8px;
-  font-size: 14px;
-}
-
-.language-dropdown-arrow {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
   color: var(--text-secondary);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 11px;
+  line-height: 1.2;
+  flex-shrink: 0;
+  max-height: 32px;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-height var(--transition), padding var(--transition), opacity var(--transition),
+    border-color var(--transition);
+  transition-delay: 0s;
 }
 
-.language-dropdown-wrapper:hover .language-dropdown-arrow {
+.sidebar.collapsed .sidebar-footer {
+  max-height: 0;
+  padding-top: 0;
+  border-color: transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0s;
+}
+
+.sidebar-footer button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sidebar-footer button:hover,
+.sidebar-footer button:focus-visible {
   color: var(--accent);
-  transform: translateY(-50%) scale(1.1);
 }
 
-.language-dropdown:focus~.language-dropdown-arrow {
-  color: var(--accent);
+.sidebar-footer-version {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 6px;
+  white-space: nowrap;
 }
 
-/* Responsive sizing for language dropdown - always show flag + text */
-@container (max-width: 220px) {
-  .language-dropdown {
-    font-size: 13px;
-    padding: 9px 28px 9px 10px;
-  }
-
-  .language-dropdown option {
-    font-size: 13px;
-  }
-}
-
-@container (max-width: 205px) {
-  .language-dropdown {
-    font-size: 12px;
-    padding: 8px 26px 8px 9px;
-  }
-
-  .language-dropdown option {
-    font-size: 12px;
-  }
-
-  .language-dropdown-arrow {
-    font-size: 9px;
-    right: 10px;
-  }
-}
-
-@container (max-width: 190px) {
-  .language-dropdown {
-    font-size: 11px;
-    padding: 7px 24px 7px 8px;
-  }
-
-  .language-dropdown option {
-    font-size: 11px;
-  }
-
-  .language-dropdown-arrow {
-    font-size: 8px;
-    right: 8px;
-  }
-}
-
-@container (max-width: 180px) {
-  .language-dropdown {
-    font-size: 10px;
-    padding: 7px 22px 7px 7px;
-  }
-
-  .language-dropdown option {
-    font-size: 10px;
-  }
-
-  .language-dropdown-arrow {
-    font-size: 7px;
-    right: 7px;
-  }
+.sidebar-footer-version img {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .sidebar-section h4 {
+  position: relative;
   font-size: 10px;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -563,11 +410,30 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 1;
+  transition: opacity var(--transition);
 }
 
-/* Scale section headers for smaller sidebars */
+/* Collapsed rail: the title fades out and this thin rule fades in at the
+   same vertical spot, so the header keeps the same height/margin always. */
+.sidebar-section h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--glass-border);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity var(--transition);
+}
+
+/* Scale navigation only while the sidebar is expanded. The collapsed rail
+   keeps the base row and section dimensions, preventing vertical jumps while
+   labels, badges, and headings fade out. */
 @container (max-width: 210px) {
-  .sidebar-section h4 {
+  .sidebar:not(.collapsed) .sidebar-section h4 {
     font-size: 9px;
     letter-spacing: 0.4px;
     margin-bottom: 7px;
@@ -575,13 +441,13 @@ body {
 }
 
 @container (max-width: 185px) {
-  .sidebar-section h4 {
+  .sidebar:not(.collapsed) .sidebar-section h4 {
     font-size: 8px;
     letter-spacing: 0.2px;
     margin-bottom: 5px;
   }
 
-  .sidebar-section {
+  .sidebar:not(.collapsed) .sidebar-section {
     margin-bottom: 16px;
   }
 }
@@ -595,19 +461,24 @@ body {
 .sidebar ul li {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  /* padding-left is fixed everywhere below (never overridden) so the icon's
+     horizontal position never shifts, regardless of width or collapse state. */
+  padding: 8px 12px 8px 12px;
   cursor: pointer;
   border-radius: var(--radius);
   font-size: 13px;
   margin-bottom: 2px;
-  transition: background var(--transition), color var(--transition), font-size var(--transition);
+  transition: background var(--transition), color var(--transition), font-size var(--transition),
+    padding var(--transition), gap var(--transition);
   gap: 8px;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .sidebar-icon {
+  display: block;
   flex-shrink: 0;
+  transform: translateY(-1px);
   color: var(--text-secondary);
   transition: color var(--transition);
 }
@@ -618,38 +489,47 @@ body {
 }
 
 .sidebar-label {
-  flex: 1;
+  flex: 1 1 auto;
+  max-width: 1000px;
+  line-height: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  opacity: 1;
+  margin-left: 0;
+  transition: opacity var(--transition), max-width var(--transition), margin var(--transition);
 }
 
-/* Responsive font sizing for menu items based on sidebar width */
+/* Responsive font sizing for expanded sidebar widths.
+   padding-left is intentionally never set here, so the icon's horizontal
+   position stays fixed no matter how narrow the sidebar gets. */
 @container (max-width: 210px) {
-  .sidebar ul li {
+  .sidebar:not(.collapsed) ul li {
     font-size: 12px;
-    padding: 8px 10px;
+    padding-top: 8px;
+    padding-right: 10px;
+    padding-bottom: 8px;
     gap: 5px;
   }
 }
 
 @container (max-width: 195px) {
-  .sidebar ul li {
+  .sidebar:not(.collapsed) ul li {
     font-size: 11px;
-    padding: 7px 9px;
+    padding-top: 7px;
+    padding-right: 9px;
+    padding-bottom: 7px;
     gap: 4px;
   }
 }
 
 @container (max-width: 185px) {
-  .sidebar ul li {
+  .sidebar:not(.collapsed) ul li {
     font-size: 10px;
-    padding: 6px 7px;
+    padding-top: 6px;
+    padding-right: 7px;
+    padding-bottom: 6px;
     gap: 3px;
-  }
-
-  .sidebar-title {
-    font-size: 18px;
   }
 }
 
@@ -665,6 +545,7 @@ body {
 }
 
 .badge {
+  align-self: center;
   background: var(--badge-bg);
   border-radius: 10px;
   padding: 2px 10px;
@@ -674,6 +555,11 @@ body {
   margin-left: auto;
   flex-shrink: 0;
   white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-width: 60px;
+  transition: opacity var(--transition), padding var(--transition), margin var(--transition),
+    max-width var(--transition);
 }
 
 .badge-attention {
@@ -683,6 +569,7 @@ body {
 }
 
 .sidebar-shortcut {
+  align-self: center;
   font-size: 10px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -706,24 +593,24 @@ body {
 
 /* Scale badges and shortcuts for smaller sidebars */
 @container (max-width: 210px) {
-  .badge {
+  .sidebar:not(.collapsed) .badge {
     font-size: 11px;
     padding: 2px 8px;
   }
 
-  .sidebar-shortcut {
+  .sidebar:not(.collapsed) .sidebar-shortcut {
     font-size: 9px;
     padding: 2px 4px;
   }
 }
 
 @container (max-width: 185px) {
-  .badge {
+  .sidebar:not(.collapsed) .badge {
     font-size: 10px;
     padding: 1px 6px;
   }
 
-  .sidebar-shortcut {
+  .sidebar:not(.collapsed) .sidebar-shortcut {
     font-size: 8px;
     padding: 1px 3px;
   }
@@ -4955,14 +4842,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
   background: transparent;
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 8px;
-  border-radius: 10px;
+  padding: 0;
+  border-radius: 6px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: 8px;
 }
 
 .theme-toggle:hover {
@@ -5224,33 +5112,6 @@ body {
 
 [data-theme='light'] .analytics-stat:hover::before {
   background: linear-gradient(180deg, var(--accent) 0%, rgba(2, 136, 209, 0.8) 100%);
-}
-
-.background-check-tooltip {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 8px;
-  padding: 4px 8px;
-  background: rgba(30, 34, 40, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: normal;
-  white-space: nowrap;
-  z-index: 1000;
-  pointer-events: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  color: var(--text-main);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-[data-theme='light'] .background-check-tooltip {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme='light'] .sidebar-shortcut {

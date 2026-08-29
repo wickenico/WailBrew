@@ -2617,7 +2617,13 @@ const WailBrewApp = () => {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100vw" }}>
-            <TitleBar />
+            <TitleBar
+                setView={setView}
+                isSidebarCollapsed={isSidebarCollapsed}
+                onToggleSidebarCollapsed={toggleSidebarCollapsed}
+                isBackgroundCheckRunning={isBackgroundCheckRunning}
+                getSecondsUntilNextCheck={getSecondsUntilNextCheck}
+            />
             <div
                 className={`wailbrew-container${isMacInsetTitleBar ? " mac-inset-titlebar" : ""}`}
                 style={{ flex: 1, height: "auto", minHeight: 0 }}
@@ -2634,12 +2640,11 @@ const WailBrewApp = () => {
                     repositoriesCount={repositories.length}
                     servicesCount={services.length}
                     onClearSelection={clearSelection}
+                    appVersion={appVersion}
+                    onOpenAbout={() => setShowAbout(true)}
                     sidebarWidth={sidebarWidth}
                     sidebarRef={sidebarRef}
-                    isBackgroundCheckRunning={isBackgroundCheckRunning}
-                    getSecondsUntilNextCheck={getSecondsUntilNextCheck}
                     isCollapsed={isSidebarCollapsed}
-                    onToggleCollapse={toggleSidebarCollapsed}
                 />
                 {!isSidebarCollapsed && <div className="sidebar-resize-handle" onMouseDown={handleResizeStart} />}
                 <main className="content">
