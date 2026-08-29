@@ -42,6 +42,59 @@
     align-items: center;
 }
 
+.titlebar-actions-slot {
+    position: absolute;
+    right: 128px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.titlebar-leading-slot {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* macOS uses a transparent, inset title bar (see main.go) so the native
+   traffic lights float over the app content. These float the sidebar toggle
+   and the action row in the top corners, mirroring the traffic lights. */
+.titlebar-mac-actions {
+    position: fixed;
+    top: 0;
+    right: 0;
+    /* Vertically centers these icons on the same line as the traffic lights. */
+    height: 34px;
+    display: flex;
+    align-items: center;
+    padding-right: 16px;
+    z-index: 1000;
+}
+
+.titlebar-mac-leading {
+    position: fixed;
+    top: 0;
+    left: 78px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 1000;
+}
+
+/* Subtle shadow so the icons stay legible floating over any content color,
+   without boxing them in a visible bar. Scoped to the icons themselves
+   (not the language dropdown menu) so the popup keeps its own shadow only. */
+.titlebar-mac-actions .titlebar-action-btn,
+.titlebar-mac-actions .theme-toggle,
+.titlebar-mac-leading .titlebar-action-btn,
+.titlebar-mac-leading .background-check-icon {
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+}
+
 .titlebar-btn {
     width: 32px;
     height: 32px;
