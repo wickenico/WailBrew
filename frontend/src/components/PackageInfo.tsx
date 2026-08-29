@@ -1,4 +1,4 @@
-import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, TrendingUp } from "lucide-react";
+import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, Package, TrendingUp } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -182,7 +182,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         return (
             <div className="pi-container">
                 <div className="pi-empty">
-                    <span className="pi-empty-icon">📦</span>
+                    <Package className="pi-empty-icon" size={30} strokeWidth={1.5} aria-hidden="true" />
                     <span className="pi-empty-text">{t("packageInfo.noSelection")}</span>
                 </div>
             </div>

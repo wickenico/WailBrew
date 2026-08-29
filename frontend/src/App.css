@@ -1311,6 +1311,9 @@ body {
 }
 
 .confirm-dependents-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.75rem;
   color: #f87171;
   font-weight: 600;
@@ -2364,7 +2367,9 @@ body {
 }
 
 .error-icon {
-  font-size: 3.5rem;
+  display: flex;
+  justify-content: center;
+  color: #ff6b6b;
   filter: drop-shadow(0 4px 12px rgba(255, 59, 48, 0.3));
 }
 
@@ -2397,6 +2402,9 @@ body {
 }
 
 .update-icon {
+  display: flex;
+  justify-content: center;
+  color: var(--accent);
   font-size: 2rem;
   margin-bottom: 0.5rem;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
@@ -3338,7 +3346,7 @@ body {
   opacity: 0.5;
   grid-column: 1 / -1;
 }
-.pi-empty-icon { font-size: 1.5rem; }
+.pi-empty-icon { color: var(--text-secondary); }
 .pi-empty-text { font-size: 0.75rem; font-style: italic; }
 
 /* Header */
