@@ -1879,6 +1879,12 @@ body {
   transform: translateY(-1px);
 }
 
+.log-copy-button.copied {
+  color: #4CAF50;
+  border-color: rgba(76, 175, 80, 0.35);
+  background: rgba(76, 175, 80, 0.12);
+}
+
 .log-report-bug-button {
   display: flex;
   align-items: center;

@@ -1,5 +1,6 @@
 import { Check, CheckCircle2, Copy, PartyPopper, TriangleAlert } from "lucide-react";
 import React, { useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { CheckForUpdates } from "../../wailsjs/go/main/App";
 import type { main } from "../../wailsjs/go/models";
@@ -58,8 +59,16 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
             await navigator.clipboard.writeText(command);
             setCopySuccess(true);
             setTimeout(() => setCopySuccess(false), 2000);
+            toast.success(t("updateDialog.copied"), {
+                duration: 2000,
+                position: "bottom-center",
+            });
         } catch (err) {
             console.error("Failed to copy to clipboard:", err);
+            toast.error(t("logDialog.copyFailed"), {
+                duration: 2000,
+                position: "bottom-center",
+            });
         }
     };
 
@@ -169,9 +178,19 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose }) => {
                                                     brew upgrade --cask wailbrew
                                                 </code>
                                                 <button
+                                                    type="button"
                                                     className="copy-button"
                                                     onClick={copyBrewCommand}
-                                                    title={t("updateDialog.copyCommand")}
+                                                    title={
+                                                        copySuccess
+                                                            ? t("updateDialog.copied")
+                                                            : t("updateDialog.copyCommand")
+                                                    }
+                                                    aria-label={
+                                                        copySuccess
+                                                            ? t("updateDialog.copied")
+                                                            : t("updateDialog.copyCommand")
+                                                    }
                                                 >
                                                     {copySuccess ? <Check size={18} /> : <Copy size={18} />}
                                                 </button>

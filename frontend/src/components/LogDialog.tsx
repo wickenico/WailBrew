@@ -57,6 +57,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
     const logRef = useRef<HTMLDivElement>(null);
     const boxRef = useRef<HTMLDivElement>(null);
     const [copiedEntryIndex, setCopiedEntryIndex] = useState<number | null>(null);
+    const [copiedLogs, setCopiedLogs] = useState(false);
 
     useModalA11y(open, onClose, boxRef);
 
@@ -231,6 +232,8 @@ const LogDialog: React.FC<LogDialogProps> = ({
 
         try {
             await navigator.clipboard.writeText(log);
+            setCopiedLogs(true);
+            setTimeout(() => setCopiedLogs(false), 2000);
             toast.success(t("logDialog.copiedToClipboard"), {
                 duration: 2000,
                 position: "bottom-center",
@@ -302,11 +305,13 @@ const LogDialog: React.FC<LogDialogProps> = ({
                     {renderLogContent()}
                     {log && (
                         <button
+                            type="button"
                             onClick={handleCopyLogs}
-                            className="log-copy-button"
-                            title={t("logDialog.copyToClipboard")}
+                            className={`log-copy-button${copiedLogs ? " copied" : ""}`}
+                            title={copiedLogs ? t("logDialog.copiedToClipboard") : t("logDialog.copyToClipboard")}
+                            aria-label={copiedLogs ? t("logDialog.copiedToClipboard") : t("logDialog.copyToClipboard")}
                         >
-                            <Copy size={16} />
+                            {copiedLogs ? <Check size={16} /> : <Copy size={16} />}
                             {t("logDialog.copy")}
                         </button>
                     )}

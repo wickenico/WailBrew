@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -20,6 +20,7 @@ type InfoTab = "log" | "parsed";
 const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log, onClose, isRunning = false }) => {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<InfoTab>("log");
+    const [copied, setCopied] = useState(false);
     const parsed = useMemo(() => parseInfoLog(log), [log]);
     const boxRef = useRef<HTMLDivElement>(null);
 
@@ -28,6 +29,7 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log,
     useEffect(() => {
         if (open) {
             setActiveTab("parsed");
+            setCopied(false);
         }
     }, [open]);
 
@@ -36,6 +38,8 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log,
 
         try {
             await navigator.clipboard.writeText(log);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
             toast.success(t("logDialog.copiedToClipboard"), {
                 duration: 2000,
                 position: "bottom-center",
@@ -156,8 +160,14 @@ const PackageInfoDialog: React.FC<PackageInfoDialogProps> = ({ open, title, log,
                     )}
 
                     {log && (
-                        <button onClick={handleCopy} className="log-copy-button" title={t("logDialog.copyToClipboard")}>
-                            <Copy size={16} />
+                        <button
+                            type="button"
+                            onClick={handleCopy}
+                            className={`log-copy-button${copied ? " copied" : ""}`}
+                            title={copied ? t("logDialog.copiedToClipboard") : t("logDialog.copyToClipboard")}
+                            aria-label={copied ? t("logDialog.copiedToClipboard") : t("logDialog.copyToClipboard")}
+                        >
+                            {copied ? <Check size={16} /> : <Copy size={16} />}
                             {t("logDialog.copy")}
                         </button>
                     )}

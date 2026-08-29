@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
+import { AlertTriangle, Check, CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -85,6 +85,73 @@ import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 import type { PackageEntry, RepositoryEntry, View } from "./types";
+
+const WAILBREW_UPGRADE_COMMAND = "brew update\nbrew upgrade --cask wailbrew";
+
+const UpdateCommandCopy = () => {
+    const { t } = useTranslation();
+    const [copied, setCopied] = useState(false);
+    const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(
+        () => () => {
+            if (resetTimer.current) clearTimeout(resetTimer.current);
+        },
+        [],
+    );
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(WAILBREW_UPGRADE_COMMAND);
+            setCopied(true);
+            if (resetTimer.current) clearTimeout(resetTimer.current);
+            resetTimer.current = setTimeout(() => setCopied(false), 2000);
+            toast.success(t("dialogs.commandCopied"), { duration: 2000, position: "bottom-center" });
+        } catch (error) {
+            console.error("Failed to copy update command:", error);
+            toast.error(t("logDialog.copyFailed"), { duration: 2000, position: "bottom-center" });
+        }
+    };
+
+    return (
+        <button
+            type="button"
+            aria-label={copied ? t("dialogs.commandCopied") : t("dialogs.copyCommand")}
+            style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginTop: "0.5rem",
+                padding: "0.4rem 0.6rem",
+                background: copied ? "rgba(76, 175, 80, 0.18)" : "rgba(0, 0, 0, 0.3)",
+                borderRadius: "6px",
+                fontSize: "0.8rem",
+                fontFamily: "monospace",
+                cursor: "pointer",
+                transition: "background 0.2s",
+                outline: "none",
+                color: copied ? "#4CAF50" : "inherit",
+                border: "none",
+                width: "100%",
+                textAlign: "left",
+            }}
+            onClick={(event) => {
+                event.stopPropagation();
+                void handleCopy();
+            }}
+            onMouseEnter={(event) => {
+                if (!copied) event.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
+            }}
+            onMouseLeave={(event) => {
+                event.currentTarget.style.background = copied ? "rgba(76, 175, 80, 0.18)" : "rgba(0, 0, 0, 0.3)";
+            }}
+            title={copied ? t("dialogs.commandCopied") : t("dialogs.copyCommand")}
+        >
+            <code style={{ flex: 1, fontSize: "0.8rem" }}>{WAILBREW_UPGRADE_COMMAND}</code>
+            {copied ? <Check size={16} /> : <Copy size={16} style={{ opacity: 0.7 }} />}
+        </button>
+    );
+};
 
 const WailBrewApp = () => {
     const { t, i18n } = useTranslation();
@@ -737,8 +804,6 @@ const WailBrewApp = () => {
 
         if (wailbrewPackage) {
             toast.dismiss("startup-up-to-date");
-            const upgradeCommand = "brew update\nbrew upgrade --cask wailbrew";
-
             toast(
                 (t_obj) => {
                     const handleNavigateToOutdated = () => {
@@ -757,47 +822,7 @@ const WailBrewApp = () => {
                                 <div style={{ fontSize: "0.85rem", opacity: 0.8, marginBottom: "0.5rem" }}>
                                     {t("toast.versionReady", { version: wailbrewPackage.latestVersion })}
                                 </div>
-                                <div
-                                    role="button"
-                                    tabIndex={0}
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "0.5rem",
-                                        marginTop: "0.5rem",
-                                        padding: "0.4rem 0.6rem",
-                                        background: "rgba(0, 0, 0, 0.3)",
-                                        borderRadius: "6px",
-                                        fontSize: "0.8rem",
-                                        fontFamily: "monospace",
-                                        cursor: "pointer",
-                                        transition: "background 0.2s",
-                                        outline: "none",
-                                    }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigator.clipboard.writeText(upgradeCommand);
-                                        toast.success("Copied to clipboard!", { duration: 2000 });
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter" || e.key === " ") {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            navigator.clipboard.writeText(upgradeCommand);
-                                            toast.success("Copied to clipboard!", { duration: 2000 });
-                                        }
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = "rgba(0, 0, 0, 0.3)";
-                                    }}
-                                    title="Click to copy"
-                                >
-                                    <code style={{ flex: 1, fontSize: "0.8rem" }}>{upgradeCommand}</code>
-                                    <Copy size={16} style={{ opacity: 0.7 }} />
-                                </div>
+                                <UpdateCommandCopy />
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
