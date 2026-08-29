@@ -25,16 +25,30 @@ type cacheEntry struct {
 	expiresAt time.Time
 }
 
+// inflightCall represents a command that is already running. Concurrent callers
+// for the same command wait for this result instead of spawning another brew
+// process. This complements the result cache, which only contains completed
+// commands.
+type inflightCall struct {
+	done   chan struct{}
+	output []byte
+	err    error
+}
+
 // Executor handles brew command execution with result caching
 type Executor struct {
 	brewPath    string
-	brewEnv     []string
+	brewEnv     func() []string
 	logCallback func(string)
 
 	// Command result cache (short-lived to deduplicate parallel calls)
 	cache    map[string]*cacheEntry
 	cacheMux sync.RWMutex
 	cacheTTL time.Duration
+
+	// Commands currently executing, keyed identically to the result cache.
+	inflight    map[string]*inflightCall
+	inflightMux sync.Mutex
 
 	// Validation cache (long-lived, only needs to succeed once)
 	validated   bool
@@ -43,11 +57,20 @@ type Executor struct {
 
 // NewExecutor creates a new brew executor with caching
 func NewExecutor(brewPath string, brewEnv []string, logCallback func(string)) *Executor {
+	return NewExecutorWithEnvProvider(brewPath, func() []string { return brewEnv }, logCallback)
+}
+
+// NewExecutorWithEnvProvider creates an executor whose environment is resolved
+// only when a command actually runs. This keeps potentially slow environment
+// discovery out of the native application startup path while preserving the
+// exact environment used for every brew invocation.
+func NewExecutorWithEnvProvider(brewPath string, brewEnv func() []string, logCallback func(string)) *Executor {
 	return &Executor{
 		brewPath:    brewPath,
 		brewEnv:     brewEnv,
 		logCallback: logCallback,
 		cache:       make(map[string]*cacheEntry),
+		inflight:    make(map[string]*inflightCall),
 		cacheTTL:    10 * time.Second, // Short TTL to deduplicate parallel startup calls
 	}
 }
@@ -117,6 +140,18 @@ func (e *Executor) runWithTimeout(timeout time.Duration, stdoutOnly bool, args .
 	}
 	e.cacheMux.RUnlock()
 
+	// A result cache cannot deduplicate commands that miss concurrently. Register
+	// the first caller as the owner and let later callers share its result.
+	e.inflightMux.Lock()
+	if call, ok := e.inflight[cacheKey]; ok {
+		e.inflightMux.Unlock()
+		<-call.done
+		return call.output, call.err
+	}
+	call := &inflightCall{done: make(chan struct{})}
+	e.inflight[cacheKey] = call
+	e.inflightMux.Unlock()
+
 	// Execute the command
 	output, err := e.runActual(timeout, stdoutOnly, args...)
 
@@ -130,6 +165,16 @@ func (e *Executor) runWithTimeout(timeout time.Duration, stdoutOnly bool, args .
 		}
 		e.cacheMux.Unlock()
 	}
+
+	// Publish the result to all callers that arrived while the command was in
+	// progress. Failed results are shared with current waiters but deliberately
+	// remain absent from the completed-result cache so a later call can retry.
+	e.inflightMux.Lock()
+	call.output = output
+	call.err = err
+	delete(e.inflight, cacheKey)
+	close(call.done)
+	e.inflightMux.Unlock()
 
 	return output, err
 }
@@ -146,7 +191,9 @@ func (e *Executor) runActual(timeout time.Duration, stdoutOnly bool, args ...str
 	}
 
 	cmd := exec.CommandContext(ctx, e.brewPath, args...)
-	system.ApplyEnvironment(cmd, e.brewEnv)
+	if e.brewEnv != nil {
+		system.ApplyEnvironment(cmd, e.brewEnv())
+	}
 
 	var output []byte
 	var err error

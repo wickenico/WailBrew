@@ -246,12 +246,14 @@ const WailBrewApp = () => {
     const updateCheckDone = useRef<boolean>(false);
     const lastSyncedLanguage = useRef<string>("en");
     const isInitialLoad = useRef<boolean>(true);
+    const startupDataPromise = useRef<ReturnType<typeof GetStartupDataWithUpdate> | null>(null);
 
     // Loading timer for development (DEV only — isolated to LoadingTimer component)
     const [loadingStartTime, setLoadingStartTime] = useState<number | null>(null);
 
     // Background update checking state
     const [isBackgroundCheckRunning, setIsBackgroundCheckRunning] = useState<boolean>(false);
+    const backgroundCheckRunning = useRef<boolean>(false);
     const lastKnownOutdatedCount = useRef<number>(0);
     const backgroundCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null);
     const nextCheckTime = useRef<number>(Date.now() + 15 * 60 * 1000); // 15 minutes from now
@@ -393,8 +395,15 @@ const WailBrewApp = () => {
 
         // Use single optimized startup call with database update for fresh outdated packages
         // Database update runs in parallel with other fetches to minimize startup time
-        GetStartupDataWithUpdate()
+        // React Strict Mode re-runs effects in development. Reuse the same
+        // request so the second setup subscribes to the existing startup work
+        // instead of launching another complete set of Homebrew commands.
+        startupDataPromise.current ??= GetStartupDataWithUpdate();
+        let cancelled = false;
+
+        startupDataPromise.current
             .then((startupData) => {
+                if (cancelled) return;
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = startupData.packages || [];
                 const safeInstalledCasks = startupData.casks || [];
@@ -546,6 +555,7 @@ const WailBrewApp = () => {
                 }
             })
             .catch((err) => {
+                if (cancelled) return;
                 console.error("Error loading packages:", err);
                 // Set empty arrays for all package types to show empty tables instead of crashing
                 setPackages([]);
@@ -577,15 +587,19 @@ const WailBrewApp = () => {
                 setTimeout(() => {
                     setLoadingStartTime(null);
                 }, 5000);
+            })
+            .finally(() => {
+                if (!cancelled && backgroundCheckInterval.current === null) {
+                    startBackgroundUpdateCheck();
+                }
             });
-
-        // Start background update checking
-        startBackgroundUpdateCheck();
 
         // Cleanup on unmount
         return () => {
+            cancelled = true;
             if (backgroundCheckInterval.current) {
                 clearInterval(backgroundCheckInterval.current);
+                backgroundCheckInterval.current = null;
             }
         };
     }, []);
@@ -686,8 +700,9 @@ const WailBrewApp = () => {
 
     // Background update checking function
     const performBackgroundUpdateCheck = async () => {
-        if (isBackgroundCheckRunning) return;
+        if (backgroundCheckRunning.current) return;
 
+        backgroundCheckRunning.current = true;
         setIsBackgroundCheckRunning(true);
         try {
             // Use the "with update" version to ensure fresh data for background checks
@@ -768,6 +783,7 @@ const WailBrewApp = () => {
         } catch (error) {
             console.error("Background update check error:", error);
         } finally {
+            backgroundCheckRunning.current = false;
             setIsBackgroundCheckRunning(false);
             // Update next check time
             nextCheckTime.current = Date.now() + 15 * 60 * 1000;
@@ -776,12 +792,8 @@ const WailBrewApp = () => {
 
     // Start background update checking
     const startBackgroundUpdateCheck = () => {
-        // Perform initial check after a short delay
-        setTimeout(() => {
-            performBackgroundUpdateCheck();
-        }, 2000);
-
-        // Set up interval for checking every 15 minutes
+        // Startup already refreshes the database and outdated list. The first
+        // background refresh is therefore due after the normal 15-minute interval.
         backgroundCheckInterval.current = setInterval(
             () => {
                 performBackgroundUpdateCheck();

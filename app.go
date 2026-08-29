@@ -181,16 +181,6 @@ func NewApp() *App {
 		sessionLogManager: logging.NewManager(),
 	}
 
-	// Initialize brew executor with basic env (will be updated after config loads)
-	basicEnv := []string{
-		brewEnvPath,
-		brewEnvLang,
-		brewEnvLCAll,
-		brewEnvNoAutoUpdate,
-	}
-	basicEnv = append(basicEnv, brew.HomebrewConfigEnv()...)
-	app.brewExecutor = brew.NewExecutor(brewPath, basicEnv, app.appendSessionLog)
-
 	// Initialize i18n manager
 	var err error
 	app.i18nManager, err = i18n.NewManager("en")
@@ -1209,7 +1199,7 @@ func (a *App) SetAdminUsername(username string) error {
 // again at runtime (e.g. after SetBrewPath) so a path change fully propagates to
 // the service layer without requiring an app restart.
 func (a *App) reconfigureBrew() {
-	a.brewExecutor = brew.NewExecutor(a.brewPath, a.getBrewEnv(), a.appendSessionLog)
+	a.brewExecutor = brew.NewExecutorWithEnvProvider(a.brewPath, a.getBrewEnv, a.appendSessionLog)
 
 	a.brewService = brew.NewService(
 		a.brewExecutor,
