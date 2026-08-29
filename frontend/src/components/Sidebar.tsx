@@ -6,6 +6,7 @@ import {
     Layers,
     Leaf,
     Library,
+    type LucideIcon,
     Package,
     RefreshCw,
     Rocket,
@@ -16,6 +17,7 @@ import type React from "react";
 import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
 import type { View } from "../types";
+import "./Sidebar.css";
 
 interface SidebarProps {
     view: View;
@@ -34,6 +36,20 @@ interface SidebarProps {
     sidebarWidth?: number;
     sidebarRef?: React.RefObject<HTMLElement | null>;
     isCollapsed?: boolean;
+}
+
+interface NavigationItem {
+    view: View;
+    icon: LucideIcon;
+    label: string;
+    shortcut: string;
+    badge?: number | string;
+    needsAttention?: boolean;
+}
+
+interface NavigationSection {
+    title: string;
+    items: NavigationItem[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -55,23 +71,74 @@ const Sidebar: React.FC<SidebarProps> = ({
     isCollapsed = false,
 }) => {
     const { t } = useTranslation();
-
-    // Detect if user is on Mac
     const isMac =
         typeof navigator !== "undefined" &&
         (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"));
     const cmdKey = isMac ? "⌘" : "Ctrl+";
 
-    const navigate = (v: View) => {
-        setView(v);
-        onClearSelection();
-    };
+    const sections: NavigationSection[] = [
+        {
+            title: t("sidebar.packages"),
+            items: [
+                {
+                    view: "installed",
+                    icon: Package,
+                    label: t("sidebar.installed"),
+                    badge: packagesCount,
+                    shortcut: "1",
+                },
+                { view: "casks", icon: AppWindow, label: t("sidebar.casks"), badge: casksCount, shortcut: "2" },
+                {
+                    view: "updatable",
+                    icon: RefreshCw,
+                    label: t("sidebar.outdated"),
+                    badge: updatableCount,
+                    needsAttention: updatableCount > 0,
+                    shortcut: "3",
+                },
+                { view: "leaves", icon: Leaf, label: t("sidebar.leaves"), badge: leavesCount, shortcut: "4" },
+                {
+                    view: "repositories",
+                    icon: FolderGit2,
+                    label: t("sidebar.repositories"),
+                    badge: repositoriesCount,
+                    shortcut: "5",
+                },
+            ],
+        },
+        {
+            title: t("sidebar.browseInstall"),
+            items: [
+                {
+                    view: "all",
+                    icon: Library,
+                    label: t("sidebar.allFormulae"),
+                    badge: allCount === -1 ? "—" : allCount,
+                    shortcut: "6",
+                },
+                {
+                    view: "allCasks",
+                    icon: Layers,
+                    label: t("sidebar.allCasks"),
+                    badge: allCasksCount === -1 ? "—" : allCasksCount,
+                    shortcut: "7",
+                },
+            ],
+        },
+        {
+            title: t("sidebar.tools"),
+            items: [
+                { view: "homebrew", icon: Beer, label: t("sidebar.homebrew"), shortcut: "8" },
+                { view: "services", icon: Rocket, label: t("sidebar.services"), badge: servicesCount, shortcut: "P" },
+                { view: "doctor", icon: Stethoscope, label: t("sidebar.doctor"), shortcut: "9" },
+                { view: "cleanup", icon: Sparkles, label: t("sidebar.cleanup"), shortcut: "0" },
+            ],
+        },
+    ];
 
-    const handleNavKeyDown = (e: React.KeyboardEvent, v: View) => {
-        if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            navigate(v);
-        }
+    const navigate = (nextView: View) => {
+        setView(nextView);
+        onClearSelection();
     };
 
     return (
@@ -79,154 +146,42 @@ const Sidebar: React.FC<SidebarProps> = ({
             className={`sidebar${isCollapsed ? " collapsed" : ""}`}
             ref={sidebarRef}
             style={!isCollapsed && sidebarWidth ? { width: `${sidebarWidth}px` } : undefined}
+            aria-label={t("sidebar.packages")}
         >
-            {/* Invisible drag handle: the visible header was removed (redundant with the
-                title bar), but this keeps the window draggable from the sidebar's top edge. */}
             <div className="sidebar-drag-region" style={{ "--wails-draggable": "drag" } as React.CSSProperties} />
-            <div className="sidebar-section">
-                <h4>{t("sidebar.packages")}</h4>
-                <ul>
-                    <li
-                        className={view === "installed" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("installed")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "installed")}
-                        title={isCollapsed ? t("sidebar.installed") : undefined}
-                    >
-                        <Package className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.installed")}</span>
-                        <span className="badge">{packagesCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}1</span>
-                    </li>
-                    <li
-                        className={view === "casks" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("casks")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "casks")}
-                        title={isCollapsed ? t("sidebar.casks") : undefined}
-                    >
-                        <AppWindow className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.casks")}</span>
-                        <span className="badge">{casksCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}2</span>
-                    </li>
-                    <li
-                        className={view === "updatable" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("updatable")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "updatable")}
-                        title={isCollapsed ? t("sidebar.outdated") : undefined}
-                    >
-                        <RefreshCw className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.outdated")}</span>
-                        <span className={`badge${updatableCount > 0 ? " badge-attention" : ""}`}>{updatableCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}3</span>
-                    </li>
-                    <li
-                        className={view === "leaves" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("leaves")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "leaves")}
-                        title={isCollapsed ? t("sidebar.leaves") : undefined}
-                    >
-                        <Leaf className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.leaves")}</span>
-                        <span className="badge">{leavesCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}4</span>
-                    </li>
-                    <li
-                        className={view === "repositories" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("repositories")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "repositories")}
-                        title={isCollapsed ? t("sidebar.repositories") : undefined}
-                    >
-                        <FolderGit2 className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.repositories")}</span>
-                        <span className="badge">{repositoriesCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}5</span>
-                    </li>
-                </ul>
-            </div>
-            <div className="sidebar-section">
-                <h4>{t("sidebar.browseInstall")}</h4>
-                <ul>
-                    <li
-                        className={view === "all" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("all")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "all")}
-                        title={isCollapsed ? t("sidebar.allFormulae") : undefined}
-                    >
-                        <Library className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.allFormulae")}</span>
-                        <span className="badge">{allCount === -1 ? "—" : allCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}6</span>
-                    </li>
-                    <li
-                        className={view === "allCasks" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("allCasks")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "allCasks")}
-                        title={isCollapsed ? t("sidebar.allCasks") : undefined}
-                    >
-                        <Layers className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.allCasks")}</span>
-                        <span className="badge">{allCasksCount === -1 ? "—" : allCasksCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}7</span>
-                    </li>
-                </ul>
-            </div>
-            <div className="sidebar-section">
-                <h4>{t("sidebar.tools")}</h4>
-                <ul>
-                    <li
-                        className={view === "homebrew" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("homebrew")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "homebrew")}
-                        title={isCollapsed ? t("sidebar.homebrew") : undefined}
-                    >
-                        <Beer className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.homebrew")}</span>
-                        <span className="sidebar-shortcut">{cmdKey}8</span>
-                    </li>
-                    <li
-                        className={view === "services" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("services")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "services")}
-                        title={isCollapsed ? t("sidebar.services") : undefined}
-                    >
-                        <Rocket className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.services")}</span>
-                        <span className="badge">{servicesCount}</span>
-                        <span className="sidebar-shortcut">{cmdKey}P</span>
-                    </li>
-                    <li
-                        className={view === "doctor" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("doctor")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "doctor")}
-                        title={isCollapsed ? t("sidebar.doctor") : undefined}
-                    >
-                        <Stethoscope className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.doctor")}</span>
-                        <span className="sidebar-shortcut">{cmdKey}9</span>
-                    </li>
-                    <li
-                        className={view === "cleanup" ? "active" : ""}
-                        tabIndex={0}
-                        onClick={() => navigate("cleanup")}
-                        onKeyDown={(e) => handleNavKeyDown(e, "cleanup")}
-                        title={isCollapsed ? t("sidebar.cleanup") : undefined}
-                    >
-                        <Sparkles className="sidebar-icon" size={16} strokeWidth={2} />
-                        <span className="sidebar-label">{t("sidebar.cleanup")}</span>
-                        <span className="sidebar-shortcut">{cmdKey}0</span>
-                    </li>
-                </ul>
-            </div>
+            {sections.map((section) => (
+                <section className="sidebar-section" key={section.title}>
+                    <h4>{section.title}</h4>
+                    <ul>
+                        {section.items.map(({ view: itemView, icon: Icon, label, shortcut, badge, needsAttention }) => {
+                            const isActive = view === itemView;
+                            return (
+                                <li className="sidebar-nav-item" key={itemView}>
+                                    <button
+                                        type="button"
+                                        className={`sidebar-nav-button${isActive ? " active" : ""}`}
+                                        onClick={() => navigate(itemView)}
+                                        title={isCollapsed ? label : undefined}
+                                        aria-current={isActive ? "page" : undefined}
+                                    >
+                                        <Icon className="sidebar-icon" size={16} strokeWidth={2} />
+                                        <span className="sidebar-label">{label}</span>
+                                        {badge !== undefined && (
+                                            <span className={`badge${needsAttention ? " badge-attention" : ""}`}>
+                                                {badge}
+                                            </span>
+                                        )}
+                                        <span className="sidebar-shortcut">
+                                            {cmdKey}
+                                            {shortcut}
+                                        </span>
+                                    </button>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </section>
+            ))}
             <div className="sidebar-footer">
                 <span className="sidebar-footer-version">
                     <img src={appIcon} alt="" />
