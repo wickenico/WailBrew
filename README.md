@@ -110,16 +110,10 @@ Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/W
 
 ![WailBrew — Homebrew GUI showing installed formulae, casks, and available updates on macOS](images/Screenshot.png)
 
-<!-- PLACEHOLDER: add a few more screenshots to showcase breadth. Suggested shots:
-     images/screenshot-services.png (Services view)
-     images/screenshot-doctor.png   (Doctor view)
-     images/screenshot-dark.png     (Dark mode)
-     Uncomment and adjust the lines below once the files exist. -->
-<!--
+![WailBrew Casks view — pinning a cask to block its updates](images/screenshot-casks.png)
 ![WailBrew Services view — managing Homebrew services](images/screenshot-services.png)
-![WailBrew Doctor view — diagnosing Homebrew issues](images/screenshot-doctor.png)
-![WailBrew in dark mode](images/screenshot-dark.png)
--->
+![WailBrew Doctor view — diagnosing Homebrew issues with brew doctor](images/screenshot-doctor.png)
+![WailBrew in light mode](images/screenshot-light.png)
 
 ## 📥 Installation
 
