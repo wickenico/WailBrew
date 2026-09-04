@@ -124,7 +124,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "Ajouter \"{{name}}\" aux favoris",
     "unfavorite": "Retirer \"{{name}}\" des favoris",
-    "toggleFavoritesOnly": "Afficher uniquement les favoris"
+    "toggleFavoritesOnly": "Afficher uniquement les favoris",
+    "togglePinnedOnly": "Afficher uniquement les épinglés",
+    "pin": "Épingler \"{{name}}\" (bloquer les mises à jour)",
+    "unpin": "Désépingler \"{{name}}\" (autoriser les mises à jour)"
   },
   "filters": {
     "onRequest": "À la demande ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 Démarrage de la désinstallation pour '{{name}}'...",
       "success": "✅ Désinstallation pour '{{name}}' terminée avec succès !",
       "failed": "❌ Échec de la désinstallation pour '{{name}}' : {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' est maintenant épinglé et ne sera pas mis à jour.",
+      "failed": "❌ Échec de l'épinglage de '{{name}}' : {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' est désépinglé et peut être mis à jour à nouveau.",
+      "failed": "❌ Échec du désépinglage de '{{name}}' : {{error}}"
     },
     "tap": {
       "start": "🔄 Démarrage du tap pour '{{name}}'...",

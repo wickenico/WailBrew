@@ -109,6 +109,8 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 			Name              string   `json:"name"`
 			InstalledVersions []string `json:"installed_versions"`
 			CurrentVersion    string   `json:"current_version"`
+			Pinned            bool     `json:"pinned"`
+			PinnedVersion     string   `json:"pinned_version"`
 		} `json:"casks"`
 	}
 
@@ -152,11 +154,19 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 
 	// Process casks (applications)
 	for _, cask := range brewOutdated.Casks {
+		// Skip pinned casks as they won't be updated, mirroring the formula behavior above.
+		if cask.Pinned {
+			continue
+		}
 		caskNames = append(caskNames, cask.Name)
 	}
 	autoUpdateCasks := s.getAutoUpdateCaskNames(caskNames)
 
 	for _, cask := range brewOutdated.Casks {
+		if cask.Pinned {
+			continue
+		}
+
 		installedVersion := "unknown"
 		if len(cask.InstalledVersions) > 0 {
 			installedVersion = cask.InstalledVersions[0]

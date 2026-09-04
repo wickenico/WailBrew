@@ -51,6 +51,8 @@ type Service interface {
 	UpdateBrewPackage(ctx context.Context, packageName string) string
 	UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string
 	UpdateAllBrewPackages(ctx context.Context) string
+	PinBrewPackage(packageName string) string
+	UnpinBrewPackage(packageName string) string
 
 	// Tap operations
 	TapBrewRepository(ctx context.Context, repositoryName, repositoryURL string) string
@@ -333,6 +335,29 @@ func (s *serviceImpl) UpdateSelectedBrewPackages(ctx context.Context, packageNam
 
 func (s *serviceImpl) UpdateAllBrewPackages(ctx context.Context) string {
 	return s.actionsService.UpdateAllBrewPackages(ctx)
+}
+
+// PinBrewPackage pins an installed formula or cask so brew upgrade skips it.
+// Pinning is a fast metadata-only write (no download/build), so unlike the
+// install/upgrade actions above it runs synchronously without progress events.
+func (s *serviceImpl) PinBrewPackage(packageName string) string {
+	_, err := s.executor.RunNoCache(BuildPinArgs(packageName)...)
+	s.executor.ClearCache()
+	if err != nil {
+		return s.getBackendMsg("backend.pin.failed", map[string]string{"name": packageName, "error": err.Error()})
+	}
+	return s.getBackendMsg("backend.pin.success", map[string]string{"name": packageName})
+}
+
+// UnpinBrewPackage removes a pin, making the formula or cask eligible for
+// brew upgrade again.
+func (s *serviceImpl) UnpinBrewPackage(packageName string) string {
+	_, err := s.executor.RunNoCache(BuildUnpinArgs(packageName)...)
+	s.executor.ClearCache()
+	if err != nil {
+		return s.getBackendMsg("backend.unpin.failed", map[string]string{"name": packageName, "error": err.Error()})
+	}
+	return s.getBackendMsg("backend.unpin.success", map[string]string{"name": packageName})
 }
 
 // Tap methods

@@ -125,7 +125,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "\"{{name}}\" zu Favoriten hinzufügen",
     "unfavorite": "\"{{name}}\" aus Favoriten entfernen",
-    "toggleFavoritesOnly": "Nur Favoriten anzeigen"
+    "toggleFavoritesOnly": "Nur Favoriten anzeigen",
+    "togglePinnedOnly": "Nur angepinnte anzeigen",
+    "pin": "\"{{name}}\" anpinnen (Updates blockieren)",
+    "unpin": "\"{{name}}\" lösen (Updates zulassen)"
   },
   "filters": {
     "onRequest": "Auf Anfrage ({{count}})",
@@ -614,6 +617,14 @@
       "start": "🔄 Starte Deinstallation für '{{name}}'...",
       "success": "✅ Deinstallation für '{{name}}' erfolgreich abgeschlossen!",
       "failed": "❌ Deinstallation für '{{name}}' fehlgeschlagen: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' ist jetzt angepinnt und wird nicht aktualisiert.",
+      "failed": "❌ Anpinnen von '{{name}}' fehlgeschlagen: {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' ist gelöst und kann wieder aktualisiert werden.",
+      "failed": "❌ Lösen von '{{name}}' fehlgeschlagen: {{error}}"
     },
     "tap": {
       "start": "🔄 Starte Tap für '{{name}}'...",

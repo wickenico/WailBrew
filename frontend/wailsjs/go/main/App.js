@@ -246,6 +246,10 @@ export function ParseNewPackagesFromUpdateOutput(arg1) {
   return window['go']['main']['App']['ParseNewPackagesFromUpdateOutput'](arg1);
 }
 
+export function PinBrewPackage(arg1) {
+  return window['go']['main']['App']['PinBrewPackage'](arg1);
+}
+
 export function PreviewBrewCommand(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['PreviewBrewCommand'](arg1, arg2, arg3, arg4);
 }
@@ -388,6 +392,10 @@ export function ToggleFavorite(arg1) {
 
 export function TrustBrewTap(arg1) {
   return window['go']['main']['App']['TrustBrewTap'](arg1);
+}
+
+export function UnpinBrewPackage(arg1) {
+  return window['go']['main']['App']['UnpinBrewPackage'](arg1);
 }
 
 export function UntapBrewRepository(arg1) {

@@ -124,7 +124,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "将 \"{{name}}\" 添加到收藏",
     "unfavorite": "将 \"{{name}}\" 从收藏中移除",
-    "toggleFavoritesOnly": "仅显示收藏"
+    "toggleFavoritesOnly": "仅显示收藏",
+    "togglePinnedOnly": "仅显示已固定",
+    "pin": "固定 \"{{name}}\"（阻止更新）",
+    "unpin": "取消固定 \"{{name}}\"（允许更新）"
   },
   "filters": {
     "onRequest": "按需安装 ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 正在为 '{{name}}' 开始卸载...",
       "success": "✅ '{{name}}' 的卸载已成功完成！",
       "failed": "❌ '{{name}}' 的卸载失败：{{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' 现已固定，不会被更新。",
+      "failed": "❌ 固定 '{{name}}' 失败：{{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' 已取消固定，可以再次更新。",
+      "failed": "❌ 取消固定 '{{name}}' 失败：{{error}}"
     },
     "tap": {
       "start": "🔄 正在为 '{{name}}' 开始 tap...",

@@ -201,12 +201,15 @@ func (s *ListService) GetBrewPackages() [][]string {
 		}
 	}
 
-	// Resolve install origin (on request vs as dependency) from Homebrew JSON metadata.
+	// Resolve install origin (on request vs as dependency) and pin state from
+	// Homebrew JSON metadata.
 	infoOutput, infoErr := s.executor.RunStdoutOnly("info", "--json=v2", "--formula", "--installed")
+	pinnedByName := make(map[string]bool)
 	if infoErr == nil {
 		var info struct {
 			Formulae []struct {
 				Name      string `json:"name"`
+				Pinned    bool   `json:"pinned"`
 				Installed []struct {
 					InstalledOnRequest    bool `json:"installed_on_request"`
 					InstalledAsDependency bool `json:"installed_as_dependency"`
@@ -230,6 +233,7 @@ func (s *ListService) GetBrewPackages() [][]string {
 					}
 				}
 				installReasonByName[f.Name] = reason
+				pinnedByName[f.Name] = f.Pinned
 			}
 		}
 	}
@@ -242,7 +246,11 @@ func (s *ListService) GetBrewPackages() [][]string {
 		if reason == "" {
 			reason = "unknown"
 		}
-		packages = append(packages, []string{name, version, "", reason})
+		pinned := "false"
+		if pinnedByName[name] {
+			pinned = "true"
+		}
+		packages = append(packages, []string{name, version, "", reason, pinned})
 	}
 
 	return packages
@@ -266,6 +274,41 @@ func extractCaskInstalledVersion(installed json.RawMessage) string {
 	}
 
 	return ""
+}
+
+// getPinnedCaskNames reports the pin state of installed casks in bulk via
+// `brew info --cask --json=v2`. A failed lookup yields no pinned casks rather
+// than an error, since pin state is a secondary/cosmetic detail here.
+func (s *ListService) getPinnedCaskNames(caskNames []string) map[string]bool {
+	pinned := make(map[string]bool)
+	if len(caskNames) == 0 {
+		return pinned
+	}
+
+	args := []string{"info", "--cask", "--json=v2"}
+	args = append(args, caskNames...)
+
+	infoOutput, err := s.executor.RunStdoutOnly(args...)
+	if err != nil {
+		return pinned
+	}
+
+	var caskInfo struct {
+		Casks []struct {
+			Token  string `json:"token"`
+			Pinned bool   `json:"pinned"`
+		} `json:"casks"`
+	}
+
+	if err := json.Unmarshal(infoOutput, &caskInfo); err != nil {
+		return pinned
+	}
+
+	for _, cask := range caskInfo.Casks {
+		pinned[cask.Token] = cask.Pinned
+	}
+
+	return pinned
 }
 
 func (s *ListService) fillCaskInstalledVersions(caskNames []string, versionMap map[string]string) {
@@ -375,13 +418,19 @@ func (s *ListService) GetBrewCasks() [][]string {
 		s.fillCaskInstalledVersions(missingVersion, versionMap)
 	}
 
+	pinnedCasks := s.getPinnedCaskNames(caskNames)
+
 	var casks [][]string
 	for _, name := range caskNames {
 		version := versionMap[name]
 		if version == "" {
 			version = "Unknown"
 		}
-		casks = append(casks, []string{name, version, ""})
+		pinned := "false"
+		if pinnedCasks[name] {
+			pinned = "true"
+		}
+		casks = append(casks, []string{name, version, "", pinned})
 	}
 
 	return casks

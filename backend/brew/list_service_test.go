@@ -71,6 +71,58 @@ func TestGetBrewPackages_installReasonSurvivesStderrWarnings(t *testing.T) {
 	}
 }
 
+// A pinned formula must be flagged in the returned row so the UI can render
+// its pin toggle in the "unpin" state and the outdated check can exclude it.
+func TestGetBrewPackages_surfacesPinnedState(t *testing.T) {
+	const infoJSON = `{"formulae":[
+		{"name":"wget","pinned":true,"installed":[{"installed_on_request":true}]},
+		{"name":"jq","pinned":false,"installed":[{"installed_on_request":true}]}
+	]}`
+
+	runner := &fakeRunner{
+		stdout: map[string]string{
+			"list --formula --versions":            "wget 1.21\njq 1.7\n",
+			"info --json=v2 --formula --installed": infoJSON,
+		},
+	}
+
+	service := newTestListService(runner, nil)
+	packages := service.GetBrewPackages()
+
+	if len(packages) != 2 {
+		t.Fatalf("expected 2 packages, got %v", packages)
+	}
+	if pinned := packages[0][4]; pinned != "true" {
+		t.Fatalf("expected wget to be pinned, got %q", pinned)
+	}
+	if pinned := packages[1][4]; pinned != "false" {
+		t.Fatalf("expected jq to be unpinned, got %q", pinned)
+	}
+}
+
+// A pinned cask must likewise be flagged, now that Homebrew supports pinning
+// casks (Homebrew/brew#22276) symmetrically with formulae.
+func TestGetBrewCasks_surfacesPinnedState(t *testing.T) {
+	const infoJSON = `{"casks":[{"token":"firefox","pinned":true,"installed":"120.0"}]}`
+
+	runner := &fakeRunner{
+		stdout: map[string]string{
+			"list --cask --versions":        "firefox 120.0\n",
+			"info --cask --json=v2 firefox": infoJSON,
+		},
+	}
+
+	service := newTestListService(runner, nil)
+	casks := service.GetBrewCasks()
+
+	if len(casks) != 1 {
+		t.Fatalf("expected 1 cask, got %v", casks)
+	}
+	if pinned := casks[0][3]; pinned != "true" {
+		t.Fatalf("expected firefox to be pinned, got %q", pinned)
+	}
+}
+
 func newTestListService(runner commandRunner, logFunc func(string)) *ListService {
 	return newTestListServiceWithFailureHook(runner, logFunc, nil)
 }

@@ -1,4 +1,4 @@
-import { AlertTriangle, Check, CheckSquare, Copy, PartyPopper, RefreshCw, Sparkles, Star, X } from "lucide-react";
+import { AlertTriangle, Check, CheckSquare, Copy, PartyPopper, Pin, RefreshCw, Sparkles, Star, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ import {
     GetStartupDataWithUpdate,
     GetUninstallCaskWithZap,
     InstallBrewPackage,
+    PinBrewPackage,
     RemoveBrewPackage,
     RestartBrewService,
     RunBrewCleanup,
@@ -51,6 +52,7 @@ import {
     TapBrewRepository,
     ToggleFavorite,
     TrustBrewTap,
+    UnpinBrewPackage,
     UntapBrewRepository,
     UpdateAllBrewPackages,
     UpdateBrewPackage,
@@ -226,6 +228,7 @@ const WailBrewApp = () => {
     const [favorites, setFavorites] = useState<Set<string>>(new Set());
     const [sortFavoritesToTop, setSortFavoritesToTop] = useState<boolean>(false);
     const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
+    const [showPinnedOnly, setShowPinnedOnly] = useState<boolean>(false);
     const [homebrewLog, setHomebrewLog] = useState<string>("");
     const [homebrewVersion, setHomebrewVersion] = useState<string>("");
     const [homebrewUpdateStatus, setHomebrewUpdateStatus] = useState<{
@@ -352,6 +355,32 @@ const WailBrewApp = () => {
         }
     };
 
+    const handleTogglePin = async (pkg: PackageEntry) => {
+        const nextPinned = !pkg.isPinned;
+        try {
+            // Pin/Unpin return a result message rather than throwing, matching the
+            // other brew-action bindings (Install/Update/Remove), so failures must
+            // be detected from the message text instead of a rejected promise.
+            const message = nextPinned ? await PinBrewPackage(pkg.name) : await UnpinBrewPackage(pkg.name);
+            if (message.includes("❌")) {
+                toast.error(message);
+                return;
+            }
+            const applyPinned = (list: PackageEntry[]) =>
+                list.map((p) => (p.name === pkg.name ? { ...p, isPinned: nextPinned } : p));
+            setPackages(applyPinned);
+            setCasks(applyPinned);
+            // Pinning is the mechanism that hides a package from the Updatable view
+            // (mirrors brew itself), so drop it immediately for responsive feedback.
+            if (nextPinned) {
+                setUpdatablePackages((prev) => prev.filter((p) => p.name !== pkg.name));
+            }
+        } catch (error) {
+            console.error("Failed to toggle pin:", error);
+            toast.error(String(error));
+        }
+    };
+
     // Persist window geometry on resize/move so it survives force-quits and
     // crashes (where the Go shutdown hook may not run). Debounced to avoid
     // flooding the config writer during a drag.
@@ -430,18 +459,22 @@ const WailBrewApp = () => {
                     throw new Error(`${t("errors.failedRepositories")}: ${safeRepos[0][1]}`);
                 }
 
-                const installedFormatted = safeInstalled.map(([name, installedVersion, size, installReason]) => ({
+                const installedFormatted = safeInstalled.map(
+                    ([name, installedVersion, size, installReason, pinned]) => ({
+                        name,
+                        installedVersion,
+                        size,
+                        installReason: (installReason as "on_request" | "dependency" | "unknown") || "unknown",
+                        isInstalled: true,
+                        isPinned: pinned === "true",
+                    }),
+                );
+                const casksFormatted = safeInstalledCasks.map(([name, installedVersion, size, pinned]) => ({
                     name,
                     installedVersion,
                     size,
-                    installReason: (installReason as "on_request" | "dependency" | "unknown") || "unknown",
                     isInstalled: true,
-                }));
-                const casksFormatted = safeInstalledCasks.map(([name, installedVersion, size]) => ({
-                    name,
-                    installedVersion,
-                    size,
-                    isInstalled: true,
+                    isPinned: pinned === "true",
                 }));
                 const updatableFormatted = updatableErrorMessage
                     ? []
@@ -1313,9 +1346,10 @@ const WailBrewApp = () => {
             .map((pkg) =>
                 favorites.has(pkg.name) === !!pkg.isFavorite ? pkg : { ...pkg, isFavorite: favorites.has(pkg.name) },
             )
-            .filter((pkg) => !showFavoritesOnly || favorites.has(pkg.name));
+            .filter((pkg) => !showFavoritesOnly || favorites.has(pkg.name))
+            .filter((pkg) => !showPinnedOnly || pkg.isPinned);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [installedFilteredPackages, debouncedSearchQuery, favorites, showFavoritesOnly]);
+    }, [installedFilteredPackages, debouncedSearchQuery, favorites, showFavoritesOnly, showPinnedOnly]);
 
     const filteredRepositories = activeRepositories.filter((repo) =>
         repo.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -1586,11 +1620,12 @@ const WailBrewApp = () => {
 
             if (!(installedCasks.length === 1 && installedCasks[0][0] === "Error")) {
                 setCasks(
-                    installedCasks.map(([name, installedVersion, size]) => ({
+                    installedCasks.map(([name, installedVersion, size, pinned]) => ({
                         name,
                         installedVersion,
                         size,
                         isInstalled: true,
+                        isPinned: pinned === "true",
                     })),
                 );
             }
@@ -2501,12 +2536,13 @@ const WailBrewApp = () => {
                 setPackages([]);
                 checkBrewLocation();
             } else {
-                const formatted = safeInstalled.map(([name, installedVersion, size, installReason]) => ({
+                const formatted = safeInstalled.map(([name, installedVersion, size, installReason, pinned]) => ({
                     name,
                     installedVersion,
                     size,
                     installReason: (installReason as "on_request" | "dependency" | "unknown") || "unknown",
                     isInstalled: true,
+                    isPinned: pinned === "true",
                 }));
                 setPackages(formatted);
 
@@ -2541,11 +2577,12 @@ const WailBrewApp = () => {
             if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
                 setCasks([]);
             } else {
-                casksFormatted = safeInstalledCasks.map(([name, installedVersion, size]) => ({
+                casksFormatted = safeInstalledCasks.map(([name, installedVersion, size, pinned]) => ({
                     name,
                     installedVersion,
                     size,
                     isInstalled: true,
+                    isPinned: pinned === "true",
                 }));
                 setCasks(casksFormatted);
 
@@ -2732,6 +2769,13 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            className={`refresh-button ${showPinnedOnly ? "active" : ""}`}
+                                            onClick={() => setShowPinnedOnly((prev) => !prev)}
+                                            title={t("buttons.togglePinnedOnly")}
+                                        >
+                                            <Pin size={18} fill={showPinnedOnly ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
                                             disabled={loading}
@@ -2770,6 +2814,7 @@ const WailBrewApp = () => {
                                 ref={view === "installed" ? packageTableRef : null}
                                 packages={filteredPackages}
                                 onToggleFavorite={handleToggleFavorite}
+                                onTogglePin={handleTogglePin}
                                 sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading}
@@ -2805,6 +2850,13 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            className={`refresh-button ${showPinnedOnly ? "active" : ""}`}
+                                            onClick={() => setShowPinnedOnly((prev) => !prev)}
+                                            title={t("buttons.togglePinnedOnly")}
+                                        >
+                                            <Pin size={18} fill={showPinnedOnly ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
                                             disabled={loading}
@@ -2823,6 +2875,7 @@ const WailBrewApp = () => {
                                 ref={view === "casks" ? packageTableRef : null}
                                 packages={filteredPackages}
                                 onToggleFavorite={handleToggleFavorite}
+                                onTogglePin={handleTogglePin}
                                 sortFavoritesToTop={sortFavoritesToTop}
                                 selectedPackage={selectedPackage}
                                 loading={loading}

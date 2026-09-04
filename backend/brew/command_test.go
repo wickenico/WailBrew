@@ -135,6 +135,15 @@ func TestBuildUntapAndTrustArgs(t *testing.T) {
 	}
 }
 
+func TestBuildPinAndUnpinArgs(t *testing.T) {
+	if got, want := BuildPinArgs("wget"), []string{"pin", "wget"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("BuildPinArgs() = %v, want %v", got, want)
+	}
+	if got, want := BuildUnpinArgs("wget"), []string{"unpin", "wget"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("BuildUnpinArgs() = %v, want %v", got, want)
+	}
+}
+
 func TestFormatCommand(t *testing.T) {
 	tests := []struct {
 		name     string

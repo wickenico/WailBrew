@@ -124,7 +124,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "הוספת \"{{name}}\" למועדפים",
     "unfavorite": "הסרת \"{{name}}\" מהמועדפים",
-    "toggleFavoritesOnly": "הצג מועדפים בלבד"
+    "toggleFavoritesOnly": "הצג מועדפים בלבד",
+    "togglePinnedOnly": "הצג נעוצים בלבד",
+    "pin": "נעץ את \"{{name}}\" (חסימת עדכונים)",
+    "unpin": "בטל נעיצה של \"{{name}}\" (אפשור עדכונים)"
   },
   "filters": {
     "onRequest": "לפי בקשה ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 מתחיל הסרה עבור '{{name}}'...",
       "success": "✅ ההסרה עבור '{{name}}' הושלמה בהצלחה!",
       "failed": "❌ ההסרה עבור '{{name}}' נכשלה: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' נעוץ כעת ולא יעודכן.",
+      "failed": "❌ נעיצת '{{name}}' נכשלה: {{error}}"
+    },
+    "unpin": {
+      "success": "✅ הנעיצה של '{{name}}' בוטלה וניתן לעדכן אותו שוב.",
+      "failed": "❌ ביטול הנעיצה של '{{name}}' נכשל: {{error}}"
     },
     "tap": {
       "start": "🔄 מתחיל הוספת מאגר עבור '{{name}}'...",

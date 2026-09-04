@@ -10,6 +10,8 @@ import {
     CircleX,
     Info,
     Package,
+    Pin,
+    PinOff,
     Square,
     Star,
     TriangleAlert,
@@ -39,6 +41,7 @@ interface PackageTableProps {
     onDeselectAllPackages?: () => void;
     onToggleFavorite?: (pkg: PackageEntry) => void;
     sortFavoritesToTop?: boolean;
+    onTogglePin?: (pkg: PackageEntry) => void;
 }
 
 export interface PackageTableRef {
@@ -159,6 +162,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             onDeselectAllPackages,
             onToggleFavorite,
             sortFavoritesToTop = false,
+            onTogglePin,
         },
         ref,
     ) => {
@@ -438,6 +442,23 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                 title={t("buttons.update", { name: pkg.name })}
                             >
                                 <ArrowUpCircle size={20} />
+                            </button>
+                        )}
+                        {onTogglePin && pkg.isInstalled !== false && (
+                            <button
+                                className="action-button pin-button"
+                                style={pkg.isPinned ? { color: "#FF7043" } : undefined}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onTogglePin(pkg);
+                                }}
+                                title={
+                                    pkg.isPinned
+                                        ? t("buttons.unpin", { name: pkg.name })
+                                        : t("buttons.pin", { name: pkg.name })
+                                }
+                            >
+                                {pkg.isPinned ? <PinOff size={20} /> : <Pin size={20} />}
                             </button>
                         )}
                         {onUninstall && (

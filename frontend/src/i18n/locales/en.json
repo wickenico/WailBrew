@@ -125,7 +125,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "Add \"{{name}}\" to favorites",
     "unfavorite": "Remove \"{{name}}\" from favorites",
-    "toggleFavoritesOnly": "Show favorites only"
+    "toggleFavoritesOnly": "Show favorites only",
+    "togglePinnedOnly": "Show pinned only",
+    "pin": "Pin \"{{name}}\" (block updates)",
+    "unpin": "Unpin \"{{name}}\" (allow updates)"
   },
   "filters": {
     "onRequest": "On Request ({{count}})",
@@ -641,6 +644,14 @@
       "start": "🔄 Starting uninstallation for '{{name}}'...",
       "success": "✅ Uninstallation for '{{name}}' completed successfully!",
       "failed": "❌ Uninstallation for '{{name}}' failed: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' is now pinned and won't be upgraded.",
+      "failed": "❌ Failed to pin '{{name}}': {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' is unpinned and can be upgraded again.",
+      "failed": "❌ Failed to unpin '{{name}}': {{error}}"
     },
     "tap": {
       "start": "🔄 Starting tap for '{{name}}'...",

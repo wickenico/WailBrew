@@ -124,7 +124,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "Adicionar \"{{name}}\" aos favoritos",
     "unfavorite": "Remover \"{{name}}\" dos favoritos",
-    "toggleFavoritesOnly": "Mostrar apenas favoritos"
+    "toggleFavoritesOnly": "Mostrar apenas favoritos",
+    "togglePinnedOnly": "Mostrar apenas fixados",
+    "pin": "Fixar \"{{name}}\" (bloquear atualizações)",
+    "unpin": "Desafixar \"{{name}}\" (permitir atualizações)"
   },
   "filters": {
     "onRequest": "Por solicitação ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 Iniciando a desinstalação de '{{name}}'...",
       "success": "✅ A desinstalação de '{{name}}' foi concluída com sucesso!",
       "failed": "❌ A desinstalação de '{{name}}' falhou: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' agora está fixado e não será atualizado.",
+      "failed": "❌ Falha ao fixar '{{name}}': {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' foi desafixado e pode ser atualizado novamente.",
+      "failed": "❌ Falha ao desafixar '{{name}}': {{error}}"
     },
     "tap": {
       "start": "🔄 Iniciando a adição do repositório '{{name}}'...",

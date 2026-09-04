@@ -631,6 +631,14 @@ func (a *App) UpdateAllBrewPackages() string {
 	return a.brewService.UpdateAllBrewPackages(a.ctx)
 }
 
+func (a *App) PinBrewPackage(packageName string) string {
+	return a.brewService.PinBrewPackage(packageName)
+}
+
+func (a *App) UnpinBrewPackage(packageName string) string {
+	return a.brewService.UnpinBrewPackage(packageName)
+}
+
 func (a *App) TapBrewRepository(repositoryName, repositoryURL string) string {
 	return a.brewService.TapBrewRepository(a.ctx, repositoryName, repositoryURL)
 }

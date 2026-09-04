@@ -124,7 +124,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "\"{{name}}\" öğesini favorilere ekle",
     "unfavorite": "\"{{name}}\" öğesini favorilerden kaldır",
-    "toggleFavoritesOnly": "Yalnızca favorileri göster"
+    "toggleFavoritesOnly": "Yalnızca favorileri göster",
+    "togglePinnedOnly": "Yalnızca sabitlenenleri göster",
+    "pin": "\"{{name}}\" öğesini sabitle (güncellemeleri engelle)",
+    "unpin": "\"{{name}}\" öğesinin sabitlemesini kaldır (güncellemelere izin ver)"
   },
   "filters": {
     "onRequest": "İstekle kurulan ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 '{{name}}' için kaldırma başlatılıyor...",
       "success": "✅ '{{name}}' için kaldırma başarıyla tamamlandı!",
       "failed": "❌ '{{name}}' için kaldırma başarısız: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' artık sabitlendi ve güncellenmeyecek.",
+      "failed": "❌ '{{name}}' sabitlenemedi: {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' sabitlemesi kaldırıldı ve tekrar güncellenebilir.",
+      "failed": "❌ '{{name}}' sabitlemesi kaldırılamadı: {{error}}"
     },
     "tap": {
       "start": "🔄 '{{name}}' için tap başlatılıyor...",

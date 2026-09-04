@@ -124,7 +124,10 @@
     "untap": "Untap \"{{name}}\"",
     "favorite": "將 \"{{name}}\" 加入我的最愛",
     "unfavorite": "將 \"{{name}}\" 從我的最愛移除",
-    "toggleFavoritesOnly": "僅顯示我的最愛"
+    "toggleFavoritesOnly": "僅顯示我的最愛",
+    "togglePinnedOnly": "僅顯示已釘選",
+    "pin": "釘選 \"{{name}}\"（封鎖更新）",
+    "unpin": "取消釘選 \"{{name}}\"（允許更新）"
   },
   "filters": {
     "onRequest": "按需安裝 ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 正在為 '{{name}}' 開始解除安裝...",
       "success": "✅ '{{name}}' 的解除安裝已成功完成！",
       "failed": "❌ '{{name}}' 的解除安裝失敗：{{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' 現已釘選，不會被更新。",
+      "failed": "❌ 釘選 '{{name}}' 失敗：{{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' 已取消釘選，可以再次更新。",
+      "failed": "❌ 取消釘選 '{{name}}' 失敗：{{error}}"
     },
     "tap": {
       "start": "🔄 正在為 '{{name}}' 開始 tap...",

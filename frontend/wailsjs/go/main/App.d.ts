@@ -126,6 +126,8 @@ export function OpenURL(arg1:string):Promise<void>;
 
 export function ParseNewPackagesFromUpdateOutput(arg1:string):Promise<brew.NewPackagesInfo>;
 
+export function PinBrewPackage(arg1:string):Promise<string>;
+
 export function PreviewBrewCommand(arg1:string,arg2:Array<string>,arg3:boolean,arg4:boolean):Promise<string>;
 
 export function RemoveBrewPackage(arg1:string,arg2:boolean):Promise<string>;
@@ -197,6 +199,8 @@ export function TestProxyConnection(arg1:string,arg2:string):Promise<string>;
 export function ToggleFavorite(arg1:string):Promise<void>;
 
 export function TrustBrewTap(arg1:string):Promise<string>;
+
+export function UnpinBrewPackage(arg1:string):Promise<string>;
 
 export function UntapBrewRepository(arg1:string):Promise<string>;
 

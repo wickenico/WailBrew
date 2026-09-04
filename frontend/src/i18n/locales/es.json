@@ -124,7 +124,10 @@
     "untap": "Remover \"{{name}}\"",
     "favorite": "Agregar \"{{name}}\" a favoritos",
     "unfavorite": "Quitar \"{{name}}\" de favoritos",
-    "toggleFavoritesOnly": "Mostrar solo favoritos"
+    "toggleFavoritesOnly": "Mostrar solo favoritos",
+    "togglePinnedOnly": "Mostrar solo anclados",
+    "pin": "Anclar \"{{name}}\" (bloquear actualizaciones)",
+    "unpin": "Desanclar \"{{name}}\" (permitir actualizaciones)"
   },
   "filters": {
     "onRequest": "Por petición ({{count}})",
@@ -611,6 +614,14 @@
       "start": "🔄 Iniciando desinstalación para '{{name}}'...",
       "success": "✅ Desinstalación para '{{name}}' completada exitosamente!",
       "failed": "❌ Desinstalación para '{{name}}' fallida: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' está ahora anclado y no se actualizará.",
+      "failed": "❌ Error al anclar '{{name}}': {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' está desanclado y puede actualizarse de nuevo.",
+      "failed": "❌ Error al desanclar '{{name}}': {{error}}"
     },
     "tap": {
       "start": "🔄 Iniciando registro para '{{name}}'...",

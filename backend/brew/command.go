@@ -75,6 +75,18 @@ func BuildUntapArgs(name string) []string {
 	return []string{"untap", name}
 }
 
+// BuildPinArgs builds the arguments for pinning an installed formula or cask
+// so brew upgrade skips it.
+func BuildPinArgs(name string) []string {
+	return []string{"pin", name}
+}
+
+// BuildUnpinArgs builds the arguments for unpinning a formula or cask,
+// making it eligible for brew upgrade again.
+func BuildUnpinArgs(name string) []string {
+	return []string{"unpin", name}
+}
+
 // BuildTrustArgs builds the arguments for trusting a tap.
 func BuildTrustArgs(name string) []string {
 	return []string{"trust", name}
