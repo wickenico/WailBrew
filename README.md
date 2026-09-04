@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="images/logo.png" alt="WailBrew logo — a whale holding a mug of beer" width="180">
+  <img src="images/logo.png" alt="WailBrew logo - a whale holding a mug of beer" width="180">
 </p>
 
 <h1 align="center">WailBrew - Homebrew GUI Manager for macOS</h1>
 
 <p align="center">
-  A modern, native <strong>Homebrew GUI</strong> for macOS to install, update, and manage brew packages, casks, and services — an actively maintained, open-source <strong>Cakebrew alternative</strong>.
+  A modern, native <strong>Homebrew GUI</strong> for macOS to install, update, and manage brew packages, casks, and services - an actively maintained, open-source <strong>Cakebrew alternative</strong>.
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <img src="images/demo.gif" alt="WailBrew demo — browsing, installing, and upgrading Homebrew packages on macOS" width="720">
+  <img src="images/demo.gif" alt="WailBrew demo - browsing, installing, and upgrading Homebrew packages on macOS" width="720">
 </p>
 
 ## ⚡ Quick Install
@@ -56,7 +56,7 @@ Prefer a direct download? Grab the **[latest release](https://github.com/wickeni
 
 ## 🍺 About
 
-**WailBrew** is a modern and intuitive **graphical interface for [Homebrew](https://brew.sh)** on macOS. It makes package management accessible to everyone — no terminal required — while still giving power users full control over formulae, casks, taps, and services.
+**WailBrew** is a modern and intuitive **graphical interface for [Homebrew](https://brew.sh)** on macOS. It makes package management accessible to everyone - no terminal required - while still giving power users full control over formulae, casks, taps, and services.
 
 WailBrew was inspired by [Cakebrew](https://www.cakebrew.com/), bringing modern UI design and enhanced functionality to Homebrew package management. Built with [Wails](https://wails.io), Go, and React, it combines native performance with a beautiful, responsive interface.
 
@@ -64,19 +64,19 @@ Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/W
 
 ## ⭐ Why WailBrew?
 
-- 🚀 **Native & fast** — a real macOS app built on Wails (Go + React), not a browser wrapper.
-- 🍎 **Universal** — runs natively on both Apple Silicon and Intel Macs.
-- 🧩 **Complete** — manages formulae, casks, taps, **and** services — not just packages.
-- 🌍 **Localized** — a fully translated UI in **11 languages**.
-- 🔒 **Signed & notarized** — distributed through the official Homebrew cask.
-- 💚 **Actively maintained & open source** — MIT licensed, with regular releases.
+- 🚀 **Native & fast** - a real macOS app built on Wails (Go + React), not a browser wrapper.
+- 🍎 **Universal** - runs natively on both Apple Silicon and Intel Macs.
+- 🧩 **Complete** - manages formulae, casks, taps, **and** services - not just packages.
+- 🌍 **Localized** - a fully translated UI in **11 languages**.
+- 🔒 **Signed & notarized** - distributed through the official Homebrew cask.
+- 💚 **Actively maintained & open source** - MIT licensed, with regular releases.
 
 ## ✨ Features
 
 **📦 Package management**
 - Browse and manage installed **formulae** and **casks**
 - Instant search and filtering across all packages
-- **Install, uninstall, and upgrade** — individually, in bulk (multi-select), or all at once
+- **Install, uninstall, and upgrade** - individually, in bulk (multi-select), or all at once
 - View detailed package info, including **dependencies and dependents**
 - **Leaves** view to find packages you can safely remove
 
@@ -108,11 +108,11 @@ Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/W
 
 ## 📸 Screenshots
 
-![WailBrew — Homebrew GUI showing installed formulae, casks, and available updates on macOS](images/Screenshot.png)
+![WailBrew - Homebrew GUI showing installed formulae, casks, and available updates on macOS](images/Screenshot.png)
 
-![WailBrew Casks view — pinning a cask to block its updates](images/screenshot-casks.png)
-![WailBrew Services view — managing Homebrew services](images/screenshot-services.png)
-![WailBrew Doctor view — diagnosing Homebrew issues with brew doctor](images/screenshot-doctor.png)
+![WailBrew Casks view - pinning a cask to block its updates](images/screenshot-casks.png)
+![WailBrew Services view - managing Homebrew services](images/screenshot-services.png)
+![WailBrew Doctor view - diagnosing Homebrew issues with brew doctor](images/screenshot-doctor.png)
 ![WailBrew in light mode](images/screenshot-light.png)
 
 ## 📥 Installation
@@ -172,7 +172,7 @@ WailBrew ships with a **fully translated UI** in the following languages:
 - 🇮🇱 Hebrew
 - 🇪🇸 Spanish
 
-Want to see WailBrew in your language? Contributions are welcome — [open a Pull Request](https://github.com/wickenico/WailBrew/pulls) or [create an Issue](https://github.com/wickenico/WailBrew/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for the translation guide.
+Want to see WailBrew in your language? Contributions are welcome - [open a Pull Request](https://github.com/wickenico/WailBrew/pulls) or [create an Issue](https://github.com/wickenico/WailBrew/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for the translation guide.
 
 ## ❓ FAQ
 
@@ -180,7 +180,7 @@ Want to see WailBrew in your language? Contributions are welcome — [open a Pul
 Yes. WailBrew is completely free and open source under the MIT license.
 
 **Does it work on Apple Silicon (M1/M2/M3/M4)?**
-Yes — WailBrew runs natively on both Apple Silicon and Intel Macs.
+Yes - WailBrew runs natively on both Apple Silicon and Intel Macs.
 
 **Do I still need Homebrew installed?**
 Yes. WailBrew is a graphical front-end for Homebrew, so `brew` must be installed. WailBrew auto-detects the brew path for your architecture.
@@ -189,7 +189,7 @@ Yes. WailBrew is a graphical front-end for Homebrew, so `brew` must be installed
 WailBrew is an actively maintained, modern alternative with cask and services management, a localized UI in 11 languages, light/dark mode, and native Apple Silicon support. See the [comparison above](#-wailbrew-vs-cakebrew).
 
 **Does WailBrew run my commands safely?**
-Yes — WailBrew simply calls the `brew` CLI. Every command is transparent, and session logging lets you see exactly what runs.
+Yes - WailBrew simply calls the `brew` CLI. Every command is transparent, and session logging lets you see exactly what runs.
 
 **Is it available for Linux or Windows?**
 WailBrew targets macOS. There is partial Linux support; see the troubleshooting note below.
@@ -226,9 +226,9 @@ WailBrew is free and open source, built and maintained in my spare time. Sponsor
 
 If WailBrew saves you time, please consider supporting its development:
 
-- ☕ **[Buy me a coffee on Ko-fi](https://ko-fi.com/wickenico)** — one-time tip
-- 💳 **[PayPal](https://paypal.me/nicowickersheim)** — one-time donation
-- 💖 **[GitHub Sponsors](https://github.com/sponsors/wickenico)** — recurring support
+- ☕ **[Buy me a coffee on Ko-fi](https://ko-fi.com/wickenico)** - one-time tip
+- 💳 **[PayPal](https://paypal.me/nicowickersheim)** - one-time donation
+- 💖 **[GitHub Sponsors](https://github.com/sponsors/wickenico)** - recurring support
 
 Every contribution, big or small, is genuinely appreciated and helps keep WailBrew maintained. 🙏
 
