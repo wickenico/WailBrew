@@ -89,6 +89,12 @@
   transform: translateY(-50%);
 }
 
+/* Collapsed rail: hover should only tint the icon, not draw the pill
+   background used in the expanded state. */
+.sidebar.collapsed .sidebar-nav-button:hover {
+  background: transparent;
+}
+
 /* Custom scrollbar for sidebar */
 .sidebar::-webkit-scrollbar {
   width: 10px;
