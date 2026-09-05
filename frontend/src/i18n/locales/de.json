@@ -276,7 +276,7 @@
     "translationTitle": "Übersetzung:",
     "translationThanks": "Ein riesiges Dankeschön an alle, die bisher mitgewirkt haben!",
     "improveTranslations": "→ Übersetzungen verbessern",
-    "copyright": "Copyright © 2025 Nico Wickersheim. Alle Rechte vorbehalten."
+    "copyright": "Copyright © {{year}} Nico Wickersheim. Alle Rechte vorbehalten."
   },
   "language": {
     "switchLanguage": "Sprache wechseln",

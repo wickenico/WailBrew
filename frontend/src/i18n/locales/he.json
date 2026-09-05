@@ -273,7 +273,7 @@
     "translationTitle": "תרגומים:",
     "translationThanks": "תודה ענקית לכל מי שתרם תרגומים!",
     "improveTranslations": "→ עזור לשפר תרגומים",
-    "copyright": "Copyright © 2025 Nico Wickersheim. כל הזכויות שמורות."
+    "copyright": "Copyright © {{year}} Nico Wickersheim. כל הזכויות שמורות."
   },
   "language": {
     "switchLanguage": "החלף שפה",

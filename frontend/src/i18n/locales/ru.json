@@ -273,7 +273,7 @@
     "translationTitle": "Переводы:",
     "translationThanks": "Огромное спасибо всем, кто внес вклад в переводы!",
     "improveTranslations": "→ Помочь улучшить переводы",
-    "copyright": "Copyright © 2025 Нико Викершайм. Все права защищены."
+    "copyright": "Copyright © {{year}} Нико Викершайм. Все права защищены."
   },
   "language": {
     "switchLanguage": "Переключить язык",

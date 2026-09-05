@@ -158,7 +158,7 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                         </div>
 
                         <div className="about-copyright">
-                            <p>{t("about.copyright")}</p>
+                            <p>{t("about.copyright", { year: new Date().getFullYear() })}</p>
                         </div>
                     </div>
                 </div>

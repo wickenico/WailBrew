@@ -273,7 +273,7 @@
     "translationTitle": "翻譯貢獻者：",
     "translationThanks": "衷心感謝所有為翻譯做出貢獻的人！",
     "improveTranslations": "→ 協助改進翻譯",
-    "copyright": "Copyright © 2025 Nico Wickersheim. All rights reserved."
+    "copyright": "Copyright © {{year}} Nico Wickersheim. All rights reserved."
   },
   "language": {
     "switchLanguage": "切換語言",

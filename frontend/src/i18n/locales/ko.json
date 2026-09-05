@@ -273,7 +273,7 @@
     "translationTitle": "번역:",
     "translationThanks": "번역에 기여해 주신 모든 분들께 감사드립니다!",
     "improveTranslations": "→ 번역 개선에 참여하기",
-    "copyright": "Copyright © 2025 Nico Wickersheim. All rights reserved."
+    "copyright": "Copyright © {{year}} Nico Wickersheim. All rights reserved."
   },
   "language": {
     "switchLanguage": "언어 변경",

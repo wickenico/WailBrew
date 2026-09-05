@@ -273,7 +273,7 @@
     "translationTitle": "Çeviriler:",
     "translationThanks": "Çevirilere katkıda bulunan herkese çok teşekkürler!",
     "improveTranslations": "→ Çevirileri geliştirmeye yardımcı olun",
-    "copyright": "Telif Hakları © 2025 Nico Wickersheim. Tüm hakları saklıdır."
+    "copyright": "Telif Hakları © {{year}} Nico Wickersheim. Tüm hakları saklıdır."
   },
   "language": {
     "switchLanguage": "Dil değiştir",
