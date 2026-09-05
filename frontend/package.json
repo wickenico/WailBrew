@@ -32,7 +32,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.12",
     "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.5",
+    "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "lint-staged": "^17.4.1",
     "typescript": "^7.0.2",
