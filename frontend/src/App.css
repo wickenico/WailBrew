@@ -172,7 +172,26 @@ body {
    reserves title bar height above the content pane, so add it back here to
    keep the content pane's top edge aligned with the sidebar's. */
 .mac-inset-titlebar .content {
+  position: relative;
   padding-top: 40px;
+}
+
+/* The area above the content pane's top padding is empty on macOS (see
+   .mac-inset-titlebar .content above), so nothing marks it as draggable by
+   default now that the transparent, inset title bar no longer reserves that
+   space itself. Cover it explicitly so the window can still be dragged from
+   there. */
+.content-drag-region {
+  display: none;
+}
+
+.mac-inset-titlebar .content-drag-region {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
 }
 
 /* Loading timer for development */

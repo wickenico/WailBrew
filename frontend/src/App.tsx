@@ -1,4 +1,5 @@
 import { AlertTriangle, Check, CheckSquare, Copy, PartyPopper, Pin, RefreshCw, Sparkles, Star, X } from "lucide-react";
+import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -2724,6 +2725,10 @@ const WailBrewApp = () => {
                 />
                 {!isSidebarCollapsed && <div className="sidebar-resize-handle" onMouseDown={handleResizeStart} />}
                 <main className="content">
+                    <div
+                        className="content-drag-region"
+                        style={{ "--wails-draggable": "drag" } as React.CSSProperties}
+                    />
                     {/* Loading timer for development only */}
                     {import.meta.env.DEV && loadingStartTime !== null && <LoadingTimer startTime={loadingStartTime} />}
                     {brewLocationSuggestion && (
