@@ -24,14 +24,14 @@
     "i18next": "^26.4.2",
     "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "^1.43.0",
-    "react": "19.2.8",
+    "react": "19.3.0",
     "react-dom": "19.2.8",
     "react-hot-toast": "^2.6.0",
     "react-i18next": "^17.0.13"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.12",
-    "@types/react": "19.2.18",
+    "@types/react": "19.3.0",
     "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "lint-staged": "^17.5.0",
