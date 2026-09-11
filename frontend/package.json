@@ -23,7 +23,7 @@
     "@tanstack/react-virtual": "^3.14.11",
     "i18next": "^26.4.2",
     "i18next-browser-languagedetector": "^8.2.1",
-    "lucide-react": "^1.43.0",
+    "lucide-react": "^1.44.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hot-toast": "^2.6.0",
