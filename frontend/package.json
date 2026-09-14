@@ -27,7 +27,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hot-toast": "^2.6.0",
-    "react-i18next": "^17.0.13"
+    "react-i18next": "^17.0.14"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",
