@@ -1,4 +1,10 @@
 {
+  "xcodeLicense": {
+    "title": "接受 Xcode 许可协议以使用 Homebrew",
+    "message": "由于尚未接受 Xcode 许可协议，Homebrew 无法运行。请打开“终端”并运行此命令以接受许可协议。出现提示时，请输入您的 Mac 管理员密码。",
+    "retryHint": "接受许可协议后，点击“重试”以重新加载您的软件包。",
+    "retry": "重试"
+  },
   "brewLocation": {
     "title": "在其他位置找到了 Homebrew",
     "message": "WailBrew 正在使用“{{current}}”，但在“{{suggested}}”找到了可用的 Homebrew。切换到该位置以查看您的软件包。",

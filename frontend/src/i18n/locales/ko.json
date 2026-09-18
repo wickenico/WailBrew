@@ -1,4 +1,10 @@
 {
+  "xcodeLicense": {
+    "title": "Homebrew를 사용하려면 Xcode 사용권 계약에 동의하세요",
+    "message": "Xcode 사용권 계약에 동의하지 않아 Homebrew를 실행할 수 없습니다. 터미널을 열고 이 명령을 실행하여 사용권 계약에 동의하세요. 암호를 요청하면 Mac 관리자 암호를 입력하세요.",
+    "retryHint": "사용권 계약에 동의한 후 ‘다시 시도’를 클릭하여 패키지를 다시 불러오세요.",
+    "retry": "다시 시도"
+  },
   "brewLocation": {
     "title": "다른 위치에서 Homebrew를 찾았습니다",
     "message": "WailBrew는 \"{{current}}\"을(를) 사용하고 있지만, 작동하는 Homebrew가 \"{{suggested}}\"에서 발견되었습니다. 패키지를 보려면 전환하세요.",

@@ -1,4 +1,10 @@
 {
+  "xcodeLicense": {
+    "title": "Homebrew’u kullanmak için Xcode lisansını kabul edin",
+    "message": "Xcode lisansı kabul edilmediği için Homebrew çalıştırılamıyor. Terminal’i açın ve lisansı kabul etmek için bu komutu çalıştırın. İstendiğinde Mac yönetici parolanızı girin.",
+    "retryHint": "Lisansı kabul ettikten sonra paketlerinizi yeniden yüklemek için “Yeniden dene” düğmesine tıklayın.",
+    "retry": "Yeniden dene"
+  },
   "brewLocation": {
     "title": "Homebrew farklı bir konumda bulundu",
     "message": "WailBrew \"{{current}}\" kullanıyor, ancak \"{{suggested}}\" konumunda çalışan bir Homebrew bulundu. Paketlerinizi görmek için ona geçin.",

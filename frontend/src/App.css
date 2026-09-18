@@ -940,6 +940,11 @@ body {
   min-width: 0;
 }
 
+.xcode-license-banner .brew-location-banner-text {
+  flex: 1 1 24rem;
+  gap: 0.5rem;
+}
+
 .brew-location-banner-text strong {
   font-size: 0.95rem;
   color: var(--accent);

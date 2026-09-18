@@ -67,6 +67,7 @@ import {
 } from "../wailsjs/go/main/App";
 import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
+import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
 import "./App.css";
 import "./style.css";
 
@@ -94,8 +95,10 @@ import SnapshotsView from "./components/SnapshotsView";
 import TapInputDialog from "./components/TapInputDialog";
 import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
+import XcodeLicenseBanner from "./components/XcodeLicenseBanner";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 import type { PackageEntry, RepositoryEntry, SnapshotEntry, View } from "./types";
+import { isXcodeLicenseError } from "./utils/xcodeLicense";
 
 const WAILBREW_UPGRADE_COMMAND = "brew update\nbrew upgrade --cask wailbrew";
 
@@ -195,6 +198,7 @@ const WailBrewApp = () => {
     const [restoreCleanup, setRestoreCleanup] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const { hasXcodeLicenseError, clearXcodeLicenseError } = useXcodeLicenseError();
     const [brewLocationSuggestion, setBrewLocationSuggestion] = useState<{ current: string; suggested: string } | null>(
         null,
     );
@@ -1085,7 +1089,8 @@ const WailBrewApp = () => {
             setShowShortcuts((prev) => !prev);
         });
         const unlistenSessionLogs = EventsOn("showSessionLogs", openSessionLogs);
-        const unlistenSessionLogError = EventsOn("sessionLogError", () => {
+        const unlistenSessionLogError = EventsOn("sessionLogError", (entry: string) => {
+            if (isXcodeLicenseError(entry)) return;
             toast(
                 (t_obj) => (
                     <div className="toast-notification">
@@ -2599,6 +2604,7 @@ const WailBrewApp = () => {
     };
 
     const handleRefreshPackages = async () => {
+        clearXcodeLicenseError();
         setLoading(true);
         setError("");
         setUpdatableError("");
@@ -2825,6 +2831,7 @@ const WailBrewApp = () => {
                 />
                 {!isSidebarCollapsed && <div className="sidebar-resize-handle" onMouseDown={handleResizeStart} />}
                 <main className="content">
+                    {hasXcodeLicenseError && <XcodeLicenseBanner onRetry={handleRefreshPackages} loading={loading} />}
                     <div
                         className="content-drag-region"
                         style={{ "--wails-draggable": "drag" } as React.CSSProperties}

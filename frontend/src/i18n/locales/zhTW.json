@@ -1,4 +1,10 @@
 {
+  "xcodeLicense": {
+    "title": "接受 Xcode 授權合約以使用 Homebrew",
+    "message": "由於尚未接受 Xcode 授權合約，Homebrew 無法執行。請開啟「終端機」並執行此指令以接受授權合約。出現提示時，請輸入您的 Mac 管理員密碼。",
+    "retryHint": "接受授權合約後，點選「重試」以重新載入您的套件。",
+    "retry": "重試"
+  },
   "brewLocation": {
     "title": "在其他位置找到了 Homebrew",
     "message": "WailBrew 正在使用「{{current}}」，但在「{{suggested}}」找到了可用的 Homebrew。切換到該位置以查看您的套件。",

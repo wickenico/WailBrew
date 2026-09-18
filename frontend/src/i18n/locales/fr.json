@@ -1,4 +1,10 @@
 {
+  "xcodeLicense": {
+    "title": "Acceptez la licence Xcode pour utiliser Homebrew",
+    "message": "Homebrew ne peut pas s’exécuter, car la licence Xcode n’a pas été acceptée. Ouvrez Terminal et exécutez cette commande pour accepter la licence. Saisissez votre mot de passe administrateur du Mac lorsque vous y êtes invité.",
+    "retryHint": "Après avoir accepté la licence, cliquez sur « Réessayer » pour recharger vos paquets.",
+    "retry": "Réessayer"
+  },
   "brewLocation": {
     "title": "Homebrew trouvé à un autre emplacement",
     "message": "WailBrew utilise « {{current}} », mais un Homebrew fonctionnel a été trouvé dans « {{suggested}} ». Basculez dessus pour voir vos paquets.",
