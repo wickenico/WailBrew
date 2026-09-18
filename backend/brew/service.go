@@ -176,7 +176,7 @@ func NewService(
 	)
 
 	// Create size service
-	sizeService := NewSizeService(executor, logFunc, extractJSON)
+	sizeService := NewSizeService()
 
 	// Create outdated service
 	outdatedService := NewOutdatedService(
