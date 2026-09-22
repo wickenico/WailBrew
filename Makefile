@@ -55,7 +55,8 @@ bump-minor:
 
 update-deps:
 	@echo "Updating Go dependencies"
-	go get -u ./... && go mod tidy
+	# Scope discovery to Go sources to avoid pnpm symlinks in frontend/node_modules.
+	go get -u . ./backend/... ./i18n/... && go mod tidy
 
 clean:
 	rm -rf build/
@@ -72,4 +73,4 @@ release-universal: build-universal
 	@echo "==> Releasing WailBrew universal binary version: $(VERSION)"
 	./scripts/release.sh $(VERSION) build/bin/WailBrew.app
 
-.DEFAULT_GOAL := build 
+.DEFAULT_GOAL := build
