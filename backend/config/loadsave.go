@@ -4,7 +4,11 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"sync"
 )
+
+// Serializes configuration I/O and relocation within this process.
+var storageMu sync.Mutex
 
 // Config holds application configuration
 type Config struct {
@@ -44,14 +48,19 @@ type Config struct {
 
 // GetConfigPath resolves the config file path using a cascading lookup:
 //  1. $WAILBREW_CONFIG_FILE          — explicit override
-//  2. $XDG_CONFIG_HOME/wailbrew/config.json  — XDG-compliant (defaults to ~/.config)
-//  3. ~/.wailbrew/config.json        — legacy path, backward-compatible
+//  2. The location selected in Settings (stored separately in the OS config directory)
+//  3. $XDG_CONFIG_HOME/wailbrew/config.json  — XDG-compliant (defaults to ~/.config)
+//  4. ~/.wailbrew/config.json        — legacy path, backward-compatible
 //
-// For an existing config the first path that exists wins.
+// Explicit overrides and the saved selection win even before the file exists.
+// Otherwise the first existing XDG or legacy config wins.
 // When no config exists yet, the XDG path is returned as the default for new installs.
 func GetConfigPath() (string, error) {
 	if p := os.Getenv("WAILBREW_CONFIG_FILE"); p != "" {
 		return p, nil
+	}
+	if p, err := savedConfigPath(); err != nil || p != "" {
+		return p, err
 	}
 
 	xdgHome := os.Getenv("XDG_CONFIG_HOME")
@@ -95,6 +104,12 @@ func GetSnapshotsDir() (string, error) {
 // ResolvedPath returns the config file path that was determined during Load.
 // Falls back to GetConfigPath if Load has not been called yet.
 func (c *Config) ResolvedPath() (string, error) {
+	storageMu.Lock()
+	defer storageMu.Unlock()
+	return c.resolvedConfigPath()
+}
+
+func (c *Config) resolvedConfigPath() (string, error) {
 	if c.resolvedPath != "" {
 		return c.resolvedPath, nil
 	}
@@ -103,6 +118,8 @@ func (c *Config) ResolvedPath() (string, error) {
 
 // Load reads the configuration from the resolved config path.
 func (c *Config) Load() error {
+	storageMu.Lock()
+	defer storageMu.Unlock()
 	// Seed defaults before reading. json.Unmarshal only overwrites keys that are
 	// actually present in the file, so a config that predates these fields (or no
 	// config file at all) keeps the intended default, while an explicit value in
@@ -129,6 +146,12 @@ func (c *Config) Load() error {
 // Save writes the configuration back to the path that was resolved during Load.
 // If Load was not called, it falls back to GetConfigPath.
 func (c *Config) Save() error {
+	storageMu.Lock()
+	defer storageMu.Unlock()
+	return c.save()
+}
+
+func (c *Config) save() error {
 	configPath := c.resolvedPath
 	if configPath == "" {
 		var err error

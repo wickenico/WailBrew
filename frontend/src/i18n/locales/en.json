@@ -510,6 +510,16 @@
     "nextCheckInSeconds": "Next check in {{seconds}}s"
   },
   "settings": {
+    "configDirectory": {
+      "title": "Configuration folder",
+      "description": "Choose an empty folder for your settings and Brewfile snapshots. Move transfers them to the selected folder and uses it immediately and on future launches. Other files in the old folder stay there.",
+      "folder": "Selected folder",
+      "choose": "Choose folder…",
+      "move": "Move",
+      "moving": "Please wait…",
+      "moved": "Configuration folder updated",
+      "overridden": "The configuration location is controlled by WAILBREW_CONFIG_FILE. Remove this environment override and restart WailBrew to change the folder here."
+    },
     "title": "Settings",
     "subtitle": "Configure your Homebrew experience",
     "loading": "Loading settings...",

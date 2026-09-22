@@ -454,6 +454,16 @@
     "nextCheckInSeconds": "Prochaine vérification dans {{seconds}}s"
   },
   "settings": {
+    "configDirectory": {
+      "title": "Dossier de configuration",
+      "description": "Choisissez un dossier vide pour vos paramètres et vos instantanés Brewfile. Cliquez sur « Déplacer » pour les transférer vers le dossier sélectionné, qui sera utilisé immédiatement et lors des prochains lancements. Les autres fichiers restent dans l’ancien dossier.",
+      "folder": "Dossier sélectionné",
+      "choose": "Choisir un dossier…",
+      "move": "Déplacer",
+      "moving": "Veuillez patienter…",
+      "moved": "Dossier de configuration mis à jour",
+      "overridden": "L’emplacement de la configuration est défini par WAILBREW_CONFIG_FILE. Supprimez cette variable d’environnement et redémarrez WailBrew pour changer le dossier ici."
+    },
     "title": "Paramètres",
     "subtitle": "Configurez votre expérience Homebrew",
     "loading": "Chargement des paramètres...",

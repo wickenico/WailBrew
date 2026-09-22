@@ -174,6 +174,25 @@ WailBrew ships with a **fully translated UI** in the following languages:
 
 Want to see WailBrew in your language? Contributions are welcome - [open a Pull Request](https://github.com/wickenico/WailBrew/pulls) or [create an Issue](https://github.com/wickenico/WailBrew/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for the translation guide.
 
+## Configuration folder
+
+Open **Settings → Configuration folder**, choose an empty folder (for example
+`~/.config/wailbrew`), then click **Move**. WailBrew transfers your settings and
+Brewfile snapshots and uses the new location immediately and after restarting.
+Existing files in the destination are never overwritten. Other files in the old
+folder are left there; the old folder is removed only when empty.
+
+The selected location is recorded in `WailBrew/config-location.json` under the
+operating system's configuration directory (`~/Library/Application Support` on
+macOS, `$XDG_CONFIG_HOME` or `~/.config` on Linux). This small record stays in its
+standard location so WailBrew can find the selected folder on startup.
+
+`WAILBREW_CONFIG_FILE` takes precedence over the saved selection. If it is set in
+the app's environment, the folder control is disabled until the override is
+removed and WailBrew is restarted. Without an override or saved selection,
+WailBrew looks for an existing XDG configuration, then `~/.wailbrew/config.json`;
+new installations use the XDG location.
+
 ## ❓ FAQ
 
 **Is WailBrew free?**

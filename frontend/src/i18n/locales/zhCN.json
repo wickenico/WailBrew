@@ -454,6 +454,16 @@
     "nextCheckInSeconds": "下次检查将在 {{seconds}} 秒后"
   },
   "settings": {
+    "configDirectory": {
+      "title": "配置文件夹",
+      "description": "请选择一个空文件夹来存放设置和 Brewfile 快照。点击“移动”后，它们将转移到所选文件夹，并立即使用新位置，之后启动时也会继续使用。原文件夹中的其他文件将保留在原处。",
+      "folder": "所选文件夹",
+      "choose": "选择文件夹…",
+      "move": "移动",
+      "moving": "请稍候…",
+      "moved": "配置文件夹已更新",
+      "overridden": "配置位置由 WAILBREW_CONFIG_FILE 环境变量指定。要在此处更改文件夹，请移除该环境变量并重新启动 WailBrew。"
+    },
     "title": "软件设置",
     "subtitle": "配置您的 Homebrew 体验",
     "loading": "正在加载设置...",

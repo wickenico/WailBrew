@@ -600,7 +600,7 @@ func (s *serviceImpl) GetDeprecatedFormulae(doctorOutput string) []string {
 }
 
 func (s *serviceImpl) GetBrewCleanupDryRun() (string, error) {
-	output, err := s.executor.RunWithTimeout(120*time.Second, "cleanup", "--dry-run")
+	output, err := s.executor.RunNoCacheWithTimeout(120*time.Second, "cleanup", "--dry-run")
 	// Don't discard output on error — brew cleanup --dry-run often exits non-zero
 	// due to warnings but still produces valid output with the summary line.
 	if err != nil && len(output) == 0 {
@@ -623,7 +623,7 @@ func (s *serviceImpl) GetBrewCleanupDryRun() (string, error) {
 }
 
 func (s *serviceImpl) RunBrewCleanupDryRun() string {
-	output, err := s.executor.RunWithTimeout(120*time.Second, "cleanup", "--dry-run")
+	output, err := s.executor.RunNoCacheWithTimeout(120*time.Second, "cleanup", "--dry-run")
 	if err != nil {
 		return fmt.Sprintf("Error running brew cleanup --dry-run: %v\n\nOutput:\n%s", err, string(output))
 	}
@@ -631,7 +631,9 @@ func (s *serviceImpl) RunBrewCleanupDryRun() string {
 }
 
 func (s *serviceImpl) RunBrewCleanup() string {
-	output, err := s.executor.Run("cleanup")
+	output, err := s.executor.RunNoCacheWithTimeout(120*time.Second, "cleanup")
+	// Cleanup can change installed versions and cached files, even on failure.
+	s.executor.ClearCache()
 	if err != nil {
 		return fmt.Sprintf("Error running brew cleanup: %v\n\nOutput:\n%s", err, string(output))
 	}

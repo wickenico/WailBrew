@@ -454,6 +454,16 @@
     "nextCheckInSeconds": "Sonraki kontrol {{seconds}}s içinde"
   },
   "settings": {
+    "configDirectory": {
+      "title": "Yapılandırma klasörü",
+      "description": "Ayarlarınız ve Brewfile anlık görüntüleriniz için boş bir klasör seçin. “Taşı” düğmesi bunları seçilen klasöre aktarır. Yeni klasör hemen ve sonraki açılışlarda kullanılır. Eski klasördeki diğer dosyalar yerinde kalır.",
+      "folder": "Seçilen klasör",
+      "choose": "Klasör seç…",
+      "move": "Taşı",
+      "moving": "Lütfen bekleyin…",
+      "moved": "Yapılandırma klasörü güncellendi",
+      "overridden": "Yapılandırma konumu WAILBREW_CONFIG_FILE ile belirleniyor. Klasörü buradan değiştirmek için bu ortam değişkenini kaldırın ve WailBrew uygulamasını yeniden başlatın."
+    },
     "title": "Ayarlar",
     "subtitle": "Homebrew deneyiminizi yapılandırın",
     "loading": "Ayarlar yükleniyor...",

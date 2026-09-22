@@ -60,6 +60,8 @@ import {
     TestProxyConnection,
 } from "../../wailsjs/go/main/App";
 
+import ConfigDirectorySetting from "./ConfigDirectorySetting";
+
 interface SettingsViewProps {
     onRefreshPackages: () => void;
     onSortFavoritesToTopChange: (val: boolean) => void;
@@ -844,6 +846,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
             </div>
 
             <div className="settings-cards-container">
+                <ConfigDirectorySetting />
                 {/* Landing Tab Card */}
                 <div className={`settings-card ${isLandingTabExpanded ? "expanded" : ""}`}>
                     <button

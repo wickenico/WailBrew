@@ -454,6 +454,16 @@
     "nextCheckInSeconds": "Próxima verificação em {{seconds}}s"
   },
   "settings": {
+    "configDirectory": {
+      "title": "Pasta de configuração",
+      "description": "Escolha uma pasta vazia para suas configurações e snapshots do Brewfile. Clique em “Mover” para transferi-los para a pasta selecionada, que será usada imediatamente e nas próximas inicializações. Os outros arquivos permanecem na pasta anterior.",
+      "folder": "Pasta selecionada",
+      "choose": "Escolher pasta…",
+      "move": "Mover",
+      "moving": "Aguarde…",
+      "moved": "Pasta de configuração atualizada",
+      "overridden": "O local da configuração é definido por WAILBREW_CONFIG_FILE. Remova essa variável de ambiente e reinicie o WailBrew para alterar a pasta aqui."
+    },
     "title": "Configurações",
     "subtitle": "Configure sua experiência Homebrew",
     "loading": "Carregando configurações...",

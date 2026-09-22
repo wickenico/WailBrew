@@ -454,6 +454,16 @@
     "nextCheckInSeconds": "Siguiente verificación en {{seconds}}s"
   },
   "settings": {
+    "configDirectory": {
+      "title": "Carpeta de configuración",
+      "description": "Seleccione una carpeta vacía para sus ajustes y las instantáneas de Brewfile. Al pulsar «Mover», se trasladarán a la carpeta seleccionada, que se utilizará inmediatamente y en los próximos inicios. Los demás archivos permanecerán en la carpeta anterior.",
+      "folder": "Carpeta seleccionada",
+      "choose": "Seleccionar carpeta…",
+      "move": "Mover",
+      "moving": "Espere…",
+      "moved": "Carpeta de configuración actualizada",
+      "overridden": "La ubicación de la configuración está definida por WAILBREW_CONFIG_FILE. Elimine esta variable de entorno y reinicie WailBrew para cambiar la carpeta aquí."
+    },
     "title": "Configuración",
     "subtitle": "Configure tu experiencia con Homebrew",
     "loading": "Cargando configuración...",

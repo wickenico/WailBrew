@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/menu"
@@ -89,6 +90,7 @@ type Config = config.Config
 
 // App struct - minimal orchestrator
 type App struct {
+	configFolderMu    sync.RWMutex // Prevent relocation during snapshot operations.
 	ctx               context.Context
 	brewPath          string
 	currentLanguage   string
@@ -815,32 +817,81 @@ type SnapshotEntry = brew.SnapshotEntry
 // CreateSnapshot saves a new Brewfile snapshot of the currently installed
 // formulae, casks, and taps. label is optional.
 func (a *App) CreateSnapshot(label string) (SnapshotEntry, error) {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	return a.brewService.CreateSnapshot(label)
 }
 
 // ListSnapshots returns all saved snapshots, newest first.
 func (a *App) ListSnapshots() ([]SnapshotEntry, error) {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	return a.brewService.ListSnapshots()
 }
 
 // RestoreSnapshot installs everything listed in the given snapshot. cleanup
 // additionally removes anything installed but not listed in it.
 func (a *App) RestoreSnapshot(fileName string, cleanup bool) error {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	return a.brewService.RestoreSnapshot(fileName, cleanup)
 }
 
 // DeleteSnapshot removes a saved snapshot.
 func (a *App) DeleteSnapshot(fileName string) error {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	return a.brewService.DeleteSnapshot(fileName)
 }
 
 // RevealSnapshot opens Finder (or the platform equivalent) with the given
 // snapshot file selected.
 func (a *App) RevealSnapshot(fileName string) error {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	return a.brewService.RevealSnapshot(fileName)
 }
 
+// GetConfigDirectory returns the active location, including any explicit override.
+func (a *App) GetConfigDirectory() (string, error) {
+	path, err := a.config.ResolvedPath()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Dir(path), nil
+}
+
+func (a *App) IsConfigDirectoryOverridden() bool {
+	return os.Getenv("WAILBREW_CONFIG_FILE") != ""
+}
+
+func (a *App) SelectConfigDirectory() (string, error) {
+	if a.ctx == nil {
+		return "", fmt.Errorf("application context not available")
+	}
+	dir, err := a.GetConfigDirectory()
+	if err != nil {
+		return "", err
+	}
+	if _, err := os.Stat(dir); err != nil {
+		dir = ""
+	}
+	return rt.OpenDirectoryDialog(a.ctx, rt.OpenDialogOptions{
+		Title: "Select Configuration Folder", DefaultDirectory: dir,
+		CanCreateDirectories: true, ShowHiddenFiles: true,
+	})
+}
+
+// MoveConfigDirectory returns a cleanup warning only after a successful move.
+func (a *App) MoveConfigDirectory(directory string) (string, error) {
+	a.configFolderMu.Lock()
+	defer a.configFolderMu.Unlock()
+	return a.config.MoveToDirectory(directory)
+}
+
 func (a *App) OpenConfigFile() error {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	configPath, err := a.config.ResolvedPath()
 	if err != nil {
 		return fmt.Errorf("failed to get config path: %w", err)
@@ -875,6 +926,8 @@ func (a *App) OpenConfigFile() error {
 }
 
 func (a *App) ClearConfigFile() error {
+	a.configFolderMu.RLock()
+	defer a.configFolderMu.RUnlock()
 	configPath, err := a.config.ResolvedPath()
 	if err != nil {
 		return fmt.Errorf("failed to get config path: %w", err)
@@ -1264,7 +1317,10 @@ func (a *App) reconfigureBrew() {
 		brew.ParseWarnings,
 		func() bool { return a.GetNoQuarantine() },
 		func() bool { return a.GetAutoRelaunch() },
-		config.GetSnapshotsDir,
+		func() (string, error) {
+			path, err := a.config.ResolvedPath()
+			return filepath.Join(filepath.Dir(path), "snapshots"), err
+		},
 	)
 }
 

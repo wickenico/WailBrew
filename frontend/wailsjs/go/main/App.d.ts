@@ -72,6 +72,8 @@ export function GetBrewUpdatablePackagesWithUpdate():Promise<Array<any>>;
 
 export function GetCaskAppDir():Promise<string>;
 
+export function GetConfigDirectory():Promise<string>;
+
 export function GetContext():Promise<context.Context>;
 
 export function GetCurrentLanguage():Promise<string>;
@@ -126,7 +128,11 @@ export function ImportBrewfile(arg1:string,arg2:boolean):Promise<void>;
 
 export function InstallBrewPackage(arg1:string,arg2:boolean):Promise<string>;
 
+export function IsConfigDirectoryOverridden():Promise<boolean>;
+
 export function ListSnapshots():Promise<Array<brew.SnapshotEntry>>;
+
+export function MoveConfigDirectory(arg1:string):Promise<string>;
 
 export function OpenConfigFile():Promise<void>;
 
@@ -159,6 +165,8 @@ export function RunBrewService(arg1:string):Promise<string>;
 export function SaveWindowGeometry(arg1:number,arg2:number,arg3:number,arg4:number,arg5:boolean):Promise<void>;
 
 export function SelectCaskAppDir():Promise<string>;
+
+export function SelectConfigDirectory():Promise<string>;
 
 export function SetAdminUsername(arg1:string):Promise<void>;
 

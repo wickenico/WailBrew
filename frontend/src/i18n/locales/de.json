@@ -457,6 +457,16 @@
     "nextCheckInSeconds": "Nächste Prüfung in {{seconds}}s"
   },
   "settings": {
+    "configDirectory": {
+      "title": "Konfigurationsordner",
+      "description": "Wähle einen leeren Ordner für deine Einstellungen und Brewfile-Snapshots. Verschieben überträgt sie in den gewählten Ordner und verwendet ihn sofort sowie bei künftigen Starts. Andere Dateien bleiben im bisherigen Ordner.",
+      "folder": "Ausgewählter Ordner",
+      "choose": "Ordner auswählen…",
+      "move": "Verschieben",
+      "moving": "Bitte warten…",
+      "moved": "Konfigurationsordner aktualisiert",
+      "overridden": "Der Konfigurationspfad wird durch WAILBREW_CONFIG_FILE festgelegt. Entferne diese Umgebungsvariable und starte WailBrew neu, um den Ordner hier zu ändern."
+    },
     "title": "Einstellungen",
     "subtitle": "Passe dein Homebrew-Erlebnis an",
     "loading": "Einstellungen werden geladen...",

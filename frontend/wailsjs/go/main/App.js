@@ -138,6 +138,10 @@ export function GetCaskAppDir() {
   return window['go']['main']['App']['GetCaskAppDir']();
 }
 
+export function GetConfigDirectory() {
+  return window['go']['main']['App']['GetConfigDirectory']();
+}
+
 export function GetContext() {
   return window['go']['main']['App']['GetContext']();
 }
@@ -246,8 +250,16 @@ export function InstallBrewPackage(arg1, arg2) {
   return window['go']['main']['App']['InstallBrewPackage'](arg1, arg2);
 }
 
+export function IsConfigDirectoryOverridden() {
+  return window['go']['main']['App']['IsConfigDirectoryOverridden']();
+}
+
 export function ListSnapshots() {
   return window['go']['main']['App']['ListSnapshots']();
+}
+
+export function MoveConfigDirectory(arg1) {
+  return window['go']['main']['App']['MoveConfigDirectory'](arg1);
 }
 
 export function OpenConfigFile() {
@@ -312,6 +324,10 @@ export function SaveWindowGeometry(arg1, arg2, arg3, arg4, arg5) {
 
 export function SelectCaskAppDir() {
   return window['go']['main']['App']['SelectCaskAppDir']();
+}
+
+export function SelectConfigDirectory() {
+  return window['go']['main']['App']['SelectConfigDirectory']();
 }
 
 export function SetAdminUsername(arg1) {
