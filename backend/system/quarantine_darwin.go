@@ -49,7 +49,9 @@ func CaskIconDataURL(appPath string) (string, error) {
 	}
 	tmpPath := tmp.Name()
 	_ = tmp.Close()
-	defer os.Remove(tmpPath)
+	defer func() {
+		_ = os.Remove(tmpPath)
+	}()
 
 	if output, err := exec.Command("/usr/bin/sips", "-s", "format", "png", "-Z", "128", iconPath, "--out", tmpPath).CombinedOutput(); err != nil {
 		return "", fmt.Errorf("convert app icon: %w (%s)", err, strings.TrimSpace(string(output)))
