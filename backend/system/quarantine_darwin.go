@@ -5,12 +5,61 @@ package system
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 )
+
+// CaskIconDataURL loads the icon declared by an installed .app bundle and
+// converts it to a browser-friendly, compact PNG data URL.
+func CaskIconDataURL(appPath string) (string, error) {
+	resourcesDir := filepath.Join(appPath, "Contents", "Resources")
+	iconName := ""
+	infoPath := filepath.Join(appPath, "Contents", "Info")
+	if out, err := exec.Command("/usr/bin/defaults", "read", infoPath, "CFBundleIconFile").Output(); err == nil {
+		iconName = strings.TrimSpace(string(out))
+	}
+
+	var iconPath string
+	if iconName != "" {
+		if filepath.Ext(iconName) == "" {
+			iconName += ".icns"
+		}
+		iconPath = filepath.Join(resourcesDir, filepath.Base(iconName))
+		if _, err := os.Stat(iconPath); err != nil {
+			iconPath = ""
+		}
+	}
+	if iconPath == "" {
+		matches, err := filepath.Glob(filepath.Join(resourcesDir, "*.icns"))
+		if err != nil || len(matches) == 0 {
+			return "", fmt.Errorf("no app icon found in %s", resourcesDir)
+		}
+		iconPath = matches[0]
+	}
+
+	tmp, err := os.CreateTemp("", "wailbrew-cask-icon-*.png")
+	if err != nil {
+		return "", fmt.Errorf("create icon temp file: %w", err)
+	}
+	tmpPath := tmp.Name()
+	_ = tmp.Close()
+	defer os.Remove(tmpPath)
+
+	if output, err := exec.Command("/usr/bin/sips", "-s", "format", "png", "-Z", "128", iconPath, "--out", tmpPath).CombinedOutput(); err != nil {
+		return "", fmt.Errorf("convert app icon: %w (%s)", err, strings.TrimSpace(string(output)))
+	}
+	png, err := os.ReadFile(tmpPath)
+	if err != nil {
+		return "", fmt.Errorf("read converted app icon: %w", err)
+	}
+	return "data:image/png;base64," + base64.StdEncoding.EncodeToString(png), nil
+}
 
 // caskInfoV2 is the minimal shape of `brew info --cask --json=v2` output that we
 // care about: the top-level "casks" array, and within each cask its "token" and

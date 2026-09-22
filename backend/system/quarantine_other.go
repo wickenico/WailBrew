@@ -3,6 +3,13 @@
 
 package system
 
+import "fmt"
+
+// CaskIconDataURL is unavailable outside macOS app bundles.
+func CaskIconDataURL(appPath string) (string, error) {
+	return "", fmt.Errorf("cask app icons are only available on macOS")
+}
+
 // ResolveCaskAppPath is a no-op on non-macOS platforms.
 func ResolveCaskAppPath(brewPath, caskName, appDir string) (appPath string, isPkg bool, err error) {
 	return "", false, nil

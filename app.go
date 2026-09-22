@@ -1180,6 +1180,22 @@ func (a *App) GetCaskAppDir() string {
 	return ""
 }
 
+// GetCaskIcon returns the installed macOS application's icon as a small PNG data URL.
+// Casks installed via pkg, casks without an app artifact, and non-macOS systems
+// return an empty string so the frontend can retain its generic package mark.
+func (a *App) GetCaskIcon(caskName string) string {
+	appPath, isPkg, err := system.ResolveCaskAppPath(a.brewPath, caskName, a.GetCaskAppDir())
+	if err != nil || isPkg || appPath == "" {
+		return ""
+	}
+
+	icon, err := system.CaskIconDataURL(appPath)
+	if err != nil {
+		return ""
+	}
+	return icon
+}
+
 func (a *App) SetCaskAppDir(appDir string) error {
 	if appDir != "" {
 		if !filepath.IsAbs(appDir) {

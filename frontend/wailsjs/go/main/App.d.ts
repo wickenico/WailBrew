@@ -72,6 +72,8 @@ export function GetBrewUpdatablePackagesWithUpdate():Promise<Array<any>>;
 
 export function GetCaskAppDir():Promise<string>;
 
+export function GetCaskIcon(arg1:string):Promise<string>;
+
 export function GetConfigDirectory():Promise<string>;
 
 export function GetContext():Promise<context.Context>;

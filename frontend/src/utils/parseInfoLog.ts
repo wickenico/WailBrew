@@ -1,5 +1,6 @@
 export interface ParsedInfo {
     headline: string;
+    sections: Array<{ title: string; body: string }>;
     description?: string;
     homepage?: string;
     entries: Array<{ label: string; value: string }>;
@@ -15,6 +16,11 @@ export interface ParsedInfo {
 export function parseInfoLog(log: string | null): ParsedInfo | null {
     if (!log) return null;
 
+    const sections: ParsedInfo["sections"] = [];
+    for (const block of log.split(/^==> /m).slice(2)) {
+        const [title, ...body] = block.split("\n");
+        if (!title.startsWith("Downloading ")) sections.push({ title: title.trim(), body: body.join("\n").trim() });
+    }
     const lines = log
         .split("\n")
         .map((line) => line.trim())
@@ -70,5 +76,5 @@ export function parseInfoLog(log: string | null): ParsedInfo | null {
         return null;
     }
 
-    return { headline: headline || "Package Information", description, homepage, entries };
+    return { headline: headline || "Package Information", description, homepage, entries, sections };
 }

@@ -494,6 +494,7 @@ const WailBrewApp = () => {
                     installedVersion,
                     size,
                     isInstalled: true,
+                    isCask: true,
                     isPinned: pinned === "true",
                 }));
                 const updatableFormatted = updatableErrorMessage
@@ -1654,6 +1655,7 @@ const WailBrewApp = () => {
                         installedVersion,
                         size,
                         isInstalled: true,
+                        isCask: true,
                         isPinned: pinned === "true",
                     })),
                 );
@@ -2689,6 +2691,7 @@ const WailBrewApp = () => {
                     installedVersion,
                     size,
                     isInstalled: true,
+                    isCask: true,
                     isPinned: pinned === "true",
                 }));
                 setCasks(casksFormatted);
@@ -3677,8 +3680,23 @@ const WailBrewApp = () => {
                     <PackageInfoDialog
                         open={!!infoLogs}
                         title={t("dialogs.packageInfo", { name: infoPackage?.name })}
+                        packageEntry={infoPackage}
                         log={infoLogs}
                         isRunning={isInfoRunning}
+                        onNavigateToOutdated={() => {
+                            infoRequestIdRef.current++;
+                            setInfoLogs(null);
+                            setInfoPackage(null);
+                            setIsInfoRunning(false);
+                            setView("updatable");
+                        }}
+                        onSelectDependency={(dependencyName) => {
+                            infoRequestIdRef.current++;
+                            setInfoLogs(null);
+                            setInfoPackage(null);
+                            setIsInfoRunning(false);
+                            handleSelectDependency(dependencyName);
+                        }}
                         onClose={() => {
                             // Invalidate any pending info request (prevents dialog from reopening)
                             infoRequestIdRef.current++;

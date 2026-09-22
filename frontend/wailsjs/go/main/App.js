@@ -138,6 +138,10 @@ export function GetCaskAppDir() {
   return window['go']['main']['App']['GetCaskAppDir']();
 }
 
+export function GetCaskIcon(arg1) {
+  return window['go']['main']['App']['GetCaskIcon'](arg1);
+}
+
 export function GetConfigDirectory() {
   return window['go']['main']['App']['GetConfigDirectory']();
 }
