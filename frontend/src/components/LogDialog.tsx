@@ -66,30 +66,25 @@ const LogDialog: React.FC<LogDialogProps> = ({
         const truncated = fullLog.length > MAX_BUG_REPORT_LOG_CHARS;
         const logExcerpt = truncated ? fullLog.slice(-MAX_BUG_REPORT_LOG_CHARS) : fullLog;
 
-        let platformLine = "";
+        let platform = "";
         try {
             const env = await Environment();
-            platformLine = `- Platform: ${env.platform} (${env.arch})\n`;
+            platform = `${env.platform} (${env.arch})`;
         } catch {
             // Environment info is a nice-to-have; proceed without it if it fails.
         }
 
-        const body = [
-            "### Description",
-            "<!-- What happened? What did you expect to happen? -->",
-            "",
-            "### Environment",
-            appVersion ? `- WailBrew version: ${appVersion}\n${platformLine}` : platformLine,
-            "### Session Log",
-            truncated ? `_(showing the last ${MAX_BUG_REPORT_LOG_CHARS} characters)_` : "",
-            "```",
-            logExcerpt,
-            "```",
-        ]
+        const logs = [truncated ? `(showing the last ${MAX_BUG_REPORT_LOG_CHARS} characters)` : "", logExcerpt]
             .filter(Boolean)
             .join("\n");
 
-        const url = `${WAILBREW_ISSUES_URL}?title=${strictEncodeURIComponent("Bug: ")}&body=${strictEncodeURIComponent(body)}`;
+        // IDs match .github/ISSUE_TEMPLATE/bug_report.yml. Leave the title and
+        // required descriptions empty so diagnostics alone cannot submit a report.
+        const fields = { template: "bug_report.yml", version: appVersion ?? "", platform, logs };
+        const query = Object.entries(fields)
+            .map(([key, value]) => `${key}=${strictEncodeURIComponent(value)}`)
+            .join("&");
+        const url = `${WAILBREW_ISSUES_URL}?${query}`;
         BrowserOpenURL(url);
     };
 

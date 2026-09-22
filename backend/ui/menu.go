@@ -58,7 +58,7 @@ func Build(app AppInterface) *menu.Menu {
 		app.OpenURL("https://github.com/wickenico/WailBrew")
 	})
 	AppSubmenu.AddText(getT("menu.app.reportBug"), nil, func(cd *menu.CallbackData) {
-		app.OpenURL("https://github.com/wickenico/WailBrew/issues")
+		app.OpenURL("https://github.com/wickenico/WailBrew/issues/new?template=bug_report.yml")
 	})
 	AppSubmenu.AddText(getT("menu.app.visitSubreddit"), nil, func(cd *menu.CallbackData) {
 		app.OpenURL("https://www.reddit.com/r/WailBrew/")

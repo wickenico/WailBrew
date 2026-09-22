@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a problem with WailBrew.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Give your report a short, descriptive title and tell us what went wrong.
+        For example: "Package list stays empty after refreshing".
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      placeholder: "Example: After clicking Refresh, the package list stays empty even though brew list shows installed packages."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: "Example: My installed packages should appear after refreshing."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: If you can reproduce the problem, describe the steps. Leave this empty if it only happens occasionally.
+      placeholder: |
+        1. Open WailBrew
+        2. Click ...
+        3. Observe ...
+  - type: input
+    id: version
+    attributes:
+      label: WailBrew version
+      placeholder: "Example: 0.13.0"
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: "Example: macOS, Apple Silicon (arm64)"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Session log
+      description: Logs may be prefilled with the most recent entries. You can review or edit them before submitting.
+      render: text
