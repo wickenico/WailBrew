@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+const (
+	brewUpdateTimeout       = 5 * time.Minute
+	brewUpdateInterval      = 5 * time.Minute
+	brewUpdateRetryInterval = 30 * time.Second
+)
+
 // DatabaseService provides database update and new package detection functionality
 type DatabaseService struct {
 	executor         *Executor
@@ -14,6 +20,7 @@ type DatabaseService struct {
 	knownPackagesMux sync.Mutex
 	updateMutex      sync.Mutex
 	lastUpdateTime   time.Time
+	lastUpdateErr    error
 }
 
 // NewDatabaseService creates a new database service
@@ -25,30 +32,10 @@ func NewDatabaseService(executor *Executor) *DatabaseService {
 }
 
 // UpdateBrewDatabase updates the Homebrew formula database
-// It uses a mutex to ensure only one update runs at a time and caches the result
-// for 5 minutes to avoid redundant updates
+// It uses a mutex to ensure only one update runs at a time. Successful updates
+// are cached for five minutes; failed attempts can be retried after 30 seconds.
 func (s *DatabaseService) UpdateBrewDatabase() error {
-	s.updateMutex.Lock()
-	defer s.updateMutex.Unlock()
-
-	// If we updated less than 5 minutes ago, skip the update
-	if time.Since(s.lastUpdateTime) < 5*time.Minute {
-		return nil
-	}
-
-	// Run brew update to refresh the local formula database
-	_, err := s.executor.RunWithTimeout(60*time.Second, "update")
-
-	// Update the timestamp even if there was an error, to avoid hammering
-	// the update command if there's a persistent issue
-	s.lastUpdateTime = time.Now()
-
-	// Clear cache after database update so outdated checks get fresh data
-	// This ensures that brew outdated commands see the newly updated database
-	if err == nil {
-		s.executor.ClearCache()
-	}
-
+	_, err := s.UpdateBrewDatabaseWithOutput()
 	return err
 }
 
@@ -58,17 +45,22 @@ func (s *DatabaseService) UpdateBrewDatabaseWithOutput() (string, error) {
 	s.updateMutex.Lock()
 	defer s.updateMutex.Unlock()
 
-	// If we updated less than 5 minutes ago, skip the update
-	if time.Since(s.lastUpdateTime) < 5*time.Minute {
-		return "", nil
+	// Keep successful updates for five minutes. Retry failures sooner, while
+	// preserving the error for callers during the short cooldown.
+	interval := brewUpdateInterval
+	if s.lastUpdateErr != nil {
+		interval = brewUpdateRetryInterval
+	}
+	if time.Since(s.lastUpdateTime) < interval {
+		return "", s.lastUpdateErr
 	}
 
 	// Run brew update to refresh the local formula database
-	output, err := s.executor.RunWithTimeout(60*time.Second, "update")
+	output, err := s.executor.RunWithTimeout(brewUpdateTimeout, "update")
 
-	// Update the timestamp even if there was an error, to avoid hammering
-	// the update command if there's a persistent issue
+	// Throttle both successes and failures, but allow failures to retry sooner.
 	s.lastUpdateTime = time.Now()
+	s.lastUpdateErr = err
 
 	// Clear cache after database update so outdated checks get fresh data
 	// This ensures that brew outdated commands see the newly updated database
