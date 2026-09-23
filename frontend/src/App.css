@@ -247,6 +247,46 @@ body {
   font-size: 18px;
 }
 
+.outdated-mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.outdated-mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: var(--input-bg);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.outdated-mode-tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.outdated-mode-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.outdated-mode-tab:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.outdated-mode-count {
+  min-width: 1.5em;
+  text-align: center;
+  font-weight: 700;
+}
+
 .header-actions {
   display: flex;
   align-items: center;

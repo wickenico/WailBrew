@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 )
 
 // OutdatedService provides outdated package checking functionality
@@ -54,22 +55,7 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 	// Use brew outdated with JSON output for accurate detection
 	// Use the configured outdated flag setting
 	outdatedFlag := s.getOutdatedFlag()
-	args := []string{"outdated", "--json=v2"}
-	switch outdatedFlag {
-	case "greedy":
-		args = append(args, "--greedy")
-	case "greedy-auto-updates":
-		args = append(args, "--greedy-auto-updates")
-	}
-	// If outdatedFlag is "none", no additional flag is added
-
-	// Append custom outdated args if configured
-	customArgs := s.getCustomOutdatedArgs()
-	if customArgs != "" {
-		// Parse custom args and append them (split by spaces)
-		customParts := strings.Fields(customArgs)
-		args = append(args, customParts...)
-	}
+	args := s.outdatedArgs(outdatedFlag)
 
 	output, err := s.executor.Run(args...)
 	if err != nil {
@@ -213,6 +199,81 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 	}
 
 	return updatablePackages
+}
+
+func (s *OutdatedService) outdatedArgs(mode string) []string {
+	args := []string{"outdated", "--json=v2"}
+	args = append(args, greedyFlags(mode)...)
+	return append(args, strings.Fields(s.getCustomOutdatedArgs())...)
+}
+
+// GetOutdatedCounts counts unpinned packages for each detection mode. A failed
+// mode is reported as -1 so the UI never presents a failed check as zero updates.
+func (s *OutdatedService) GetOutdatedCounts() map[string]int {
+	modes := []string{OutdatedFlagNone, OutdatedFlagGreedy, OutdatedFlagGreedyAutoUpdate}
+	counts := make(map[string]int, len(modes))
+	if err := s.validateFunc(); err != nil {
+		for _, mode := range modes {
+			counts[mode] = -1
+		}
+		return counts
+	}
+
+	var mutex sync.Mutex
+	var group sync.WaitGroup
+	for _, mode := range modes {
+		group.Add(1)
+		go func() {
+			defer group.Done()
+			count := s.outdatedCount(mode)
+			mutex.Lock()
+			counts[mode] = count
+			mutex.Unlock()
+		}()
+	}
+	group.Wait()
+	return counts
+}
+
+func (s *OutdatedService) outdatedCount(mode string) int {
+	output, err := s.executor.Run(s.outdatedArgs(mode)...)
+	if err != nil {
+		return -1
+	}
+	trimmed := strings.TrimSpace(string(output))
+	if trimmed == "" || trimmed == "[]" {
+		return 0
+	}
+	jsonOutput, _, err := s.extractJSON(trimmed)
+	if err != nil {
+		return -1
+	}
+	var result struct {
+		Formulae []struct {
+			Pinned bool `json:"pinned"`
+		} `json:"formulae"`
+		Casks []struct {
+			Pinned bool `json:"pinned"`
+		} `json:"casks"`
+	}
+	if err := json.Unmarshal([]byte(jsonOutput), &result); err != nil {
+		return -1
+	}
+	if result.Formulae == nil || result.Casks == nil {
+		return -1
+	}
+	count := 0
+	for _, formula := range result.Formulae {
+		if !formula.Pinned {
+			count++
+		}
+	}
+	for _, cask := range result.Casks {
+		if !cask.Pinned {
+			count++
+		}
+	}
+	return count
 }
 
 func (s *OutdatedService) getAutoUpdateCaskNames(caskNames []string) map[string]bool {

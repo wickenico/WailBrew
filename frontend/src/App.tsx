@@ -32,6 +32,8 @@ import {
     GetHomebrewVersion,
     GetInstalledDependents,
     GetLandingTab,
+    GetOutdatedCounts,
+    GetOutdatedFlag,
     GetSessionLogEntries,
     GetSortFavoritesToTop,
     GetStartupDataWithUpdate,
@@ -52,6 +54,7 @@ import {
     SetDockBadgeCount,
     SetDockBadgeCountSync,
     SetLanguage,
+    SetOutdatedFlag,
     SetUninstallCaskWithZap,
     StartBrewService,
     StopBrewService,
@@ -172,6 +175,9 @@ const WailBrewApp = () => {
     const [packages, setPackages] = useState<PackageEntry[]>([]);
     const [casks, setCasks] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
+    const [outdatedMode, setOutdatedMode] = useState<"none" | "greedy" | "greedy-auto-updates">("greedy-auto-updates");
+    const [outdatedCounts, setOutdatedCounts] = useState<Record<string, number>>({});
+    const [switchingOutdatedMode, setSwitchingOutdatedMode] = useState(false);
     const [allPackages, setAllPackages] = useState<PackageEntry[]>([]);
     const [allPackagesLoaded, setAllPackagesLoaded] = useState<boolean>(false);
     const [loadingAllPackages, setLoadingAllPackages] = useState<boolean>(false);
@@ -242,7 +248,7 @@ const WailBrewApp = () => {
     const [runningDoctorCommand, setRunningDoctorCommand] = useState<string | null>(null);
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [selectedDeprecatedPackage, setSelectedDeprecatedPackage] = useState<PackageEntry | null>(null);
-    const [_updatableError, setUpdatableError] = useState<string>("");
+    const [updatableError, setUpdatableError] = useState<string>("");
     const [leavesError, setLeavesError] = useState<string>("");
     const [installedFilter, setInstalledFilter] = useState<"all" | "on_request" | "dependency">("all");
     const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -1265,6 +1271,63 @@ const WailBrewApp = () => {
     useEffect(() => {
         setSearchQuery("");
     }, [view]);
+
+    useEffect(() => {
+        if (view !== "updatable") return;
+        GetOutdatedFlag()
+            .then((mode) => {
+                if (mode === "none" || mode === "greedy" || mode === "greedy-auto-updates") {
+                    setOutdatedMode(mode);
+                }
+            })
+            .catch((error) => console.error("Failed to load outdated mode:", error));
+    }, [view]);
+
+    useEffect(() => {
+        if (view !== "updatable" || loading) return;
+        let cancelled = false;
+        GetOutdatedCounts()
+            .then((counts) => {
+                if (!cancelled) setOutdatedCounts(counts);
+            })
+            .catch((error) => console.error("Failed to load outdated counts:", error));
+        return () => {
+            cancelled = true;
+        };
+    }, [view, loading, updatablePackages]);
+
+    const switchOutdatedMode = async (mode: "none" | "greedy" | "greedy-auto-updates") => {
+        if (mode === outdatedMode || switchingOutdatedMode) return;
+        setSwitchingOutdatedMode(true);
+        setUpdatableError("");
+        try {
+            await SetOutdatedFlag(mode);
+            setOutdatedMode(mode);
+            setSelectedPackages(new Set());
+            setSelectedPackage(null);
+            const rows = await GetBrewUpdatablePackages();
+            if (rows.length === 1 && rows[0][0] === "Error") {
+                setUpdatablePackages([]);
+                setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${rows[0][1]}`);
+                return;
+            }
+            setUpdatablePackages(
+                rows.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
+                    name,
+                    installedVersion,
+                    latestVersion,
+                    size,
+                    isInstalled: true,
+                    warning: warning || undefined,
+                    isCask: type === "cask",
+                })),
+            );
+        } catch (error) {
+            setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${String(error)}`);
+        } finally {
+            setSwitchingOutdatedMode(false);
+        }
+    };
 
     // Check Homebrew version when homebrew view is opened
     useEffect(() => {
@@ -3028,12 +3091,13 @@ const WailBrewApp = () => {
                                         <button
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
-                                            disabled={loading}
+                                            disabled={loading || switchingOutdatedMode}
                                             title={t("buttons.refresh")}
                                         >
                                             <RefreshCw size={18} />
                                         </button>
                                         {updatablePackages.length > 0 &&
+                                            !switchingOutdatedMode &&
                                             (selectedPackages.size > 0 ? (
                                                 <button
                                                     className="update-selected-button"
@@ -3059,8 +3123,38 @@ const WailBrewApp = () => {
                                 onSearchChange={setSearchQuery}
                                 onClearSearch={() => setSearchQuery("")}
                             />
+                            <div
+                                className="outdated-mode-tabs"
+                                role="group"
+                                aria-label={t("settings.outdatedFlag.selectFlag")}
+                            >
+                                {(
+                                    [
+                                        ["none", "none"],
+                                        ["greedy", "greedy"],
+                                        ["greedy-auto-updates", "greedyAutoUpdates"],
+                                    ] as const
+                                ).map(([mode, label]) => (
+                                    <button
+                                        key={mode}
+                                        type="button"
+                                        className={`outdated-mode-tab ${outdatedMode === mode ? "active" : ""}`}
+                                        aria-pressed={outdatedMode === mode}
+                                        disabled={switchingOutdatedMode}
+                                        onClick={() => void switchOutdatedMode(mode)}
+                                    >
+                                        {t(`settings.outdatedFlag.options.${label}`)}
+                                        <span className="outdated-mode-count">
+                                            {outdatedCounts[mode] === undefined || outdatedCounts[mode] < 0
+                                                ? "—"
+                                                : outdatedCounts[mode]}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
                             {error && <div className="result error">{error}</div>}
-                            {updatablePackages.length === 0 && !loading ? (
+                            {updatableError && <div className="result error">{updatableError}</div>}
+                            {updatablePackages.length === 0 && !loading && !switchingOutdatedMode && !updatableError ? (
                                 <div className="all-up-to-date">
                                     <PartyPopper size={48} strokeWidth={1.5} />
                                     <p>{t("table.allUpToDate")}</p>
@@ -3072,7 +3166,7 @@ const WailBrewApp = () => {
                                     onToggleFavorite={handleToggleFavorite}
                                     sortFavoritesToTop={sortFavoritesToTop}
                                     selectedPackage={selectedPackage}
-                                    loading={loading}
+                                    loading={loading || switchingOutdatedMode}
                                     onSelect={handleSelect}
                                     columns={columnsUpdatable}
                                     onUninstall={handleUninstallPackage}

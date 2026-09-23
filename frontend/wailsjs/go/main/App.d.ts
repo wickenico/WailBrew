@@ -106,6 +106,8 @@ export function GetMirrorSource():Promise<Record<string, string>>;
 
 export function GetNoQuarantine():Promise<boolean>;
 
+export function GetOutdatedCounts():Promise<Record<string, number>>;
+
 export function GetOutdatedFlag():Promise<string>;
 
 export function GetProxy():Promise<string>;

@@ -41,6 +41,7 @@ type Service interface {
 
 	// Outdated packages
 	GetBrewUpdatablePackages() [][]string
+	GetOutdatedCounts() map[string]int
 	IsPackageCask(packageName string) bool
 	IsAppAlreadyExistsError(stderrOutput string) bool
 	ExtractFailedPackagesFromError(stderrOutput string) []string
@@ -316,6 +317,10 @@ func (s *serviceImpl) CheckForNewPackages() (*NewPackagesInfo, error) {
 // Outdated package methods
 func (s *serviceImpl) GetBrewUpdatablePackages() [][]string {
 	return s.outdatedService.GetBrewUpdatablePackages()
+}
+
+func (s *serviceImpl) GetOutdatedCounts() map[string]int {
+	return s.outdatedService.GetOutdatedCounts()
 }
 
 func (s *serviceImpl) IsPackageCask(packageName string) bool {

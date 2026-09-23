@@ -206,6 +206,10 @@ export function GetNoQuarantine() {
   return window['go']['main']['App']['GetNoQuarantine']();
 }
 
+export function GetOutdatedCounts() {
+  return window['go']['main']['App']['GetOutdatedCounts']();
+}
+
 export function GetOutdatedFlag() {
   return window['go']['main']['App']['GetOutdatedFlag']();
 }

@@ -561,6 +561,10 @@ func (a *App) GetBrewUpdatablePackages() [][]string {
 	return a.brewService.GetBrewUpdatablePackages()
 }
 
+func (a *App) GetOutdatedCounts() map[string]int {
+	return a.brewService.GetOutdatedCounts()
+}
+
 // GetBrewUpdatablePackagesWithUpdate updates the database first, then gets updatable packages
 // Use this for manual refresh when you want to ensure fresh data
 func (a *App) GetBrewUpdatablePackagesWithUpdate() [][]string {
