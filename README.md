@@ -67,7 +67,7 @@ Requests, Questions, Troubleshooting? => [r/WailBrew](https://www.reddit.com/r/W
 - 🚀 **Native & fast** - a real macOS app built on Wails (Go + React), not a browser wrapper.
 - 🍎 **Universal** - runs natively on both Apple Silicon and Intel Macs.
 - 🧩 **Complete** - manages formulae, casks, taps, **and** services - not just packages.
-- 🌍 **Localized** - a fully translated UI in **11 languages**.
+- 🌍 **Localized** - a fully translated UI in **12 languages**.
 - 🔒 **Signed & notarized** - distributed through the official Homebrew cask.
 - 💚 **Actively maintained & open source** - MIT licensed, with regular releases.
 
@@ -151,7 +151,7 @@ WailBrew is inspired by Cakebrew and aims to be a modern, actively maintained su
 | Homebrew **services** management | ✅ | ❌ |
 | `brew doctor` & cleanup | ✅ | ⚠️ Partial |
 | Apple Silicon native | ✅ | ✅ |
-| Localized UI (11 languages) | ✅ | ❌ |
+| Localized UI (12 languages) | ✅ | ❌ |
 | Light / dark mode | ✅ | ⚠️ |
 | Actively maintained | ✅ | ❌ |
 | Open source | ✅ (MIT) | ✅ |
@@ -171,6 +171,7 @@ WailBrew ships with a **fully translated UI** in the following languages:
 - 🇰🇷 Korean
 - 🇮🇱 Hebrew
 - 🇪🇸 Spanish
+- 🇮🇹 Italian
 
 Want to see WailBrew in your language? Contributions are welcome - [open a Pull Request](https://github.com/wickenico/WailBrew/pulls) or [create an Issue](https://github.com/wickenico/WailBrew/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for the translation guide.
 
@@ -205,7 +206,7 @@ Yes - WailBrew runs natively on both Apple Silicon and Intel Macs.
 Yes. WailBrew is a graphical front-end for Homebrew, so `brew` must be installed. WailBrew auto-detects the brew path for your architecture.
 
 **How is WailBrew different from Cakebrew?**
-WailBrew is an actively maintained, modern alternative with cask and services management, a localized UI in 11 languages, light/dark mode, and native Apple Silicon support. See the [comparison above](#-wailbrew-vs-cakebrew).
+WailBrew is an actively maintained, modern alternative with cask and services management, a localized UI in 12 languages, light/dark mode, and native Apple Silicon support. See the [comparison above](#-wailbrew-vs-cakebrew).
 
 **Does WailBrew run my commands safely?**
 Yes - WailBrew simply calls the `brew` CLI. Every command is transparent, and session logging lets you see exactly what runs.

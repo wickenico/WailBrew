@@ -16,6 +16,7 @@ const LANGUAGE_OPTIONS = {
     ko: { flag: "🇰🇷", nameKey: "language.korean" },
     he: { flag: "🇮🇱", nameKey: "language.hebrew" },
     es: { flag: "🇪🇸", nameKey: "language.spanish" },
+    it: { flag: "🇮🇹", nameKey: "language.italian" },
 } as const;
 
 const LanguageSwitcher: React.FC = () => {
