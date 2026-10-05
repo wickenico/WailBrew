@@ -1,0 +1,772 @@
+{
+  "xcodeLicense": {
+    "title": "Accetta la licenza di Xcode per usare Homebrew",
+    "message": "Homebrew non può essere avviato perché la licenza di Xcode non è stata accettata. Apri Terminale ed esegui questo comando per accettarla. Quando richiesto, inserisci la password di amministratore del Mac.",
+    "retryHint": "Dopo aver accettato la licenza, fai clic su Riprova per ricaricare i pacchetti.",
+    "retry": "Riprova"
+  },
+  "brewLocation": {
+    "title": "Homebrew è stato trovato in un’altra posizione",
+    "message": "WailBrew sta usando \"{{current}}\", ma è stata trovata un’installazione funzionante di Homebrew in \"{{suggested}}\". Passa a questa posizione per visualizzare i pacchetti.",
+    "switch": "Cambia e ricarica",
+    "switching": "Cambio in corso…",
+    "dismiss": "Ignora",
+    "switchFailed": "Impossibile cambiare il percorso di Homebrew"
+  },
+  "sidebar": {
+    "packages": "Pacchetti",
+    "browseInstall": "Esplora e installa",
+    "tools": "Strumenti",
+    "installed": "Installati",
+    "casks": "Cask",
+    "outdated": "Da aggiornare",
+    "all": "Formule",
+    "allFormulae": "Tutte le formule",
+    "allCasks": "Tutti i cask",
+    "leaves": "Pacchetti indipendenti",
+    "repositories": "Repository",
+    "services": "Servizi",
+    "homebrew": "Homebrew",
+    "doctor": "Diagnostica",
+    "cleanup": "Pulizia",
+    "snapshots": "Istantanee",
+    "refresh": "Aggiorna",
+    "sponsor": "Sostieni il progetto",
+    "collapse": "Comprimi la barra laterale",
+    "expand": "Espandi la barra laterale"
+  },
+  "headers": {
+    "installedFormulas": "Formule installate",
+    "installedCasks": "Cask installati",
+    "outdatedFormulas": "Formule e cask da aggiornare",
+    "allFormulas": "Formule",
+    "allCasks": "Tutti i cask",
+    "leaves": "Pacchetti indipendenti",
+    "repositories": "Repository",
+    "services": "Servizi",
+    "homebrew": "Homebrew",
+    "homebrewDoctor": "Diagnostica Homebrew",
+    "homebrewCleanup": "Pulizia di Homebrew",
+    "deprecatedFormulae": "Formule obsolete",
+    "snapshots": "Istantanee"
+  },
+  "search": {
+    "placeholder": "Cerca…",
+    "clearSearch": "Cancella la ricerca",
+    "recentSearches": "Ricerche recenti",
+    "removeFromHistory": "Rimuovi \"{{item}}\" dalla cronologia"
+  },
+  "shortcuts": {
+    "title": "Scorciatoie da tastiera",
+    "menu": {
+      "title": "Menu",
+      "shortcuts": "Scorciatoie da tastiera",
+      "settings": "Impostazioni",
+      "quit": "Esci"
+    },
+    "navigation": {
+      "title": "Navigazione",
+      "installed": "Formule installate",
+      "casks": "Cask",
+      "outdated": "Formule obsolete",
+      "all": "Tutte le formule",
+      "allCasks": "Tutti i cask",
+      "leaves": "Pacchetti indipendenti",
+      "repositories": "Repository",
+      "homebrew": "Homebrew",
+      "doctor": "Diagnostica",
+      "cleanup": "Pulizia",
+      "snapshots": "Istantanee"
+    },
+    "table": {
+      "title": "Tabella",
+      "focus": "Attiva la tabella",
+      "select": "Seleziona elemento",
+      "navigate": "Spostati tra le righe",
+      "multiSelect": "Selezione multipla",
+      "enter": "Invio",
+      "arrowUp": "↑",
+      "arrowDown": "↓"
+    },
+    "actions": {
+      "title": "Azioni",
+      "refresh": "Aggiorna i pacchetti",
+      "exportBrewfile": "Esporta Brewfile",
+      "importBrewfile": "Importa Brewfile"
+    },
+    "dialogs": {
+      "title": "Finestre di dialogo",
+      "close": "Chiudi finestra di dialogo",
+      "confirm": "Conferma azione",
+      "escape": "Esc",
+      "enter": "Invio"
+    }
+  },
+  "buttons": {
+    "uninstall": "Disinstalla \"{{name}}\"",
+    "install": "Installa \"{{name}}\"",
+    "update": "Aggiorna \"{{name}}\"",
+    "tap": "Repository tap",
+    "updateAll": "Aggiorna tutto",
+    "updateSelected": "Aggiorna i {{count}} selezionati",
+    "selectAll": "Seleziona tutto",
+    "deselectAll": "Deseleziona tutto",
+    "showInfo": "Mostra informazioni su \"{{name}}\"",
+    "clearLog": "Cancella registro",
+    "runDoctor": "Esegui diagnostica",
+    "runDoctorCommand": "Esegui {{command}}",
+    "runCleanup": "Esegui pulizia",
+    "runDryRun": "Simulazione",
+    "refresh": "Aggiorna i pacchetti",
+    "yes": "Sì",
+    "cancel": "Annulla",
+    "yesUninstall": "Sì, disinstalla",
+    "yesInstall": "Sì, installa",
+    "yesUpdate": "Sì, aggiorna",
+    "yesUpdateAll": "Sì, aggiorna tutto",
+    "yesUpdateSelected": "Sì, aggiorna i {{count}} selezionati",
+    "yesUntap": "Sì, rimuovi il tap",
+    "yesTrust": "Sì, considera attendibile",
+    "trustRepository": "Considera attendibile \"{{name}}\"",
+    "ok": "OK",
+    "close": "Chiudi",
+    "updateHomebrew": "Aggiorna Homebrew",
+    "uninstallDeprecated": "Disinstalla la formula obsoleta \"{{name}}\"",
+    "untap": "Rimuovi il tap \"{{name}}\"",
+    "favorite": "Aggiungi \"{{name}}\" ai preferiti",
+    "unfavorite": "Rimuovi \"{{name}}\" dai preferiti",
+    "toggleFavoritesOnly": "Mostra solo i preferiti",
+    "togglePinnedOnly": "Mostra solo i pacchetti bloccati",
+    "pin": "Blocca \"{{name}}\" (impedisci gli aggiornamenti)",
+    "unpin": "Sblocca \"{{name}}\" (consenti gli aggiornamenti)",
+    "newSnapshot": "Nuova istantanea"
+  },
+  "filters": {
+    "onRequest": "Su richiesta ({{count}})",
+    "asDependency": "Come dipendenza ({{count}})",
+    "toggleOnRequest": "Attiva/disattiva il filtro: installati su richiesta",
+    "toggleAsDependency": "Attiva/disattiva il filtro: installati come dipendenze"
+  },
+  "logDialog": {
+    "running": "In esecuzione…",
+    "completed": "Completato",
+    "copy": "Copia",
+    "copyToClipboard": "Copia i registri negli appunti",
+    "copiedToClipboard": "Registri copiati negli appunti!",
+    "copyFailed": "Impossibile copiare i registri",
+    "copyEntry": "Copia questa voce",
+    "noLogs": "Nessun registro disponibile.",
+    "reportBug": "Segnala un bug"
+  },
+  "packageInfo": {
+    "loading": "(Caricamento…)",
+    "status": "Stato",
+    "installed": "Installati",
+    "notInstalled": "Non installato",
+    "noSelection": "Nessun pacchetto selezionato",
+    "downloadStatistics": "Statistiche dei download",
+    "last30Days": "Ultimi 30 giorni",
+    "last90Days": "Ultimi 90 giorni",
+    "last365Days": "Ultimi 365 giorni",
+    "loadingAnalytics": "Caricamento delle statistiche…",
+    "installedDepsTitle": "Dipendenze installate",
+    "installedDepsNone": "Nessuna dipendenza installata",
+    "installedDependentsTitle": "Usato da (installato)",
+    "installedDependentsNone": "Non è usato da nessuna formula installata",
+    "labelHomepage": "Sito web",
+    "labelBrewPage": "Homebrew",
+    "labelDeps": "Dipendenze",
+    "labelLatest": "Più recente",
+    "labelConflicts": "Conflitti"
+  },
+  "tableColumns": {
+    "name": "Nome",
+    "version": "Versione installata",
+    "latestVersion": "Ultima versione",
+    "size": "Dimensione",
+    "status": "Stato",
+    "actions": "Azioni"
+  },
+  "footers": {
+    "installedFormulas": "Queste formule sono già installate nel sistema.",
+    "installedCasks": "Questi cask (applicazioni) sono già installati nel sistema.",
+    "outdatedFormulas": "Alcune formule possono essere aggiornate.",
+    "allFormulas": "Tutte le formule Homebrew disponibili. Quelle installate sono evidenziate in verde.",
+    "allCasks": "Tutti i cask Homebrew disponibili (app, font e plugin). Quelli installati sono evidenziati in verde.",
+    "leaves": "I pacchetti indipendenti sono formule che non servono come dipendenze ad altre formule installate.",
+    "repositories": "I repository (tap) sono fonti di formule e contengono pacchetti aggiuntivi oltre a quelli del repository standard.",
+    "services": "I servizi sono processi in background (gestiti tramite launchd) amministrati da Homebrew. Avvia, arresta, riavvia o esegui il servizio di una formula.",
+    "homebrew": "Gestisci e aggiorna Homebrew. Controlla la versione installata e aggiorna Homebrew Core quando è disponibile una versione più recente.",
+    "doctor": "La diagnostica di Homebrew rileva le cause più comuni degli errori.",
+    "cleanup": "La pulizia rimuove i download obsoleti e i file nella cache per liberare spazio su disco.",
+    "snapshots": "Le istantanee sono Brewfile salvati che puoi ripristinare in seguito su questo o un altro Mac per reinstallare le stesse formule, gli stessi cask e tap."
+  },
+  "homebrew": {
+    "currentVersion": "Versione attuale",
+    "upToDate": "Aggiornato",
+    "updateAvailable": "Aggiornamento disponibile: v{{version}}"
+  },
+  "cleanup": {
+    "spaceToFree": "Puoi liberare {{size}}"
+  },
+  "dialogs": {
+    "confirmUninstall": "Vuoi davvero disinstallare \"{{name}}\"?",
+    "zapUninstall": "Rimuovi anche tutti i dati dell’app (--zap)",
+    "zapUninstallHint": "Elimina preferenze, cache e file di supporto lasciati dall’app.",
+    "dependentsWarning": "Richiesto da {{count}} formula installata",
+    "confirmInstall": "Vuoi davvero installare \"{{name}}\"?",
+    "confirmUpdate": "Vuoi davvero aggiornare \"{{name}}\"?",
+    "confirmUpdateAll": "Vuoi davvero aggiornare tutti i pacchetti obsoleti?",
+    "confirmUpdateSelected": "Vuoi davvero aggiornare i {{count}} pacchetti selezionati?",
+    "confirmUntap": "Vuoi davvero rimuovere il tap \"{{name}}\"?",
+    "confirmTrustTap": "Homebrew non considera attendibile il tap \"{{name}}\". Se lo consideri attendibile, Homebrew potrà eseguire il codice contenuto al suo interno. Vuoi considerarlo attendibile e continuare?",
+    "confirmRestoreSnapshot": "Ripristinare l’istantanea \"{{name}}\"? Verranno installati tutte le formule, i cask e i tap elencati.",
+    "confirmDeleteSnapshot": "Eliminare l’istantanea \"{{name}}\"? L’operazione non può essere annullata.",
+    "newSnapshotTitle": "Nuova istantanea",
+    "newSnapshotPlaceholder": "Etichetta (facoltativa), per esempio prima-di-aggiornare-macOS",
+    "newSnapshotHint": "Salva le formule, i cask e i tap installati in un Brewfile con data e ora, che potrai ripristinare in seguito.",
+    "commandPreview": "Comando da eseguire",
+    "copyCommand": "Copia comando",
+    "commandCopied": "Comando copiato negli appunti!",
+    "trustFailed": "Impossibile considerare attendibile \"{{name}}\": {{error}}",
+    "updateLogs": "Registro aggiornamento di {{name}}",
+    "updateAllLogs": "Registri aggiornamento di tutti i pacchetti",
+    "installLogs": "Registro installazione di {{name}}",
+    "uninstallLogs": "Registro disinstallazione di {{name}}",
+    "untapLogs": "Registro rimozione del tap {{name}}",
+    "untapping": "Rimozione del tap \"{{name}}\" in corso…\nAttendi…",
+    "tapLogs": "Registro aggiunta del tap {{name}}",
+    "tapping": "Aggiunta del tap \"{{name}}\" in corso…\nAttendi…",
+    "tapInputTitle": "Repository tap",
+    "tapInputPlaceholder": "utente/repo (per esempio homebrew/cask)",
+    "tapInputHint": "Inserisci il nome del repository nel formato utente/repo",
+    "tapInputEmpty": "Inserisci il nome di un repository",
+    "tapInputInvalid": "Formato non valido. Il nome del repository deve essere nel formato utente/repo",
+    "tapInputUrlPlaceholder": "https://github.com/utente/repo (facoltativo)",
+    "tapInputUrlHint": "Facoltativo. Necessario se la sorgente del tap non si trova nella posizione predefinita homebrew-* su GitHub.",
+    "tapInputUrlInvalid": "Formato URL non valido. Usa https://, git@, ssh:// o simili.",
+    "repositoryInfo": "Informazioni su {{name}}",
+    "serviceActionLogs": "Servizio: {{name}}",
+    "serviceInfo": "Informazioni sul servizio {{name}}",
+    "packageInfo": "Informazioni su {{name}}",
+    "sessionLogs": "Registro sessione",
+    "updating": "Aggiornamento di \"{{name}}\" in corso…\nAttendi…",
+    "installing": "Installazione di \"{{name}}\" in corso…\nAttendi…",
+    "uninstalling": "Disinstallazione di \"{{name}}\" in corso…\nAttendi…",
+    "updatingAll": "Aggiornamento di tutti i pacchetti obsoleti in corso…\nAttendi…",
+    "updatingSelected": "Aggiornamento dei {{count}} pacchetti selezionati in corso…\nAttendi…",
+    "autoCleanupRunning": "🧹 Pulizia in corso…",
+    "autoCleanupFailed": "Pulizia non riuscita",
+    "gettingInfo": "Recupero delle informazioni su \"{{name}}\" in corso…\nAttendi…",
+    "runningHomebrewUpdate": "Aggiornamento di Homebrew in corso…\nAttendi…",
+    "homebrewUpdateLogs": "Registro aggiornamento Homebrew",
+    "runningDoctor": "Esecuzione di brew doctor in corso…\nAttendi…",
+    "doctorAfterCommand": "Risultato di brew doctor dopo aver eseguito il comando:",
+    "doctorCommandFailed": "Il comando brew non è riuscito: {{error}}",
+    "runningCleanup": "Esecuzione di brew cleanup in corso…\nAttendi…",
+    "runningDryRun": "Esecuzione di brew cleanup --dry-run in corso…\nAttendi…",
+    "noHomebrewOutput": "Ancora nessun risultato. Fai clic su \"Aggiorna Homebrew\".",
+    "noDoctorOutput": "Ancora nessun risultato. Fai clic su \"Esegui diagnostica\".",
+    "noCleanupOutput": "Ancora nessun risultato. Fai clic su \"Esegui pulizia\"."
+  },
+  "errors": {
+    "loadingFormulas": "❌ Errore durante il caricamento delle formule!",
+    "failedInstalledPackages": "Impossibile recuperare i pacchetti installati",
+    "failedInstalledCasks": "Impossibile recuperare i cask installati",
+    "failedUpdatablePackages": "Impossibile recuperare i pacchetti aggiornabili",
+    "failedAllPackages": "Impossibile recuperare tutti i pacchetti",
+    "failedAllCasks": "Impossibile recuperare tutti i cask",
+    "failedLeaves": "Impossibile recuperare i pacchetti indipendenti",
+    "failedRepositories": "Impossibile recuperare i repository"
+  },
+  "about": {
+    "title": "Informazioni su",
+    "appName": "WailBrew",
+    "subtitle": "WailBrew – Interfaccia grafica essenziale per Homebrew su macOS",
+    "createdBy": "Creato da Nico Wickersheim",
+    "description": "WailBrew è un’interfaccia grafica moderna per Homebrew che semplifica la gestione, l’installazione e l’aggiornamento dei pacchetti.",
+    "links": "Collegamenti:",
+    "wailbrewWebsite": "Sito web di WailBrew",
+    "githubRepo": "Repository GitHub",
+    "homebrewWebsite": "Sito web di Homebrew",
+    "acknowledgments": "Ringraziamenti:",
+    "translationTitle": "Traduzioni:",
+    "translationThanks": "Un enorme grazie a tutte le persone che hanno contribuito alle traduzioni!",
+    "improveTranslations": "→ Aiuta a migliorare le traduzioni",
+    "copyright": "Copyright © {{year}} Nico Wickersheim. Tutti i diritti riservati."
+  },
+  "language": {
+    "switchLanguage": "Cambia lingua",
+    "english": "Inglese",
+    "german": "Tedesco",
+    "french": "Francese",
+    "turkish": "Turco",
+    "simplified_chinese": "Cinese semplificato",
+    "traditional_chinese": "Cinese tradizionale",
+    "brazilian_portuguese": "Portoghese brasiliano",
+    "russian": "Russo",
+    "korean": "Coreano",
+    "hebrew": "Ebraico",
+    "spanish": "Spagnolo",
+    "italian": "Italiano"
+  },
+  "menu": {
+    "app": {
+      "about": "Informazioni su WailBrew",
+      "checkUpdates": "Controlla aggiornamenti…",
+      "visitWebsite": "Visita il sito web",
+      "visitGitHub": "Visita il repository GitHub",
+      "reportBug": "Segnala un bug",
+      "visitSubreddit": "Visita il subreddit",
+      "sponsorProject": "Sostieni il progetto",
+      "quit": "Esci"
+    },
+    "view": {
+      "title": "Vista",
+      "installed": "Formule installate",
+      "casks": "Cask",
+      "outdated": "Formule obsolete",
+      "all": "Tutte le formule",
+      "allFormulae": "Tutte le formule",
+      "allCasks": "Tutti i cask",
+      "leaves": "Pacchetti indipendenti",
+      "repositories": "Repository",
+      "services": "Servizi",
+      "homebrew": "Homebrew",
+      "doctor": "Diagnostica",
+      "cleanup": "Pulizia",
+      "snapshots": "Istantanee",
+      "settings": "Impostazioni",
+      "shortcuts": "Scorciatoie da tastiera…"
+    },
+    "tools": {
+      "title": "Strumenti",
+      "refreshPackages": "Aggiorna pacchetti",
+      "exportBrewfile": "Esporta Brewfile…",
+      "exportSuccess": "Esportazione completata",
+      "exportFailed": "Esportazione non riuscita",
+      "exportMessage": "Brewfile esportato correttamente in:\n%s",
+      "importBrewfile": "Importa Brewfile…",
+      "importCleanupConfirmTitle": "Rimuovere i pacchetti non presenti nel Brewfile?",
+      "importCleanupConfirmMessage": "Vuoi anche disinstallare le formule, i cask o i tap installati che non sono elencati in questo Brewfile? L’operazione non può essere annullata.",
+      "importCleanupYes": "Rimuovi pacchetti aggiuntivi",
+      "importKeepExtra": "Mantieni pacchetti aggiuntivi",
+      "importSuccess": "Importazione completata",
+      "importFailed": "Importazione non riuscita",
+      "importMessage": "Brewfile importato correttamente da:\n%s",
+      "openConfigFile": "Apri file di configurazione",
+      "openConfigFailed": "Impossibile aprire la configurazione",
+      "clearConfigFile": "Cancella file di configurazione",
+      "clearConfigConfirmTitle": "Cancellare il file di configurazione?",
+      "clearConfigConfirmMessage": "Le impostazioni salvate verranno eliminate definitivamente, compresi il percorso di brew, il proxy e la posizione della finestra. WailBrew ripristinerà i valori predefiniti. L’operazione non può essere annullata.",
+      "clearConfigFailed": "Impossibile cancellare la configurazione",
+      "clearConfigSuccess": "Configurazione cancellata",
+      "clearConfigSuccessMessage": "Il file di configurazione è stato rimosso. Da ora verranno usate le impostazioni predefinite.",
+      "viewSessionLogs": "Visualizza registri sessione…"
+    },
+    "help": {
+      "title": "Aiuto",
+      "wailbrewHelp": "Aiuto di WailBrew",
+      "helpTitle": "Aiuto",
+      "helpMessage": "Al momento non è disponibile una pagina di aiuto."
+    }
+  },
+  "table": {
+    "loadingFormulas": "Caricamento formule…",
+    "loadingRepositories": "Caricamento repository…",
+    "loadingServices": "Caricamento servizi…",
+    "loadingSnapshots": "Caricamento istantanee…",
+    "noResults": "Nessun risultato corrispondente.",
+    "noServices": "Non è stato trovato alcun servizio Homebrew.",
+    "noSnapshots": "Non ci sono ancora istantanee. Creane una per salvare le formule, i cask e i tap installati.",
+    "allUpToDate": "È tutto aggiornato!",
+    "installedStatus": "Installati",
+    "notInstalledStatus": "Non installato",
+    "package": "pacchetto",
+    "packages": "pacchetti",
+    "repository": "repository",
+    "repositories": "repository",
+    "service": "servizio",
+    "services": "servizi"
+  },
+  "repository": {
+    "noSelection": "Nessun repository selezionato",
+    "status": "Stato",
+    "description": "Descrizione",
+    "trusted": "Attendibile",
+    "untrusted": "Non attendibile",
+    "trustedYes": "Sì",
+    "trustedNo": "No",
+    "trustedUnknown": "Sconosciuto",
+    "defaultDescription": "Repository tap di Homebrew",
+    "active": "Attivo"
+  },
+  "services": {
+    "noSelection": "Nessun servizio selezionato",
+    "statusLabel": "Stato",
+    "user": "Utente",
+    "pid": "PID",
+    "copyPid": "Copia PID",
+    "pidCopied": "PID copiato",
+    "status": {
+      "started": "In esecuzione",
+      "stopped": "Arrestato",
+      "error": "Errore",
+      "scheduled": "Pianificato",
+      "none": "Non in esecuzione",
+      "other": "Altro",
+      "unknown": "Sconosciuto"
+    },
+    "buttons": {
+      "start": "Avvia \"{{name}}\"",
+      "stop": "Arresta \"{{name}}\"",
+      "restart": "Riavvia \"{{name}}\"",
+      "run": "Esegui \"{{name}}\" (in primo piano)",
+      "info": "Mostra informazioni su \"{{name}}\""
+    },
+    "hints": {
+      "bootstrapFailed": "💡 launchd non è riuscito ad avviare il servizio. Potrebbe essere già caricato oppure potrebbe richiedere i privilegi di root per usare porte riservate (per esempio 80/443). Prova ad arrestarlo e riavviarlo oppure eseguilo come servizio root nel Terminale: sudo brew services start {{name}}"
+    }
+  },
+  "snapshots": {
+    "label": "Etichetta",
+    "created": "Creato",
+    "size": "Dimensione",
+    "untitled": "Senza titolo",
+    "snapshot": "istantanea",
+    "snapshots": "istantanee",
+    "creating": "Creazione…",
+    "removeExtra": "Rimuovi anche i pacchetti non inclusi in questa istantanea",
+    "removeExtraHint": "Disinstalla tutte le formule, i cask e i tap installati che non sono elencati nell’istantanea, così il Mac corrisponderà esattamente a essa. Lascia l’opzione deselezionata per installare solo gli elementi mancanti.",
+    "loadFailed": "Impossibile caricare le istantanee: {{error}}",
+    "createSuccess": "Istantanea creata",
+    "createFailed": "Impossibile creare l’istantanea: {{error}}",
+    "restoreSuccess": "Istantanea \"{{name}}\" ripristinata",
+    "restoreFailed": "Impossibile ripristinare l’istantanea: {{error}}",
+    "deleteSuccess": "Istantanea \"{{name}}\" eliminata",
+    "deleteFailed": "Impossibile eliminare l’istantanea: {{error}}",
+    "revealFailed": "Impossibile mostrare l’istantanea nel Finder: {{error}}",
+    "buttons": {
+      "restore": "Ripristina \"{{name}}\"",
+      "delete": "Elimina \"{{name}}\"",
+      "reveal": "Mostra \"{{name}}\" nel Finder",
+      "restoreConfirm": "Sì, ripristina",
+      "deleteConfirm": "Sì, elimina"
+    }
+  },
+  "common": {
+    "notAvailable": "--",
+    "loading": "Caricamento…"
+  },
+  "updateDialog": {
+    "title": "Controlla aggiornamenti",
+    "checking": "Ricerca di aggiornamenti tramite Homebrew…",
+    "error": "Errore durante la ricerca degli aggiornamenti",
+    "available": "Aggiornamento disponibile tramite Homebrew!",
+    "currentVersion": "Versione attuale",
+    "newVersion": "Nuova versione",
+    "changes": "Modifiche",
+    "availableViaHomebrew": "È disponibile una nuova versione tramite Homebrew Cask",
+    "manualUpdate": "Aggiornamento manuale",
+    "instruction": "Per aggiornare WailBrew, esegui i seguenti comandi nel Terminale:",
+    "copyCommand": "Copia comando negli appunti",
+    "copied": "Comando copiato negli appunti!",
+    "upToDate": "È tutto aggiornato!",
+    "currentVersionIs": "La versione {{version}} è quella attualmente disponibile tramite Homebrew.",
+    "tryAgain": "Riprova",
+    "gotIt": "Ho capito"
+  },
+  "restartDialog": {
+    "title": "Riavvio richiesto",
+    "message": "WailBrew è stato aggiornato!",
+    "description": "WailBrew è stato aggiornato correttamente. Riavvia l’applicazione per usare la nuova versione.",
+    "restartNow": "Riavvia ora",
+    "later": "Più tardi"
+  },
+  "toast": {
+    "updateAvailable": "Aggiornamento disponibile!",
+    "versionReady": "La versione v{{version}} è pronta",
+    "upToDate": "Stai usando la versione più recente!",
+    "newOutdatedPackages_one": "È stato trovato {{count}} nuovo pacchetto da aggiornare",
+    "newOutdatedPackages_other": "Sono stati trovati {{count}} nuovi pacchetti da aggiornare",
+    "viewOutdated": "Visualizza pacchetti da aggiornare",
+    "newPackagesDiscovered": "🎉 Nuovi pacchetti trovati! {{message}}",
+    "viewAllPackages": "Visualizza tutti i pacchetti",
+    "newFormulaeLabel": "Nuove formule:",
+    "newCasksLabel": "Nuovi cask:",
+    "andMore": "+ altri {{count}}",
+    "newFormula_one": "nuova formula",
+    "newFormula_other": "nuove formule",
+    "newCask_one": "nuovo cask",
+    "newCask_other": "nuovi cask",
+    "and": " e ",
+    "newFormula": "nuova/e formula/e",
+    "newCask": "nuovo/i cask",
+    "sessionLogError": "È stato registrato un nuovo errore",
+    "viewSessionLogs": "Visualizza registri"
+  },
+  "backgroundCheck": {
+    "checkingNow": "Controllo degli aggiornamenti in corso…",
+    "nextCheckIn": "Prossimo controllo tra {{minutes}} min {{seconds}} s",
+    "nextCheckInSeconds": "Prossimo controllo tra {{seconds}} s"
+  },
+  "settings": {
+    "configDirectory": {
+      "title": "Cartella di configurazione",
+      "description": "Scegli una cartella vuota per le impostazioni e le istantanee Brewfile. Sposta trasferisce i file nella cartella selezionata e la usa da subito e ai successivi avvii. Gli altri file restano nella cartella precedente.",
+      "folder": "Cartella selezionata",
+      "choose": "Scegli cartella…",
+      "move": "Sposta",
+      "moving": "Attendi…",
+      "moved": "Cartella di configurazione aggiornata",
+      "overridden": "La posizione di configurazione è definita da WAILBREW_CONFIG_FILE. Rimuovi questa variabile d’ambiente e riavvia WailBrew per cambiare qui la cartella."
+    },
+    "title": "Impostazioni",
+    "subtitle": "Configura Homebrew secondo le tue preferenze",
+    "loading": "Caricamento impostazioni…",
+    "footer": "Configura le impostazioni di WailBrew per personalizzare Homebrew.",
+    "landingTab": {
+      "title": "Scheda iniziale",
+      "description": "Scegli quale scheda mostrare all’avvio di WailBrew.",
+      "label": "Apri su"
+    },
+    "noQuarantine": {
+      "title": "Rimuovi l’attributo di quarantena dai cask",
+      "description": "Dopo l’installazione o l’aggiornamento di un cask, rimuove automaticamente l’attributo di quarantena di macOS tramite xattr. Evita l’avviso di Gatekeeper o \"l’app è danneggiata\" al primo avvio. Non usa l’opzione Homebrew obsoleta --no-quarantine."
+    },
+    "autoRelaunch": {
+      "title": "Riavvia automaticamente dopo l’aggiornamento",
+      "description": "Se un’app installata tramite cask è in esecuzione all’inizio dell’aggiornamento, la chiude e la riavvia automaticamente dopo la rimozione della quarantena. Richiede l’opzione \"Rimuovi l’attributo di quarantena\"."
+    },
+    "autoCleanupAfterUpgrade": {
+      "title": "Pulisci automaticamente dopo l’aggiornamento",
+      "description": "Esegue automaticamente `brew cleanup` dopo l’aggiornamento dei pacchetti per rimuovere le vecchie versioni e liberare spazio su disco."
+    },
+    "uninstallCaskWithZap": {
+      "title": "Rimuovi i dati dei cask alla disinstallazione",
+      "description": "Seleziona in automatico l’opzione --zap quando disinstalli un cask, per rimuovere anche preferenze, cache e file di supporto residui."
+    },
+    "sortFavoritesToTop": {
+      "title": "Mostra prima i preferiti",
+      "description": "Fissa in cima alle tabelle i pacchetti che hai aggiunto ai preferiti, prima dell’ordinamento normale."
+    },
+    "brewPath": {
+      "title": "Configurazione del percorso di Homebrew",
+      "description": "Specifica il percorso dell’installazione di Homebrew. WailBrew lo userà per eseguire tutti i comandi Homebrew.",
+      "currentPath": "Percorso di Homebrew",
+      "placeholder": "/opt/homebrew/bin/brew",
+      "autoDetect": "Rileva automaticamente il percorso di brew",
+      "note": "Nota: cambiando il percorso di brew verranno aggiornati i dati dei pacchetti per riflettere la nuova installazione di Homebrew."
+    },
+    "buttons": {
+      "save": "Salva modifiche",
+      "saving": "Salvataggio…",
+      "reset": "Ripristina"
+    },
+    "messages": {
+      "pathUpdated": "Percorso di brew aggiornato!",
+      "pathReset": "Percorso ripristinato al valore attuale.",
+      "noChanges": "Non ci sono modifiche da salvare.",
+      "pathDetected": "Percorso di brew rilevato automaticamente: {{path}}",
+      "mirrorSourceUpdated": "Sorgente mirror aggiornata!",
+      "mirrorSourceReset": "Sorgente mirror ripristinata al valore attuale.",
+      "outdatedFlagUpdated": "Opzione per rilevare gli aggiornamenti obsoleti aggiornata!",
+      "outdatedFlagReset": "Opzione per rilevare gli aggiornamenti obsoleti ripristinata al valore attuale.",
+      "caskAppDirUpdated": "Cartella delle applicazioni cask aggiornata!",
+      "customCaskOptsUpdated": "Opzioni cask personalizzate aggiornate!",
+      "customOutdatedArgsUpdated": "Argomenti personalizzati per i pacchetti obsoleti aggiornati!",
+      "adminUsernameUpdated": "Nome utente amministratore aggiornato!",
+      "proxyUpdated": "Impostazioni proxy aggiornate!",
+      "proxyTestSuccess": "Test della connessione proxy riuscito!",
+      "landingTabUpdated": "Scheda iniziale aggiornata!",
+      "landingTabReset": "Scheda iniziale ripristinata al valore attuale."
+    },
+    "errors": {
+      "failedToGetPath": "Impossibile recuperare il percorso attuale di brew.",
+      "emptyPath": "Inserisci un percorso brew valido.",
+      "invalidPath": "Percorso brew non valido. Verifica che il percorso esista e punti a un eseguibile brew valido.",
+      "autoDetectionFailed": "Impossibile rilevare automaticamente il percorso di brew. Inseriscilo manualmente.",
+      "failedToSetMirrorSource": "Impossibile impostare la sorgente mirror. Controlla la configurazione.",
+      "failedToSetOutdatedFlag": "Impossibile impostare l’opzione di rilevamento degli aggiornamenti obsoleti. Controlla la configurazione.",
+      "failedToSetCaskAppDir": "Impossibile impostare la cartella delle applicazioni cask. Controlla la configurazione.",
+      "failedToSelectDirectory": "Impossibile selezionare la cartella.",
+      "failedToSetCustomCaskOpts": "Impossibile impostare le opzioni cask personalizzate. Controlla i dati inseriti.",
+      "failedToSetCustomOutdatedArgs": "Impossibile impostare gli argomenti personalizzati per i pacchetti obsoleti. Controlla i dati inseriti.",
+      "failedToSetAdminUsername": "Impossibile aggiornare il nome utente amministratore",
+      "failedToSetProxy": "Impossibile impostare la connessione proxy. Controlla i dati inseriti.",
+      "emptyTestUrl": "Inserisci un URL di test.",
+      "emptyProxyForTest": "Inserisci l’URL del proxy da testare.",
+      "proxyTestFailed": "Test della connessione proxy non riuscito.",
+      "failedToSetLandingTab": "Impossibile impostare la scheda iniziale. Controlla la configurazione."
+    },
+    "mirrorSource": {
+      "title": "Sorgente mirror di Homebrew",
+      "description": "Cambia la sorgente mirror di Homebrew per migliorare la velocità di download nelle aree con problemi di rete. Questa opzione configura le variabili d’ambiente HOMEBREW_GIT_REMOTE e HOMEBREW_BOTTLE_DOMAIN.",
+      "selectMirror": "Seleziona la sorgente mirror",
+      "custom": "Personalizzata",
+      "customGitRemote": "URL Git remote personalizzato",
+      "customBottleDomain": "URL del dominio bottle personalizzato",
+      "note": "Nota: cambiare la sorgente mirror influirà su tutte le operazioni Homebrew. Dopo la modifica, riavvia l’app o aggiorna i pacchetti.",
+      "mirrors": {
+        "official": "Ufficiale (predefinita)",
+        "tsinghua": "Università Tsinghua (Cina)",
+        "aliyun": "Alibaba Cloud (Cina)",
+        "ustc": "USTC (Cina)",
+        "tencent": "Tencent Cloud (Cina)"
+      }
+    },
+    "outdatedFlag": {
+      "title": "Rilevamento dei pacchetti obsoleti",
+      "description": "Configura come WailBrew rileva i pacchetti obsoleti. Questa impostazione determina le opzioni usate con il comando 'brew outdated'.",
+      "selectFlag": "Modalità di rilevamento dei pacchetti obsoleti",
+      "note": "Nota: modificando questa impostazione, l’elenco dei pacchetti obsoleti verrà aggiornato in base alla nuova modalità.",
+      "options": {
+        "none": "Standard (nessuna opzione)",
+        "greedy": "Completa",
+        "greedyAutoUpdates": "Completa (aggiornamenti automatici)"
+      },
+      "descriptions": {
+        "none": "Mostra solo i pacchetti per cui è disponibile una versione più recente. È il comportamento predefinito di Homebrew.",
+        "greedy": "Include anche i cask con una versione disponibile contrassegnati per l’aggiornamento automatico. Utile per vedere tutti gli aggiornamenti disponibili.",
+        "greedyAutoUpdates": "Include i cask ad aggiornamento automatico che possono essere effettivamente aggiornati. È la modalità di rilevamento più completa."
+      }
+    },
+    "caskAppDir": {
+      "title": "Cartella delle applicazioni cask",
+      "description": "Configura la cartella in cui vengono installate le applicazioni Homebrew Cask. Imposta l’opzione --appdir nella variabile d’ambiente HOMEBREW_CASK_OPTS.",
+      "currentDir": "Cartella applicazioni",
+      "default": "Predefinita (/Applications)",
+      "selectDirectory": "Seleziona cartella",
+      "newDirectory": "Nuova cartella",
+      "note": "Nota: modificare questa impostazione cambia la destinazione delle nuove installazioni e degli aggiornamenti cask. Le applicazioni già installate non vengono spostate automaticamente."
+    },
+    "adminUsername": {
+      "title": "Nome utente amministratore",
+      "description": "Specifica un altro account amministratore per le operazioni che richiedono privilegi elevati",
+      "label": "Nome utente amministratore",
+      "placeholder": "Inserisci il nome utente amministratore",
+      "currentUser": "Utente attuale",
+      "info": "Questo nome utente verrà usato quando le operazioni Homebrew richiedono privilegi di amministratore. Lascia il campo vuoto per usare l’account attuale."
+    },
+    "proxy": {
+      "title": "Impostazioni proxy",
+      "none": "Nessuno",
+      "description": "Configura un proxy HTTP per Homebrew. Sono supportati nome utente e password (per esempio http://utente:password@127.0.0.1:7890).",
+      "currentProxy": "Proxy attuale",
+      "placeholder": "http://127.0.0.1:7890",
+      "note": "Potrebbe essere necessario riavviare l’app perché alcune modifiche abbiano pieno effetto; la maggior parte dei comandi brew le applica subito.",
+      "testConnection": "Verifica connessione",
+      "testUrlPlaceholder": "https://google.com o https://brew.sh",
+      "testButton": "Verifica",
+      "testing": "Verifica in corso…"
+    },
+    "advancedOptions": {
+      "title": "Opzioni avanzate",
+      "subtitle": "Per utenti esperti",
+      "description": "Configura direttamente altre opzioni dei comandi Homebrew. Queste impostazioni permettono di passare argomenti e opzioni personalizzati ai comandi Homebrew.",
+      "warning": "⚠️ Solo per utenti esperti: opzioni errate possono impedire l’esecuzione dei comandi Homebrew. Consulta la documentazione di Homebrew per le opzioni valide.",
+      "none": "(nessuna)",
+      "customCaskOpts": {
+        "label": "Opzioni cask personalizzate",
+        "placeholder": "--fontdir=/Library/Fonts --qlplugindir=~/Library/QuickLook",
+        "hint": "Opzioni aggiuntive per HOMEBREW_CASK_OPTS. Esempi: --fontdir, --qlplugindir, --prefpanedir. Verranno combinate con l’opzione --appdir configurata sopra nell’interfaccia.",
+        "preview": "Nuove opzioni"
+      },
+      "customOutdatedArgs": {
+        "label": "Argomenti personalizzati per i pacchetti obsoleti",
+        "placeholder": "--verbose --formula",
+        "hint": "Argomenti aggiuntivi per il comando 'brew outdated'. Esempi: --verbose, --formula, --cask. Verranno aggiunti all’opzione di rilevamento configurata sopra nell’interfaccia.",
+        "preview": "Nuovi argomenti"
+      }
+    }
+  },
+  "backend": {
+    "update": {
+      "start": "🔄 Avvio dell’aggiornamento di '{{name}}'…",
+      "success": "✅ Aggiornamento di '{{name}}' completato!",
+      "failed": "❌ Aggiornamento di '{{name}}' non riuscito: {{error}}",
+      "retryingWithForce": "🔄 Nuovo tentativo di aggiornamento di '{{name}}' con --force (l’app potrebbe essere in uso)…",
+      "retryingFailedCasks": "🔄 Nuovo tentativo per {{count}} cask non riusciti con --force…"
+    },
+    "updateAll": {
+      "start": "🔄 Avvio dell’aggiornamento di tutti i pacchetti…",
+      "success": "✅ Aggiornamento di tutti i pacchetti completato!",
+      "failed": "❌ Aggiornamento di tutti i pacchetti non riuscito: {{error}}"
+    },
+    "homebrewUpdate": {
+      "start": "🔄 Avvio dell’aggiornamento di Homebrew…",
+      "success": "✅ Aggiornamento di Homebrew completato!",
+      "failed": "❌ Aggiornamento di Homebrew non riuscito: {{error}}",
+      "output": "📦 {{line}}",
+      "warning": "⚠️ {{line}}"
+    },
+    "install": {
+      "start": "🔄 Avvio dell’installazione di '{{name}}'…",
+      "success": "✅ Installazione di '{{name}}' completata!",
+      "failed": "❌ Installazione di '{{name}}' non riuscita: {{error}}"
+    },
+    "uninstall": {
+      "start": "🔄 Avvio della disinstallazione di '{{name}}'…",
+      "success": "✅ Disinstallazione di '{{name}}' completata!",
+      "failed": "❌ Disinstallazione di '{{name}}' non riuscita: {{error}}"
+    },
+    "pin": {
+      "success": "📌 '{{name}}' è stato bloccato e non verrà aggiornato.",
+      "failed": "❌ Impossibile bloccare '{{name}}': {{error}}"
+    },
+    "unpin": {
+      "success": "✅ '{{name}}' è stato sbloccato e può essere aggiornato di nuovo.",
+      "failed": "❌ Impossibile sbloccare '{{name}}': {{error}}"
+    },
+    "tap": {
+      "start": "🔄 Aggiunta del tap '{{name}}' in corso…",
+      "success": "✅ Tap '{{name}}' aggiunto!",
+      "failed": "❌ Impossibile aggiungere il tap '{{name}}': {{error}}"
+    },
+    "trust": {
+      "start": "🔄 Impostazione del tap '{{name}}' come attendibile…",
+      "success": "✅ Il tap '{{name}}' è ora attendibile!",
+      "failed": "❌ Impossibile considerare attendibile il tap '{{name}}': {{error}}"
+    },
+    "service": {
+      "start": "🔄 Esecuzione di 'brew services {{action}} {{name}}'…",
+      "success": "✅ 'brew services {{action}} {{name}}' completato!",
+      "failed": "❌ Esecuzione di 'brew services {{action}} {{name}}' non riuscita: {{error}}"
+    },
+    "untap": {
+      "start": "🔄 Rimozione del tap '{{name}}' in corso…",
+      "success": "✅ Tap '{{name}}' rimosso!",
+      "failed": "❌ Impossibile rimuovere il tap '{{name}}': {{error}}"
+    },
+    "errors": {
+      "creatingPipe": "❌ Errore durante la creazione del flusso di output: {{error}}",
+      "creatingErrorPipe": "❌ Errore durante la creazione del flusso degli errori: {{error}}",
+      "startingUpdate": "❌ Errore durante l’avvio dell’aggiornamento: {{error}}",
+      "startingUpdateAll": "❌ Errore durante l’avvio dell’aggiornamento completo: {{error}}",
+      "startingInstall": "❌ Errore durante l’avvio dell’installazione: {{error}}",
+      "startingUninstall": "❌ Errore durante l’avvio della disinstallazione: {{error}}",
+      "startingTap": "❌ Errore durante l’avvio dell’aggiunta del tap: {{error}}",
+      "startingUntap": "❌ Errore durante l’avvio della rimozione del tap: {{error}}",
+      "startingTrust": "❌ Errore durante l’impostazione dell’attendibilità: {{error}}",
+      "startingService": "❌ Errore durante l’avvio dell’azione sul servizio: {{error}}",
+      "startingHomebrewUpdate": "❌ Errore durante l’avvio dell’aggiornamento di Homebrew: {{error}}"
+    },
+    "outdated": {
+      "autoUpdateCask": "Questa app ad aggiornamento automatico potrebbe essere già aggiornata. La versione installata registrata da Homebrew potrebbe non essere allineata con quella effettiva dell’app."
+    },
+    "quarantine": {
+      "removing": "🔒 Rimozione dell’attributo di quarantena da {{path}}…",
+      "removed": "🔒 Attributo di quarantena rimosso da {{path}}",
+      "removeFailed": "⚠️ Impossibile rimuovere la quarantena da {{path}}: {{error}}",
+      "skippedPkg": "ℹ️ Rimozione della quarantena ignorata: {{name}} viene installato tramite .pkg (non come semplice bundle .app)",
+      "resolveFailed": "⚠️ Impossibile determinare il percorso dell’app installata {{name}}: {{error}}",
+      "quitting": "⏹ Chiusura di {{name}} prima dell’aggiornamento…",
+      "quitFailed": "⚠️ Impossibile chiudere {{name}}: {{error}}",
+      "relaunching": "🚀 Nuovo avvio di {{name}}…",
+      "relaunchFailed": "⚠️ Impossibile riavviare {{name}}: {{error}}"
+    }
+  },
+  "view": {
+    "settings": "Impostazioni"
+  }
+}
