@@ -71,6 +71,7 @@ import {
 import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
+import { installedCaskEntries, packageDetails, packageTarget, updatablePackageEntries } from "./utils/packages";
 import "./App.css";
 import "./style.css";
 
@@ -100,7 +101,7 @@ import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import XcodeLicenseBanner from "./components/XcodeLicenseBanner";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
-import type { PackageEntry, RepositoryEntry, SnapshotEntry, View } from "./types";
+import type { PackageDetails, PackageEntry, RepositoryEntry, SnapshotEntry, View } from "./types";
 import { isXcodeLicenseError } from "./utils/xcodeLicense";
 
 const WAILBREW_UPGRADE_COMMAND = "brew update\nbrew upgrade --cask wailbrew";
@@ -213,7 +214,7 @@ const WailBrewApp = () => {
     const [selectedPackage, setSelectedPackage] = useState<PackageEntry | null>(null);
     const [selectedRepository, setSelectedRepository] = useState<RepositoryEntry | null>(null);
     const [loadingDetailsFor, setLoadingDetailsFor] = useState<string | null>(null);
-    const [packageCache, setPackageCache] = useState<Map<string, PackageEntry>>(new Map());
+    const [packageCache, setPackageCache] = useState<Map<string, PackageDetails>>(new Map());
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const [uninstallDependents, setUninstallDependents] = useState<string[]>([]);
@@ -387,7 +388,9 @@ const WailBrewApp = () => {
             // Pin/Unpin return a result message rather than throwing, matching the
             // other brew-action bindings (Install/Update/Remove), so failures must
             // be detected from the message text instead of a rejected promise.
-            const message = nextPinned ? await PinBrewPackage(pkg.name) : await UnpinBrewPackage(pkg.name);
+            const message = nextPinned
+                ? await PinBrewPackage(packageTarget(pkg))
+                : await UnpinBrewPackage(packageTarget(pkg));
             if (message.includes("❌")) {
                 toast.error(message);
                 return;
@@ -495,25 +498,8 @@ const WailBrewApp = () => {
                         isPinned: pinned === "true",
                     }),
                 );
-                const casksFormatted = safeInstalledCasks.map(([name, installedVersion, size, pinned]) => ({
-                    name,
-                    installedVersion,
-                    size,
-                    isInstalled: true,
-                    isCask: true,
-                    isPinned: pinned === "true",
-                }));
-                const updatableFormatted = updatableErrorMessage
-                    ? []
-                    : safeUpdatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
-                          name,
-                          installedVersion,
-                          latestVersion,
-                          size,
-                          isInstalled: true,
-                          warning: warning || undefined,
-                          isCask: type === "cask",
-                      }));
+                const casksFormatted = installedCaskEntries(safeInstalledCasks);
+                const updatableFormatted = updatableErrorMessage ? [] : updatablePackageEntries(safeUpdatable);
                 // Format leaves packages with their versions and sizes from installed packages
                 const installedMap = new Map(
                     installedFormatted.map((pkg) => [
@@ -788,15 +774,7 @@ const WailBrewApp = () => {
             const countChanged = currentCount !== previousCount;
 
             if (countChanged) {
-                const formatted = updatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
-                    name,
-                    installedVersion,
-                    latestVersion,
-                    size,
-                    isInstalled: true,
-                    warning: warning || undefined,
-                    isCask: type === "cask",
-                }));
+                const formatted = updatablePackageEntries(updatable);
                 setUpdatablePackages(formatted);
                 setUpdatableError("");
             }
@@ -1311,17 +1289,7 @@ const WailBrewApp = () => {
                 setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${rows[0][1]}`);
                 return;
             }
-            setUpdatablePackages(
-                rows.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
-                    name,
-                    installedVersion,
-                    latestVersion,
-                    size,
-                    isInstalled: true,
-                    warning: warning || undefined,
-                    isCask: type === "cask",
-                })),
-            );
+            setUpdatablePackages(updatablePackageEntries(rows));
         } catch (error) {
             setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${String(error)}`);
         } finally {
@@ -1444,6 +1412,11 @@ const WailBrewApp = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [installedFilteredPackages, debouncedSearchQuery, favorites, showFavoritesOnly, showPinnedOnly]);
 
+    const selectedTargets = useMemo(
+        () => updatablePackages.filter((pkg) => selectedPackages.has(pkg.name)).map(packageTarget),
+        [selectedPackages, updatablePackages],
+    );
+
     const filteredRepositories = activeRepositories.filter((repo) =>
         repo.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
@@ -1457,24 +1430,19 @@ const WailBrewApp = () => {
         setSelectedPackage(pkg);
         setSelectedRepository(null);
 
-        if (packageCache.has(pkg.name)) {
-            setSelectedPackage(packageCache.get(pkg.name)!);
+        const target = packageTarget(pkg);
+        const cached = packageCache.get(target);
+        if (cached) {
+            setSelectedPackage({ ...pkg, ...cached });
             return;
         }
 
-        setLoadingDetailsFor(pkg.name);
-        const info = await GetBrewPackageInfoAsJson(pkg.name);
+        setLoadingDetailsFor(target);
+        const info = await GetBrewPackageInfoAsJson(target);
 
-        const enriched: PackageEntry = {
-            ...pkg,
-            desc: (info.desc as string) || t("common.notAvailable"),
-            homepage: (info.homepage as string) || t("common.notAvailable"),
-            dependencies: (info.dependencies as string[]) || [],
-            conflicts: (info.conflicts_with as string[]) || [],
-        };
-
-        setPackageCache((prev) => new Map(prev).set(pkg.name, enriched));
-        setSelectedPackage(enriched);
+        const details = packageDetails(info, t("common.notAvailable"));
+        setPackageCache((prev) => new Map(prev).set(target, details));
+        setSelectedPackage({ ...pkg, ...details });
         setLoadingDetailsFor(null);
     };
 
@@ -1486,11 +1454,6 @@ const WailBrewApp = () => {
     const handleSelectDeprecatedFormula = async (formula: string) => {
         if (selectedDeprecatedPackage?.name === formula) {
             setSelectedDeprecatedPackage(null);
-            return;
-        }
-
-        if (packageCache.has(formula)) {
-            setSelectedDeprecatedPackage(packageCache.get(formula)!);
             return;
         }
 
@@ -1507,26 +1470,20 @@ const WailBrewApp = () => {
             isCask: false,
         };
 
+        const cached = packageCache.get(formula);
+        if (cached) {
+            setSelectedDeprecatedPackage({ ...basePackage, ...cached, isCask: false });
+            return;
+        }
+
         setSelectedDeprecatedPackage(basePackage);
         setLoadingDetailsFor(formula);
 
         try {
             const info = await GetBrewPackageInfoAsJson(formula);
-            const enriched: PackageEntry = {
-                ...basePackage,
-                desc: (info.desc as string) || t("common.notAvailable"),
-                homepage: (info.homepage as string) || t("common.notAvailable"),
-                dependencies: (info.dependencies as string[]) || [],
-                conflicts: (info.conflicts_with as string[]) || [],
-                isCask: false,
-            };
-
-            setPackageCache((prev) => {
-                const next = new Map(prev);
-                next.set(formula, enriched);
-                return next;
-            });
-            setSelectedDeprecatedPackage(enriched);
+            const details = packageDetails(info, t("common.notAvailable"));
+            setPackageCache((prev) => new Map(prev).set(formula, details));
+            setSelectedDeprecatedPackage({ ...basePackage, ...details, isCask: false });
         } finally {
             setLoadingDetailsFor(null);
         }
@@ -1558,7 +1515,7 @@ const WailBrewApp = () => {
 
     const handleRemoveConfirmed = async () => {
         if (!selectedPackage) return;
-        const packageName = selectedPackage.name;
+        const packageName = packageTarget(selectedPackage);
         const zap = uninstallIsCask && zapUninstall;
         setShowConfirm(false);
         setUninstallLogs(t("dialogs.uninstalling", { name: packageName }));
@@ -1579,8 +1536,8 @@ const WailBrewApp = () => {
             await handleRefreshPackages();
 
             // Clear stale selection and cached details for the removed package
-            setSelectedPackage((prev) => (prev?.name === packageName ? null : prev));
-            setSelectedDeprecatedPackage((prev) => (prev?.name === packageName ? null : prev));
+            setSelectedPackage((prev) => (prev && packageTarget(prev) === packageName ? null : prev));
+            setSelectedDeprecatedPackage((prev) => (prev && packageTarget(prev) === packageName ? null : prev));
             setPackageCache((prev) => {
                 if (!prev.has(packageName)) return prev;
                 const next = new Map(prev);
@@ -1675,7 +1632,7 @@ const WailBrewApp = () => {
 
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
-        const packageName = selectedPackage.name;
+        const packageName = packageTarget(selectedPackage);
 
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
@@ -1700,28 +1657,11 @@ const WailBrewApp = () => {
             // Clear cache and update the package lists after successful update
             await ClearBrewCache();
             const [updated, installedCasks] = await Promise.all([GetBrewUpdatablePackages(), GetBrewCasks()]);
-            const formatted = updated.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
-                name,
-                installedVersion,
-                latestVersion,
-                size,
-                isInstalled: true,
-                warning: warning || undefined,
-                isCask: type === "cask",
-            }));
+            const formatted = updatablePackageEntries(updated);
             setUpdatablePackages(formatted);
 
             if (!(installedCasks.length === 1 && installedCasks[0][0] === "Error")) {
-                setCasks(
-                    installedCasks.map(([name, installedVersion, size, pinned]) => ({
-                        name,
-                        installedVersion,
-                        size,
-                        isInstalled: true,
-                        isCask: true,
-                        isPinned: pinned === "true",
-                    })),
-                );
+                setCasks(installedCaskEntries(installedCasks));
             }
 
             await runAutoCleanupIfEnabled();
@@ -1822,7 +1762,7 @@ const WailBrewApp = () => {
         setInfoLogs(t("dialogs.gettingInfo", { name: pkg.name }));
 
         try {
-            const info = await GetBrewPackageInfo(pkg.name);
+            const info = await GetBrewPackageInfo(packageTarget(pkg));
             // Only update if this request is still the current one (dialog wasn't closed)
             if (currentRequestId === infoRequestIdRef.current) {
                 setInfoLogs(info);
@@ -1868,7 +1808,7 @@ const WailBrewApp = () => {
         setShowUpdateSelectedConfirm(false);
         setIsUpdateAllOperation(true);
 
-        const packageNames = Array.from(selectedPackages);
+        const packageNames = selectedTargets;
         setUpdateLogs(t("dialogs.updatingSelected", { count: packageNames.length }));
         setIsUpdateRunning(true);
 
@@ -1953,7 +1893,7 @@ const WailBrewApp = () => {
     const handleUninstallPackage = async (pkg: PackageEntry) => {
         setSelectedPackage(pkg);
         try {
-            const dependents = await GetInstalledDependents(pkg.name);
+            const dependents = await GetInstalledDependents(packageTarget(pkg));
             setUninstallDependents(dependents ?? []);
         } catch {
             setUninstallDependents([]);
@@ -2611,7 +2551,7 @@ const WailBrewApp = () => {
                 setAllCasksLoaded(false);
             } else {
                 const installedNames = new Set(
-                    (installed || []).filter((pkg) => pkg.length > 0 && pkg[0] !== "Error").map((pkg) => pkg[0]),
+                    (installed || []).filter((pkg) => pkg.length > 0 && pkg[0] !== "Error").map((pkg) => pkg[4]),
                 );
                 const formatted = safeAll.map(([name, desc, size]) => ({
                     name,
@@ -2749,14 +2689,7 @@ const WailBrewApp = () => {
             if (safeInstalledCasks.length === 1 && safeInstalledCasks[0][0] === "Error") {
                 setCasks([]);
             } else {
-                casksFormatted = safeInstalledCasks.map(([name, installedVersion, size, pinned]) => ({
-                    name,
-                    installedVersion,
-                    size,
-                    isInstalled: true,
-                    isCask: true,
-                    isPinned: pinned === "true",
-                }));
+                casksFormatted = installedCaskEntries(safeInstalledCasks);
                 setCasks(casksFormatted);
 
                 // Lazy load cask sizes in the background
@@ -2781,15 +2714,7 @@ const WailBrewApp = () => {
                 setUpdatablePackages([]);
                 setUpdatableError(`${t("errors.failedUpdatablePackages")}: ${safeUpdatable[0][1]}`);
             } else {
-                const formatted = safeUpdatable.map(([name, installedVersion, latestVersion, size, warning, type]) => ({
-                    name,
-                    installedVersion,
-                    latestVersion,
-                    size,
-                    isInstalled: true,
-                    warning: warning || undefined,
-                    isCask: type === "cask",
-                }));
+                const formatted = updatablePackageEntries(safeUpdatable);
                 setUpdatablePackages(formatted);
                 setUpdatableError("");
             }
@@ -3593,7 +3518,7 @@ const WailBrewApp = () => {
                         onCheckboxChange={uninstallIsCask ? handleToggleZapUninstall : undefined}
                         commandSpec={{
                             action: "uninstall",
-                            targets: selectedPackage ? [selectedPackage.name] : [],
+                            targets: selectedPackage ? [packageTarget(selectedPackage)] : [],
                             isCask: uninstallIsCask,
                             zap: uninstallIsCask && zapUninstall,
                         }}
@@ -3618,7 +3543,7 @@ const WailBrewApp = () => {
                         confirmLabel={t("buttons.yesUpdate")}
                         commandSpec={{
                             action: "upgrade",
-                            targets: selectedPackage ? [selectedPackage.name] : [],
+                            targets: selectedPackage ? [packageTarget(selectedPackage)] : [],
                             isCask: selectedPackage?.isCask ?? false,
                         }}
                     />
@@ -3636,7 +3561,7 @@ const WailBrewApp = () => {
                         onConfirm={handleUpdateSelectedConfirmed}
                         onCancel={() => setShowUpdateSelectedConfirm(false)}
                         confirmLabel={t("buttons.yesUpdateSelected", { count: selectedPackages.size })}
-                        commandSpec={{ action: "upgrade-selected", targets: Array.from(selectedPackages) }}
+                        commandSpec={{ action: "upgrade-selected", targets: selectedTargets }}
                     />
                     <ConfirmDialog
                         open={showUntapConfirm}

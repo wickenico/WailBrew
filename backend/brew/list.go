@@ -83,7 +83,7 @@ func (s *ListService) fetchCatalogNames(kind string, args ...string) [][]string 
 	return results
 }
 
-// commandRunner is the subset of *Executor that ListService uses. It exists so
+// commandRunner is the subset of *Executor used for listing packages. It exists so
 // tests can supply canned brew output — including stderr — without requiring a
 // real Homebrew installation.
 type commandRunner interface {
@@ -276,101 +276,12 @@ func extractCaskInstalledVersion(installed json.RawMessage) string {
 	return ""
 }
 
-// getPinnedCaskNames reports the pin state of installed casks in bulk via
-// `brew info --cask --json=v2`. A failed lookup yields no pinned casks rather
-// than an error, since pin state is a secondary/cosmetic detail here.
-func (s *ListService) getPinnedCaskNames(caskNames []string) map[string]bool {
-	pinned := make(map[string]bool)
-	if len(caskNames) == 0 {
-		return pinned
-	}
-
-	args := []string{"info", "--cask", "--json=v2"}
-	args = append(args, caskNames...)
-
-	infoOutput, err := s.executor.RunStdoutOnly(args...)
-	if err != nil {
-		return pinned
-	}
-
-	var caskInfo struct {
-		Casks []struct {
-			Token  string `json:"token"`
-			Pinned bool   `json:"pinned"`
-		} `json:"casks"`
-	}
-
-	if err := json.Unmarshal(infoOutput, &caskInfo); err != nil {
-		return pinned
-	}
-
-	for _, cask := range caskInfo.Casks {
-		pinned[cask.Token] = cask.Pinned
-	}
-
-	return pinned
-}
-
-func (s *ListService) fillCaskInstalledVersions(caskNames []string, versionMap map[string]string) {
-	args := []string{"info", "--cask", "--json=v2"}
-	args = append(args, caskNames...)
-
-	infoOutput, err := s.executor.RunStdoutOnly(args...)
-	if err != nil {
-		for _, caskName := range caskNames {
-			s.fillSingleCaskInstalledVersion(caskName, versionMap)
-		}
-		return
-	}
-
-	var caskInfo struct {
-		Casks []struct {
-			Token     string          `json:"token"`
-			Installed json.RawMessage `json:"installed"`
-		} `json:"casks"`
-	}
-
-	if err := json.Unmarshal(infoOutput, &caskInfo); err != nil {
-		for _, caskName := range caskNames {
-			s.fillSingleCaskInstalledVersion(caskName, versionMap)
-		}
-		return
-	}
-
-	for _, cask := range caskInfo.Casks {
-		if version := extractCaskInstalledVersion(cask.Installed); version != "" {
-			versionMap[cask.Token] = version
-		}
-	}
-}
-
-func (s *ListService) fillSingleCaskInstalledVersion(caskName string, versionMap map[string]string) {
-	infoOutput, err := s.executor.RunStdoutOnly("info", "--cask", "--json=v2", caskName)
-	if err != nil {
-		return
-	}
-
-	var caskInfo struct {
-		Casks []struct {
-			Installed json.RawMessage `json:"installed"`
-		} `json:"casks"`
-	}
-
-	if err := json.Unmarshal(infoOutput, &caskInfo); err == nil && len(caskInfo.Casks) > 0 {
-		if version := extractCaskInstalledVersion(caskInfo.Casks[0].Installed); version != "" {
-			versionMap[caskName] = version
-		}
-	}
-}
-
-// GetBrewCasks retrieves the list of installed Homebrew casks
+// GetBrewCasks returns rows of name, installed version, size, pinned, and full name.
 func (s *ListService) GetBrewCasks() [][]string {
-	// Validate brew installation first
 	if err := s.validateFunc(); err != nil {
 		return [][]string{{"Error", fmt.Sprintf("Homebrew validation failed: %v", err)}}
 	}
-
-	output, err := s.executor.RunStdoutOnly("list", "--cask", "--versions")
+	installed, err := loadInstalledCasks(s.executor)
 	if err != nil {
 		s.reportFailure(err)
 		if IsBrokenRubyStateError(err.Error()) {
@@ -378,61 +289,18 @@ func (s *ListService) GetBrewCasks() [][]string {
 		}
 		return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
 	}
-
-	outputStr := strings.TrimSpace(string(output))
-	if outputStr == "" {
-		return [][]string{}
-	}
-
-	lines := strings.Split(outputStr, "\n")
-	var caskNames []string
-	versionMap := make(map[string]string)
-
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" || isBrewDiagnosticLine(line) {
-			continue
-		}
-
-		parts := strings.Fields(line)
-		if len(parts) >= 2 {
-			caskNames = append(caskNames, parts[0])
-			versionMap[parts[0]] = parts[1]
-		} else if len(parts) == 1 && isPackageNameLine(parts[0]) {
-			caskNames = append(caskNames, parts[0])
-			versionMap[parts[0]] = ""
-		}
-	}
-
-	if len(caskNames) == 0 {
-		return [][]string{}
-	}
-
-	var missingVersion []string
-	for _, name := range caskNames {
-		if versionMap[name] == "" {
-			missingVersion = append(missingVersion, name)
-		}
-	}
-	if len(missingVersion) > 0 {
-		s.fillCaskInstalledVersions(missingVersion, versionMap)
-	}
-
-	pinnedCasks := s.getPinnedCaskNames(caskNames)
-
-	var casks [][]string
-	for _, name := range caskNames {
-		version := versionMap[name]
+	casks := make([][]string, 0, len(installed))
+	for _, cask := range installed {
+		version := extractCaskInstalledVersion(cask.Installed)
 		if version == "" {
 			version = "Unknown"
 		}
 		pinned := "false"
-		if pinnedCasks[name] {
+		if cask.Pinned {
 			pinned = "true"
 		}
-		casks = append(casks, []string{name, version, "", pinned})
+		casks = append(casks, []string{cask.Token, version, "", pinned, cask.FullToken})
 	}
-
 	return casks
 }
 

@@ -42,6 +42,7 @@ func TestBuildUpgradeArgs(t *testing.T) {
 		{"cask standard mode", "firefox", true, OutdatedFlagNone, false, []string{"upgrade", "firefox"}},
 		{"cask greedy", "firefox", true, OutdatedFlagGreedy, false, []string{"upgrade", "--greedy", "firefox"}},
 		{"cask greedy auto updates", "firefox", true, OutdatedFlagGreedyAutoUpdate, false, []string{"upgrade", "--greedy-auto-updates", "firefox"}},
+		{"tap-qualified cask", "stablyai/orca/orca", true, OutdatedFlagGreedyAutoUpdate, false, []string{"upgrade", "--greedy-auto-updates", "stablyai/orca/orca"}},
 		{"cask retry with force", "firefox", true, OutdatedFlagGreedyAutoUpdate, true, []string{"upgrade", "--greedy-auto-updates", "--force", "firefox"}},
 		{"formula retry with force", "wget", false, OutdatedFlagNone, true, []string{"upgrade", "--force", "wget"}},
 		{"unknown flag adds nothing", "firefox", true, "bogus", false, []string{"upgrade", "firefox"}},
