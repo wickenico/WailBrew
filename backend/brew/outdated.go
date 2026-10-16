@@ -9,7 +9,7 @@ import (
 
 // OutdatedService provides outdated package checking functionality
 type OutdatedService struct {
-	executor              *Executor
+	executor              commandRunner
 	validateFunc          func() error
 	logFunc               func(string)
 	extractJSON           func(string) (string, string, error)
@@ -22,7 +22,7 @@ type OutdatedService struct {
 
 // NewOutdatedService creates a new outdated service
 func NewOutdatedService(
-	executor *Executor,
+	executor commandRunner,
 	validateFunc func() error,
 	logFunc func(string),
 	extractJSON func(string) (string, string, error),
@@ -107,6 +107,16 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 	var updatablePackages [][]string
 	var formulaeNames []string
 	var caskNames []string
+	installedCasks := make(map[string]installedCask)
+	if len(brewOutdated.Casks) > 0 {
+		casks, err := loadInstalledCasks(s.executor)
+		if err != nil {
+			return [][]string{{"Error", fmt.Sprintf("Failed to fetch installed casks: %v", err)}}
+		}
+		for _, cask := range casks {
+			installedCasks[cask.Token] = cask
+		}
+	}
 
 	// Process formulae (packages)
 	for _, formula := range brewOutdated.Formulae {
@@ -144,13 +154,16 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 		if cask.Pinned {
 			continue
 		}
-		caskNames = append(caskNames, cask.Name)
+		caskNames = append(caskNames, caskToken(cask.Name))
 	}
-	autoUpdateCasks := s.getAutoUpdateCaskNames(caskNames)
 
 	for _, cask := range brewOutdated.Casks {
 		if cask.Pinned {
 			continue
+		}
+		installed, ok := installedCasks[caskToken(cask.Name)]
+		if !ok {
+			return [][]string{{"Error", fmt.Sprintf("Installed cask %s not found", cask.Name)}}
 		}
 
 		installedVersion := "unknown"
@@ -163,7 +176,7 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 		if w, found := warningMap[cask.Name]; found {
 			warning = w
 		}
-		if autoUpdateCasks[cask.Name] {
+		if installed.AutoUpdates {
 			autoUpdateWarning := s.getBackendMsg("backend.outdated.autoUpdateCask", nil)
 			if warning != "" {
 				warning = warning + "\n\n" + autoUpdateWarning
@@ -173,12 +186,13 @@ func (s *OutdatedService) GetBrewUpdatablePackages() [][]string {
 		}
 
 		updatablePackages = append(updatablePackages, []string{
-			cask.Name,
+			caskToken(cask.Name),
 			installedVersion,
 			cask.CurrentVersion,
-			"",      // size placeholder, will be filled below
-			warning, // warning message
-			"cask",  // package type
+			"",                  // size placeholder, will be filled below
+			warning,             // warning message
+			"cask",              // package type
+			installed.FullToken, // full name
 		})
 	}
 
@@ -274,46 +288,6 @@ func (s *OutdatedService) outdatedCount(mode string) int {
 		}
 	}
 	return count
-}
-
-func (s *OutdatedService) getAutoUpdateCaskNames(caskNames []string) map[string]bool {
-	autoUpdateCasks := make(map[string]bool)
-	if len(caskNames) == 0 {
-		return autoUpdateCasks
-	}
-
-	args := []string{"info", "--cask", "--json=v2"}
-	args = append(args, caskNames...)
-
-	infoOutput, err := s.executor.Run(args...)
-	if err != nil {
-		return autoUpdateCasks
-	}
-
-	outputStr := strings.TrimSpace(string(infoOutput))
-	jsonOutput, _, err := s.extractJSON(outputStr)
-	if err != nil {
-		return autoUpdateCasks
-	}
-
-	var caskInfo struct {
-		Casks []struct {
-			Token       string `json:"token"`
-			AutoUpdates bool   `json:"auto_updates"`
-		} `json:"casks"`
-	}
-
-	if err := json.Unmarshal([]byte(jsonOutput), &caskInfo); err != nil {
-		return autoUpdateCasks
-	}
-
-	for _, cask := range caskInfo.Casks {
-		if cask.AutoUpdates {
-			autoUpdateCasks[cask.Token] = true
-		}
-	}
-
-	return autoUpdateCasks
 }
 
 // IsPackageCask checks if a package is a cask

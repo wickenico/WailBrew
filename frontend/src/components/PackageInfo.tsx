@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { GetInstalledDependencies, GetInstalledDependents } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import type { PackageEntry } from "../types";
+import { packageTarget } from "../utils/packages";
 
 interface PackageInfoProps {
     packageEntry: PackageEntry | null;
@@ -70,17 +71,24 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
             return;
         }
 
-        const name = packageEntry.name;
+        const name = packageTarget(packageEntry);
+        fetchRef.current = name;
+        if (name.includes("/")) {
+            setAnalytics(null);
+            setBrewPageUrl(null);
+            setLoadingAnalytics(false);
+            return;
+        }
 
         // Cache hit → instant, no network needed
         if (analyticsCache.has(name)) {
             const cached = analyticsCache.get(name)!;
             setAnalytics(cached.analytics);
             setBrewPageUrl(cached.brewPageUrl);
+            setLoadingAnalytics(false);
             return;
         }
 
-        fetchRef.current = name;
         setLoadingAnalytics(true);
 
         const fetchAnalytics = async () => {
@@ -138,7 +146,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         };
 
         fetchAnalytics();
-    }, [packageEntry?.name, packageEntry?.isCask]);
+    }, [packageEntry?.name, packageEntry?.fullName, packageEntry?.isCask]);
 
     // Reset installed deps/dependents when package changes
     useEffect(() => {
@@ -146,27 +154,27 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         setInstalledDeps([]);
         setShowInstalledDependents(false);
         setInstalledDependents([]);
-    }, [packageEntry?.name]);
+    }, [packageEntry?.name, packageEntry?.fullName]);
 
     // Fetch installed dependencies when panel is opened
     useEffect(() => {
         if (!showInstalledDeps || !packageEntry?.name) return;
         setLoadingInstalledDeps(true);
-        GetInstalledDependencies(packageEntry.name)
+        GetInstalledDependencies(packageTarget(packageEntry))
             .then((deps) => setInstalledDeps(deps ?? []))
             .catch(() => setInstalledDeps([]))
             .finally(() => setLoadingInstalledDeps(false));
-    }, [showInstalledDeps, packageEntry?.name]);
+    }, [showInstalledDeps, packageEntry?.name, packageEntry?.fullName]);
 
     // Fetch installed dependents (brew uses --installed) when panel is opened
     useEffect(() => {
         if (!showInstalledDependents || !packageEntry?.name) return;
         setLoadingInstalledDependents(true);
-        GetInstalledDependents(packageEntry.name)
+        GetInstalledDependents(packageTarget(packageEntry))
             .then((deps) => setInstalledDependents(deps ?? []))
             .catch(() => setInstalledDependents([]))
             .finally(() => setLoadingInstalledDependents(false));
-    }, [showInstalledDependents, packageEntry?.name]);
+    }, [showInstalledDependents, packageEntry?.name, packageEntry?.fullName]);
 
     const formatNumber = (num: number): string => num.toLocaleString();
 
@@ -189,7 +197,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
         );
     }
 
-    const isLoading = loadingDetailsFor === packageEntry.name;
+    const isLoading = loadingDetailsFor === packageTarget(packageEntry);
     const typeLabel = packageEntry.isCask ? "Cask" : "Formula";
     const typeBadgeClass = packageEntry.isCask ? "pi-type-badge cask" : "pi-type-badge formula";
 

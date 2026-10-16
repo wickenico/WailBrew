@@ -2,6 +2,7 @@ package brew
 
 import (
 	"errors"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -103,23 +104,32 @@ func TestGetBrewPackages_surfacesPinnedState(t *testing.T) {
 // A pinned cask must likewise be flagged, now that Homebrew supports pinning
 // casks (Homebrew/brew#22276) symmetrically with formulae.
 func TestGetBrewCasks_surfacesPinnedState(t *testing.T) {
-	const infoJSON = `{"casks":[{"token":"firefox","pinned":true,"installed":"120.0"}]}`
+	runner := &fakeRunner{stdout: map[string]string{
+		"info --cask --json=v2 --installed": `{"casks":[{"token":"firefox","full_token":"firefox","pinned":true,"installed":"120.0"}]}`,
+	}}
+	casks := newTestListService(runner, nil).GetBrewCasks()
+	if len(casks) != 1 || len(casks[0]) != 5 || casks[0][3] != "true" || casks[0][4] != "firefox" {
+		t.Fatalf("expected a pinned official cask: %v", casks)
+	}
+}
 
-	runner := &fakeRunner{
-		stdout: map[string]string{
-			"list --cask --versions":        "firefox 120.0\n",
-			"info --cask --json=v2 firefox": infoJSON,
-		},
+func TestGetBrewCasks_fullName(t *testing.T) {
+	runner := &fakeRunner{stdout: map[string]string{
+		"info --cask --json=v2 --installed": `{"casks":[{"token":"orca","full_token":"stablyai/orca/orca","installed":"1.4.226","pinned":true}]}`,
+	}}
+	casks := newTestListService(runner, nil).GetBrewCasks()
+	want := [][]string{{"orca", "1.4.226", "", "true", "stablyai/orca/orca"}}
+	if !reflect.DeepEqual(casks, want) {
+		t.Fatalf("got %v, want %v", casks, want)
 	}
 
-	service := newTestListService(runner, nil)
-	casks := service.GetBrewCasks()
+}
 
-	if len(casks) != 1 {
-		t.Fatalf("expected 1 cask, got %v", casks)
-	}
-	if pinned := casks[0][3]; pinned != "true" {
-		t.Fatalf("expected firefox to be pinned, got %q", pinned)
+func TestGetBrewCasks_infoError(t *testing.T) {
+	runner := &fakeRunner{errs: map[string]error{"info --cask --json=v2 --installed": errors.New("lookup failed")}}
+	casks := newTestListService(runner, nil).GetBrewCasks()
+	if len(casks) != 1 || casks[0][0] != "Error" {
+		t.Fatalf("expected Error, got %v", casks)
 	}
 }
 
@@ -149,7 +159,7 @@ func TestGetBrewCasks_reportsDiagnosticWhenTapIsUntrusted(t *testing.T) {
 		"macos-fuse-t/cask/fuse-t-sshfs from untrusted tap macos-fuse-t/cask."
 
 	runner := &fakeRunner{
-		errs: map[string]error{"list --cask --versions": errors.New(diagnostic)},
+		errs: map[string]error{"info --cask --json=v2 --installed": errors.New(diagnostic)},
 	}
 
 	var reported []string
