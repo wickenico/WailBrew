@@ -3,6 +3,7 @@
 
 export interface PackageEntry {
     name: string;
+    fullName?: string;
     installedVersion: string;
     installReason?: "on_request" | "dependency" | "unknown";
     latestVersion?: string;
@@ -17,6 +18,8 @@ export interface PackageEntry {
     isFavorite?: boolean;
     isPinned?: boolean;
 }
+
+export type PackageDetails = Pick<PackageEntry, "desc" | "homepage" | "dependencies" | "conflicts">;
 
 export interface RepositoryEntry {
     name: string;

@@ -306,7 +306,7 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	}
 
 	// Check if WailBrew itself was updated
-	if strings.ToLower(packageName) == "wailbrew" {
+	if strings.EqualFold(caskToken(packageName), "wailbrew") {
 		wailbrewUpdated = true
 	}
 
