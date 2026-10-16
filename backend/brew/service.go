@@ -177,7 +177,7 @@ func NewService(
 	)
 
 	// Create size service
-	sizeService := NewSizeService()
+	sizeService := NewSizeService(executor)
 
 	// Create outdated service
 	outdatedService := NewOutdatedService(
@@ -257,6 +257,7 @@ func (s *serviceImpl) GetStartupDataWithUpdate() *StartupData {
 // Cache management
 func (s *serviceImpl) ClearCache() {
 	s.executor.ClearCache()
+	s.sizeService.ClearCache()
 }
 
 // Package listing methods
