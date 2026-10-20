@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -1506,68 +1505,6 @@ func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 		FileSize:       0,
 		PublishedAt:    "",
 	}, nil
-}
-
-func (a *App) DownloadAndInstallUpdate(downloadURL string) error {
-	tempDir := "/tmp/wailbrew_update"
-	_ = os.RemoveAll(tempDir) // best-effort cleanup of a leftover dir from a previous attempt
-	if err := os.MkdirAll(tempDir, 0755); err != nil {
-		return fmt.Errorf("failed to create temp dir: %w", err)
-	}
-
-	resp, err := http.Get(downloadURL)
-	if err != nil {
-		return fmt.Errorf("failed to download update: %w", err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	zipPath := fmt.Sprintf("%s/wailbrew_update.zip", tempDir)
-	zipFile, err := os.Create(zipPath)
-	if err != nil {
-		return fmt.Errorf("failed to create temp file: %w", err)
-	}
-	defer func() { _ = zipFile.Close() }()
-
-	_, err = io.Copy(zipFile, resp.Body)
-	if err != nil {
-		return fmt.Errorf("failed to save update: %w", err)
-	}
-
-	cmd := system.RunHostCommand("unzip", "-q", zipPath, "-d", tempDir)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to unzip update: %w", err)
-	}
-
-	appPath := fmt.Sprintf("%s/WailBrew.app", tempDir)
-	if _, err := os.Stat(appPath); os.IsNotExist(err) {
-		return fmt.Errorf("app bundle not found in update")
-	}
-
-	currentAppPath, err := os.Executable()
-	if err != nil {
-		return fmt.Errorf("failed to get current app path: %w", err)
-	}
-
-	for strings.Contains(currentAppPath, ".app/") {
-		currentAppPath = strings.Split(currentAppPath, ".app/")[0] + ".app"
-		break
-	}
-
-	backupPath := currentAppPath + ".backup"
-	_ = os.RemoveAll(backupPath) // best-effort cleanup of a leftover backup from a previous attempt
-
-	script := fmt.Sprintf(`
-		osascript -e 'do shell script "rm -rf \\"%s\\" && mv \\"%s\\" \\"%s\\" && mv \\"%s\\" \\"%s\\"" with administrator privileges'
-	`, backupPath, currentAppPath, backupPath, appPath, currentAppPath)
-
-	cmd = system.RunHostCommand("sh", "-c", script)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to replace app: %w", err)
-	}
-
-	_ = os.RemoveAll(tempDir) // best-effort cleanup; the update already succeeded at this point
-
-	return nil
 }
 
 func (a *App) RestartApp() error {

@@ -20,8 +20,6 @@ export function CreateSnapshot(arg1:string):Promise<brew.SnapshotEntry>;
 
 export function DeleteSnapshot(arg1:string):Promise<void>;
 
-export function DownloadAndInstallUpdate(arg1:string):Promise<void>;
-
 export function ExecuteBrewDoctorCommand(arg1:string):Promise<string>;
 
 export function ExportBrewfile(arg1:string):Promise<void>;

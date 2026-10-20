@@ -34,10 +34,6 @@ export function DeleteSnapshot(arg1) {
   return window['go']['main']['App']['DeleteSnapshot'](arg1);
 }
 
-export function DownloadAndInstallUpdate(arg1) {
-  return window['go']['main']['App']['DownloadAndInstallUpdate'](arg1);
-}
-
 export function ExecuteBrewDoctorCommand(arg1) {
   return window['go']['main']['App']['ExecuteBrewDoctorCommand'](arg1);
 }
