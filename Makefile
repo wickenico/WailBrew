@@ -58,6 +58,10 @@ update-deps:
 	# Scope discovery to Go sources to avoid pnpm symlinks in frontend/node_modules.
 	go get -u . ./backend/... ./i18n/... && go mod tidy
 
+update-cli:
+	@echo "Updating Wails CLI"
+	go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
 clean:
 	rm -rf build/
 
