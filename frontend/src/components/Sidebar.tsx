@@ -11,6 +11,7 @@ import {
     Package,
     RefreshCw,
     Rocket,
+    ShieldAlert,
     Sparkles,
     Stethoscope,
 } from "lucide-react";
@@ -31,6 +32,7 @@ interface SidebarProps {
     leavesCount: number;
     repositoriesCount: number;
     servicesCount: number;
+    securityCount: number;
     onClearSelection: () => void;
     appVersion: string;
     onOpenAbout: () => void;
@@ -64,6 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     leavesCount,
     repositoriesCount,
     servicesCount,
+    securityCount,
     onClearSelection,
     appVersion,
     onOpenAbout,
@@ -132,6 +135,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                 { view: "homebrew", icon: Beer, label: t("sidebar.homebrew"), shortcut: "8" },
                 { view: "services", icon: Rocket, label: t("sidebar.services"), badge: servicesCount, shortcut: "P" },
                 { view: "doctor", icon: Stethoscope, label: t("sidebar.doctor"), shortcut: "9" },
+                {
+                    view: "security",
+                    icon: ShieldAlert,
+                    label: t("sidebar.security"),
+                    badge: securityCount >= 0 ? securityCount : undefined,
+                    needsAttention: securityCount > 0,
+                    shortcut: "⇧V",
+                },
                 { view: "cleanup", icon: Sparkles, label: t("sidebar.cleanup"), shortcut: "0" },
                 { view: "snapshots", icon: History, label: t("sidebar.snapshots"), shortcut: "B" },
             ],

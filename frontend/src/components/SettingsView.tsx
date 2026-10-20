@@ -639,6 +639,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
         { id: "homebrew", label: t("sidebar.homebrew") },
         { id: "doctor", label: t("sidebar.doctor") },
         { id: "cleanup", label: t("sidebar.cleanup") },
+        { id: "security", label: t("sidebar.security") },
     ];
 
     const loadLandingTab = async () => {

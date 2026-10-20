@@ -4,14 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GetInstalledDependencies, GetInstalledDependents } from "../../wailsjs/go/main/App";
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
-import type { PackageEntry } from "../types";
+import type { PackageEntry, Vulnerability } from "../types";
 import { packageTarget } from "../utils/packages";
+import { osvUrl } from "../utils/vulnerabilities";
 
 interface PackageInfoProps {
     packageEntry: PackageEntry | null;
     loadingDetailsFor: string | null;
     view: string;
     onSelectDependency?: (dependencyName: string) => void;
+    vulnerabilities?: Vulnerability[];
 }
 
 interface AnalyticsData {
@@ -29,7 +31,13 @@ interface CacheEntry {
 }
 const analyticsCache = new Map<string, CacheEntry>();
 
-const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsFor, view, onSelectDependency }) => {
+const PackageInfo: React.FC<PackageInfoProps> = ({
+    packageEntry,
+    loadingDetailsFor,
+    view,
+    onSelectDependency,
+    vulnerabilities,
+}) => {
     const { t } = useTranslation();
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loadingAnalytics, setLoadingAnalytics] = useState(false);
@@ -225,6 +233,30 @@ const PackageInfo: React.FC<PackageInfoProps> = ({ packageEntry, loadingDetailsF
                 ) : packageEntry.desc ? (
                     <p className="pi-desc">{packageEntry.desc}</p>
                 ) : null}
+
+                {vulnerabilities && vulnerabilities.length > 0 && (
+                    <div className="pi-vulns">
+                        <span className="pi-row-label">{t("security.packageSection")}</span>
+                        <ul>
+                            {vulnerabilities.map((vulnerability) => (
+                                <li className="pi-vuln" key={vulnerability.id}>
+                                    <span className={`vuln-badge vuln-${vulnerability.severity}`}>
+                                        {t(`security.severityName.${vulnerability.severity}`)}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="pi-link"
+                                        onClick={() => BrowserOpenURL(osvUrl(vulnerability.id))}
+                                        title={vulnerability.summary}
+                                    >
+                                        {vulnerability.id}
+                                        <ExternalLink size={10} className="pi-link-icon" />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
                 {/* Meta rows — always show structure, skeleton values while loading */}
                 <div className="pi-meta">

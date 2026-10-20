@@ -33,7 +33,8 @@
     "services": "Serviços",
     "collapse": "Recolher barra lateral",
     "expand": "Expandir barra lateral",
-    "snapshots": "Snapshots"
+    "snapshots": "Snapshots",
+    "security": "Segurança"
   },
   "headers": {
     "installedFormulas": "Fórmulas Instaladas",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Limpeza do Homebrew",
     "deprecatedFormulae": "Fórmulas Descontinuadas",
     "services": "Serviços",
-    "snapshots": "Snapshots"
+    "snapshots": "Snapshots",
+    "security": "Segurança"
   },
   "search": {
     "placeholder": "Buscar...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Diagnóstico",
       "cleanup": "Limpeza",
-      "snapshots": "Snapshots"
+      "snapshots": "Snapshots",
+      "security": "Segurança"
     },
     "table": {
       "title": "Tabela",
@@ -198,7 +201,8 @@
     "doctor": "O Diagnóstico é um recurso do Homebrew que pode detectar as causas mais comuns de erros.",
     "cleanup": "A Limpeza remove downloads desatualizados e arquivos em cache para liberar espaço em disco.",
     "services": "Serviços são processos em segundo plano (via launchd) gerenciados pelo Homebrew. Inicie, pare, reinicie ou execute o serviço de uma fórmula.",
-    "snapshots": "Snapshots são Brewfiles salvos que você pode restaurar depois, neste Mac ou em outro, para reinstalar as mesmas fórmulas, casks e taps."
+    "snapshots": "Snapshots são Brewfiles salvos que você pode restaurar depois, neste Mac ou em outro, para reinstalar as mesmas fórmulas, casks e taps.",
+    "security": "Verifica as fórmulas instaladas na base OSV.dev. Uma verificação completa não garante a ausência de vulnerabilidades. Casks não são verificados."
   },
   "homebrew": {
     "currentVersion": "Versão Atual",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} podem ser liberados"
+  },
+  "security": {
+    "scan": "Verificar",
+    "scanning": "Verificando…",
+    "scanningDetail": "Comparando as fórmulas instaladas com o OSV.dev. Isso pode levar alguns minutos.",
+    "intro": "Verifique as fórmulas instaladas em busca de vulnerabilidades conhecidas. O Homebrew consulta o OSV.dev, então a verificação precisa de rede. Casks não são incluídos.",
+    "summary": "{{count}} achados em {{packages}} fórmulas",
+    "checked": "{{count}} fórmulas verificadas",
+    "filterSeverity": "Gravidade mínima",
+    "filterFix": "Correção",
+    "severityFilter": {
+      "all": "Todas as gravidades",
+      "low": "Baixa e acima",
+      "medium": "Média e acima",
+      "high": "Alta e acima",
+      "critical": "Somente crítica"
+    },
+    "fixFilter": {
+      "all": "Qualquer status",
+      "available": "Correção disponível",
+      "unavailable": "Sem correção publicada"
+    },
+    "incomplete": "Algumas fórmulas instaladas não puderam ser verificadas, então a análise pode deixar passar vulnerabilidades.",
+    "outdatedWithoutSbom": "Atualize estas para que a versão instalada possa ser verificada: {{names}}",
+    "skipped": "Ignoradas porque a URL de origem está ausente ou não é suportada: {{names}}",
+    "unscanned": "Não verificadas: {{names}}",
+    "none": "Nenhuma vulnerabilidade conhecida nas fórmulas verificadas.",
+    "filteredEmpty": "Nenhum achado corresponde a estes filtros.",
+    "installedVersion": "Instalada {{version}}",
+    "openAdvisory": "Abrir {{id}} no OSV.dev",
+    "fixedIn": "Corrigido em {{versions}}",
+    "noFix": "Sem correção publicada",
+    "severityName": {
+      "critical": "Crítica",
+      "high": "Alta",
+      "medium": "Média",
+      "low": "Baixa",
+      "unknown": "Desconhecida"
+    },
+    "errors": {
+      "unavailable": "Este Homebrew não inclui brew vulns. Atualize o Homebrew e tente de novo.",
+      "offline": "A verificação não alcançou o OSV.dev. Confira a conexão e tente de novo.",
+      "timeout": "A verificação demorou demais e foi interrompida. Tente de novo.",
+      "generic": "A verificação de vulnerabilidades falhou."
+    },
+    "badge": "{{count}} vulnerabilidades conhecidas. Maior gravidade: {{severity}}",
+    "packageSection": "Vulnerabilidades"
   },
   "dialogs": {
     "confirmUninstall": "Você realmente deseja desinstalar \"{{name}}\"?",
@@ -334,7 +385,8 @@
       "settings": "Configurações",
       "shortcuts": "Atalhos de Teclado...",
       "services": "Serviços",
-      "snapshots": "Snapshots"
+      "snapshots": "Snapshots",
+      "security": "Segurança"
     },
     "tools": {
       "title": "Ferramentas",

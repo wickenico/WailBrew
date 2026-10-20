@@ -17,6 +17,8 @@ export interface PackageEntry {
     isCask?: boolean;
     isFavorite?: boolean;
     isPinned?: boolean;
+    vulnerabilityCount?: number;
+    vulnerabilitySeverity?: VulnerabilitySeverity | string;
 }
 
 export type PackageDetails = Pick<PackageEntry, "desc" | "homepage" | "dependencies" | "conflicts">;
@@ -36,6 +38,33 @@ export interface SnapshotEntry {
     size: number;
 }
 
+export type VulnerabilitySeverity = "critical" | "high" | "medium" | "low" | "unknown";
+
+export interface Vulnerability {
+    id: string;
+    severity: VulnerabilitySeverity | string;
+    summary: string;
+    aliases: string[];
+    fixedVersions: string[];
+    fixAvailable: boolean;
+}
+
+export interface FormulaFindings {
+    formula: string;
+    version: string;
+    repoUrl: string;
+    vulnerabilities: Vulnerability[];
+}
+
+export interface VulnerabilityReport {
+    findings: FormulaFindings[];
+    skippedFormulae: string[];
+    checked: number;
+    complete: boolean;
+    outdatedWithoutSbom: string[];
+    unscannedFormulae: Record<string, string>;
+}
+
 export type View =
     | "installed"
     | "casks"
@@ -47,6 +76,7 @@ export type View =
     | "services"
     | "homebrew"
     | "doctor"
+    | "security"
     | "cleanup"
     | "snapshots"
     | "settings";

@@ -33,7 +33,8 @@
     "services": "Services",
     "collapse": "Réduire la barre latérale",
     "expand": "Développer la barre latérale",
-    "snapshots": "Instantanés"
+    "snapshots": "Instantanés",
+    "security": "Sécurité"
   },
   "headers": {
     "installedFormulas": "Formules Installées",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Nettoyage Homebrew",
     "deprecatedFormulae": "Formules obsolètes",
     "services": "Services",
-    "snapshots": "Instantanés"
+    "snapshots": "Instantanés",
+    "security": "Sécurité"
   },
   "search": {
     "placeholder": "Rechercher...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Diagnostic",
       "cleanup": "Nettoyage",
-      "snapshots": "Instantanés"
+      "snapshots": "Instantanés",
+      "security": "Sécurité"
     },
     "table": {
       "title": "Tableau",
@@ -198,7 +201,8 @@
     "doctor": "Le diagnostic est une fonctionnalité Homebrew qui peut détecter les causes les plus courantes d'erreurs.",
     "cleanup": "Le nettoyage supprime les téléchargements obsolètes et les fichiers en cache pour libérer de l'espace disque.",
     "services": "Les services sont des processus en arrière-plan (via launchd) gérés par Homebrew. Démarrez, arrêtez, redémarrez ou exécutez le service d'une formule.",
-    "snapshots": "Les instantanés sont des Brewfiles enregistrés que vous pouvez restaurer plus tard, sur ce Mac ou un autre, pour réinstaller les mêmes formules, casks et taps."
+    "snapshots": "Les instantanés sont des Brewfiles enregistrés que vous pouvez restaurer plus tard, sur ce Mac ou un autre, pour réinstaller les mêmes formules, casks et taps.",
+    "security": "Analyse les formules installées avec la base OSV.dev. Une analyse complète ne garantit pas l'absence de vulnérabilités. Les casks ne sont pas analysés."
   },
   "homebrew": {
     "currentVersion": "Version actuelle",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} peuvent être libérés"
+  },
+  "security": {
+    "scan": "Analyser",
+    "scanning": "Analyse…",
+    "scanningDetail": "Comparaison des formules installées avec OSV.dev. Cela peut prendre quelques minutes.",
+    "intro": "Analysez les formules installées pour trouver des vulnérabilités connues. Homebrew interroge OSV.dev, donc l'analyse nécessite une connexion réseau. Les casks ne sont pas inclus.",
+    "summary": "{{count}} résultats dans {{packages}} formules",
+    "checked": "{{count}} formules vérifiées",
+    "filterSeverity": "Sévérité minimale",
+    "filterFix": "Correctif",
+    "severityFilter": {
+      "all": "Toutes les sévérités",
+      "low": "Faible et plus",
+      "medium": "Moyenne et plus",
+      "high": "Élevée et plus",
+      "critical": "Critique seulement"
+    },
+    "fixFilter": {
+      "all": "Tout correctif",
+      "available": "Correctif disponible",
+      "unavailable": "Pas de correctif publié"
+    },
+    "incomplete": "Certaines formules installées n'ont pas pu être vérifiées. L'analyse peut donc manquer des vulnérabilités.",
+    "outdatedWithoutSbom": "Mettez-les à jour pour que la version installée puisse être vérifiée : {{names}}",
+    "skipped": "Ignorées, car l'URL source est absente ou non prise en charge : {{names}}",
+    "unscanned": "Non analysées : {{names}}",
+    "none": "Aucune vulnérabilité connue dans les formules analysées.",
+    "filteredEmpty": "Aucun résultat ne correspond à ces filtres.",
+    "installedVersion": "Installée {{version}}",
+    "openAdvisory": "Ouvrir {{id}} sur OSV.dev",
+    "fixedIn": "Corrigé dans {{versions}}",
+    "noFix": "Pas de correctif publié",
+    "severityName": {
+      "critical": "Critique",
+      "high": "Élevée",
+      "medium": "Moyenne",
+      "low": "Faible",
+      "unknown": "Inconnue"
+    },
+    "errors": {
+      "unavailable": "Ce Homebrew n'inclut pas brew vulns. Mettez Homebrew à jour et réessayez.",
+      "offline": "L'analyse n'a pas pu joindre OSV.dev. Vérifiez la connexion et réessayez.",
+      "timeout": "L'analyse a pris trop de temps et a été interrompue. Réessayez.",
+      "generic": "L'analyse des vulnérabilités a échoué."
+    },
+    "badge": "{{count}} vulnérabilités connues. Sévérité la plus haute : {{severity}}",
+    "packageSection": "Vulnérabilités"
   },
   "dialogs": {
     "confirmUninstall": "Voulez-vous vraiment désinstaller \"{{name}}\" ?",
@@ -334,7 +385,8 @@
       "settings": "Paramètres",
       "shortcuts": "Raccourcis clavier...",
       "services": "Services",
-      "snapshots": "Instantanés"
+      "snapshots": "Instantanés",
+      "security": "Sécurité"
     },
     "tools": {
       "title": "Outils",

@@ -33,7 +33,8 @@
     "services": "שירותים",
     "collapse": "כווץ סרגל צד",
     "expand": "הרחב סרגל צד",
-    "snapshots": "תמונות מצב"
+    "snapshots": "תמונות מצב",
+    "security": "אבטחה"
   },
   "headers": {
     "installedFormulas": "נוסחאות מותקנות",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Homebrew ניקוי",
     "deprecatedFormulae": "נוסחאות שהוצאו משימוש",
     "services": "שירותים",
-    "snapshots": "תמונות מצב"
+    "snapshots": "תמונות מצב",
+    "security": "אבטחה"
   },
   "search": {
     "placeholder": "חיפוש...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "דוקטור",
       "cleanup": "ניקוי",
-      "snapshots": "תמונות מצב"
+      "snapshots": "תמונות מצב",
+      "security": "אבטחה"
     },
     "table": {
       "title": "טבלה",
@@ -198,7 +201,8 @@
     "doctor": "דוקטור הוא תכונה של Homebrew שיכולה לזהות את הגורמים הנפוצים ביותר לשגיאות.",
     "cleanup": "ניקוי מסיר הורדות מיושנות וקבצים שמורים כדי לפנות מקום בדיסק.",
     "services": "שירותים הם תהליכי רקע (דרך launchd) המנוהלים על ידי Homebrew. ניתן להפעיל, לעצור, להפעיל מחדש או להריץ את השירות של נוסחה.",
-    "snapshots": "תמונות מצב הן קובצי Brewfile שמורים שניתן לשחזר מאוחר יותר, במחשב זה או באחר, כדי להתקין מחדש את אותם נוסחאות, cask-ים ו-tap-ים."
+    "snapshots": "תמונות מצב הן קובצי Brewfile שמורים שניתן לשחזר מאוחר יותר, במחשב זה או באחר, כדי להתקין מחדש את אותם נוסחאות, cask-ים ו-tap-ים.",
+    "security": "סורק נוסחאות מותקנות מול מסד OSV.dev. סריקה מלאה אינה מבטיחה שאין פגיעויות. Cask לא נסרקים."
   },
   "homebrew": {
     "currentVersion": "גרסה נוכחית",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "ניתן לפנות {{size}}"
+  },
+  "security": {
+    "scan": "סרוק",
+    "scanning": "סורק…",
+    "scanningDetail": "בודק נוסחאות מותקנות מול OSV.dev. הפעולה עשויה להימשך כמה דקות.",
+    "intro": "סרקו נוסחאות מותקנות לאיתור פגיעויות ידועות. Homebrew פונה אל OSV.dev, ולכן נדרש חיבור לרשת. Cask לא נכללים.",
+    "summary": "{{count}} ממצאים ב-{{packages}} נוסחאות",
+    "checked": "{{count}} נוסחאות נבדקו",
+    "filterSeverity": "חומרה מזערית",
+    "filterFix": "תיקון",
+    "severityFilter": {
+      "all": "כל רמות החומרה",
+      "low": "נמוכה ומעלה",
+      "medium": "בינונית ומעלה",
+      "high": "גבוהה ומעלה",
+      "critical": "קריטית בלבד"
+    },
+    "fixFilter": {
+      "all": "כל סטטוס תיקון",
+      "available": "יש תיקון",
+      "unavailable": "אין תיקון שפורסם"
+    },
+    "incomplete": "חלק מהנוסחאות המותקנות לא נבדקו, ולכן הסריקה עלולה להחמיץ פגיעויות.",
+    "outdatedWithoutSbom": "עדכנו אותן כדי שאפשר יהיה לבדוק את הגרסה המותקנת: {{names}}",
+    "skipped": "דולגו כי כתובת המקור חסרה או לא נתמכת: {{names}}",
+    "unscanned": "לא נסרקו: {{names}}",
+    "none": "אין פגיעויות ידועות בנוסחאות שנסרקו.",
+    "filteredEmpty": "אין ממצאים שתואמים למסננים האלה.",
+    "installedVersion": "מותקנת {{version}}",
+    "openAdvisory": "פתיחת {{id}} ב-OSV.dev",
+    "fixedIn": "תוקן ב-{{versions}}",
+    "noFix": "אין תיקון שפורסם",
+    "severityName": {
+      "critical": "קריטית",
+      "high": "גבוהה",
+      "medium": "בינונית",
+      "low": "נמוכה",
+      "unknown": "לא ידועה"
+    },
+    "errors": {
+      "unavailable": "ב-Homebrew הזה אין brew vulns. עדכנו את Homebrew ונסו שוב.",
+      "offline": "הסריקה לא הגיעה אל OSV.dev. בדקו את החיבור ונסו שוב.",
+      "timeout": "הסריקה נמשכה זמן רב מדי והופסקה. נסו שוב.",
+      "generic": "סריקת הפגיעויות נכשלה."
+    },
+    "badge": "{{count}} פגיעויות ידועות. החומרה הגבוהה ביותר: {{severity}}",
+    "packageSection": "פגיעויות"
   },
   "dialogs": {
     "confirmUninstall": "האם באמת ברצונך להסיר את \"{{name}}\"?",
@@ -334,7 +385,8 @@
       "settings": "הגדרות",
       "shortcuts": "קיצורי מקלדת...",
       "services": "שירותים",
-      "snapshots": "תמונות מצב"
+      "snapshots": "תמונות מצב",
+      "security": "אבטחה"
     },
     "tools": {
       "title": "כלים",

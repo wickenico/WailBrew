@@ -521,11 +521,22 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                             )}
                         </span>
                     ) : null;
-                if (pkg.warning || typeIcon) {
+                if (pkg.warning || typeIcon || pkg.vulnerabilityCount) {
                     return (
                         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                             {typeIcon}
                             <span>{pkg.name}</span>
+                            {pkg.vulnerabilityCount ? (
+                                <span
+                                    className={`vuln-badge vuln-${pkg.vulnerabilitySeverity || "unknown"}`}
+                                    title={t("security.badge", {
+                                        count: pkg.vulnerabilityCount,
+                                        severity: t(`security.severityName.${pkg.vulnerabilitySeverity || "unknown"}`),
+                                    })}
+                                >
+                                    {pkg.vulnerabilityCount}
+                                </span>
+                            ) : null}
                             {pkg.warning && <WarningIconTooltip warning={pkg.warning} />}
                         </div>
                     );

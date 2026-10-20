@@ -33,7 +33,8 @@
     "services": "Servicios",
     "collapse": "Contraer barra lateral",
     "expand": "Expandir barra lateral",
-    "snapshots": "Instantáneas"
+    "snapshots": "Instantáneas",
+    "security": "Seguridad"
   },
   "headers": {
     "installedFormulas": "Programas CLI instalados",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Limpiar",
     "deprecatedFormulae": "Programas CLI en desuso",
     "services": "Servicios",
-    "snapshots": "Instantáneas"
+    "snapshots": "Instantáneas",
+    "security": "Seguridad"
   },
   "search": {
     "placeholder": "Buscar...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Auditar",
       "cleanup": "Limpiar",
-      "snapshots": "Instantáneas"
+      "snapshots": "Instantáneas",
+      "security": "Seguridad"
     },
     "table": {
       "title": "Tabla",
@@ -198,7 +201,8 @@
     "doctor": "Doctor es una característica de Homebrew que puede detectar las causas más comunes de errores.",
     "cleanup": "Limpieza remueve descargas y archivos en caché para liberar espacio en disco.",
     "services": "Los servicios son procesos en segundo plano (mediante launchd) gestionados por Homebrew. Inicia, detén, reinicia o ejecuta el servicio de una fórmula.",
-    "snapshots": "Las instantáneas son Brewfiles guardados que puedes restaurar más tarde, en este Mac o en otro, para reinstalar las mismas fórmulas, casks y taps."
+    "snapshots": "Las instantáneas son Brewfiles guardados que puedes restaurar más tarde, en este Mac o en otro, para reinstalar las mismas fórmulas, casks y taps.",
+    "security": "Comprueba las fórmulas instaladas con la base de datos de OSV.dev. Un análisis completo no garantiza que no haya vulnerabilidades. Los casks no se analizan."
   },
   "homebrew": {
     "currentVersion": "Version Actual",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} puede ser liberado"
+  },
+  "security": {
+    "scan": "Analizar",
+    "scanning": "Analizando…",
+    "scanningDetail": "Comprobando las fórmulas instaladas con OSV.dev. Puede tardar unos minutos.",
+    "intro": "Analiza las fórmulas instaladas en busca de vulnerabilidades conocidas. Homebrew consulta OSV.dev, así que el análisis necesita conexión de red. Los casks no se incluyen.",
+    "summary": "{{count}} hallazgos en {{packages}} fórmulas",
+    "checked": "{{count}} fórmulas comprobadas",
+    "filterSeverity": "Gravedad mínima",
+    "filterFix": "Corrección",
+    "severityFilter": {
+      "all": "Todas las gravedades",
+      "low": "Baja y superior",
+      "medium": "Media y superior",
+      "high": "Alta y superior",
+      "critical": "Solo crítica"
+    },
+    "fixFilter": {
+      "all": "Cualquier estado",
+      "available": "Corrección disponible",
+      "unavailable": "Sin corrección publicada"
+    },
+    "incomplete": "No se pudieron comprobar algunas fórmulas instaladas, así que el análisis puede omitir vulnerabilidades.",
+    "outdatedWithoutSbom": "Actualízalas para poder comprobar la versión instalada: {{names}}",
+    "skipped": "Omitidas porque la URL de origen falta o no es compatible: {{names}}",
+    "unscanned": "Sin analizar: {{names}}",
+    "none": "No hay vulnerabilidades conocidas en las fórmulas analizadas.",
+    "filteredEmpty": "Ningún hallazgo coincide con estos filtros.",
+    "installedVersion": "Instalada {{version}}",
+    "openAdvisory": "Abrir {{id}} en OSV.dev",
+    "fixedIn": "Corregido en {{versions}}",
+    "noFix": "Sin corrección publicada",
+    "severityName": {
+      "critical": "Crítica",
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Baja",
+      "unknown": "Desconocida"
+    },
+    "errors": {
+      "unavailable": "Este Homebrew no incluye brew vulns. Actualiza Homebrew e inténtalo de nuevo.",
+      "offline": "El análisis no pudo conectar con OSV.dev. Comprueba la conexión e inténtalo de nuevo.",
+      "timeout": "El análisis tardó demasiado y se detuvo. Inténtalo de nuevo.",
+      "generic": "El análisis de vulnerabilidades falló."
+    },
+    "badge": "{{count}} vulnerabilidades conocidas. Gravedad más alta: {{severity}}",
+    "packageSection": "Vulnerabilidades"
   },
   "dialogs": {
     "confirmUninstall": "¿Realmente desea desinstalar \"{{name}}\"?",
@@ -334,7 +385,8 @@
       "settings": "Configuración",
       "shortcuts": "Atajos de teclado...",
       "services": "Servicios",
-      "snapshots": "Instantáneas"
+      "snapshots": "Instantáneas",
+      "security": "Seguridad"
     },
     "tools": {
       "title": "Herramientas",

@@ -33,7 +33,8 @@
     "services": "Hizmetler",
     "collapse": "Kenar çubuğunu daralt",
     "expand": "Kenar çubuğunu genişlet",
-    "snapshots": "Anlık Görüntüler"
+    "snapshots": "Anlık Görüntüler",
+    "security": "Güvenlik"
   },
   "headers": {
     "installedFormulas": "Yüklü Formüller",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Homebrew Temizliği",
     "deprecatedFormulae": "Kullanımdan Kaldırılan Formüller",
     "services": "Hizmetler",
-    "snapshots": "Anlık Görüntüler"
+    "snapshots": "Anlık Görüntüler",
+    "security": "Güvenlik"
   },
   "search": {
     "placeholder": "Ara...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Temizleme",
-      "snapshots": "Anlık Görüntüler"
+      "snapshots": "Anlık Görüntüler",
+      "security": "Güvenlik"
     },
     "table": {
       "title": "Tablo",
@@ -198,7 +201,8 @@
     "doctor": "Doktor, en sık karşılaşılan hataları saptayan bir Homebrew özelliğidir.",
     "cleanup": "Temizlik eskimiş indirmeleri ve önbelleklenmiş dosyaları disk alanı açmak için siler.",
     "services": "Hizmetler, Homebrew tarafından yönetilen arka plan işlemleridir (launchd aracılığıyla). Bir formülün hizmetini başlatın, durdurun, yeniden başlatın veya çalıştırın.",
-    "snapshots": "Anlık görüntüler, aynı formülleri, cask'leri ve tap'leri yeniden yüklemek için bu Mac'te veya başka birinde daha sonra geri yükleyebileceğiniz kaydedilmiş Brewfile'lardır."
+    "snapshots": "Anlık görüntüler, aynı formülleri, cask'leri ve tap'leri yeniden yüklemek için bu Mac'te veya başka birinde daha sonra geri yükleyebileceğiniz kaydedilmiş Brewfile'lardır.",
+    "security": "Kurulu formülleri OSV.dev veritabanına karşı tarar. Tamamlanan bir tarama güvenlik açığı olmadığını garanti etmez. Cask'ler taranmaz."
   },
   "homebrew": {
     "currentVersion": "Mevcut Sürüm",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} boşaltılabilir"
+  },
+  "security": {
+    "scan": "Tara",
+    "scanning": "Taranıyor…",
+    "scanningDetail": "Kurulu formüller OSV.dev ile karşılaştırılıyor. Bu birkaç dakika sürebilir.",
+    "intro": "Kurulu formülleri bilinen güvenlik açıkları için tarayın. Homebrew OSV.dev'e sorar, bu yüzden tarama bir ağ bağlantısı gerektirir. Cask'ler dahil değildir.",
+    "summary": "{{packages}} formülde {{count}} bulgu",
+    "checked": "{{count}} formül kontrol edildi",
+    "filterSeverity": "En düşük önem",
+    "filterFix": "Düzeltme",
+    "severityFilter": {
+      "all": "Tüm önem düzeyleri",
+      "low": "Düşük ve üzeri",
+      "medium": "Orta ve üzeri",
+      "high": "Yüksek ve üzeri",
+      "critical": "Yalnızca kritik"
+    },
+    "fixFilter": {
+      "all": "Tüm durumlar",
+      "available": "Düzeltme var",
+      "unavailable": "Yayımlanmış düzeltme yok"
+    },
+    "incomplete": "Bazı kurulu formüller kontrol edilemedi, bu yüzden tarama açıkları kaçırabilir.",
+    "outdatedWithoutSbom": "Kurulu sürümün kontrol edilebilmesi için bunları yükseltin: {{names}}",
+    "skipped": "Kaynak URL'si eksik veya desteklenmediği için atlandı: {{names}}",
+    "unscanned": "Taranmadı: {{names}}",
+    "none": "Taranan formüllerde bilinen güvenlik açığı yok.",
+    "filteredEmpty": "Bu filtrelere uyan bulgu yok.",
+    "installedVersion": "Kurulu {{version}}",
+    "openAdvisory": "{{id}} kaydını OSV.dev'de aç",
+    "fixedIn": "{{versions}} sürümünde düzeltildi",
+    "noFix": "Yayımlanmış düzeltme yok",
+    "severityName": {
+      "critical": "Kritik",
+      "high": "Yüksek",
+      "medium": "Orta",
+      "low": "Düşük",
+      "unknown": "Bilinmiyor"
+    },
+    "errors": {
+      "unavailable": "Bu Homebrew brew vulns içermiyor. Homebrew'u güncelleyip yeniden deneyin.",
+      "offline": "Tarama OSV.dev'e ulaşamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+      "timeout": "Tarama çok uzun sürdü ve durduruldu. Yeniden deneyin.",
+      "generic": "Güvenlik açığı taraması başarısız oldu."
+    },
+    "badge": "{{count}} bilinen güvenlik açığı. En yüksek önem: {{severity}}",
+    "packageSection": "Güvenlik açıkları"
   },
   "dialogs": {
     "confirmUninstall": "Gerçekten \"{{name}}\" paketini silmek istiyor musun?",
@@ -334,7 +385,8 @@
       "settings": "Ayarlar",
       "shortcuts": "Klavye Kısayolları...",
       "services": "Hizmetler",
-      "snapshots": "Anlık Görüntüler"
+      "snapshots": "Anlık Görüntüler",
+      "security": "Güvenlik"
     },
     "tools": {
       "title": "Araçlar",

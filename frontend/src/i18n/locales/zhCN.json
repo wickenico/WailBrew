@@ -33,7 +33,8 @@
     "services": "服务",
     "collapse": "收起侧边栏",
     "expand": "展开侧边栏",
-    "snapshots": "快照"
+    "snapshots": "快照",
+    "security": "安全"
   },
   "headers": {
     "installedFormulas": "已安装的 Formulae",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Homebrew Cleanup",
     "deprecatedFormulae": "已弃用的包",
     "services": "服务",
-    "snapshots": "快照"
+    "snapshots": "快照",
+    "security": "安全"
   },
   "search": {
     "placeholder": "搜索...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "清理",
-      "snapshots": "快照"
+      "snapshots": "快照",
+      "security": "安全"
     },
     "table": {
       "title": "表格",
@@ -198,7 +201,8 @@
     "doctor": "Doctor 是 Homebrew 的一项内置功能，可以检测最常见的错误原因。",
     "cleanup": "Cleanup 会删除已下载和缓存的文件以释放磁盘空间。",
     "services": "服务是由 Homebrew 管理的后台进程（通过 launchd）。可以启动、停止、重启或运行某个 formula 的服务。",
-    "snapshots": "快照是已保存的 Brewfile，可在此 Mac 或其他 Mac 上稍后恢复，以重新安装相同的 formula、cask 和 tap。"
+    "snapshots": "快照是已保存的 Brewfile，可在此 Mac 或其他 Mac 上稍后恢复，以重新安装相同的 formula、cask 和 tap。",
+    "security": "根据 OSV.dev 数据库检查已安装的 formula。完整扫描也不能保证没有漏洞。不会扫描 cask。"
   },
   "homebrew": {
     "currentVersion": "当前版本",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "可释放 {{size}}"
+  },
+  "security": {
+    "scan": "扫描",
+    "scanning": "正在扫描…",
+    "scanningDetail": "正在对照 OSV.dev 检查已安装的 formula。这可能需要几分钟。",
+    "intro": "扫描已安装 formula 的已知漏洞。Homebrew 会查询 OSV.dev，因此需要网络连接。不包括 cask。",
+    "summary": "{{packages}} 个 formula 中有 {{count}} 条发现",
+    "checked": "已检查 {{count}} 个 formula",
+    "filterSeverity": "最低严重性",
+    "filterFix": "修复",
+    "severityFilter": {
+      "all": "所有严重性",
+      "low": "低及以上",
+      "medium": "中及以上",
+      "high": "高及以上",
+      "critical": "仅严重"
+    },
+    "fixFilter": {
+      "all": "任意修复状态",
+      "available": "有可用修复",
+      "unavailable": "没有已发布的修复"
+    },
+    "incomplete": "部分已安装 formula 无法检查，因此这次扫描可能漏掉漏洞。",
+    "outdatedWithoutSbom": "升级这些 formula 后才能检查已安装版本：{{names}}",
+    "skipped": "因缺少或不支持来源 URL 而跳过：{{names}}",
+    "unscanned": "未扫描：{{names}}",
+    "none": "已扫描的 formula 中没有已知漏洞。",
+    "filteredEmpty": "没有符合这些筛选条件的结果。",
+    "installedVersion": "已安装 {{version}}",
+    "openAdvisory": "在 OSV.dev 上打开 {{id}}",
+    "fixedIn": "已在 {{versions}} 中修复",
+    "noFix": "没有已发布的修复",
+    "severityName": {
+      "critical": "严重",
+      "high": "高",
+      "medium": "中",
+      "low": "低",
+      "unknown": "未知"
+    },
+    "errors": {
+      "unavailable": "此 Homebrew 不包含 brew vulns。请更新 Homebrew 后重试。",
+      "offline": "扫描无法连接 OSV.dev。请检查网络后重试。",
+      "timeout": "扫描耗时过长，已停止。请重试。",
+      "generic": "漏洞扫描失败。"
+    },
+    "badge": "{{count}} 个已知漏洞。最高严重性：{{severity}}",
+    "packageSection": "漏洞"
   },
   "dialogs": {
     "confirmUninstall": "您确定要卸载 \"{{name}}\" 吗？",
@@ -334,7 +385,8 @@
       "settings": "软件设置",
       "shortcuts": "键盘快捷键...",
       "services": "服务",
-      "snapshots": "快照"
+      "snapshots": "快照",
+      "security": "安全"
     },
     "tools": {
       "title": "工具",

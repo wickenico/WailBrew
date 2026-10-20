@@ -121,6 +121,12 @@ func (e *Executor) RunNoCacheStdoutOnly(args ...string) ([]byte, error) {
 	return e.runActual(30*time.Second, true, args...)
 }
 
+// RunNoCacheWithTimeoutStdoutOnly executes a long-running brew command without
+// cache and returns stdout only. Stderr diagnostics stay on the error.
+func (e *Executor) RunNoCacheWithTimeoutStdoutOnly(timeout time.Duration, args ...string) ([]byte, error) {
+	return e.runActual(timeout, true, args...)
+}
+
 func (e *Executor) runWithTimeout(timeout time.Duration, stdoutOnly bool, args ...string) ([]byte, error) {
 	cacheKey := strings.Join(args, "\x00") // Use null byte separator for unique key
 	if stdoutOnly {

@@ -30,6 +30,7 @@
     "doctor": "Diagnostica",
     "cleanup": "Pulizia",
     "snapshots": "Istantanee",
+    "security": "Sicurezza",
     "refresh": "Aggiorna",
     "sponsor": "Sostieni il progetto",
     "collapse": "Comprimi la barra laterale",
@@ -48,7 +49,8 @@
     "homebrewDoctor": "Diagnostica Homebrew",
     "homebrewCleanup": "Pulizia di Homebrew",
     "deprecatedFormulae": "Formule obsolete",
-    "snapshots": "Istantanee"
+    "snapshots": "Istantanee",
+    "security": "Sicurezza"
   },
   "search": {
     "placeholder": "Cerca…",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Diagnostica",
       "cleanup": "Pulizia",
-      "snapshots": "Istantanee"
+      "snapshots": "Istantanee",
+      "security": "Sicurezza"
     },
     "table": {
       "title": "Tabella",
@@ -199,7 +202,8 @@
     "homebrew": "Gestisci e aggiorna Homebrew. Controlla la versione installata e aggiorna Homebrew Core quando è disponibile una versione più recente.",
     "doctor": "La diagnostica di Homebrew rileva le cause più comuni degli errori.",
     "cleanup": "La pulizia rimuove i download obsoleti e i file nella cache per liberare spazio su disco.",
-    "snapshots": "Le istantanee sono Brewfile salvati che puoi ripristinare in seguito su questo o un altro Mac per reinstallare le stesse formule, gli stessi cask e tap."
+    "snapshots": "Le istantanee sono Brewfile salvati che puoi ripristinare in seguito su questo o un altro Mac per reinstallare le stesse formule, gli stessi cask e tap.",
+    "security": "Controlla le formule installate rispetto al database OSV.dev. Una scansione completa non garantisce l'assenza di vulnerabilità. I cask non vengono analizzati."
   },
   "homebrew": {
     "currentVersion": "Versione attuale",
@@ -208,6 +212,53 @@
   },
   "cleanup": {
     "spaceToFree": "Puoi liberare {{size}}"
+  },
+  "security": {
+    "scan": "Analizza",
+    "scanning": "Analisi…",
+    "scanningDetail": "Controllo delle formule installate con OSV.dev. Può richiedere alcuni minuti.",
+    "intro": "Analizza le formule installate per vulnerabilità note. Homebrew interroga OSV.dev, quindi la scansione richiede una connessione di rete. I cask non sono inclusi.",
+    "summary": "{{count}} risultati in {{packages}} formule",
+    "checked": "{{count}} formule controllate",
+    "filterSeverity": "Gravità minima",
+    "filterFix": "Correzione",
+    "severityFilter": {
+      "all": "Tutte le gravità",
+      "low": "Bassa e superiore",
+      "medium": "Media e superiore",
+      "high": "Alta e superiore",
+      "critical": "Solo critica"
+    },
+    "fixFilter": {
+      "all": "Qualsiasi stato",
+      "available": "Correzione disponibile",
+      "unavailable": "Nessuna correzione pubblicata"
+    },
+    "incomplete": "Alcune formule installate non sono state controllate, quindi la scansione può trascurare vulnerabilità.",
+    "outdatedWithoutSbom": "Aggiorna queste per poter controllare la versione installata: {{names}}",
+    "skipped": "Ignorate perché l'URL sorgente manca o non è supportato: {{names}}",
+    "unscanned": "Non analizzate: {{names}}",
+    "none": "Nessuna vulnerabilità nota nelle formule analizzate.",
+    "filteredEmpty": "Nessun risultato corrisponde a questi filtri.",
+    "installedVersion": "Installata {{version}}",
+    "openAdvisory": "Apri {{id}} su OSV.dev",
+    "fixedIn": "Corretto in {{versions}}",
+    "noFix": "Nessuna correzione pubblicata",
+    "severityName": {
+      "critical": "Critica",
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Bassa",
+      "unknown": "Sconosciuta"
+    },
+    "errors": {
+      "unavailable": "Questo Homebrew non include brew vulns. Aggiorna Homebrew e riprova.",
+      "offline": "La scansione non ha raggiunto OSV.dev. Controlla la connessione e riprova.",
+      "timeout": "La scansione ha impiegato troppo tempo ed è stata interrotta. Riprova.",
+      "generic": "La scansione delle vulnerabilità non è riuscita."
+    },
+    "badge": "{{count}} vulnerabilità note. Gravità più alta: {{severity}}",
+    "packageSection": "Vulnerabilità"
   },
   "dialogs": {
     "confirmUninstall": "Vuoi davvero disinstallare \"{{name}}\"?",
@@ -336,6 +387,7 @@
       "doctor": "Diagnostica",
       "cleanup": "Pulizia",
       "snapshots": "Istantanee",
+      "security": "Sicurezza",
       "settings": "Impostazioni",
       "shortcuts": "Scorciatoie da tastiera…"
     },

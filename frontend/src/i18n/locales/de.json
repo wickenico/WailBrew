@@ -29,6 +29,7 @@
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "snapshots": "Schnappschüsse",
+    "security": "Sicherheit",
     "refresh": "Aktualisieren",
     "sponsor": "Unterstützen",
     "services": "Dienste",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Homebrew Cleanup",
     "deprecatedFormulae": "Veraltete Formeln",
     "services": "Dienste",
-    "snapshots": "Schnappschüsse"
+    "snapshots": "Schnappschüsse",
+    "security": "Sicherheit"
   },
   "search": {
     "placeholder": "Suchen...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "snapshots": "Schnappschüsse"
+      "snapshots": "Schnappschüsse",
+      "security": "Sicherheit"
     },
     "table": {
       "title": "Tabelle",
@@ -199,7 +202,8 @@
     "doctor": "Doctor ist ein Feature von Homebrew, welches die häufigsten Fehlerursachen erkennen kann.",
     "cleanup": "Cleanup entfernt veraltete Downloads und Cache-Dateien, um Speicherplatz freizugeben.",
     "services": "Dienste sind Hintergrundprozesse (über launchd), die von Homebrew verwaltet werden. Starten, stoppen, starten Sie neu oder führen Sie den Dienst einer Formel aus.",
-    "snapshots": "Schnappschüsse sind gespeicherte Brewfiles, die du später auf diesem oder einem anderen Mac wiederherstellen kannst, um dieselben Formeln, Casks und Taps erneut zu installieren."
+    "snapshots": "Schnappschüsse sind gespeicherte Brewfiles, die du später auf diesem oder einem anderen Mac wiederherstellen kannst, um dieselben Formeln, Casks und Taps erneut zu installieren.",
+    "security": "Prüft installierte Formulae gegen die OSV.dev-Datenbank. Ein vollständiger Scan garantiert nicht, dass keine Schwachstellen vorhanden sind. Casks werden nicht geprüft."
   },
   "homebrew": {
     "currentVersion": "Aktuelle Version",
@@ -208,6 +212,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} können freigegeben werden"
+  },
+  "security": {
+    "scan": "Scannen",
+    "scanning": "Scanne…",
+    "scanningDetail": "Installierte Formulae werden mit OSV.dev abgeglichen. Das kann einige Minuten dauern.",
+    "intro": "Installierte Formulae auf bekannte Schwachstellen prüfen. Homebrew fragt OSV.dev ab, daher braucht der Scan eine Netzwerkverbindung. Casks sind nicht enthalten.",
+    "summary": "{{count}} Befunde in {{packages}} Formulae",
+    "checked": "{{count}} Formulae geprüft",
+    "filterSeverity": "Mindestschwere",
+    "filterFix": "Behebung",
+    "severityFilter": {
+      "all": "Alle Schweregrade",
+      "low": "Niedrig und höher",
+      "medium": "Mittel und höher",
+      "high": "Hoch und höher",
+      "critical": "Nur kritisch"
+    },
+    "fixFilter": {
+      "all": "Jeder Status",
+      "available": "Behebung verfügbar",
+      "unavailable": "Keine veröffentlichte Behebung"
+    },
+    "incomplete": "Einige installierte Formulae konnten nicht geprüft werden. Der Scan kann deshalb Schwachstellen übersehen.",
+    "outdatedWithoutSbom": "Aktualisiere diese, damit die installierte Version geprüft werden kann: {{names}}",
+    "skipped": "Übersprungen, weil die Quell-URL fehlt oder nicht unterstützt wird: {{names}}",
+    "unscanned": "Nicht geprüft: {{names}}",
+    "none": "Keine bekannten Schwachstellen in den geprüften Formulae.",
+    "filteredEmpty": "Keine Befunde passen zu diesen Filtern.",
+    "installedVersion": "Installiert {{version}}",
+    "openAdvisory": "{{id}} auf OSV.dev öffnen",
+    "fixedIn": "Behoben in {{versions}}",
+    "noFix": "Keine veröffentlichte Behebung",
+    "severityName": {
+      "critical": "Kritisch",
+      "high": "Hoch",
+      "medium": "Mittel",
+      "low": "Niedrig",
+      "unknown": "Unbekannt"
+    },
+    "errors": {
+      "unavailable": "Dieses Homebrew enthält brew vulns nicht. Aktualisiere Homebrew und versuche es erneut.",
+      "offline": "Der Scan hat OSV.dev nicht erreicht. Prüfe die Verbindung und versuche es erneut.",
+      "timeout": "Der Scan hat zu lange gedauert und wurde abgebrochen. Versuche es erneut.",
+      "generic": "Die Schwachstellenprüfung ist fehlgeschlagen."
+    },
+    "badge": "{{count}} bekannte Schwachstellen. Höchste Schwere: {{severity}}",
+    "packageSection": "Schwachstellen"
   },
   "dialogs": {
     "confirmUninstall": "Möchten Sie \"{{name}}\" wirklich deinstallieren?",
@@ -337,7 +388,8 @@
       "settings": "Einstellungen",
       "shortcuts": "Tastenkürzel...",
       "services": "Dienste",
-      "snapshots": "Schnappschüsse"
+      "snapshots": "Schnappschüsse",
+      "security": "Sicherheit"
     },
     "tools": {
       "title": "Werkzeuge",

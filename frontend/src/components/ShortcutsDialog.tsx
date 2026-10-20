@@ -51,6 +51,7 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
                 { action: t("shortcuts.navigation.allCasks"), keys: `${cmdKey}7` },
                 { action: t("shortcuts.navigation.homebrew"), keys: `${cmdKey}8` },
                 { action: t("shortcuts.navigation.doctor"), keys: `${cmdKey}9` },
+                { action: t("shortcuts.navigation.security"), keys: `${cmdKey}⇧V` },
                 { action: t("shortcuts.navigation.cleanup"), keys: `${cmdKey}0` },
                 { action: t("shortcuts.navigation.snapshots"), keys: `${cmdKey}B` },
             ],

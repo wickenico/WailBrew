@@ -766,6 +766,12 @@ func (a *App) GetInstalledDependents(packageName string) []string {
 	return a.brewService.GetInstalledDependents(packageName)
 }
 
+// GetBrewVulnerabilities scans installed formulae for known vulnerabilities.
+// The scan queries OSV.dev through `brew vulns` and can take a few minutes.
+func (a *App) GetBrewVulnerabilities() (*brew.VulnerabilityReport, error) {
+	return a.brewService.GetBrewVulnerabilities()
+}
+
 func (a *App) RunBrewDoctor() string {
 	return a.brewService.RunBrewDoctor()
 }
@@ -962,6 +968,7 @@ var validLandingTabs = map[string]bool{
 	"homebrew":     true,
 	"doctor":       true,
 	"cleanup":      true,
+	"security":     true,
 }
 
 func (a *App) GetLandingTab() string {

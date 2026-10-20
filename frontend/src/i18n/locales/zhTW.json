@@ -33,7 +33,8 @@
     "services": "服務",
     "collapse": "收合側邊欄",
     "expand": "展開側邊欄",
-    "snapshots": "快照"
+    "snapshots": "快照",
+    "security": "安全性"
   },
   "headers": {
     "installedFormulas": "已安裝套件",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Homebrew 清理",
     "deprecatedFormulae": "已棄用的套件",
     "services": "服務",
-    "snapshots": "快照"
+    "snapshots": "快照",
+    "security": "安全性"
   },
   "search": {
     "placeholder": "搜尋...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "清理",
-      "snapshots": "快照"
+      "snapshots": "快照",
+      "security": "安全性"
     },
     "table": {
       "title": "表格",
@@ -198,7 +201,8 @@
     "doctor": "診斷是 Homebrew 的功能，可以檢測最常見的錯誤原因。",
     "cleanup": "清理會移除過期的下載檔案和快取檔案以釋放磁碟空間。",
     "services": "服務是由 Homebrew 管理的背景程序（透過 launchd）。可以啟動、停止、重新啟動或執行某個 formula 的服務。",
-    "snapshots": "快照是已儲存的 Brewfile，可在此 Mac 或其他 Mac 上稍後還原，以重新安裝相同的 formula、cask 和 tap。"
+    "snapshots": "快照是已儲存的 Brewfile，可在此 Mac 或其他 Mac 上稍後還原，以重新安裝相同的 formula、cask 和 tap。",
+    "security": "根據 OSV.dev 資料庫檢查已安裝的 formula。完整掃描也不能保證沒有漏洞。不會掃描 cask。"
   },
   "homebrew": {
     "currentVersion": "目前版本",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "可釋放 {{size}}"
+  },
+  "security": {
+    "scan": "掃描",
+    "scanning": "正在掃描…",
+    "scanningDetail": "正在對照 OSV.dev 檢查已安裝的 formula。這可能需要幾分鐘。",
+    "intro": "掃描已安裝 formula 的已知漏洞。Homebrew 會查詢 OSV.dev，因此需要網路連線。不包括 cask。",
+    "summary": "{{packages}} 個 formula 中有 {{count}} 筆發現",
+    "checked": "已檢查 {{count}} 個 formula",
+    "filterSeverity": "最低嚴重性",
+    "filterFix": "修復",
+    "severityFilter": {
+      "all": "所有嚴重性",
+      "low": "低及以上",
+      "medium": "中及以上",
+      "high": "高及以上",
+      "critical": "僅嚴重"
+    },
+    "fixFilter": {
+      "all": "任何修復狀態",
+      "available": "有可用修復",
+      "unavailable": "沒有已發布的修復"
+    },
+    "incomplete": "部分已安裝 formula 無法檢查，因此這次掃描可能漏掉漏洞。",
+    "outdatedWithoutSbom": "升級這些 formula 後才能檢查已安裝版本：{{names}}",
+    "skipped": "因缺少或不支援來源 URL 而略過：{{names}}",
+    "unscanned": "未掃描：{{names}}",
+    "none": "已掃描的 formula 中沒有已知漏洞。",
+    "filteredEmpty": "沒有符合這些篩選條件的結果。",
+    "installedVersion": "已安裝 {{version}}",
+    "openAdvisory": "在 OSV.dev 上開啟 {{id}}",
+    "fixedIn": "已在 {{versions}} 中修復",
+    "noFix": "沒有已發布的修復",
+    "severityName": {
+      "critical": "嚴重",
+      "high": "高",
+      "medium": "中",
+      "low": "低",
+      "unknown": "未知"
+    },
+    "errors": {
+      "unavailable": "此 Homebrew 不包含 brew vulns。請更新 Homebrew 後再試。",
+      "offline": "掃描無法連線到 OSV.dev。請檢查網路後再試。",
+      "timeout": "掃描耗時過長，已停止。請再試一次。",
+      "generic": "漏洞掃描失敗。"
+    },
+    "badge": "{{count}} 個已知漏洞。最高嚴重性：{{severity}}",
+    "packageSection": "漏洞"
   },
   "dialogs": {
     "confirmUninstall": "您確定要解除安裝 \"{{name}}\" 嗎？",
@@ -334,7 +385,8 @@
       "settings": "設定",
       "shortcuts": "鍵盤快捷鍵...",
       "services": "服務",
-      "snapshots": "快照"
+      "snapshots": "快照",
+      "security": "安全性"
     },
     "tools": {
       "title": "工具",

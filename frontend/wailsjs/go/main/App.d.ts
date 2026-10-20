@@ -70,6 +70,8 @@ export function GetBrewUpdatablePackages():Promise<Array<any>>;
 
 export function GetBrewUpdatablePackagesWithUpdate():Promise<Array<any>>;
 
+export function GetBrewVulnerabilities():Promise<brew.VulnerabilityReport>;
+
 export function GetCaskAppDir():Promise<string>;
 
 export function GetCaskIcon(arg1:string):Promise<string>;

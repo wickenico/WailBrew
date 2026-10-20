@@ -134,6 +134,10 @@ export function GetBrewUpdatablePackagesWithUpdate() {
   return window['go']['main']['App']['GetBrewUpdatablePackagesWithUpdate']();
 }
 
+export function GetBrewVulnerabilities() {
+  return window['go']['main']['App']['GetBrewVulnerabilities']();
+}
+
 export function GetCaskAppDir() {
   return window['go']['main']['App']['GetCaskAppDir']();
 }

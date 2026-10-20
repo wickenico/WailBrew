@@ -27,6 +27,7 @@ import {
     GetBrewTapInfo,
     GetBrewUpdatablePackages,
     GetBrewUpdatablePackagesWithUpdate,
+    GetBrewVulnerabilities,
     GetDeprecatedFormulae,
     GetFavorites,
     GetHomebrewVersion,
@@ -72,6 +73,7 @@ import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximi
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
 import { installedCaskEntries, packageDetails, packageTarget, updatablePackageEntries } from "./utils/packages";
+import { annotatePackage, openVulnerabilities } from "./utils/vulnerabilities";
 import "./App.css";
 import "./style.css";
 
@@ -89,6 +91,7 @@ import PackageTable from "./components/PackageTable";
 import RepositoryInfo from "./components/RepositoryInfo";
 import RepositoryTable from "./components/RepositoryTable";
 import RestartDialog from "./components/RestartDialog";
+import SecurityView from "./components/SecurityView";
 import ServiceInfo from "./components/ServiceInfo";
 import ServicesTable, { type ServiceEntry } from "./components/ServicesTable";
 import SettingsView from "./components/SettingsView";
@@ -101,7 +104,7 @@ import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import XcodeLicenseBanner from "./components/XcodeLicenseBanner";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
-import type { PackageDetails, PackageEntry, RepositoryEntry, SnapshotEntry, View } from "./types";
+import type { PackageDetails, PackageEntry, RepositoryEntry, SnapshotEntry, View, VulnerabilityReport } from "./types";
 import { isXcodeLicenseError } from "./utils/xcodeLicense";
 
 const WAILBREW_UPGRADE_COMMAND = "brew update\nbrew upgrade --cask wailbrew";
@@ -246,6 +249,9 @@ const WailBrewApp = () => {
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
     const [infoPackage, setInfoPackage] = useState<PackageEntry | null>(null);
     const [doctorLog, setDoctorLog] = useState<string>("");
+    const [vulnerabilityReport, setVulnerabilityReport] = useState<VulnerabilityReport | null>(null);
+    const [vulnerabilityError, setVulnerabilityError] = useState<string | null>(null);
+    const [scanningVulnerabilities, setScanningVulnerabilities] = useState(false);
     const [runningDoctorCommand, setRunningDoctorCommand] = useState<string | null>(null);
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [selectedDeprecatedPackage, setSelectedDeprecatedPackage] = useState<PackageEntry | null>(null);
@@ -1404,13 +1410,24 @@ const WailBrewApp = () => {
         const query = debouncedSearchQuery.toLowerCase();
         return installedFilteredPackages
             .filter((pkg) => pkg.name.toLowerCase().includes(query))
-            .map((pkg) =>
-                favorites.has(pkg.name) === !!pkg.isFavorite ? pkg : { ...pkg, isFavorite: favorites.has(pkg.name) },
-            )
+            .map((pkg) => {
+                const withFavorite =
+                    favorites.has(pkg.name) === !!pkg.isFavorite
+                        ? pkg
+                        : { ...pkg, isFavorite: favorites.has(pkg.name) };
+                return annotatePackage(withFavorite, vulnerabilityReport);
+            })
             .filter((pkg) => !showFavoritesOnly || favorites.has(pkg.name))
             .filter((pkg) => !showPinnedOnly || pkg.isPinned);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [installedFilteredPackages, debouncedSearchQuery, favorites, showFavoritesOnly, showPinnedOnly]);
+    }, [
+        installedFilteredPackages,
+        debouncedSearchQuery,
+        favorites,
+        showFavoritesOnly,
+        showPinnedOnly,
+        vulnerabilityReport,
+    ]);
 
     const selectedTargets = useMemo(
         () => updatablePackages.filter((pkg) => selectedPackages.has(pkg.name)).map(packageTarget),
@@ -2813,6 +2830,7 @@ const WailBrewApp = () => {
                     leavesCount={leavesPackages.length}
                     repositoriesCount={repositories.length}
                     servicesCount={services.length}
+                    securityCount={vulnerabilityReport ? vulnerabilityReport.findings.length : -1}
                     onClearSelection={clearSelection}
                     appVersion={appVersion}
                     onOpenAbout={() => setShowAbout(true)}
@@ -2933,6 +2951,7 @@ const WailBrewApp = () => {
                                         loadingDetailsFor={loadingDetailsFor}
                                         view={view}
                                         onSelectDependency={handleSelectDependency}
+                                        vulnerabilities={openVulnerabilities(vulnerabilityReport, selectedPackage)}
                                     />
                                 </div>
                                 <div className="package-footer">{t("footers.installedFormulas")}</div>
@@ -2994,6 +3013,7 @@ const WailBrewApp = () => {
                                         loadingDetailsFor={loadingDetailsFor}
                                         view={view}
                                         onSelectDependency={handleSelectDependency}
+                                        vulnerabilities={openVulnerabilities(vulnerabilityReport, selectedPackage)}
                                     />
                                 </div>
                                 <div className="package-footer">{t("footers.installedCasks")}</div>
@@ -3112,6 +3132,7 @@ const WailBrewApp = () => {
                                             loadingDetailsFor={loadingDetailsFor}
                                             view={view}
                                             onSelectDependency={handleSelectDependency}
+                                            vulnerabilities={openVulnerabilities(vulnerabilityReport, selectedPackage)}
                                         />
                                     </div>
                                     <div className="package-footer">{t("footers.outdatedFormulas")}</div>
@@ -3166,6 +3187,7 @@ const WailBrewApp = () => {
                                         loadingDetailsFor={loadingDetailsFor}
                                         view={view}
                                         onSelectDependency={handleSelectDependency}
+                                        vulnerabilities={openVulnerabilities(vulnerabilityReport, selectedPackage)}
                                     />
                                 </div>
                                 <div className="package-footer">{t("footers.allFormulas")}</div>
@@ -3219,6 +3241,7 @@ const WailBrewApp = () => {
                                         loadingDetailsFor={loadingDetailsFor}
                                         view={view}
                                         onSelectDependency={handleSelectDependency}
+                                        vulnerabilities={openVulnerabilities(vulnerabilityReport, selectedPackage)}
                                     />
                                 </div>
                                 <div className="package-footer">{t("footers.allCasks")}</div>
@@ -3263,6 +3286,7 @@ const WailBrewApp = () => {
                                         loadingDetailsFor={loadingDetailsFor}
                                         view={view}
                                         onSelectDependency={handleSelectDependency}
+                                        vulnerabilities={openVulnerabilities(vulnerabilityReport, selectedPackage)}
                                     />
                                 </div>
                                 <div className="package-footer">{t("footers.leaves")}</div>
@@ -3387,6 +3411,34 @@ const WailBrewApp = () => {
 
                                 // Start the update process
                                 await UpdateHomebrew();
+                            }}
+                        />
+                    )}
+                    {view === "security" && (
+                        <SecurityView
+                            report={vulnerabilityReport}
+                            error={vulnerabilityError}
+                            scanning={scanningVulnerabilities}
+                            onScan={async () => {
+                                setScanningVulnerabilities(true);
+                                setVulnerabilityError(null);
+                                try {
+                                    const report = await GetBrewVulnerabilities();
+                                    setVulnerabilityReport(report);
+                                } catch (err) {
+                                    setVulnerabilityError(String(err));
+                                } finally {
+                                    setScanningVulnerabilities(false);
+                                }
+                            }}
+                            onOpenFormula={(name) => {
+                                const pkg = packages.find((item) => item.name === name) ?? {
+                                    name,
+                                    installedVersion: "",
+                                    isInstalled: true,
+                                };
+                                setView("installed");
+                                void handleSelect(pkg);
                             }}
                         />
                     )}

@@ -76,6 +76,7 @@ type Service interface {
 	GetInstalledDependents(packageName string) []string
 
 	// Other operations
+	GetBrewVulnerabilities() (*VulnerabilityReport, error)
 	RunBrewDoctor() string
 	ExecuteBrewDoctorCommand(command string) string
 	GetDeprecatedFormulae(doctorOutput string) []string

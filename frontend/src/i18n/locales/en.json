@@ -30,6 +30,7 @@
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "snapshots": "Snapshots",
+    "security": "Security",
     "refresh": "Refresh",
     "sponsor": "Sponsor",
     "collapse": "Collapse sidebar",
@@ -48,7 +49,8 @@
     "homebrewDoctor": "Homebrew Doctor",
     "homebrewCleanup": "Homebrew Cleanup",
     "deprecatedFormulae": "Deprecated Formulae",
-    "snapshots": "Snapshots"
+    "snapshots": "Snapshots",
+    "security": "Security"
   },
   "search": {
     "placeholder": "Search...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "snapshots": "Snapshots"
+      "snapshots": "Snapshots",
+      "security": "Security"
     },
     "table": {
       "title": "Table",
@@ -199,7 +202,8 @@
     "homebrew": "Manage and update Homebrew itself. Check the installed version and update Homebrew core when a newer version is available.",
     "doctor": "Doctor is a Homebrew feature that can detect the most common causes of errors.",
     "cleanup": "Cleanup removes outdated downloads and cached files to free up disk space.",
-    "snapshots": "Snapshots are saved Brewfiles you can restore later, on this Mac or another one, to reinstall the same formulae, casks, and taps."
+    "snapshots": "Snapshots are saved Brewfiles you can restore later, on this Mac or another one, to reinstall the same formulae, casks, and taps.",
+    "security": "Scans installed formulae against the OSV.dev database. A complete scan does not guarantee there are no vulnerabilities. Casks are not scanned."
   },
   "homebrew": {
     "currentVersion": "Current Version",
@@ -208,6 +212,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} can be freed"
+  },
+  "security": {
+    "scan": "Scan",
+    "scanning": "Scanning…",
+    "scanningDetail": "Checking installed formulae against OSV.dev. This can take a few minutes.",
+    "intro": "Scan installed formulae for known vulnerabilities. Homebrew queries OSV.dev, so the scan needs a network connection. Casks are not included.",
+    "summary": "{{count}} findings in {{packages}} formulae",
+    "checked": "{{count}} formulae checked",
+    "filterSeverity": "Minimum severity",
+    "filterFix": "Fix",
+    "severityFilter": {
+      "all": "All severities",
+      "low": "Low and above",
+      "medium": "Medium and above",
+      "high": "High and above",
+      "critical": "Critical only"
+    },
+    "fixFilter": {
+      "all": "Any fix status",
+      "available": "Fix available",
+      "unavailable": "No released fix"
+    },
+    "incomplete": "Some installed formulae could not be checked, so this scan may miss vulnerabilities.",
+    "outdatedWithoutSbom": "Upgrade these so their installed version can be checked: {{names}}",
+    "skipped": "Skipped because the source URL is missing or unsupported: {{names}}",
+    "unscanned": "Not scanned: {{names}}",
+    "none": "No known vulnerabilities in the scanned formulae.",
+    "filteredEmpty": "No findings match these filters.",
+    "installedVersion": "Installed {{version}}",
+    "openAdvisory": "Open {{id}} on OSV.dev",
+    "fixedIn": "Fixed in {{versions}}",
+    "noFix": "No released fix",
+    "severityName": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "unknown": "Unknown"
+    },
+    "errors": {
+      "unavailable": "This Homebrew does not include brew vulns. Update Homebrew and try again.",
+      "offline": "The scan could not reach OSV.dev. Check your connection and try again.",
+      "timeout": "The scan took too long and was stopped. Try again.",
+      "generic": "The vulnerability scan failed."
+    },
+    "badge": "{{count}} known vulnerabilities. Highest severity: {{severity}}",
+    "packageSection": "Vulnerabilities"
   },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
@@ -336,6 +387,7 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "snapshots": "Snapshots",
+      "security": "Security",
       "settings": "Settings",
       "shortcuts": "Keyboard Shortcuts..."
     },

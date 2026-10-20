@@ -104,6 +104,9 @@ func Build(app AppInterface) *menu.Menu {
 	ViewMenu.AddText(getT("menu.view.doctor"), keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "doctor")
 	})
+	ViewMenu.AddText(getT("menu.view.security"), keys.Combo("v", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
+		rt.EventsEmit(getCtx(), "setView", "security")
+	})
 	ViewMenu.AddText(getT("menu.view.cleanup"), keys.CmdOrCtrl("0"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "cleanup")
 	})

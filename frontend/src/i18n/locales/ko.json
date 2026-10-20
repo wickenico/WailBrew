@@ -33,7 +33,8 @@
     "services": "서비스",
     "collapse": "사이드바 접기",
     "expand": "사이드바 펼치기",
-    "snapshots": "스냅샷"
+    "snapshots": "스냅샷",
+    "security": "보안"
   },
   "headers": {
     "installedFormulas": "설치된 Formulae",
@@ -48,7 +49,8 @@
     "homebrewCleanup": "Homebrew Cleanup",
     "deprecatedFormulae": "지원 중단된 Formulae",
     "services": "서비스",
-    "snapshots": "스냅샷"
+    "snapshots": "스냅샷",
+    "security": "보안"
   },
   "search": {
     "placeholder": "검색...",
@@ -76,7 +78,8 @@
       "homebrew": "Homebrew",
       "doctor": "Doctor",
       "cleanup": "Cleanup",
-      "snapshots": "스냅샷"
+      "snapshots": "스냅샷",
+      "security": "보안"
     },
     "table": {
       "title": "테이블",
@@ -198,7 +201,8 @@
     "doctor": "Doctor는 가장 일반적인 오류 원인을 감지할 수 있는 Homebrew 기능입니다.",
     "cleanup": "Cleanup은 오래된 다운로드와 캐시 파일을 제거하여 디스크 공간을 확보합니다.",
     "services": "서비스는 Homebrew가 관리하는 백그라운드 프로세스(launchd)입니다. 포뮬러의 서비스를 시작, 중지, 재시작하거나 실행할 수 있습니다.",
-    "snapshots": "스냅샷은 저장된 Brewfile로, 이 Mac이나 다른 Mac에서 나중에 복원하여 동일한 포뮬러, 캐스크, 탭을 다시 설치할 수 있습니다."
+    "snapshots": "스냅샷은 저장된 Brewfile로, 이 Mac이나 다른 Mac에서 나중에 복원하여 동일한 포뮬러, 캐스크, 탭을 다시 설치할 수 있습니다.",
+    "security": "설치된 formula를 OSV.dev 데이터베이스와 대조합니다. 검사가 완료되어도 취약점이 전혀 없다고 보장하지는 않습니다. Cask는 검사하지 않습니다."
   },
   "homebrew": {
     "currentVersion": "현재 버전",
@@ -207,6 +211,53 @@
   },
   "cleanup": {
     "spaceToFree": "{{size}} 확보 가능"
+  },
+  "security": {
+    "scan": "검사",
+    "scanning": "검사 중…",
+    "scanningDetail": "설치된 formula를 OSV.dev와 대조하는 중입니다. 몇 분 걸릴 수 있습니다.",
+    "intro": "설치된 formula의 알려진 취약점을 검사합니다. Homebrew가 OSV.dev에 질의하므로 네트워크 연결이 필요합니다. Cask는 포함되지 않습니다.",
+    "summary": "formula {{packages}}개에서 발견 {{count}}건",
+    "checked": "formula {{count}}개 검사됨",
+    "filterSeverity": "최소 심각도",
+    "filterFix": "수정",
+    "severityFilter": {
+      "all": "모든 심각도",
+      "low": "낮음 이상",
+      "medium": "보통 이상",
+      "high": "높음 이상",
+      "critical": "치명적만"
+    },
+    "fixFilter": {
+      "all": "모든 수정 상태",
+      "available": "수정 있음",
+      "unavailable": "공개된 수정 없음"
+    },
+    "incomplete": "일부 설치된 formula를 검사하지 못했습니다. 이 검사에서 취약점이 빠질 수 있습니다.",
+    "outdatedWithoutSbom": "설치된 버전을 검사하려면 다음을 업그레이드하세요: {{names}}",
+    "skipped": "소스 URL이 없거나 지원되지 않아 건너뜀: {{names}}",
+    "unscanned": "검사하지 않음: {{names}}",
+    "none": "검사한 formula에서 알려진 취약점이 없습니다.",
+    "filteredEmpty": "이 필터와 일치하는 결과가 없습니다.",
+    "installedVersion": "설치됨 {{version}}",
+    "openAdvisory": "OSV.dev에서 {{id}} 열기",
+    "fixedIn": "{{versions}}에서 수정됨",
+    "noFix": "공개된 수정 없음",
+    "severityName": {
+      "critical": "치명적",
+      "high": "높음",
+      "medium": "보통",
+      "low": "낮음",
+      "unknown": "알 수 없음"
+    },
+    "errors": {
+      "unavailable": "이 Homebrew에는 brew vulns가 없습니다. Homebrew를 업데이트한 뒤 다시 시도하세요.",
+      "offline": "검사가 OSV.dev에 연결하지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.",
+      "timeout": "검사가 너무 오래 걸려 중단되었습니다. 다시 시도하세요.",
+      "generic": "취약점 검사에 실패했습니다."
+    },
+    "badge": "알려진 취약점 {{count}}건. 가장 높은 심각도: {{severity}}",
+    "packageSection": "취약점"
   },
   "dialogs": {
     "confirmUninstall": "정말로 \"{{name}}\"을(를) 제거하시겠습니까?",
@@ -334,7 +385,8 @@
       "settings": "설정",
       "shortcuts": "키보드 단축키...",
       "services": "서비스",
-      "snapshots": "스냅샷"
+      "snapshots": "스냅샷",
+      "security": "보안"
     },
     "tools": {
       "title": "도구",
