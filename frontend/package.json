@@ -20,7 +20,7 @@
     ]
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.14.21",
+    "@tanstack/react-virtual": "^3.14.22",
     "i18next": "^26.5.4",
     "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "^1.61.0",
