@@ -502,6 +502,14 @@ func (a *App) ClearBrewCache() {
 	a.brewService.ClearCache()
 }
 
+// GetInstalledStateFingerprint returns an opaque value that changes whenever
+// installed packages change, including changes made with brew in a terminal.
+// The frontend compares it when the window regains focus to decide whether the
+// installed lists need reloading. An empty string means "unknown".
+func (a *App) GetInstalledStateFingerprint() string {
+	return a.brewService.GetInstalledStateFingerprint()
+}
+
 func (a *App) GetAllBrewPackages() [][]string {
 	return a.brewService.GetAllBrewPackages()
 }

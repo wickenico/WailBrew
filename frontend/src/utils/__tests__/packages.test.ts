@@ -1,6 +1,94 @@
 import { describe, expect, it } from "vitest";
 import type { PackageDetails, PackageEntry } from "../../types";
-import { installedCaskEntries, packageDetails, packageTarget, updatablePackageEntries } from "../packages";
+import {
+    carryOverSizes,
+    installedCaskEntries,
+    installedFormulaEntries,
+    markInstalled,
+    packageDetails,
+    packageTarget,
+    updatablePackageEntries,
+} from "../packages";
+
+describe("installedFormulaEntries", () => {
+    it("maps install reason and pin state", () => {
+        expect(
+            installedFormulaEntries([
+                ["wget", "1.21", "", "on_request", "true"],
+                ["openssl@3", "3.3.0", "", "", "false"],
+            ]),
+        ).toEqual([
+            {
+                name: "wget",
+                installedVersion: "1.21",
+                size: "",
+                installReason: "on_request",
+                isInstalled: true,
+                isPinned: true,
+            },
+            {
+                name: "openssl@3",
+                installedVersion: "3.3.0",
+                size: "",
+                installReason: "unknown",
+                isInstalled: true,
+                isPinned: false,
+            },
+        ]);
+    });
+});
+
+describe("carryOverSizes", () => {
+    it("keeps sizes of unchanged packages and measures new or upgraded ones", () => {
+        const previous: PackageEntry[] = [
+            { name: "firefox", installedVersion: "120.0", size: "300M" },
+            { name: "slack", installedVersion: "4.40", size: "500M" },
+            { name: "zoom", installedVersion: "6.0", size: "200M" },
+        ];
+        const next: PackageEntry[] = [
+            { name: "discord", installedVersion: "0.0.300", size: "" },
+            { name: "firefox", installedVersion: "120.0", size: "" },
+            { name: "slack", installedVersion: "4.41", size: "" },
+        ];
+
+        const { entries, needsSize } = carryOverSizes(previous, next);
+
+        expect(entries.map((pkg) => [pkg.name, pkg.size])).toEqual([
+            ["discord", ""],
+            ["firefox", "300M"],
+            ["slack", ""],
+        ]);
+        expect(needsSize).toEqual(["discord", "slack"]);
+    });
+
+    it("measures packages whose size was never loaded", () => {
+        const { needsSize } = carryOverSizes(
+            [{ name: "wget", installedVersion: "1.21", size: "" }],
+            [{ name: "wget", installedVersion: "1.21", size: "" }],
+        );
+        expect(needsSize).toEqual(["wget"]);
+    });
+});
+
+describe("markInstalled", () => {
+    it("updates only entries whose state changed", () => {
+        const unchanged: PackageEntry = { name: "firefox", installedVersion: "", isInstalled: true };
+        const catalog: PackageEntry[] = [
+            unchanged,
+            { name: "discord", installedVersion: "", isInstalled: false },
+            { name: "zoom", installedVersion: "", isInstalled: true },
+        ];
+
+        const result = markInstalled(catalog, new Set(["firefox", "discord"]));
+
+        expect(result.map((pkg) => [pkg.name, pkg.isInstalled])).toEqual([
+            ["firefox", true],
+            ["discord", true],
+            ["zoom", false],
+        ]);
+        expect(result[0]).toBe(unchanged);
+    });
+});
 
 describe("installedCaskEntries", () => {
     it("full names and pins", () => {

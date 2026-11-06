@@ -96,6 +96,8 @@ export function GetInstalledDependencies(arg1:string):Promise<Array<string>>;
 
 export function GetInstalledDependents(arg1:string):Promise<Array<string>>;
 
+export function GetInstalledStateFingerprint():Promise<string>;
+
 export function GetLandingTab():Promise<string>;
 
 export function GetMacOSReleaseName():Promise<string>;

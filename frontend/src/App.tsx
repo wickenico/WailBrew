@@ -17,6 +17,7 @@ import {
     GetBrewCaskSizes,
     GetBrewCasks,
     GetBrewCleanupDryRun,
+    GetBrewLeaves,
     GetBrewPackageInfo,
     GetBrewPackageInfoAsJson,
     GetBrewPackageSizes,
@@ -32,6 +33,7 @@ import {
     GetFavorites,
     GetHomebrewVersion,
     GetInstalledDependents,
+    GetInstalledStateFingerprint,
     GetLandingTab,
     GetOutdatedCounts,
     GetOutdatedFlag,
@@ -72,7 +74,15 @@ import {
 import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
-import { installedCaskEntries, packageDetails, packageTarget, updatablePackageEntries } from "./utils/packages";
+import {
+    carryOverSizes,
+    installedCaskEntries,
+    installedFormulaEntries,
+    markInstalled,
+    packageDetails,
+    packageTarget,
+    updatablePackageEntries,
+} from "./utils/packages";
 import { annotatePackage, openVulnerabilities } from "./utils/vulnerabilities";
 import "./App.css";
 import "./style.css";
@@ -284,6 +294,13 @@ const WailBrewApp = () => {
     const isInitialLoad = useRef<boolean>(true);
     const startupDataPromise = useRef<ReturnType<typeof GetStartupDataWithUpdate> | null>(null);
 
+    // Fingerprint of the installed Homebrew state that the lists on screen
+    // reflect. When the window regains focus and the fingerprint differs,
+    // something changed outside WailBrew (e.g. brew in a terminal) and the
+    // installed lists are reloaded quietly.
+    const installedFingerprint = useRef<string | null>(null);
+    const installedSyncRunning = useRef<boolean>(false);
+
     // Loading timer for development (DEV only — isolated to LoadingTimer component)
     const [loadingStartTime, setLoadingStartTime] = useState<number | null>(null);
 
@@ -463,6 +480,7 @@ const WailBrewApp = () => {
         // request so the second setup subscribes to the existing startup work
         // instead of launching another complete set of Homebrew commands.
         startupDataPromise.current ??= GetStartupDataWithUpdate();
+        rememberInstalledState();
         let cancelled = false;
 
         startupDataPromise.current
@@ -494,16 +512,7 @@ const WailBrewApp = () => {
                     throw new Error(`${t("errors.failedRepositories")}: ${safeRepos[0][1]}`);
                 }
 
-                const installedFormatted = safeInstalled.map(
-                    ([name, installedVersion, size, installReason, pinned]) => ({
-                        name,
-                        installedVersion,
-                        size,
-                        installReason: (installReason as "on_request" | "dependency" | "unknown") || "unknown",
-                        isInstalled: true,
-                        isPinned: pinned === "true",
-                    }),
-                );
+                const installedFormatted = installedFormulaEntries(safeInstalled);
                 const casksFormatted = installedCaskEntries(safeInstalledCasks);
                 const updatableFormatted = updatableErrorMessage ? [] : updatablePackageEntries(safeUpdatable);
                 // Format leaves packages with their versions and sizes from installed packages
@@ -2649,6 +2658,7 @@ const WailBrewApp = () => {
         try {
             // Clear cache to ensure fresh data on manual refresh
             await ClearBrewCache();
+            rememberInstalledState();
 
             // Use single optimized startup call with database update for fresh data
             const startupData = await GetStartupDataWithUpdate();
@@ -2665,14 +2675,7 @@ const WailBrewApp = () => {
                 setPackages([]);
                 checkBrewLocation();
             } else {
-                const formatted = safeInstalled.map(([name, installedVersion, size, installReason, pinned]) => ({
-                    name,
-                    installedVersion,
-                    size,
-                    installReason: (installReason as "on_request" | "dependency" | "unknown") || "unknown",
-                    isInstalled: true,
-                    isPinned: pinned === "true",
-                }));
+                const formatted = installedFormulaEntries(safeInstalled);
                 setPackages(formatted);
 
                 // Lazy load package sizes in the background
@@ -2781,6 +2784,143 @@ const WailBrewApp = () => {
             setLoading(false);
         }
     };
+
+    // Record the installed-state fingerprint that a full load is about to
+    // reflect. It is taken before the lists are fetched, so a change racing the
+    // load at worst causes one extra quiet sync, never a missed one.
+    const rememberInstalledState = () => {
+        GetInstalledStateFingerprint()
+            .then((fingerprint) => {
+                installedFingerprint.current = fingerprint || null;
+            })
+            .catch((err: unknown) => {
+                console.error("Failed to read installed state:", err);
+            });
+    };
+
+    // Quietly reload the installed lists when Homebrew's installed state changed
+    // outside WailBrew, e.g. `brew install --cask` in a terminal (#538). Runs when
+    // the window regains focus. Cheap when nothing changed: the fingerprint is
+    // read from the filesystem without spawning brew.
+    const syncInstalledState = async () => {
+        if (installedSyncRunning.current) return;
+        // Full loads and running operations refresh the lists themselves.
+        if (loading || isUpdateRunning || isInstallRunning || isUninstallRunning) return;
+
+        installedSyncRunning.current = true;
+        try {
+            const fingerprint = await GetInstalledStateFingerprint();
+            if (!fingerprint) return;
+            if (installedFingerprint.current === null) {
+                installedFingerprint.current = fingerprint;
+                return;
+            }
+            if (fingerprint === installedFingerprint.current) return;
+
+            await ClearBrewCache();
+            const [installedRows, caskRows, updatableRows, leaves] = await Promise.all([
+                GetBrewPackages(),
+                GetBrewCasks(),
+                GetBrewUpdatablePackages(),
+                GetBrewLeaves(),
+            ]);
+            installedFingerprint.current = fingerprint;
+
+            const isError = (rows: string[][]) => rows.length === 1 && rows[0][0] === "Error";
+            const safeInstalled = installedRows || [];
+            const safeCasks = caskRows || [];
+            const safeUpdatable = updatableRows || [];
+            const safeLeaves = leaves || [];
+
+            let currentPackages = packages;
+            if (!isError(safeInstalled)) {
+                const { entries, needsSize } = carryOverSizes(packages, installedFormulaEntries(safeInstalled));
+                currentPackages = entries;
+                setPackages(entries);
+                if (allPackagesLoaded) {
+                    setAllPackages((prev) => markInstalled(prev, new Set(entries.map((pkg) => pkg.name))));
+                }
+                if (needsSize.length > 0) {
+                    GetBrewPackageSizes(needsSize)
+                        .then((sizes: Record<string, string>) => {
+                            const withSize = (pkg: PackageEntry) =>
+                                sizes[pkg.name] ? { ...pkg, size: sizes[pkg.name] } : pkg;
+                            setPackages((prev) => prev.map(withSize));
+                            setLeavesPackages((prev) => prev.map(withSize));
+                        })
+                        .catch((err: unknown) => {
+                            console.error("Error loading package sizes:", err);
+                        });
+                }
+            }
+
+            if (!isError(safeCasks)) {
+                const { entries, needsSize } = carryOverSizes(casks, installedCaskEntries(safeCasks));
+                setCasks(entries);
+                if (allCasksLoaded) {
+                    // The catalog lists casks by full name (see loadAllCasks).
+                    setAllCasksAll((prev) => markInstalled(prev, new Set(safeCasks.map((row) => row[4]))));
+                }
+                if (needsSize.length > 0) {
+                    GetBrewCaskSizes(needsSize)
+                        .then((sizes: Record<string, string>) => {
+                            setCasks((prev) =>
+                                prev.map((cask) => (sizes[cask.name] ? { ...cask, size: sizes[cask.name] } : cask)),
+                            );
+                        })
+                        .catch((err: unknown) => {
+                            console.error("Error loading cask sizes:", err);
+                        });
+                }
+            }
+
+            if (!isError(safeUpdatable)) {
+                const formatted = updatablePackageEntries(safeUpdatable);
+                setUpdatablePackages(formatted);
+                setUpdatableError("");
+                // Not "new outdated packages" for the background check's toast.
+                lastKnownOutdatedCount.current = formatted.length;
+            }
+
+            if (!(safeLeaves.length === 1 && safeLeaves[0]?.startsWith("Error: "))) {
+                const installedMap = new Map(currentPackages.map((pkg) => [pkg.name, pkg]));
+                setLeavesPackages(
+                    safeLeaves.map((name) => {
+                        const data = installedMap.get(name);
+                        return {
+                            name,
+                            installedVersion: data?.installedVersion || t("common.notAvailable"),
+                            size: data?.size,
+                            isInstalled: true,
+                        };
+                    }),
+                );
+                setLeavesError("");
+            }
+        } catch (err) {
+            console.error("Error syncing installed packages:", err);
+        } finally {
+            installedSyncRunning.current = false;
+        }
+    };
+
+    // The focus listener is registered once, so it calls through a ref to see
+    // the current render's state.
+    const syncInstalledStateRef = useRef(syncInstalledState);
+    syncInstalledStateRef.current = syncInstalledState;
+    useEffect(() => {
+        const onActivate = () => {
+            if (document.visibilityState === "visible") {
+                void syncInstalledStateRef.current();
+            }
+        };
+        window.addEventListener("focus", onActivate);
+        document.addEventListener("visibilitychange", onActivate);
+        return () => {
+            window.removeEventListener("focus", onActivate);
+            document.removeEventListener("visibilitychange", onActivate);
+        };
+    }, []);
 
     // Table columns config
     const columnsInstalled = [

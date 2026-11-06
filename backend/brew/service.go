@@ -99,6 +99,10 @@ type Service interface {
 
 	// Cache management
 	ClearCache()
+
+	// GetInstalledStateFingerprint returns a value that changes whenever the
+	// installed packages change, including changes made outside WailBrew.
+	GetInstalledStateFingerprint() string
 }
 
 // NewPackagesInfo contains information about newly discovered packages
@@ -130,6 +134,7 @@ type serviceImpl struct {
 	servicesService *ServicesService
 	startupService  *StartupService
 	snapshotService *SnapshotService
+	installedState  *InstalledStateService
 }
 
 // NewService creates a new brew service
@@ -243,6 +248,7 @@ func NewService(
 		servicesService: servicesService,
 		startupService:  startupService,
 		snapshotService: snapshotService,
+		installedState:  NewInstalledStateService(executor),
 	}
 }
 
@@ -259,6 +265,10 @@ func (s *serviceImpl) GetStartupDataWithUpdate() *StartupData {
 func (s *serviceImpl) ClearCache() {
 	s.executor.ClearCache()
 	s.sizeService.ClearCache()
+}
+
+func (s *serviceImpl) GetInstalledStateFingerprint() string {
+	return s.installedState.Fingerprint()
 }
 
 // Package listing methods

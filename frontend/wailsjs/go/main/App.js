@@ -186,6 +186,10 @@ export function GetInstalledDependents(arg1) {
   return window['go']['main']['App']['GetInstalledDependents'](arg1);
 }
 
+export function GetInstalledStateFingerprint() {
+  return window['go']['main']['App']['GetInstalledStateFingerprint']();
+}
+
 export function GetLandingTab() {
   return window['go']['main']['App']['GetLandingTab']();
 }
