@@ -131,7 +131,7 @@
     "yesUntap": "Yes, untap",
     "yesTrust": "Yes, trust",
     "trustRepository": "Trust \"{{name}}\"",
-    "ok": "Ok",
+    "ok": "OK",
     "close": "Close",
     "updateHomebrew": "Update Homebrew",
     "uninstallDeprecated": "Uninstall deprecated formula \"{{name}}\"",

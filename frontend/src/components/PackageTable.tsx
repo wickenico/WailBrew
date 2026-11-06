@@ -20,6 +20,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import type { PackageEntry } from "../types";
+import { formatShortcut } from "../utils/shortcuts";
 
 // Estimated row height in px, used as a starting point before rows are measured.
 const ESTIMATED_ROW_HEIGHT = 41;
@@ -790,12 +791,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                                     {packages.length} {packages.length === 1 ? t("table.package") : t("table.packages")}
                                 </span>
                                 {packages.length > 0 && (
-                                    <span className="table-footer-shortcut">
-                                        {typeof navigator !== "undefined" &&
-                                        (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"))
-                                            ? "⌘T"
-                                            : "Ctrl+T"}
-                                    </span>
+                                    <span className="table-footer-shortcut">{formatShortcut("T")}</span>
                                 )}
                             </div>
                         </div>

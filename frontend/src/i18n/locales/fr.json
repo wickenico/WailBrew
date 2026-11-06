@@ -131,7 +131,7 @@
     "yesUntap": "Oui, détapper",
     "yesTrust": "Oui, approuver",
     "trustRepository": "Approuver « {{name}} »",
-    "ok": "Ok",
+    "ok": "OK",
     "close": "Fermer",
     "updateHomebrew": "Mettre à jour Homebrew",
     "uninstallDeprecated": "Désinstaller la formule obsolète \"{{name}}\"",

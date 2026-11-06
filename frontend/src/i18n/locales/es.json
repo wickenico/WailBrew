@@ -131,7 +131,7 @@
     "yesUntap": "Si, remover repositorio",
     "yesTrust": "Sí, confiar",
     "trustRepository": "Confiar en \"{{name}}\"",
-    "ok": "Ok",
+    "ok": "OK",
     "close": "Cerrar",
     "updateHomebrew": "Actualizar Homebrew",
     "uninstallDeprecated": "Desinstalar formula en desuso \"{{name}}\"",

@@ -131,7 +131,7 @@
     "yesUntap": "是，取消连接",
     "yesTrust": "是，信任",
     "trustRepository": "信任 “{{name}}”",
-    "ok": "Ok",
+    "ok": "OK",
     "close": "关闭",
     "updateHomebrew": "更新 Homebrew",
     "uninstallDeprecated": "卸载已弃用的包 \"{{name}}\"",
