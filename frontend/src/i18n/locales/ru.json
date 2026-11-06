@@ -471,16 +471,16 @@
     "available": "Доступно обновление!",
     "currentVersion": "Текущая версия",
     "newVersion": "Новая версия",
-    "changes": "Изменения",
-    "availableViaHomebrew": "A new version is available via Homebrew Cask",
-    "manualUpdate": "Ручное обновление",
-    "instruction": "Чтобы обновить WailBrew, выполните следующую команду в терминале:",
-    "copyCommand": "Скопировать команду в буфер обмена",
-    "copied": "Команда скопирована в буфер обмена!",
     "upToDate": "У вас последняя версия!",
     "currentVersionIs": "Версия {{version}} является текущей версией.",
     "tryAgain": "Повторить попытку",
-    "gotIt": "Понятно"
+    "updateNow": "Обновить сейчас",
+    "later": "Позже",
+    "updateNowHint": "WailBrew обновится через Homebrew. После завершения вам предложат перезапустить приложение.",
+    "notInstalledViaHomebrew": "Эта копия WailBrew не управляется Homebrew, поэтому не может обновиться сама. Загрузите новую версию со страницы релиза.",
+    "releaseNotes": "Что нового в {{version}}",
+    "openReleasePage": "Открыть страницу релиза",
+    "titleBarAvailable": "Доступна WailBrew {{version}}"
   },
   "restartDialog": {
     "title": "Требуется перезапуск",

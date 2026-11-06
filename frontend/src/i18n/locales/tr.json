@@ -471,16 +471,16 @@
     "available": "Güncelleme var!",
     "currentVersion": "Şimdiki Sürüm",
     "newVersion": "Yeni Sürüm",
-    "changes": "Değişiklikler",
-    "availableViaHomebrew": "A new version is available via Homebrew Cask",
-    "manualUpdate": "Manual Güncelleme",
-    "instruction": "WailBrew'i güncellemek için, lütfen aşağıdaki komutu komut satırında uygulayın;",
-    "copyCommand": "Komutu panoya kopyala",
-    "copied": "Komut panoya kopyalandı!",
     "upToDate": "Güncelsin!",
     "currentVersionIs": "Sürüm {{version}} güncel sürümdür.",
     "tryAgain": "Tekrar dene",
-    "gotIt": "Anlaşıldı"
+    "updateNow": "Şimdi güncelle",
+    "later": "Daha sonra",
+    "updateNowHint": "WailBrew kendini Homebrew ile güncelleyecek. Bittiğinde yeniden başlatmanız istenecek.",
+    "notInstalledViaHomebrew": "Bu WailBrew kopyası Homebrew tarafından yönetilmediği için kendini güncelleyemez. Yeni sürümü sürüm sayfasından indirin.",
+    "releaseNotes": "{{version}} sürümündeki yenilikler",
+    "openReleasePage": "Sürüm sayfasını aç",
+    "titleBarAvailable": "WailBrew {{version}} kullanılabilir"
   },
   "restartDialog": {
     "title": "Yeniden Başlatma Gerekli",

@@ -1,10 +1,21 @@
-import { AlertTriangle, Check, CheckSquare, Copy, PartyPopper, Pin, RefreshCw, Sparkles, Star, X } from "lucide-react";
+import {
+    AlertTriangle,
+    CheckSquare,
+    CircleArrowUp,
+    PartyPopper,
+    Pin,
+    RefreshCw,
+    Sparkles,
+    Star,
+    X,
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import {
     CheckBrewLocation,
+    CheckForUpdates,
     CheckHomebrewUpdate,
     ClearBrewCache,
     CreateSnapshot,
@@ -71,6 +82,7 @@ import {
     UpdateHomebrew,
     UpdateSelectedBrewPackages,
 } from "../wailsjs/go/main/App";
+import type { main } from "../wailsjs/go/models";
 import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { useHideableOperation } from "./hooks/useHideableOperation";
@@ -117,73 +129,6 @@ import XcodeLicenseBanner from "./components/XcodeLicenseBanner";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
 import type { PackageDetails, PackageEntry, RepositoryEntry, SnapshotEntry, View, VulnerabilityReport } from "./types";
 import { isXcodeLicenseError } from "./utils/xcodeLicense";
-
-const WAILBREW_UPGRADE_COMMAND = "brew update\nbrew upgrade --cask wailbrew";
-
-const UpdateCommandCopy = () => {
-    const { t } = useTranslation();
-    const [copied, setCopied] = useState(false);
-    const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    useEffect(
-        () => () => {
-            if (resetTimer.current) clearTimeout(resetTimer.current);
-        },
-        [],
-    );
-
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(WAILBREW_UPGRADE_COMMAND);
-            setCopied(true);
-            if (resetTimer.current) clearTimeout(resetTimer.current);
-            resetTimer.current = setTimeout(() => setCopied(false), 2000);
-            toast.success(t("dialogs.commandCopied"), { duration: 2000, position: "bottom-center" });
-        } catch (error) {
-            console.error("Failed to copy update command:", error);
-            toast.error(t("logDialog.copyFailed"), { duration: 2000, position: "bottom-center" });
-        }
-    };
-
-    return (
-        <button
-            type="button"
-            aria-label={copied ? t("dialogs.commandCopied") : t("dialogs.copyCommand")}
-            style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginTop: "0.5rem",
-                padding: "0.4rem 0.6rem",
-                background: copied ? "rgba(76, 175, 80, 0.18)" : "rgba(0, 0, 0, 0.3)",
-                borderRadius: "6px",
-                fontSize: "0.8rem",
-                fontFamily: "monospace",
-                cursor: "pointer",
-                transition: "background 0.2s",
-                outline: "none",
-                color: copied ? "#4CAF50" : "inherit",
-                border: "none",
-                width: "100%",
-                textAlign: "left",
-            }}
-            onClick={(event) => {
-                event.stopPropagation();
-                void handleCopy();
-            }}
-            onMouseEnter={(event) => {
-                if (!copied) event.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
-            }}
-            onMouseLeave={(event) => {
-                event.currentTarget.style.background = copied ? "rgba(76, 175, 80, 0.18)" : "rgba(0, 0, 0, 0.3)";
-            }}
-            title={copied ? t("dialogs.commandCopied") : t("dialogs.copyCommand")}
-        >
-            <code style={{ flex: 1, fontSize: "0.8rem" }}>{WAILBREW_UPGRADE_COMMAND}</code>
-            {copied ? <Check size={16} /> : <Copy size={16} style={{ opacity: 0.7 }} />}
-        </button>
-    );
-};
 
 const WailBrewApp = () => {
     const { t, i18n } = useTranslation();
@@ -307,6 +252,22 @@ const WailBrewApp = () => {
     // Identifies the current install so a superseded one (e.g. replaced by the
     // retry after trusting a tap) can't mark the new one as finished.
     const installRunIdRef = useRef<number>(0);
+
+    // Whether a newer WailBrew exists. Same check as the Update dialog (running
+    // version vs. the wailbrew cask), so the title bar button and the dialog
+    // always agree, also for non-Homebrew installs and dev builds.
+    const [appUpdateInfo, setAppUpdateInfo] = useState<main.UpdateInfo | null>(null);
+    const refreshAppUpdateInfo = async () => {
+        try {
+            setAppUpdateInfo(await CheckForUpdates());
+        } catch (error) {
+            console.error("WailBrew update check failed:", error);
+        }
+    };
+    // biome-ignore lint/correctness/useExhaustiveDependencies: check once on startup
+    useEffect(() => {
+        refreshAppUpdateInfo();
+    }, []);
     const [cleanupLog, setCleanupLog] = useState<string>("");
     const [cleanupEstimate, setCleanupEstimate] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
@@ -872,6 +833,8 @@ const WailBrewApp = () => {
         } finally {
             backgroundCheckRunning.current = false;
             setIsBackgroundCheckRunning(false);
+            // The check ran `brew update`, so the wailbrew cask version is fresh too
+            refreshAppUpdateInfo();
             // Update next check time
             nextCheckTime.current = Date.now() + 15 * 60 * 1000;
         }
@@ -907,9 +870,8 @@ const WailBrewApp = () => {
             toast.dismiss("startup-up-to-date");
             toast(
                 (t_obj) => {
-                    const handleNavigateToOutdated = () => {
-                        setView("updatable");
-                        handleSelect(wailbrewPackage);
+                    const handleOpenUpdateDialog = () => {
+                        setShowUpdate(true);
                         toast.dismiss(t_obj.id);
                     };
 
@@ -923,11 +885,10 @@ const WailBrewApp = () => {
                                 <div style={{ fontSize: "0.85rem", opacity: 0.8, marginBottom: "0.5rem" }}>
                                     {t("toast.versionReady", { version: wailbrewPackage.latestVersion })}
                                 </div>
-                                <UpdateCommandCopy />
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleNavigateToOutdated();
+                                        handleOpenUpdateDialog();
                                     }}
                                     style={{
                                         marginTop: "0.75rem",
@@ -955,8 +916,8 @@ const WailBrewApp = () => {
                                         e.currentTarget.style.borderColor = "rgba(80, 180, 255, 0.4)";
                                     }}
                                 >
-                                    <RefreshCw size={16} />
-                                    {t("toast.viewOutdated")}
+                                    <CircleArrowUp size={16} />
+                                    {t("updateDialog.updateNow")}
                                 </button>
                             </div>
                             <button
@@ -1711,8 +1672,22 @@ const WailBrewApp = () => {
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
         setShowUpdateConfirm(false);
+        await startPackageUpdate(selectedPackage);
+    };
+
+    // WailBrew's own entry in the outdated list, if any (carries the cask's full name)
+    const wailbrewUpdate = updatablePackages.find((pkg) => pkg.name.toLowerCase() === "wailbrew");
+
+    // "Update now" in the Update dialog: upgrade WailBrew through the regular
+    // update flow; the backend then emits wailbrewUpdated, which offers a restart.
+    const handleUpdateWailbrewNow = () => {
+        setShowUpdate(false);
+        startPackageUpdate(wailbrewUpdate ?? { name: "wailbrew", installedVersion: "", isCask: true });
+    };
+
+    const startPackageUpdate = async (pkg: PackageEntry) => {
         if (revealRunningUpdate()) return;
-        const packageName = packageTarget(selectedPackage);
+        const packageName = packageTarget(pkg);
 
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
@@ -1720,7 +1695,7 @@ const WailBrewApp = () => {
 
         setIsUpdateAllOperation(false);
         setCurrentlyUpdatingPackage(null);
-        setUpdateLogTitle(t("dialogs.updateLogs", { name: selectedPackage.name }));
+        setUpdateLogTitle(t("dialogs.updateLogs", { name: pkg.name }));
         updateOp.setIsHidden(false);
         updateOp.resultRef.current = null;
         setUpdateLogs(t("dialogs.updating", { name: packageName }));
@@ -3047,6 +3022,10 @@ const WailBrewApp = () => {
                 onToggleSidebarCollapsed={toggleSidebarCollapsed}
                 isBackgroundCheckRunning={isBackgroundCheckRunning}
                 getSecondsUntilNextCheck={getSecondsUntilNextCheck}
+                appUpdateVersion={
+                    appUpdateInfo?.available && !isUpdateRunning ? appUpdateInfo.latestVersion : undefined
+                }
+                onShowAppUpdate={() => setShowUpdate(true)}
                 hiddenOperations={[
                     ...(isUpdateRunning && updateOp.isHidden
                         ? [{ kind: "update" as const, onShow: () => updateOp.setIsHidden(false) }]
@@ -4077,7 +4056,12 @@ const WailBrewApp = () => {
                         }}
                     />
                     <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} appVersion={appVersion} />
-                    <UpdateDialog isOpen={showUpdate} onClose={() => setShowUpdate(false)} />
+                    <UpdateDialog
+                        isOpen={showUpdate}
+                        onClose={() => setShowUpdate(false)}
+                        onUpdateNow={handleUpdateWailbrewNow}
+                        onChecked={setAppUpdateInfo}
+                    />
                     <RestartDialog isOpen={showRestart} onClose={() => setShowRestart(false)} />
                     <ShortcutsDialog open={showShortcuts} onClose={() => setShowShortcuts(false)} />
                     <Toaster

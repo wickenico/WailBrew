@@ -48,3 +48,19 @@
         opacity: 0.45;
     }
 }
+
+/* Shown while a newer WailBrew is available via Homebrew; opens the Update dialog. */
+.titlebar-app-update-btn {
+    position: relative;
+    color: #f5b800;
+}
+
+.titlebar-app-update-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}

@@ -524,16 +524,16 @@
     "available": "Update available via Homebrew!",
     "currentVersion": "Current Version",
     "newVersion": "New Version",
-    "changes": "Changes",
-    "availableViaHomebrew": "A new version is available via Homebrew Cask",
-    "manualUpdate": "Manual Update",
-    "instruction": "To update WailBrew, please run the following commands in your terminal:",
-    "copyCommand": "Copy command to clipboard",
-    "copied": "Command copied to clipboard!",
     "upToDate": "You're up to date!",
     "currentVersionIs": "Version {{version}} is the current version available via Homebrew.",
     "tryAgain": "Try again",
-    "gotIt": "Got it"
+    "updateNow": "Update now",
+    "later": "Later",
+    "updateNowHint": "WailBrew will update itself via Homebrew. You'll be asked to restart once it's done.",
+    "notInstalledViaHomebrew": "This copy of WailBrew isn't managed by Homebrew, so it can't update itself. Download the new version from the release page.",
+    "releaseNotes": "What's new in {{version}}",
+    "openReleasePage": "Open release page",
+    "titleBarAvailable": "WailBrew {{version}} is available"
   },
   "restartDialog": {
     "title": "Restart Required",

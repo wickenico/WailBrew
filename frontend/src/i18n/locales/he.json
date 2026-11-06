@@ -471,16 +471,16 @@
     "available": "עדכון זמין דרך Homebrew!",
     "currentVersion": "גרסה נוכחית",
     "newVersion": "גרסה חדשה",
-    "changes": "שינויים",
-    "availableViaHomebrew": "גרסה חדשה זמינה דרך Homebrew Cask",
-    "manualUpdate": "עדכון ידני",
-    "instruction": "כדי לעדכן את WailBrew, אנא הרץ את הפקודות הבאות בטרמינל:",
-    "copyCommand": "העתק פקודה ללוח",
-    "copied": "הפקודה הועתקה ללוח!",
     "upToDate": "הכל מעודכן!",
     "currentVersionIs": "גרסה {{version}} היא הגרסה הנוכחית הזמינה דרך Homebrew.",
     "tryAgain": "נסה שוב",
-    "gotIt": "הבנתי"
+    "updateNow": "עדכן עכשיו",
+    "later": "מאוחר יותר",
+    "updateNowHint": "WailBrew יתעדכן באמצעות Homebrew. בסיום תתבקש להפעיל מחדש.",
+    "notInstalledViaHomebrew": "עותק זה של WailBrew אינו מנוהל על ידי Homebrew ולכן אינו יכול לעדכן את עצמו. הורד את הגרסה החדשה מדף הגרסה.",
+    "releaseNotes": "מה חדש ב-{{version}}",
+    "openReleasePage": "פתח את דף הגרסה",
+    "titleBarAvailable": "WailBrew {{version}} זמין"
   },
   "restartDialog": {
     "title": "נדרשת הפעלה מחדש",

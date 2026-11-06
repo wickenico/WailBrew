@@ -176,10 +176,8 @@ export namespace main {
 	    available: boolean;
 	    currentVersion: string;
 	    latestVersion: string;
-	    releaseNotes: string;
-	    downloadUrl: string;
-	    fileSize: number;
-	    publishedAt: string;
+	    installedViaHomebrew: boolean;
+	    releaseUrl: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new UpdateInfo(source);
@@ -190,10 +188,8 @@ export namespace main {
 	        this.available = source["available"];
 	        this.currentVersion = source["currentVersion"];
 	        this.latestVersion = source["latestVersion"];
-	        this.releaseNotes = source["releaseNotes"];
-	        this.downloadUrl = source["downloadUrl"];
-	        this.fileSize = source["fileSize"];
-	        this.publishedAt = source["publishedAt"];
+	        this.installedViaHomebrew = source["installedViaHomebrew"];
+	        this.releaseUrl = source["releaseUrl"];
 	    }
 	}
 

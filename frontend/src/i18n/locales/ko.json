@@ -471,16 +471,16 @@
     "available": "Homebrew를 통해 업데이트 가능!",
     "currentVersion": "현재 버전",
     "newVersion": "새 버전",
-    "changes": "변경 사항",
-    "availableViaHomebrew": "Homebrew Cask를 통해 새 버전을 사용할 수 있습니다",
-    "manualUpdate": "수동 업데이트",
-    "instruction": "WailBrew를 업데이트하려면 터미널에서 다음 명령을 실행하세요:",
-    "copyCommand": "명령어 클립보드에 복사",
-    "copied": "명령어가 클립보드에 복사되었습니다!",
     "upToDate": "최신 버전입니다!",
     "currentVersionIs": "버전 {{version}}이(가) Homebrew를 통해 제공되는 현재 버전입니다.",
     "tryAgain": "다시 시도",
-    "gotIt": "확인"
+    "updateNow": "지금 업데이트",
+    "later": "나중에",
+    "updateNowHint": "WailBrew가 Homebrew를 통해 스스로 업데이트합니다. 완료되면 재시작 여부를 묻습니다.",
+    "notInstalledViaHomebrew": "이 WailBrew는 Homebrew로 관리되지 않아 스스로 업데이트할 수 없습니다. 릴리스 페이지에서 새 버전을 다운로드하세요.",
+    "releaseNotes": "{{version}}의 새로운 기능",
+    "openReleasePage": "릴리스 페이지 열기",
+    "titleBarAvailable": "WailBrew {{version}}을(를) 사용할 수 있습니다"
   },
   "restartDialog": {
     "title": "다시 시작 필요",

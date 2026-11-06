@@ -5,6 +5,7 @@ import {
     Minus,
     PanelLeftClose,
     PanelLeftOpen,
+    Sparkles,
     Square,
     X,
 } from "lucide-react";
@@ -24,6 +25,10 @@ interface TitleBarProps {
     onToggleSidebarCollapsed: () => void;
     isBackgroundCheckRunning?: boolean;
     getSecondsUntilNextCheck?: () => number;
+    /** Latest WailBrew version when an update of WailBrew itself is available. */
+    appUpdateVersion?: string;
+    /** Opens the Update dialog. */
+    onShowAppUpdate?: () => void;
     /** Operations running with their log dialog hidden; each gets a button that reopens it. */
     hiddenOperations?: HiddenOperation[];
 }
@@ -51,6 +56,8 @@ const TitleBar: React.FC<TitleBarProps> = ({
     onToggleSidebarCollapsed,
     isBackgroundCheckRunning = false,
     getSecondsUntilNextCheck,
+    appUpdateVersion,
+    onShowAppUpdate,
     hiddenOperations = [],
 }) => {
     const { t } = useTranslation();
@@ -92,6 +99,18 @@ const TitleBar: React.FC<TitleBarProps> = ({
                 isRunning={isBackgroundCheckRunning}
                 getSecondsUntilNextCheck={getSecondsUntilNextCheck}
             />
+            {appUpdateVersion && onShowAppUpdate && (
+                <button
+                    type="button"
+                    className="titlebar-action-btn titlebar-app-update-btn"
+                    onClick={onShowAppUpdate}
+                    title={t("updateDialog.titleBarAvailable", { version: appUpdateVersion })}
+                    aria-label={t("updateDialog.titleBarAvailable", { version: appUpdateVersion })}
+                >
+                    <Sparkles size={16} strokeWidth={2} />
+                    <span className="titlebar-app-update-dot" aria-hidden="true" />
+                </button>
+            )}
             {hiddenOperations.map(({ kind, onShow }) => {
                 const Icon = hiddenOperationIcons[kind];
                 const label = t(hiddenOperationLabelKeys[kind]);

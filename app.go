@@ -57,28 +57,17 @@ func (e *wailsEventEmitter) Emit(event string, data string) {
 	}
 }
 
-// GitHubRelease represents a GitHub release
-type GitHubRelease struct {
-	TagName     string `json:"tag_name"`
-	Name        string `json:"name"`
-	Body        string `json:"body"`
-	PublishedAt string `json:"published_at"`
-	Assets      []struct {
-		Name               string `json:"name"`
-		BrowserDownloadURL string `json:"browser_download_url"`
-		Size               int64  `json:"size"`
-	} `json:"assets"`
-}
-
 // UpdateInfo contains information about available updates
 type UpdateInfo struct {
 	Available      bool   `json:"available"`
 	CurrentVersion string `json:"currentVersion"`
 	LatestVersion  string `json:"latestVersion"`
-	ReleaseNotes   string `json:"releaseNotes"`
-	DownloadURL    string `json:"downloadUrl"`
-	FileSize       int64  `json:"fileSize"`
-	PublishedAt    string `json:"publishedAt"`
+	// InstalledViaHomebrew is true when the wailbrew cask is installed, so the
+	// app can update itself with `brew upgrade --cask wailbrew`. Otherwise (e.g.
+	// a DMG install) the user has to download the new version themselves.
+	InstalledViaHomebrew bool `json:"installedViaHomebrew"`
+	// ReleaseURL is the GitHub release page of LatestVersion.
+	ReleaseURL string `json:"releaseUrl"`
 }
 
 // NewPackagesInfo contains information about newly discovered packages
@@ -1486,33 +1475,30 @@ func compareVersions(version1, version2 string) bool {
 func (a *App) CheckForUpdates() (*UpdateInfo, error) {
 	currentVersion := Version
 
-	homebrewCaskVersion, err := a.GetHomebrewCaskVersion()
+	caskInfo, err := a.brewService.GetWailbrewCaskInfo()
 	if err != nil {
 		return &UpdateInfo{
 			Available:      false,
 			CurrentVersion: currentVersion,
 			LatestVersion:  currentVersion,
-			ReleaseNotes:   "",
-			DownloadURL:    "",
-			FileSize:       0,
-			PublishedAt:    "",
 		}, nil
 	}
 
 	currentVersionClean := strings.TrimPrefix(currentVersion, "v")
-	homebrewVersionClean := strings.TrimPrefix(homebrewCaskVersion, "v")
-
-	isUpdateAvailable := compareVersions(homebrewVersionClean, currentVersionClean)
+	homebrewVersionClean := strings.TrimPrefix(caskInfo.Version, "v")
 
 	return &UpdateInfo{
-		Available:      isUpdateAvailable,
-		CurrentVersion: currentVersion,
-		LatestVersion:  homebrewVersionClean,
-		ReleaseNotes:   "",
-		DownloadURL:    "",
-		FileSize:       0,
-		PublishedAt:    "",
+		Available:            compareVersions(homebrewVersionClean, currentVersionClean),
+		CurrentVersion:       currentVersion,
+		LatestVersion:        homebrewVersionClean,
+		InstalledViaHomebrew: caskInfo.Installed,
+		ReleaseURL:           releaseURL(homebrewVersionClean),
 	}, nil
+}
+
+// releaseURL returns the GitHub release page for a WailBrew version.
+func releaseURL(version string) string {
+	return "https://github.com/wickenico/WailBrew/releases/tag/v" + strings.TrimPrefix(version, "v")
 }
 
 func (a *App) RestartApp() error {

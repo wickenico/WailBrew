@@ -1,0 +1,187 @@
+/* "Check for Updates" dialog. Own classes (not the About dialog's) so it can
+   evolve independently (#404). */
+.update-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--modal-overlay);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.update-dialog {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-translucent);
+    border: 2px solid var(--glass-border-strong);
+    border-radius: var(--radius);
+    width: 460px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: var(--glass-shadow-strong);
+    animation: scaleIn 0.3s ease-out;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.update-dialog-header {
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.update-dialog-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.update-dialog-content {
+    padding: 28px 24px;
+    overflow-y: auto;
+}
+
+.update-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border-top: 1px solid var(--glass-border);
+}
+
+.update-dialog-footer .btn {
+    padding: 0.55rem 1.2rem;
+}
+
+.update-dialog-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.update-dialog-state h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.update-dialog-state .loading-spinner {
+    margin: 0;
+}
+
+.update-dialog-muted {
+    margin: 0;
+    max-width: 360px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.update-dialog-accent-icon {
+    color: var(--accent);
+}
+
+.update-dialog-ok-icon {
+    color: #4caf50;
+}
+
+.update-dialog-error-icon {
+    color: #ff6b6b;
+}
+
+.update-dialog-error h3 {
+    color: var(--error-color, #ff6b6b);
+}
+
+.update-dialog-versions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 8px 0 4px;
+}
+
+.update-dialog-version {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 110px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.update-dialog-version-latest {
+    border-color: rgba(52, 199, 89, 0.45);
+    background: rgba(52, 199, 89, 0.12);
+}
+
+.update-dialog-version-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.update-dialog-version-number {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.update-dialog-version-arrow {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.update-dialog-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--accent);
+    font-size: 0.88rem;
+    cursor: pointer;
+}
+
+.update-dialog-link:hover {
+    text-decoration: underline;
+}
+
+[data-theme='light'] .update-dialog-header,
+[data-theme='light'] .update-dialog-footer {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .update-dialog-version {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+@media (max-width: 520px) {
+    .update-dialog-versions {
+        flex-direction: column;
+    }
+
+    .update-dialog-version-arrow {
+        transform: rotate(90deg);
+    }
+}

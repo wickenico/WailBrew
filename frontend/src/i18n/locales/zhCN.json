@@ -471,16 +471,16 @@
     "available": "有可用的更新！",
     "currentVersion": "当前版本",
     "newVersion": "新版本",
-    "changes": "变更",
-    "availableViaHomebrew": "A new version is available via Homebrew Cask",
-    "manualUpdate": "手动更新",
-    "instruction": "要更新 WailBrew，请在终端中运行以下命令：",
-    "copyCommand": "复制命令到剪贴板",
-    "copied": "命令已复制到剪贴板！",
     "upToDate": "您已更新到最新版本！",
     "currentVersionIs": "当前版本 {{version}}",
     "tryAgain": "重试",
-    "gotIt": "知道了"
+    "updateNow": "立即更新",
+    "later": "稍后",
+    "updateNowHint": "WailBrew 将通过 Homebrew 自行更新。完成后会提示您重新启动。",
+    "notInstalledViaHomebrew": "此 WailBrew 副本不由 Homebrew 管理，因此无法自行更新。请从发布页面下载新版本。",
+    "releaseNotes": "{{version}} 的新功能",
+    "openReleasePage": "打开发布页面",
+    "titleBarAvailable": "WailBrew {{version}} 已可用"
   },
   "restartDialog": {
     "title": "需要重启",

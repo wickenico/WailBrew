@@ -87,6 +87,7 @@ type Service interface {
 	CheckHomebrewUpdate() (map[string]interface{}, error)
 	UpdateHomebrew(ctx context.Context) string
 	GetHomebrewCaskVersion() (string, error)
+	GetWailbrewCaskInfo() (WailbrewCaskInfo, error)
 	ExportBrewfile(filePath string) error
 	ImportBrewfile(filePath string, cleanup bool) error
 
@@ -771,36 +772,63 @@ func (s *serviceImpl) UpdateHomebrew(ctx context.Context) string {
 }
 
 func (s *serviceImpl) GetHomebrewCaskVersion() (string, error) {
+	info, err := s.GetWailbrewCaskInfo()
+	if err != nil {
+		return "", err
+	}
+	return info.Version, nil
+}
+
+// WailbrewCaskInfo is what Homebrew knows about the wailbrew cask.
+type WailbrewCaskInfo struct {
+	// Version is the latest version known to the local wailbrew tap.
+	Version string
+	// Installed reports whether this machine has the cask installed, i.e.
+	// whether `brew upgrade --cask wailbrew` can update the running app.
+	Installed bool
+}
+
+func (s *serviceImpl) GetWailbrewCaskInfo() (WailbrewCaskInfo, error) {
 	if err := s.validateFunc(); err != nil {
-		return "", fmt.Errorf("homebrew validation failed: %v", err)
+		return WailbrewCaskInfo{}, fmt.Errorf("homebrew validation failed: %v", err)
 	}
 
 	infoOutput, err := s.executor.RunStdoutOnly("info", "--cask", "--json=v2", "wailbrew")
 	if err != nil {
-		return "", fmt.Errorf("failed to get Homebrew Cask info: %v", err)
+		return WailbrewCaskInfo{}, fmt.Errorf("failed to get Homebrew Cask info: %v", err)
 	}
 
+	return parseWailbrewCaskInfo(infoOutput)
+}
+
+// parseWailbrewCaskInfo reads `brew info --cask --json=v2 wailbrew` output.
+// "installed" holds the installed version, or null when the cask isn't installed.
+func parseWailbrewCaskInfo(infoOutput []byte) (WailbrewCaskInfo, error) {
 	var caskInfo struct {
 		Casks []struct {
-			Token   string `json:"token"`
-			Version string `json:"version"`
+			Token     string  `json:"token"`
+			Version   string  `json:"version"`
+			Installed *string `json:"installed"`
 		} `json:"casks"`
 	}
 
 	if err := json.Unmarshal(infoOutput, &caskInfo); err != nil {
-		return "", fmt.Errorf("failed to parse Homebrew Cask JSON: %v", err)
+		return WailbrewCaskInfo{}, fmt.Errorf("failed to parse Homebrew Cask JSON: %v", err)
 	}
 
 	if len(caskInfo.Casks) == 0 {
-		return "", fmt.Errorf("wailbrew cask not found in Homebrew")
+		return WailbrewCaskInfo{}, fmt.Errorf("wailbrew cask not found in Homebrew")
 	}
 
-	version := caskInfo.Casks[0].Version
-	if version == "" {
-		return "", fmt.Errorf("version not found in Homebrew Cask info")
+	cask := caskInfo.Casks[0]
+	if cask.Version == "" {
+		return WailbrewCaskInfo{}, fmt.Errorf("version not found in Homebrew Cask info")
 	}
 
-	return version, nil
+	return WailbrewCaskInfo{
+		Version:   cask.Version,
+		Installed: cask.Installed != nil && *cask.Installed != "",
+	}, nil
 }
 
 func (s *serviceImpl) ExportBrewfile(filePath string) error {
