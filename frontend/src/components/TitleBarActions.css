@@ -32,3 +32,19 @@
     background: var(--hover-bg);
     color: #ff6ba3;
 }
+
+/* Shown while an update, install or uninstall runs with its log dialog closed; reopens it. */
+.titlebar-running-operation-btn {
+    color: var(--accent);
+    animation: titlebar-running-operation-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes titlebar-running-operation-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.45;
+    }
+}

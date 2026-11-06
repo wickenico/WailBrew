@@ -1,4 +1,13 @@
-import { Minus, PanelLeftClose, PanelLeftOpen, Square, X } from "lucide-react";
+import {
+    CircleArrowDown,
+    CircleArrowUp,
+    CircleMinus,
+    Minus,
+    PanelLeftClose,
+    PanelLeftOpen,
+    Square,
+    X,
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -15,7 +24,26 @@ interface TitleBarProps {
     onToggleSidebarCollapsed: () => void;
     isBackgroundCheckRunning?: boolean;
     getSecondsUntilNextCheck?: () => number;
+    /** Operations running with their log dialog hidden; each gets a button that reopens it. */
+    hiddenOperations?: HiddenOperation[];
 }
+
+export interface HiddenOperation {
+    kind: "update" | "install" | "uninstall";
+    onShow: () => void;
+}
+
+const hiddenOperationIcons = {
+    update: CircleArrowUp,
+    install: CircleArrowDown,
+    uninstall: CircleMinus,
+} as const;
+
+const hiddenOperationLabelKeys = {
+    update: "dialogs.showRunningUpdate",
+    install: "dialogs.showRunningInstall",
+    uninstall: "dialogs.showRunningUninstall",
+} as const;
 
 const TitleBar: React.FC<TitleBarProps> = ({
     setView,
@@ -23,6 +51,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
     onToggleSidebarCollapsed,
     isBackgroundCheckRunning = false,
     getSecondsUntilNextCheck,
+    hiddenOperations = [],
 }) => {
     const { t } = useTranslation();
     const [platform, setPlatform] = useState<"linux" | "darwin" | "other" | null>(null);
@@ -63,6 +92,22 @@ const TitleBar: React.FC<TitleBarProps> = ({
                 isRunning={isBackgroundCheckRunning}
                 getSecondsUntilNextCheck={getSecondsUntilNextCheck}
             />
+            {hiddenOperations.map(({ kind, onShow }) => {
+                const Icon = hiddenOperationIcons[kind];
+                const label = t(hiddenOperationLabelKeys[kind]);
+                return (
+                    <button
+                        key={kind}
+                        type="button"
+                        className="titlebar-action-btn titlebar-running-operation-btn"
+                        onClick={onShow}
+                        title={label}
+                        aria-label={label}
+                    >
+                        <Icon size={16} strokeWidth={2} />
+                    </button>
+                );
+            })}
         </>
     );
 

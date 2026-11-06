@@ -73,6 +73,7 @@ import {
 } from "../wailsjs/go/main/App";
 import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
+import { useHideableOperation } from "./hooks/useHideableOperation";
 import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
 import {
     carryOverSizes,
@@ -281,6 +282,31 @@ const WailBrewApp = () => {
     const [isUpdateRunning, setIsUpdateRunning] = useState<boolean>(false);
     const [isInstallRunning, setIsInstallRunning] = useState<boolean>(false);
     const [isUninstallRunning, setIsUninstallRunning] = useState<boolean>(false);
+    // Log dialog titles are fixed when an operation starts, so selecting another
+    // package while it runs doesn't relabel the dialog.
+    const [updateLogTitle, setUpdateLogTitle] = useState<string | null>(null);
+    const [installLogTitle, setInstallLogTitle] = useState<string | null>(null);
+    const [uninstallLogTitle, setUninstallLogTitle] = useState<string | null>(null);
+    // Closing an operation's log dialog while it runs only hides it: the operation
+    // keeps its listeners, logs and running state until brew is done, and the
+    // title bar offers a way back to it (#542).
+    const updateOp = useHideableOperation(isUpdateRunning, () => {
+        setUpdateLogs(null);
+        setUpdateLogTitle(null);
+        setCurrentlyUpdatingPackage(null);
+        setIsUpdateAllOperation(false);
+    });
+    const installOp = useHideableOperation(isInstallRunning, () => {
+        setInstallLogs(null);
+        setInstallLogTitle(null);
+    });
+    const uninstallOp = useHideableOperation(isUninstallRunning, () => {
+        setUninstallLogs(null);
+        setUninstallLogTitle(null);
+    });
+    // Identifies the current install so a superseded one (e.g. replaced by the
+    // retry after trusting a tap) can't mark the new one as finished.
+    const installRunIdRef = useRef<number>(0);
     const [cleanupLog, setCleanupLog] = useState<string>("");
     const [cleanupEstimate, setCleanupEstimate] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
@@ -1541,9 +1567,13 @@ const WailBrewApp = () => {
 
     const handleRemoveConfirmed = async () => {
         if (!selectedPackage) return;
+        setShowConfirm(false);
+        if (revealRunningUninstall()) return;
         const packageName = packageTarget(selectedPackage);
         const zap = uninstallIsCask && zapUninstall;
-        setShowConfirm(false);
+        setUninstallLogTitle(t("dialogs.uninstallLogs", { name: selectedPackage.name }));
+        uninstallOp.setIsHidden(false);
+        uninstallOp.resultRef.current = null;
         setUninstallLogs(t("dialogs.uninstalling", { name: packageName }));
         setIsUninstallRunning(true);
 
@@ -1557,7 +1587,12 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUninstallComplete", async (_finalMessage: string) => {
+        const completeListener = EventsOn("packageUninstallComplete", async (finalMessage: string) => {
+            uninstallOp.resultRef.current = finalMessage;
+            // Unsubscribe first so nothing emitted during the refresh below lands here
+            progressListener();
+            completeListener();
+
             // Update the package list after successful uninstall
             await handleRefreshPackages();
 
@@ -1579,10 +1614,6 @@ const WailBrewApp = () => {
             }
 
             setIsUninstallRunning(false);
-
-            // Clean up event listeners
-            progressListener();
-            completeListener();
         });
 
         // Start the uninstall process
@@ -1590,6 +1621,7 @@ const WailBrewApp = () => {
             await RemoveBrewPackage(packageName, zap);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
+            uninstallOp.resultRef.current = errorMsg;
             setUninstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUninstallRunning(false);
             progressListener();
@@ -1631,7 +1663,27 @@ const WailBrewApp = () => {
         }, 200);
     };
 
+    // Only one operation of a kind runs at a time: e.g. all updates share the
+    // packageUpdateProgress and packageUpdateComplete events, so a second one
+    // would receive the first one's output and completion (#542). Shows the
+    // running operation instead and returns true.
+    const revealIfRunning = (
+        isRunning: boolean,
+        op: ReturnType<typeof useHideableOperation>,
+        messageKey: string,
+    ): boolean => {
+        if (!isRunning) return false;
+        op.setIsHidden(false);
+        toast(t(messageKey), { duration: 3000, position: "bottom-center" });
+        return true;
+    };
+    const revealRunningUpdate = () => revealIfRunning(isUpdateRunning, updateOp, "dialogs.updateAlreadyRunning");
+    const revealRunningInstall = () => revealIfRunning(isInstallRunning, installOp, "dialogs.installAlreadyRunning");
+    const revealRunningUninstall = () =>
+        revealIfRunning(isUninstallRunning, uninstallOp, "dialogs.uninstallAlreadyRunning");
+
     const handleUpdate = (pkg: PackageEntry) => {
+        if (revealRunningUpdate()) return;
         setSelectedPackage(pkg);
         setShowUpdateConfirm(true);
     };
@@ -1658,14 +1710,19 @@ const WailBrewApp = () => {
 
     const handleUpdateConfirmed = async () => {
         if (!selectedPackage) return;
+        setShowUpdateConfirm(false);
+        if (revealRunningUpdate()) return;
         const packageName = packageTarget(selectedPackage);
 
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
 
-        setShowUpdateConfirm(false);
         setIsUpdateAllOperation(false);
+        setCurrentlyUpdatingPackage(null);
+        setUpdateLogTitle(t("dialogs.updateLogs", { name: selectedPackage.name }));
+        updateOp.setIsHidden(false);
+        updateOp.resultRef.current = null;
         setUpdateLogs(t("dialogs.updating", { name: packageName }));
         setIsUpdateRunning(true);
 
@@ -1679,7 +1736,8 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (_finalMessage: string) => {
+        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+            updateOp.resultRef.current = finalMessage;
             // Clear cache and update the package lists after successful update
             await ClearBrewCache();
             const [updated, installedCasks] = await Promise.all([GetBrewUpdatablePackages(), GetBrewCasks()]);
@@ -1708,6 +1766,7 @@ const WailBrewApp = () => {
             await UpdateBrewPackage(packageName);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
+            updateOp.resultRef.current = errorMsg;
             setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUpdateRunning(false);
             updateListenersRef.current.progress?.();
@@ -1716,14 +1775,24 @@ const WailBrewApp = () => {
         }
     };
 
+    const handleUpdateAll = () => {
+        if (revealRunningUpdate()) return;
+        setShowUpdateAllConfirm(true);
+    };
+
     const handleUpdateAllConfirmed = async () => {
+        setShowUpdateAllConfirm(false);
+        if (revealRunningUpdate()) return;
+
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
 
-        setShowUpdateAllConfirm(false);
         setIsUpdateAllOperation(true);
         setCurrentlyUpdatingPackage(null);
+        setUpdateLogTitle(t("dialogs.updateAllLogs"));
+        updateOp.setIsHidden(false);
+        updateOp.resultRef.current = null;
         setUpdateLogs(t("dialogs.updatingAll"));
         setIsUpdateRunning(true);
 
@@ -1747,7 +1816,8 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (_finalMessage: string) => {
+        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+            updateOp.resultRef.current = finalMessage;
             // Update all package lists after successful update
             await handleRefreshPackages();
             await runAutoCleanupIfEnabled();
@@ -1768,6 +1838,7 @@ const WailBrewApp = () => {
             await UpdateAllBrewPackages();
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
+            updateOp.resultRef.current = errorMsg;
             setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUpdateRunning(false);
             setCurrentlyUpdatingPackage(null);
@@ -1823,18 +1894,25 @@ const WailBrewApp = () => {
 
     const handleUpdateSelected = () => {
         if (selectedPackages.size === 0) return;
+        if (revealRunningUpdate()) return;
         setShowUpdateSelectedConfirm(true);
     };
 
     const handleUpdateSelectedConfirmed = async () => {
+        setShowUpdateSelectedConfirm(false);
+        if (revealRunningUpdate()) return;
+
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
         if (updateListenersRef.current.complete) updateListenersRef.current.complete();
 
-        setShowUpdateSelectedConfirm(false);
         setIsUpdateAllOperation(true);
+        setCurrentlyUpdatingPackage(null);
 
         const packageNames = selectedTargets;
+        setUpdateLogTitle(t("dialogs.updateSelectedLogs", { count: packageNames.length }));
+        updateOp.setIsHidden(false);
+        updateOp.resultRef.current = null;
         setUpdateLogs(t("dialogs.updatingSelected", { count: packageNames.length }));
         setIsUpdateRunning(true);
 
@@ -1848,7 +1926,8 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (_finalMessage: string) => {
+        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+            updateOp.resultRef.current = finalMessage;
             // Update the package list after successful update
             await handleRefreshPackages();
 
@@ -1873,6 +1952,7 @@ const WailBrewApp = () => {
             await UpdateSelectedBrewPackages(packageNames);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
+            updateOp.resultRef.current = errorMsg;
             setUpdateLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsUpdateRunning(false);
             updateListenersRef.current.progress?.();
@@ -1910,13 +1990,11 @@ const WailBrewApp = () => {
         if (isUpdateAllOperation && currentlyUpdatingPackage) {
             return t("dialogs.updateLogs", { name: currentlyUpdatingPackage });
         }
-        if (selectedPackage) {
-            return t("dialogs.updateLogs", { name: selectedPackage.name });
-        }
-        return t("dialogs.updateAllLogs");
+        return updateLogTitle ?? t("dialogs.updateAllLogs");
     };
 
     const handleUninstallPackage = async (pkg: PackageEntry) => {
+        if (revealRunningUninstall()) return;
         setSelectedPackage(pkg);
         try {
             const dependents = await GetInstalledDependents(packageTarget(pkg));
@@ -2254,14 +2332,22 @@ const WailBrewApp = () => {
     };
 
     const handleInstallPackage = (pkg: PackageEntry) => {
+        if (revealRunningInstall()) return;
         setSelectedPackage(pkg);
         setShowInstallConfirm(true);
     };
 
-    const handleInstallConfirmed = async () => {
+    // isTrustRetry: re-run after trusting a tap. The blocked install may still be
+    // finishing up (refreshing lists), so it doesn't count as a running install.
+    const handleInstallConfirmed = async (isTrustRetry = false) => {
         if (!selectedPackage) return;
-        const packageName = selectedPackage.name;
         setShowInstallConfirm(false);
+        if (!isTrustRetry && revealRunningInstall()) return;
+        const packageName = selectedPackage.name;
+        const runId = ++installRunIdRef.current;
+        setInstallLogTitle(t("dialogs.installLogs", { name: packageName }));
+        installOp.setIsHidden(false);
+        installOp.resultRef.current = null;
         setInstallLogs(t("dialogs.installing", { name: packageName }));
         setIsInstallRunning(true);
 
@@ -2286,33 +2372,40 @@ const WailBrewApp = () => {
             if (tap) {
                 setTrustPrompt({
                     tap,
-                    retry: () => handleInstallConfirmed(),
+                    retry: () => handleInstallConfirmed(true),
                 });
             }
         });
 
-        const completeListener = EventsOn("packageInstallComplete", async (_finalMessage: string) => {
-            // Update the package list after successful install
-            await handleRefreshPackages();
-
-            setIsInstallRunning(false);
-
-            // Clean up event listeners
+        const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
+            // Unsubscribe first so a trust retry started during the refresh below
+            // doesn't feed its events into this install
             progressListener();
             completeListener();
             trustListener();
+            if (runId !== installRunIdRef.current) return;
+            installOp.resultRef.current = finalMessage;
+
+            // Update the package list after successful install
+            await handleRefreshPackages();
+
+            if (runId === installRunIdRef.current) {
+                setIsInstallRunning(false);
+            }
         });
 
         // Start the install process
         try {
             await InstallBrewPackage(packageName, selectedPackage.isCask ?? false);
         } catch (error) {
-            const errorMsg = `❌ Operation failed: ${String(error)}`;
-            setInstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
-            setIsInstallRunning(false);
             progressListener();
             completeListener();
             trustListener();
+            if (runId !== installRunIdRef.current) return;
+            const errorMsg = `❌ Operation failed: ${String(error)}`;
+            installOp.resultRef.current = errorMsg;
+            setInstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
+            setIsInstallRunning(false);
         }
     };
 
@@ -2954,6 +3047,17 @@ const WailBrewApp = () => {
                 onToggleSidebarCollapsed={toggleSidebarCollapsed}
                 isBackgroundCheckRunning={isBackgroundCheckRunning}
                 getSecondsUntilNextCheck={getSecondsUntilNextCheck}
+                hiddenOperations={[
+                    ...(isUpdateRunning && updateOp.isHidden
+                        ? [{ kind: "update" as const, onShow: () => updateOp.setIsHidden(false) }]
+                        : []),
+                    ...(isInstallRunning && installOp.isHidden
+                        ? [{ kind: "install" as const, onShow: () => installOp.setIsHidden(false) }]
+                        : []),
+                    ...(isUninstallRunning && uninstallOp.isHidden
+                        ? [{ kind: "uninstall" as const, onShow: () => uninstallOp.setIsHidden(false) }]
+                        : []),
+                ]}
             />
             <div
                 className={`wailbrew-container${isMacInsetTitleBar ? " mac-inset-titlebar" : ""}`}
@@ -3196,7 +3300,7 @@ const WailBrewApp = () => {
                                             ) : (
                                                 <button
                                                     className="update-all-button"
-                                                    onClick={() => setShowUpdateAllConfirm(true)}
+                                                    onClick={handleUpdateAll}
                                                     title={t("buttons.updateAll")}
                                                 >
                                                     {t("buttons.updateAll")}
@@ -3624,6 +3728,7 @@ const WailBrewApp = () => {
                             onSelectDeprecated={handleSelectDeprecatedFormula}
                             onSelectDependency={handleSelectDependency}
                             onUninstallDeprecated={async (formula: string) => {
+                                if (revealRunningUninstall()) return;
                                 setSelectedPackage({ name: formula, installedVersion: "", isInstalled: true });
                                 setUninstallIsCask(false);
                                 setShowConfirm(true);
@@ -3718,7 +3823,7 @@ const WailBrewApp = () => {
                     <ConfirmDialog
                         open={showInstallConfirm}
                         message={t("dialogs.confirmInstall", { name: selectedPackage?.name })}
-                        onConfirm={handleInstallConfirmed}
+                        onConfirm={() => handleInstallConfirmed()}
                         onCancel={() => setShowInstallConfirm(false)}
                         confirmLabel={t("buttons.yesInstall")}
                         commandSpec={{
@@ -3807,18 +3912,26 @@ const WailBrewApp = () => {
                         destructive={true}
                     />
                     <LogDialog
-                        open={updateLogs !== null}
+                        open={updateLogs !== null && !updateOp.isHidden}
                         title={getUpdateLogTitle()}
                         log={updateLogs}
                         isRunning={isUpdateRunning}
                         onClose={async () => {
+                            // While brew is still running, only hide the dialog. Removing the
+                            // listeners here would let the next update receive this one's
+                            // output and completion (#542).
+                            if (isUpdateRunning) {
+                                updateOp.setIsHidden(true);
+                                return;
+                            }
+
                             // Clean up any pending event listeners (prevents duplicate listeners bug)
                             if (updateListenersRef.current.progress) updateListenersRef.current.progress();
                             if (updateListenersRef.current.complete) updateListenersRef.current.complete();
                             updateListenersRef.current = { progress: null, complete: null };
 
                             setUpdateLogs(null);
-                            setIsUpdateRunning(false);
+                            setUpdateLogTitle(null);
                             setCurrentlyUpdatingPackage(null);
                             // Refresh packages if this was an update all operation
                             if (isUpdateAllOperation) {
@@ -3828,31 +3941,33 @@ const WailBrewApp = () => {
                         }}
                     />
                     <LogDialog
-                        open={installLogs !== null}
-                        title={
-                            selectedPackage
-                                ? t("dialogs.installLogs", { name: selectedPackage.name })
-                                : t("dialogs.installLogs")
-                        }
+                        open={installLogs !== null && !installOp.isHidden}
+                        title={installLogTitle ?? t("dialogs.installLogs")}
                         log={installLogs}
                         isRunning={isInstallRunning}
                         onClose={() => {
+                            // While brew is still running, only hide the dialog (#542)
+                            if (isInstallRunning) {
+                                installOp.setIsHidden(true);
+                                return;
+                            }
                             setInstallLogs(null);
-                            setIsInstallRunning(false);
+                            setInstallLogTitle(null);
                         }}
                     />
                     <LogDialog
-                        open={uninstallLogs !== null}
-                        title={
-                            selectedPackage
-                                ? t("dialogs.uninstallLogs", { name: selectedPackage.name })
-                                : t("dialogs.uninstallLogs")
-                        }
+                        open={uninstallLogs !== null && !uninstallOp.isHidden}
+                        title={uninstallLogTitle ?? t("dialogs.uninstallLogs")}
                         log={uninstallLogs}
                         isRunning={isUninstallRunning}
                         onClose={() => {
+                            // While brew is still running, only hide the dialog (#542)
+                            if (isUninstallRunning) {
+                                uninstallOp.setIsHidden(true);
+                                return;
+                            }
                             setUninstallLogs(null);
-                            setIsUninstallRunning(false);
+                            setUninstallLogTitle(null);
                         }}
                     />
                     <LogDialog
