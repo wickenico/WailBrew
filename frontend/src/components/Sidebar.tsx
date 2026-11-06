@@ -19,6 +19,7 @@ import type React from "react";
 import { useTranslation } from "react-i18next";
 import appIcon from "../assets/images/appicon_256.png";
 import type { View } from "../types";
+import { formatShortcut } from "../utils/shortcuts";
 import "./Sidebar.css";
 
 interface SidebarProps {
@@ -46,6 +47,7 @@ interface NavigationItem {
     icon: LucideIcon;
     label: string;
     shortcut: string;
+    shift?: boolean;
     badge?: number | string;
     needsAttention?: boolean;
 }
@@ -75,10 +77,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     isCollapsed = false,
 }) => {
     const { t } = useTranslation();
-    const isMac =
-        typeof navigator !== "undefined" &&
-        (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"));
-    const cmdKey = isMac ? "⌘" : "Ctrl+";
 
     const sections: NavigationSection[] = [
         {
@@ -141,7 +139,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     label: t("sidebar.security"),
                     badge: securityCount >= 0 ? securityCount : undefined,
                     needsAttention: securityCount > 0,
-                    shortcut: "⇧V",
+                    shortcut: "V",
+                    shift: true,
                 },
                 { view: "cleanup", icon: Sparkles, label: t("sidebar.cleanup"), shortcut: "0" },
                 { view: "snapshots", icon: History, label: t("sidebar.snapshots"), shortcut: "B" },
@@ -166,32 +165,33 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <section className="sidebar-section" key={section.title}>
                     <h4>{section.title}</h4>
                     <ul>
-                        {section.items.map(({ view: itemView, icon: Icon, label, shortcut, badge, needsAttention }) => {
-                            const isActive = view === itemView;
-                            return (
-                                <li className="sidebar-nav-item" key={itemView}>
-                                    <button
-                                        type="button"
-                                        className={`sidebar-nav-button${isActive ? " active" : ""}`}
-                                        onClick={() => navigate(itemView)}
-                                        title={isCollapsed ? label : undefined}
-                                        aria-current={isActive ? "page" : undefined}
-                                    >
-                                        <Icon className="sidebar-icon" size={16} strokeWidth={2} />
-                                        <span className="sidebar-label">{label}</span>
-                                        {badge !== undefined && (
-                                            <span className={`badge${needsAttention ? " badge-attention" : ""}`}>
-                                                {badge}
+                        {section.items.map(
+                            ({ view: itemView, icon: Icon, label, shortcut, shift, badge, needsAttention }) => {
+                                const isActive = view === itemView;
+                                return (
+                                    <li className="sidebar-nav-item" key={itemView}>
+                                        <button
+                                            type="button"
+                                            className={`sidebar-nav-button${isActive ? " active" : ""}`}
+                                            onClick={() => navigate(itemView)}
+                                            title={isCollapsed ? label : undefined}
+                                            aria-current={isActive ? "page" : undefined}
+                                        >
+                                            <Icon className="sidebar-icon" size={16} strokeWidth={2} />
+                                            <span className="sidebar-label">{label}</span>
+                                            {badge !== undefined && (
+                                                <span className={`badge${needsAttention ? " badge-attention" : ""}`}>
+                                                    {badge}
+                                                </span>
+                                            )}
+                                            <span className="sidebar-shortcut">
+                                                {formatShortcut(shortcut, { shift })}
                                             </span>
-                                        )}
-                                        <span className="sidebar-shortcut">
-                                            {cmdKey}
-                                            {shortcut}
-                                        </span>
-                                    </button>
-                                </li>
-                            );
-                        })}
+                                        </button>
+                                    </li>
+                                );
+                            },
+                        )}
                     </ul>
                 </section>
             ))}

@@ -3,6 +3,7 @@ import type React from "react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useModalA11y } from "../hooks/useModalA11y";
+import { formatShortcut } from "../utils/shortcuts";
 
 interface ShortcutsDialogProps {
     open: boolean;
@@ -23,57 +24,50 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
 
     useModalA11y(open, onClose, dialogRef);
 
-    // Detect if user is on Mac
-    const isMac =
-        typeof navigator !== "undefined" &&
-        (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"));
-    const cmdKey = isMac ? "⌘" : "Ctrl";
-    const shiftKey = isMac ? "⇧" : "Shift";
-
     const sections: ShortcutSection[] = [
         {
             title: t("shortcuts.menu.title"),
             shortcuts: [
-                { action: t("shortcuts.menu.shortcuts"), keys: `${cmdKey}${shiftKey}S` },
-                { action: t("shortcuts.menu.settings"), keys: `${cmdKey},` },
-                { action: t("shortcuts.menu.quit"), keys: `${cmdKey}Q` },
+                { action: t("shortcuts.menu.shortcuts"), keys: formatShortcut("S", { shift: true }) },
+                { action: t("shortcuts.menu.settings"), keys: formatShortcut(",") },
+                { action: t("shortcuts.menu.quit"), keys: formatShortcut("Q") },
             ],
         },
         {
             title: t("shortcuts.navigation.title"),
             shortcuts: [
-                { action: t("shortcuts.navigation.installed"), keys: `${cmdKey}1` },
-                { action: t("shortcuts.navigation.casks"), keys: `${cmdKey}2` },
-                { action: t("shortcuts.navigation.outdated"), keys: `${cmdKey}3` },
-                { action: t("shortcuts.navigation.leaves"), keys: `${cmdKey}4` },
-                { action: t("shortcuts.navigation.repositories"), keys: `${cmdKey}5` },
-                { action: t("shortcuts.navigation.all"), keys: `${cmdKey}6` },
-                { action: t("shortcuts.navigation.allCasks"), keys: `${cmdKey}7` },
-                { action: t("shortcuts.navigation.homebrew"), keys: `${cmdKey}8` },
-                { action: t("shortcuts.navigation.doctor"), keys: `${cmdKey}9` },
-                { action: t("shortcuts.navigation.security"), keys: `${cmdKey}⇧V` },
-                { action: t("shortcuts.navigation.cleanup"), keys: `${cmdKey}0` },
-                { action: t("shortcuts.navigation.snapshots"), keys: `${cmdKey}B` },
+                { action: t("shortcuts.navigation.installed"), keys: formatShortcut("1") },
+                { action: t("shortcuts.navigation.casks"), keys: formatShortcut("2") },
+                { action: t("shortcuts.navigation.outdated"), keys: formatShortcut("3") },
+                { action: t("shortcuts.navigation.leaves"), keys: formatShortcut("4") },
+                { action: t("shortcuts.navigation.repositories"), keys: formatShortcut("5") },
+                { action: t("shortcuts.navigation.all"), keys: formatShortcut("6") },
+                { action: t("shortcuts.navigation.allCasks"), keys: formatShortcut("7") },
+                { action: t("shortcuts.navigation.homebrew"), keys: formatShortcut("8") },
+                { action: t("shortcuts.navigation.doctor"), keys: formatShortcut("9") },
+                { action: t("shortcuts.navigation.security"), keys: formatShortcut("V", { shift: true }) },
+                { action: t("shortcuts.navigation.cleanup"), keys: formatShortcut("0") },
+                { action: t("shortcuts.navigation.snapshots"), keys: formatShortcut("B") },
             ],
         },
         {
             title: t("shortcuts.table.title"),
             shortcuts: [
-                { action: t("shortcuts.table.focus"), keys: `${cmdKey}T` },
+                { action: t("shortcuts.table.focus"), keys: formatShortcut("T") },
                 { action: t("shortcuts.table.select"), keys: t("shortcuts.table.enter") },
                 {
                     action: t("shortcuts.table.navigate"),
                     keys: `${t("shortcuts.table.arrowUp")} / ${t("shortcuts.table.arrowDown")}`,
                 },
-                { action: t("shortcuts.table.multiSelect"), keys: `${cmdKey}${shiftKey}M` },
+                { action: t("shortcuts.table.multiSelect"), keys: formatShortcut("M", { shift: true }) },
             ],
         },
         {
             title: t("shortcuts.actions.title"),
             shortcuts: [
-                { action: t("shortcuts.actions.refresh"), keys: `${cmdKey}${shiftKey}R` },
-                { action: t("shortcuts.actions.exportBrewfile"), keys: `${cmdKey}E` },
-                { action: t("shortcuts.actions.importBrewfile"), keys: `${cmdKey}${shiftKey}I` },
+                { action: t("shortcuts.actions.refresh"), keys: formatShortcut("R", { shift: true }) },
+                { action: t("shortcuts.actions.exportBrewfile"), keys: formatShortcut("E") },
+                { action: t("shortcuts.actions.importBrewfile"), keys: formatShortcut("I", { shift: true }) },
             ],
         },
         {

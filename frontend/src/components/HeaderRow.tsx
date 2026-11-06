@@ -2,6 +2,7 @@ import { Clock, Search, Trash2, X } from "lucide-react";
 import type React from "react";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { formatShortcut } from "../utils/shortcuts";
 
 interface HeaderRowProps {
     title: string;
@@ -30,11 +31,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const saveTimeoutRef = useRef<number | null>(null);
 
-    // Detect if user is on Mac
-    const isMac =
-        typeof navigator !== "undefined" &&
-        (navigator.userAgent.includes("Mac") || navigator.userAgent.includes("macOS"));
-    const shortcutKey = isMac ? "⌘S" : "Ctrl+S";
+    const shortcutKey = formatShortcut("S");
 
     const searchPlaceholder = placeholder || t("search.placeholder");
 
