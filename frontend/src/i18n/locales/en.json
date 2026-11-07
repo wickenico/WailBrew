@@ -30,6 +30,7 @@
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "snapshots": "Snapshots",
+    "dashboard": "Dashboard",
     "security": "Security",
     "refresh": "Refresh",
     "sponsor": "Sponsor",
@@ -50,6 +51,7 @@
     "homebrewCleanup": "Homebrew Cleanup",
     "deprecatedFormulae": "Deprecated Formulae",
     "snapshots": "Snapshots",
+    "dashboard": "Dashboard",
     "security": "Security"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "snapshots": "Snapshots",
+      "dashboard": "Dashboard",
       "security": "Security"
     },
     "table": {
@@ -394,6 +397,7 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "snapshots": "Snapshots",
+      "dashboard": "Dashboard",
       "security": "Security",
       "settings": "Settings",
       "shortcuts": "Keyboard Shortcuts..."
@@ -827,5 +831,13 @@
   },
   "view": {
     "settings": "Settings"
+  },
+  "dashboard": {
+    "composition": "Composition",
+    "formulae": "Formulae",
+    "casks": "Casks",
+    "totalPackages": "Packages",
+    "loading": "Loading statistics…",
+    "empty": "No packages installed yet."
   }
 }

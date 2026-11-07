@@ -29,6 +29,7 @@
     "doctor": "Doctor",
     "cleanup": "Cleanup",
     "snapshots": "Schnappschüsse",
+    "dashboard": "Dashboard",
     "security": "Sicherheit",
     "refresh": "Aktualisieren",
     "sponsor": "Unterstützen",
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "Veraltete Formeln",
     "services": "Dienste",
     "snapshots": "Schnappschüsse",
+    "dashboard": "Dashboard",
     "security": "Sicherheit"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "snapshots": "Schnappschüsse",
+      "dashboard": "Dashboard",
       "security": "Sicherheit"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "Tastenkürzel...",
       "services": "Dienste",
       "snapshots": "Schnappschüsse",
+      "dashboard": "Dashboard",
       "security": "Sicherheit"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "\"{{name}}\" im Finder anzeigen"
     },
     "revealFailed": "Schnappschuss konnte nicht im Finder angezeigt werden: {{error}}"
+  },
+  "dashboard": {
+    "composition": "Zusammensetzung",
+    "formulae": "Formeln",
+    "casks": "Casks",
+    "totalPackages": "Pakete",
+    "loading": "Statistiken werden geladen…",
+    "empty": "Noch keine Pakete installiert."
   }
 }

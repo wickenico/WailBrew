@@ -30,6 +30,7 @@
     "doctor": "Diagnostica",
     "cleanup": "Pulizia",
     "snapshots": "Istantanee",
+    "dashboard": "Dashboard",
     "security": "Sicurezza",
     "refresh": "Aggiorna",
     "sponsor": "Sostieni il progetto",
@@ -50,6 +51,7 @@
     "homebrewCleanup": "Pulizia di Homebrew",
     "deprecatedFormulae": "Formule obsolete",
     "snapshots": "Istantanee",
+    "dashboard": "Dashboard",
     "security": "Sicurezza"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Diagnostica",
       "cleanup": "Pulizia",
       "snapshots": "Istantanee",
+      "dashboard": "Dashboard",
       "security": "Sicurezza"
     },
     "table": {
@@ -394,6 +397,7 @@
       "doctor": "Diagnostica",
       "cleanup": "Pulizia",
       "snapshots": "Istantanee",
+      "dashboard": "Dashboard",
       "security": "Sicurezza",
       "settings": "Impostazioni",
       "shortcuts": "Scorciatoie da tastiera…"
@@ -827,5 +831,13 @@
   },
   "view": {
     "settings": "Impostazioni"
+  },
+  "dashboard": {
+    "composition": "Composizione",
+    "formulae": "Formule",
+    "casks": "Cask",
+    "totalPackages": "Pacchetti",
+    "loading": "Caricamento statistiche…",
+    "empty": "Nessun pacchetto installato."
   }
 }

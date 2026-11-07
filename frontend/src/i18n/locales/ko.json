@@ -34,6 +34,7 @@
     "collapse": "사이드바 접기",
     "expand": "사이드바 펼치기",
     "snapshots": "스냅샷",
+    "dashboard": "대시보드",
     "security": "보안"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "지원 중단된 Formulae",
     "services": "서비스",
     "snapshots": "스냅샷",
+    "dashboard": "대시보드",
     "security": "보안"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Doctor",
       "cleanup": "Cleanup",
       "snapshots": "스냅샷",
+      "dashboard": "대시보드",
       "security": "보안"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "키보드 단축키...",
       "services": "서비스",
       "snapshots": "스냅샷",
+      "dashboard": "대시보드",
       "security": "보안"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "Finder에서 \"{{name}}\" 표시"
     },
     "revealFailed": "Finder에서 스냅샷을 표시하지 못했습니다: {{error}}"
+  },
+  "dashboard": {
+    "composition": "구성",
+    "formulae": "Formulae",
+    "casks": "Casks",
+    "totalPackages": "패키지",
+    "loading": "통계 불러오는 중…",
+    "empty": "아직 설치된 패키지가 없습니다."
   }
 }

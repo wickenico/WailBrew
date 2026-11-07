@@ -34,6 +34,7 @@
     "collapse": "Recolher barra lateral",
     "expand": "Expandir barra lateral",
     "snapshots": "Snapshots",
+    "dashboard": "Painel",
     "security": "Segurança"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "Fórmulas Descontinuadas",
     "services": "Serviços",
     "snapshots": "Snapshots",
+    "dashboard": "Painel",
     "security": "Segurança"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Diagnóstico",
       "cleanup": "Limpeza",
       "snapshots": "Snapshots",
+      "dashboard": "Painel",
       "security": "Segurança"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "Atalhos de Teclado...",
       "services": "Serviços",
       "snapshots": "Snapshots",
+      "dashboard": "Painel",
       "security": "Segurança"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "Mostrar \"{{name}}\" no Finder"
     },
     "revealFailed": "Falha ao mostrar o snapshot no Finder: {{error}}"
+  },
+  "dashboard": {
+    "composition": "Composição",
+    "formulae": "Fórmulas",
+    "casks": "Casks",
+    "totalPackages": "Pacotes",
+    "loading": "Carregando estatísticas…",
+    "empty": "Nenhum pacote instalado ainda."
   }
 }

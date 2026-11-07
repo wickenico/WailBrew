@@ -34,6 +34,7 @@
     "collapse": "כווץ סרגל צד",
     "expand": "הרחב סרגל צד",
     "snapshots": "תמונות מצב",
+    "dashboard": "לוח בקרה",
     "security": "אבטחה"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "נוסחאות שהוצאו משימוש",
     "services": "שירותים",
     "snapshots": "תמונות מצב",
+    "dashboard": "לוח בקרה",
     "security": "אבטחה"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "דוקטור",
       "cleanup": "ניקוי",
       "snapshots": "תמונות מצב",
+      "dashboard": "לוח בקרה",
       "security": "אבטחה"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "קיצורי מקלדת...",
       "services": "שירותים",
       "snapshots": "תמונות מצב",
+      "dashboard": "לוח בקרה",
       "security": "אבטחה"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "הצג את \"{{name}}\" ב-Finder"
     },
     "revealFailed": "הצגת תמונת המצב ב-Finder נכשלה: {{error}}"
+  },
+  "dashboard": {
+    "composition": "הרכב",
+    "formulae": "נוסחאות",
+    "casks": "Casks",
+    "totalPackages": "חבילות",
+    "loading": "טוען סטטיסטיקות…",
+    "empty": "עדיין לא הותקנו חבילות."
   }
 }

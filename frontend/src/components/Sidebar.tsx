@@ -2,6 +2,7 @@
 import {
     AppWindow,
     Beer,
+    ChartPie,
     FolderGit2,
     History,
     Layers,
@@ -50,6 +51,7 @@ interface NavigationItem {
     shift?: boolean;
     badge?: number | string;
     needsAttention?: boolean;
+    beta?: boolean;
 }
 
 interface NavigationSection {
@@ -144,6 +146,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 },
                 { view: "cleanup", icon: Sparkles, label: t("sidebar.cleanup"), shortcut: "0" },
                 { view: "snapshots", icon: History, label: t("sidebar.snapshots"), shortcut: "B" },
+                { view: "dashboard", icon: ChartPie, label: t("sidebar.dashboard"), shortcut: "D", beta: true },
             ],
         },
     ];
@@ -166,7 +169,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <h4>{section.title}</h4>
                     <ul>
                         {section.items.map(
-                            ({ view: itemView, icon: Icon, label, shortcut, shift, badge, needsAttention }) => {
+                            ({ view: itemView, icon: Icon, label, shortcut, shift, badge, needsAttention, beta }) => {
                                 const isActive = view === itemView;
                                 return (
                                     <li className="sidebar-nav-item" key={itemView}>
@@ -179,6 +182,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                         >
                                             <Icon className="sidebar-icon" size={16} strokeWidth={2} />
                                             <span className="sidebar-label">{label}</span>
+                                            {beta && <span className="settings-badge sidebar-beta-badge">BETA</span>}
                                             {badge !== undefined && (
                                                 <span className={`badge${needsAttention ? " badge-attention" : ""}`}>
                                                     {badge}

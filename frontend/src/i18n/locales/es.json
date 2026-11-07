@@ -34,6 +34,7 @@
     "collapse": "Contraer barra lateral",
     "expand": "Expandir barra lateral",
     "snapshots": "Instantáneas",
+    "dashboard": "Panel",
     "security": "Seguridad"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "Programas CLI en desuso",
     "services": "Servicios",
     "snapshots": "Instantáneas",
+    "dashboard": "Panel",
     "security": "Seguridad"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Auditar",
       "cleanup": "Limpiar",
       "snapshots": "Instantáneas",
+      "dashboard": "Panel",
       "security": "Seguridad"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "Atajos de teclado...",
       "services": "Servicios",
       "snapshots": "Instantáneas",
+      "dashboard": "Panel",
       "security": "Seguridad"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "Mostrar \"{{name}}\" en Finder"
     },
     "revealFailed": "No se pudo mostrar la instantánea en Finder: {{error}}"
+  },
+  "dashboard": {
+    "composition": "Composición",
+    "formulae": "Fórmulas",
+    "casks": "Casks",
+    "totalPackages": "Paquetes",
+    "loading": "Cargando estadísticas…",
+    "empty": "Aún no hay paquetes instalados."
   }
 }

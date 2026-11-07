@@ -34,6 +34,7 @@
     "collapse": "Свернуть боковую панель",
     "expand": "Развернуть боковую панель",
     "snapshots": "Снимки",
+    "dashboard": "Панель",
     "security": "Безопасность"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "Устаревшие пакеты",
     "services": "Службы",
     "snapshots": "Снимки",
+    "dashboard": "Панель",
     "security": "Безопасность"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Doctor",
       "cleanup": "Очистка",
       "snapshots": "Снимки",
+      "dashboard": "Панель",
       "security": "Безопасность"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "Горячие клавиши...",
       "services": "Службы",
       "snapshots": "Снимки",
+      "dashboard": "Панель",
       "security": "Безопасность"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "Показать «{{name}}» в Finder"
     },
     "revealFailed": "Не удалось показать снимок в Finder: {{error}}"
+  },
+  "dashboard": {
+    "composition": "Состав",
+    "formulae": "Формулы",
+    "casks": "Приложения",
+    "totalPackages": "Пакеты",
+    "loading": "Загрузка статистики…",
+    "empty": "Пакеты ещё не установлены."
   }
 }

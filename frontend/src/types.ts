@@ -79,4 +79,5 @@ export type View =
     | "security"
     | "cleanup"
     | "snapshots"
+    | "dashboard"
     | "settings";

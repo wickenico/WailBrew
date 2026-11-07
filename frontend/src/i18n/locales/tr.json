@@ -34,6 +34,7 @@
     "collapse": "Kenar çubuğunu daralt",
     "expand": "Kenar çubuğunu genişlet",
     "snapshots": "Anlık Görüntüler",
+    "dashboard": "Pano",
     "security": "Güvenlik"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "Kullanımdan Kaldırılan Formüller",
     "services": "Hizmetler",
     "snapshots": "Anlık Görüntüler",
+    "dashboard": "Pano",
     "security": "Güvenlik"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Doctor",
       "cleanup": "Temizleme",
       "snapshots": "Anlık Görüntüler",
+      "dashboard": "Pano",
       "security": "Güvenlik"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "Klavye Kısayolları...",
       "services": "Hizmetler",
       "snapshots": "Anlık Görüntüler",
+      "dashboard": "Pano",
       "security": "Güvenlik"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "\"{{name}}\" öğesini Finder'da göster"
     },
     "revealFailed": "Anlık görüntü Finder'da gösterilemedi: {{error}}"
+  },
+  "dashboard": {
+    "composition": "Dağılım",
+    "formulae": "Formüller",
+    "casks": "Cask'ler",
+    "totalPackages": "Paketler",
+    "loading": "İstatistikler yükleniyor…",
+    "empty": "Henüz yüklü paket yok."
   }
 }

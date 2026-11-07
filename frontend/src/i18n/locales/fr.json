@@ -34,6 +34,7 @@
     "collapse": "Réduire la barre latérale",
     "expand": "Développer la barre latérale",
     "snapshots": "Instantanés",
+    "dashboard": "Tableau de bord",
     "security": "Sécurité"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "Formules obsolètes",
     "services": "Services",
     "snapshots": "Instantanés",
+    "dashboard": "Tableau de bord",
     "security": "Sécurité"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Diagnostic",
       "cleanup": "Nettoyage",
       "snapshots": "Instantanés",
+      "dashboard": "Tableau de bord",
       "security": "Sécurité"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "Raccourcis clavier...",
       "services": "Services",
       "snapshots": "Instantanés",
+      "dashboard": "Tableau de bord",
       "security": "Sécurité"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "Afficher « {{name}} » dans le Finder"
     },
     "revealFailed": "Impossible d'afficher l'instantané dans le Finder : {{error}}"
+  },
+  "dashboard": {
+    "composition": "Composition",
+    "formulae": "Formules",
+    "casks": "Casks",
+    "totalPackages": "Paquets",
+    "loading": "Chargement des statistiques…",
+    "empty": "Aucun paquet installé pour le moment."
   }
 }

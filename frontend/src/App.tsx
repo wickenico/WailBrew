@@ -103,6 +103,7 @@ import "./style.css";
 import AboutDialog from "./components/AboutDialog";
 import CleanupView from "./components/CleanupView";
 import ConfirmDialog from "./components/ConfirmDialog";
+import DashboardView from "./components/DashboardView";
 import DoctorView from "./components/DoctorView";
 import HeaderRow from "./components/HeaderRow";
 import HomebrewView from "./components/HomebrewView";
@@ -3754,6 +3755,9 @@ const WailBrewApp = () => {
                                 }
                             }}
                         />
+                    )}
+                    {view === "dashboard" && (
+                        <DashboardView formulaeCount={packages.length} casksCount={casks.length} loading={loading} />
                     )}
                     {view === "snapshots" && (
                         <SnapshotsView

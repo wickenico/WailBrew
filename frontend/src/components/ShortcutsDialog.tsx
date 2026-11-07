@@ -48,6 +48,7 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
                 { action: t("shortcuts.navigation.security"), keys: formatShortcut("V", { shift: true }) },
                 { action: t("shortcuts.navigation.cleanup"), keys: formatShortcut("0") },
                 { action: t("shortcuts.navigation.snapshots"), keys: formatShortcut("B") },
+                { action: t("shortcuts.navigation.dashboard"), keys: formatShortcut("D") },
             ],
         },
         {

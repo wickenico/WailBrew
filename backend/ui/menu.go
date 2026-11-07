@@ -113,6 +113,9 @@ func Build(app AppInterface) *menu.Menu {
 	ViewMenu.AddText(getT("menu.view.snapshots"), keys.CmdOrCtrl("b"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "snapshots")
 	})
+	ViewMenu.AddText(getT("menu.view.dashboard"), keys.CmdOrCtrl("d"), func(cd *menu.CallbackData) {
+		rt.EventsEmit(getCtx(), "setView", "dashboard")
+	})
 
 	// Tools Menu
 	ToolsMenu := AppMenu.AddSubmenu(getT("menu.tools.title"))

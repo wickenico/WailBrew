@@ -453,3 +453,13 @@
   }
 }
 
+
+.sidebar-beta-badge {
+  margin-left: 6px;
+  padding: 1px 5px;
+  font-size: 9px;
+}
+
+.sidebar.collapsed .sidebar-beta-badge {
+  display: none;
+}

@@ -34,6 +34,7 @@
     "collapse": "收起侧边栏",
     "expand": "展开侧边栏",
     "snapshots": "快照",
+    "dashboard": "仪表盘",
     "security": "安全"
   },
   "headers": {
@@ -50,6 +51,7 @@
     "deprecatedFormulae": "已弃用的包",
     "services": "服务",
     "snapshots": "快照",
+    "dashboard": "仪表盘",
     "security": "安全"
   },
   "search": {
@@ -79,6 +81,7 @@
       "doctor": "Doctor",
       "cleanup": "清理",
       "snapshots": "快照",
+      "dashboard": "仪表盘",
       "security": "安全"
     },
     "table": {
@@ -396,6 +399,7 @@
       "shortcuts": "键盘快捷键...",
       "services": "服务",
       "snapshots": "快照",
+      "dashboard": "仪表盘",
       "security": "安全"
     },
     "tools": {
@@ -827,5 +831,13 @@
       "reveal": "在 Finder 中显示 “{{name}}”"
     },
     "revealFailed": "在 Finder 中显示快照失败：{{error}}"
+  },
+  "dashboard": {
+    "composition": "构成",
+    "formulae": "Formulae",
+    "casks": "Casks",
+    "totalPackages": "软件包",
+    "loading": "正在加载统计信息…",
+    "empty": "尚未安装任何软件包。"
   }
 }
