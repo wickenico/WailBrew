@@ -53,10 +53,13 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Verify Go modules and build
+      - name: Verify Go modules are tidy
         run: |
           go mod tidy
-          go build ./...
+          git diff --exit-code go.mod go.sum
+
+      - name: Build Go
+        run: go build ./...
 
       - name: Run Go tests
         run: go test ./...
