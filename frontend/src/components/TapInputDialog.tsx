@@ -84,11 +84,11 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
     };
 
     return (
-        <div className="confirm-overlay" onClick={handleOverlayClick}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: backdrop click is a pointer convenience, keyboard users close the dialog with Escape (useModalA11y)
+        <div role="presentation" className="confirm-overlay" onClick={handleOverlayClick}>
             <div
                 className="confirm-box"
                 ref={boxRef}
-                onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="tap-input-title"

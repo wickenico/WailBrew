@@ -169,11 +169,17 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose, onUpdateNo
     };
 
     return (
-        <div className="update-dialog-overlay" onClick={onClose}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: backdrop click is a pointer convenience, keyboard users close the dialog with Escape (useModalA11y)
+        <div
+            className="update-dialog-overlay"
+            role="presentation"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
             <div
                 className="update-dialog"
                 ref={dialogRef}
-                onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="update-dialog-title"

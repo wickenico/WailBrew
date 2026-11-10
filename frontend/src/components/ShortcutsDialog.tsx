@@ -83,11 +83,17 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
     if (!open) return null;
 
     return (
-        <div className="shortcuts-dialog-overlay" onClick={onClose}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: backdrop click is a pointer convenience, keyboard users close the dialog with Escape (useModalA11y)
+        <div
+            className="shortcuts-dialog-overlay"
+            role="presentation"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
             <div
                 className="shortcuts-dialog"
                 ref={dialogRef}
-                onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("shortcuts.title")}

@@ -33,11 +33,11 @@ const RestartDialog: React.FC<RestartDialogProps> = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="about-overlay" onClick={handleOverlayClick}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: backdrop click is a pointer convenience, keyboard users close the dialog with Escape (useModalA11y)
+        <div role="presentation" className="about-overlay" onClick={handleOverlayClick}>
             <div
                 className="about-dialog"
                 ref={dialogRef}
-                onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="restart-dialog-title"

@@ -31,11 +31,17 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
     if (!open) return null;
 
     return (
-        <div className="about-overlay" onClick={onClose}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: backdrop click is a pointer convenience, keyboard users close the dialog with Escape (useModalA11y)
+        <div
+            className="about-overlay"
+            role="presentation"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
             <div
                 className="about-dialog"
                 ref={dialogRef}
-                onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="about-dialog-title"
