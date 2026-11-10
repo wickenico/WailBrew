@@ -15,7 +15,7 @@ If you want to build WailBrew from source, you'll need:
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
 
-- **Go** (version 1.25 or higher) - Install with Homebrew:
+- **Go** (version 1.27 or higher, see `go.mod`) - Install with Homebrew:
   ```bash
   brew install go
   ```
