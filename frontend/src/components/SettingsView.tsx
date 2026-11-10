@@ -281,9 +281,12 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
             const result = await TestProxyConnection(proxyToTest, testProxyUrl.trim());
             setTestProxyResult({ success: true, message: result });
             toast.success(t("settings.messages.proxyTestSuccess"));
-        } catch (error: any) {
+        } catch (error) {
             console.error("Proxy test failed:", error);
-            setTestProxyResult({ success: false, message: error.message || String(error) });
+            setTestProxyResult({
+                success: false,
+                message: (error instanceof Error && error.message) || String(error),
+            });
             toast.error(t("settings.errors.proxyTestFailed"));
         } finally {
             setTestingProxy(false);
@@ -851,6 +854,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Landing Tab Card */}
                 <div className={`settings-card ${isLandingTabExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsLandingTabExpanded(!isLandingTabExpanded)}
                         aria-expanded={isLandingTabExpanded}
@@ -891,6 +895,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetLandingTab}
                                 disabled={savingLandingTab || newLandingTab === landingTab}
@@ -899,6 +904,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveLandingTab}
                                 disabled={savingLandingTab || newLandingTab === landingTab}
@@ -926,6 +932,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                             </span>
                         </div>
                         <button
+                            type="button"
                             className={`settings-toggle ${noQuarantine ? "active" : ""}`}
                             onClick={handleToggleNoQuarantine}
                             aria-checked={noQuarantine}
@@ -950,6 +957,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                             </span>
                         </div>
                         <button
+                            type="button"
                             className={`settings-toggle ${autoRelaunch ? "active" : ""}`}
                             onClick={handleToggleAutoRelaunch}
                             aria-checked={autoRelaunch}
@@ -975,6 +983,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                             </span>
                         </div>
                         <button
+                            type="button"
                             className={`settings-toggle ${autoCleanup ? "active" : ""}`}
                             onClick={handleToggleAutoCleanup}
                             aria-checked={autoCleanup}
@@ -1000,6 +1009,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                             </span>
                         </div>
                         <button
+                            type="button"
                             className={`settings-toggle ${uninstallCaskWithZap ? "active" : ""}`}
                             onClick={handleToggleUninstallCaskWithZap}
                             aria-checked={uninstallCaskWithZap}
@@ -1025,6 +1035,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                             </span>
                         </div>
                         <button
+                            type="button"
                             className={`settings-toggle ${sortFavoritesToTop ? "active" : ""}`}
                             onClick={handleToggleSortFavoritesToTop}
                             aria-checked={sortFavoritesToTop}
@@ -1037,6 +1048,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Brew Path Card */}
                 <div className={`settings-card ${isBrewPathExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsBrewPathExpanded(!isBrewPathExpanded)}
                         aria-expanded={isBrewPathExpanded}
@@ -1069,6 +1081,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                     disabled={saving}
                                 />
                                 <button
+                                    type="button"
                                     className="settings-icon-btn"
                                     onClick={handleDetectPath}
                                     disabled={saving}
@@ -1086,6 +1099,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleReset}
                                 disabled={saving || newBrewPath === brewPath}
@@ -1094,6 +1108,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSave}
                                 disabled={saving || newBrewPath.trim() === ""}
@@ -1108,6 +1123,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Mirror Source Card */}
                 <div className={`settings-card ${isMirrorSourceExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsMirrorSourceExpanded(!isMirrorSourceExpanded)}
                         aria-expanded={isMirrorSourceExpanded}
@@ -1186,6 +1202,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetMirrorSource}
                                 disabled={savingMirror}
@@ -1194,6 +1211,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveMirrorSource}
                                 disabled={savingMirror}
@@ -1208,6 +1226,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Proxy Card */}
                 <div className={`settings-card ${isProxyExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsProxyExpanded(!isProxyExpanded)}
                         aria-expanded={isProxyExpanded}
@@ -1269,6 +1288,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                     disabled={savingProxy || testingProxy}
                                 />
                                 <button
+                                    type="button"
                                     className="settings-btn-secondary"
                                     onClick={handleTestProxy}
                                     disabled={savingProxy || testingProxy || !testProxyUrl.trim()}
@@ -1318,6 +1338,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetProxy}
                                 disabled={savingProxy || testingProxy || newProxy === proxy}
@@ -1326,6 +1347,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveProxy}
                                 disabled={savingProxy || testingProxy || newProxy === proxy}
@@ -1340,6 +1362,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Outdated Detection Card */}
                 <div className={`settings-card ${isOutdatedFlagExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsOutdatedFlagExpanded(!isOutdatedFlagExpanded)}
                         aria-expanded={isOutdatedFlagExpanded}
@@ -1390,6 +1413,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetOutdatedFlag}
                                 disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
@@ -1398,6 +1422,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveOutdatedFlag}
                                 disabled={savingOutdatedFlag || newOutdatedFlag === outdatedFlag}
@@ -1412,6 +1437,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Cask App Directory Card */}
                 <div className={`settings-card ${isCaskAppDirExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsCaskAppDirExpanded(!isCaskAppDirExpanded)}
                         aria-expanded={isCaskAppDirExpanded}
@@ -1445,6 +1471,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                     disabled={savingCaskAppDir}
                                 />
                                 <button
+                                    type="button"
                                     className="settings-icon-btn"
                                     onClick={handleSelectCaskAppDir}
                                     disabled={savingCaskAppDir}
@@ -1472,6 +1499,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetCaskAppDir}
                                 disabled={savingCaskAppDir || newCaskAppDir === caskAppDir}
@@ -1480,6 +1508,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveCaskAppDir}
                                 disabled={savingCaskAppDir || newCaskAppDir.trim() === caskAppDir}
@@ -1494,6 +1523,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Admin Username Card */}
                 <div className={`settings-card ${isAdminUsernameExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsAdminUsernameExpanded(!isAdminUsernameExpanded)}
                         aria-expanded={isAdminUsernameExpanded}
@@ -1535,6 +1565,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetAdminUsername}
                                 disabled={savingAdminUsername || newAdminUsername === adminUsername}
@@ -1543,6 +1574,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveAdminUsername}
                                 disabled={savingAdminUsername || newAdminUsername.trim() === adminUsername}
@@ -1557,6 +1589,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                 {/* Advanced Options Card */}
                 <div className={`settings-card ${isAdvancedOptsExpanded ? "expanded" : ""}`}>
                     <button
+                        type="button"
                         className="settings-card-header"
                         onClick={() => setIsAdvancedOptsExpanded(!isAdvancedOptsExpanded)}
                         aria-expanded={isAdvancedOptsExpanded}
@@ -1612,6 +1645,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetCustomCaskOpts}
                                 disabled={savingCustomCaskOpts || newCustomCaskOpts === customCaskOpts}
@@ -1620,6 +1654,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveCustomCaskOpts}
                                 disabled={savingCustomCaskOpts || newCustomCaskOpts.trim() === customCaskOpts}
@@ -1661,6 +1696,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
 
                         <div className="settings-card-actions">
                             <button
+                                type="button"
                                 className="settings-btn-secondary"
                                 onClick={handleResetCustomOutdatedArgs}
                                 disabled={savingCustomOutdatedArgs || newCustomOutdatedArgs === customOutdatedArgs}
@@ -1669,6 +1705,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onRefreshPackages, onSortFa
                                 {t("settings.buttons.reset")}
                             </button>
                             <button
+                                type="button"
                                 className="settings-btn-primary"
                                 onClick={handleSaveCustomOutdatedArgs}
                                 disabled={

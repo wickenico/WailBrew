@@ -19,6 +19,10 @@ import TitleBarActions from "./TitleBarActions";
 import "./TitleBar.css";
 import "./TitleBarActions.css";
 
+// Wails reads this CSS custom property to decide which regions can drag the window
+const DRAG = { "--wails-draggable": "drag" } as React.CSSProperties;
+const NO_DRAG = { "--wails-draggable": "no-drag" } as React.CSSProperties;
+
 interface TitleBarProps {
     setView: (view: View) => void;
     isSidebarCollapsed: boolean;
@@ -65,12 +69,12 @@ const TitleBar: React.FC<TitleBarProps> = ({
 
     useEffect(() => {
         Environment()
-            .then((env: any) => {
+            .then((env) => {
                 if (env.platform === "linux") setPlatform("linux");
                 else if (env.platform === "darwin") setPlatform("darwin");
                 else setPlatform("other");
             })
-            .catch((err: any) => {
+            .catch((err) => {
                 console.error("Could not get environment", err);
                 setPlatform("other");
             });
@@ -133,10 +137,10 @@ const TitleBar: React.FC<TitleBarProps> = ({
     if (platform === "darwin") {
         return (
             <>
-                <div className="titlebar-mac-leading" style={{ "--wails-draggable": "no-drag" } as any}>
+                <div className="titlebar-mac-leading" style={NO_DRAG}>
                     {leadingGroup}
                 </div>
-                <div className="titlebar-mac-actions" style={{ "--wails-draggable": "drag" } as any}>
+                <div className="titlebar-mac-actions" style={DRAG}>
                     <TitleBarActions setView={setView} />
                 </div>
             </>
@@ -146,8 +150,8 @@ const TitleBar: React.FC<TitleBarProps> = ({
     if (platform !== "linux") return null;
 
     return (
-        <div className="titlebar" style={{ "--wails-draggable": "drag" } as any}>
-            <div className="titlebar-leading-slot" style={{ "--wails-draggable": "no-drag" } as any}>
+        <div className="titlebar" style={DRAG}>
+            <div className="titlebar-leading-slot" style={NO_DRAG}>
                 {leadingGroup}
             </div>
             <div className="titlebar-content">
@@ -156,8 +160,9 @@ const TitleBar: React.FC<TitleBarProps> = ({
             <div className="titlebar-actions-slot">
                 <TitleBarActions setView={setView} />
             </div>
-            <div className="titlebar-controls" style={{ "--wails-draggable": "no-drag" } as any}>
+            <div className="titlebar-controls" style={NO_DRAG}>
                 <button
+                    type="button"
                     className="titlebar-btn minimize"
                     onClick={WindowMinimise}
                     title="Minimize"
@@ -166,6 +171,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
                     <Minus size={16} />
                 </button>
                 <button
+                    type="button"
                     className="titlebar-btn maximize"
                     onClick={WindowToggleMaximise}
                     title="Maximize"
@@ -173,7 +179,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
                 >
                     <Square size={13} />
                 </button>
-                <button className="titlebar-btn close" onClick={Quit} title="Close" aria-label="Close">
+                <button type="button" className="titlebar-btn close" onClick={Quit} title="Close" aria-label="Close">
                     <X size={16} />
                 </button>
             </div>

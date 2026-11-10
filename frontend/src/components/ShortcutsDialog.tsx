@@ -98,7 +98,12 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
                         <Keyboard size={20} />
                         <h2>{t("shortcuts.title")}</h2>
                     </div>
-                    <button className="shortcuts-dialog-close" onClick={onClose} aria-label={t("buttons.close")}>
+                    <button
+                        type="button"
+                        className="shortcuts-dialog-close"
+                        onClick={onClose}
+                        aria-label={t("buttons.close")}
+                    >
                         <X size={20} />
                     </button>
                 </div>

@@ -800,6 +800,7 @@ const WailBrewApp = () => {
                                         : t("toast.newOutdatedPackages_other", { count: newPackagesCount })}
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={() => {
                                         setView("updatable");
                                         toast.dismiss(t_obj.id);
@@ -810,6 +811,7 @@ const WailBrewApp = () => {
                                 </button>
                             </div>
                             <button
+                                type="button"
                                 onClick={() => toast.dismiss(t_obj.id)}
                                 className="toast-dismiss-btn"
                                 title="Dismiss"
@@ -887,6 +889,7 @@ const WailBrewApp = () => {
                                     {t("toast.versionReady", { version: wailbrewPackage.latestVersion })}
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleOpenUpdateDialog();
@@ -922,6 +925,7 @@ const WailBrewApp = () => {
                                 </button>
                             </div>
                             <button
+                                type="button"
                                 onClick={() => toast.dismiss(t_obj.id)}
                                 style={{
                                     background: "transparent",
@@ -965,6 +969,7 @@ const WailBrewApp = () => {
                         </div>
                         <span style={{ flex: 1 }}>{t("toast.upToDate")}</span>
                         <button
+                            type="button"
                             onClick={() => toast.dismiss(t_obj.id)}
                             style={{
                                 background: "transparent",
@@ -1088,6 +1093,7 @@ const WailBrewApp = () => {
                         <div style={{ flex: 1 }}>
                             <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>{t("toast.sessionLogError")}</div>
                             <button
+                                type="button"
                                 onClick={() => {
                                     toast.dismiss(t_obj.id);
                                     openSessionLogs();
@@ -1097,7 +1103,12 @@ const WailBrewApp = () => {
                                 {t("toast.viewSessionLogs")}
                             </button>
                         </div>
-                        <button onClick={() => toast.dismiss(t_obj.id)} className="toast-dismiss-btn" title="Dismiss">
+                        <button
+                            type="button"
+                            onClick={() => toast.dismiss(t_obj.id)}
+                            className="toast-dismiss-btn"
+                            title="Dismiss"
+                        >
                             <X size={18} />
                         </button>
                     </div>
@@ -1170,6 +1181,7 @@ const WailBrewApp = () => {
                                         </div>
                                     )}
                                     <button
+                                        type="button"
                                         onClick={() => {
                                             setView("all");
                                             toast.dismiss(t_obj.id);
@@ -1196,6 +1208,7 @@ const WailBrewApp = () => {
                                     </button>
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={() => toast.dismiss(t_obj.id)}
                                     style={{
                                         background: "transparent",
@@ -1620,8 +1633,9 @@ const WailBrewApp = () => {
         setView("installed");
 
         // Use setTimeout to ensure view renders and then select & scroll to package
+        const target = pkg;
         setTimeout(async () => {
-            await handleSelect(pkg!);
+            await handleSelect(target);
         }, 200);
     };
 
@@ -2231,6 +2245,7 @@ const WailBrewApp = () => {
                                         </div>
                                     )}
                                     <button
+                                        type="button"
                                         onClick={() => {
                                             setView("all");
                                             toast.dismiss(t_obj.id);
@@ -2257,6 +2272,7 @@ const WailBrewApp = () => {
                                     </button>
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={() => toast.dismiss(t_obj.id)}
                                     style={{
                                         background: "transparent",
@@ -3084,6 +3100,7 @@ const WailBrewApp = () => {
                             </div>
                             <div className="brew-location-banner-actions">
                                 <button
+                                    type="button"
                                     className="brew-location-switch-btn"
                                     onClick={handleSwitchBrewPath}
                                     disabled={switchingBrewPath}
@@ -3091,6 +3108,7 @@ const WailBrewApp = () => {
                                     {switchingBrewPath ? t("brewLocation.switching") : t("brewLocation.switch")}
                                 </button>
                                 <button
+                                    type="button"
                                     className="brew-location-dismiss-btn"
                                     onClick={() => setBrewLocationSuggestion(null)}
                                     disabled={switchingBrewPath}
@@ -3107,6 +3125,7 @@ const WailBrewApp = () => {
                                 actions={
                                     <>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
                                             onClick={() => setShowFavoritesOnly((prev) => !prev)}
                                             title={t("buttons.toggleFavoritesOnly")}
@@ -3114,6 +3133,7 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showPinnedOnly ? "active" : ""}`}
                                             onClick={() => setShowPinnedOnly((prev) => !prev)}
                                             title={t("buttons.togglePinnedOnly")}
@@ -3121,6 +3141,7 @@ const WailBrewApp = () => {
                                             <Pin size={18} fill={showPinnedOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
                                             disabled={loading}
@@ -3136,6 +3157,7 @@ const WailBrewApp = () => {
                             />
                             <div className="installed-filter-pills-row">
                                 <button
+                                    type="button"
                                     className={`installed-filter-pill ${installedFilter === "on_request" ? "active" : ""}`}
                                     onClick={() =>
                                         setInstalledFilter((prev) => (prev === "on_request" ? "all" : "on_request"))
@@ -3145,6 +3167,7 @@ const WailBrewApp = () => {
                                     {t("filters.onRequest", { count: installedOnRequestCount })}
                                 </button>
                                 <button
+                                    type="button"
                                     className={`installed-filter-pill ${installedFilter === "dependency" ? "active" : ""}`}
                                     onClick={() =>
                                         setInstalledFilter((prev) => (prev === "dependency" ? "all" : "dependency"))
@@ -3189,6 +3212,7 @@ const WailBrewApp = () => {
                                 actions={
                                     <>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
                                             onClick={() => setShowFavoritesOnly((prev) => !prev)}
                                             title={t("buttons.toggleFavoritesOnly")}
@@ -3196,6 +3220,7 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showPinnedOnly ? "active" : ""}`}
                                             onClick={() => setShowPinnedOnly((prev) => !prev)}
                                             title={t("buttons.togglePinnedOnly")}
@@ -3203,6 +3228,7 @@ const WailBrewApp = () => {
                                             <Pin size={18} fill={showPinnedOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
                                             disabled={loading}
@@ -3251,6 +3277,7 @@ const WailBrewApp = () => {
                                 actions={
                                     <>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
                                             onClick={() => setShowFavoritesOnly((prev) => !prev)}
                                             title={t("buttons.toggleFavoritesOnly")}
@@ -3258,6 +3285,7 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className="refresh-button"
                                             onClick={handleRefreshPackages}
                                             disabled={loading || switchingOutdatedMode}
@@ -3269,6 +3297,7 @@ const WailBrewApp = () => {
                                             !switchingOutdatedMode &&
                                             (selectedPackages.size > 0 ? (
                                                 <button
+                                                    type="button"
                                                     className="update-selected-button"
                                                     onClick={handleUpdateSelected}
                                                     title={t("buttons.updateSelected", {
@@ -3279,6 +3308,7 @@ const WailBrewApp = () => {
                                                 </button>
                                             ) : (
                                                 <button
+                                                    type="button"
                                                     className="update-all-button"
                                                     onClick={handleUpdateAll}
                                                     title={t("buttons.updateAll")}
@@ -3371,6 +3401,7 @@ const WailBrewApp = () => {
                                 actions={
                                     <>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
                                             onClick={() => setShowFavoritesOnly((prev) => !prev)}
                                             title={t("buttons.toggleFavoritesOnly")}
@@ -3378,6 +3409,7 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className="refresh-button"
                                             onClick={loadAllPackages}
                                             disabled={loadingAllPackages}
@@ -3425,6 +3457,7 @@ const WailBrewApp = () => {
                                 actions={
                                     <>
                                         <button
+                                            type="button"
                                             className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
                                             onClick={() => setShowFavoritesOnly((prev) => !prev)}
                                             title={t("buttons.toggleFavoritesOnly")}
@@ -3432,6 +3465,7 @@ const WailBrewApp = () => {
                                             <Star size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
                                         </button>
                                         <button
+                                            type="button"
                                             className="refresh-button"
                                             onClick={loadAllCasks}
                                             disabled={loadingAllCasks}
@@ -3478,6 +3512,7 @@ const WailBrewApp = () => {
                                 title={t("headers.leaves", { count: leavesPackages.length })}
                                 actions={
                                     <button
+                                        type="button"
                                         className={`refresh-button ${showFavoritesOnly ? "active" : ""}`}
                                         onClick={() => setShowFavoritesOnly((prev) => !prev)}
                                         title={t("buttons.toggleFavoritesOnly")}
@@ -3525,7 +3560,7 @@ const WailBrewApp = () => {
                                 onSearchChange={setSearchQuery}
                                 onClearSearch={() => setSearchQuery("")}
                                 actions={
-                                    <button className="doctor-button" onClick={handleTapRepository}>
+                                    <button type="button" className="doctor-button" onClick={handleTapRepository}>
                                         {t("buttons.tap")}
                                     </button>
                                 }
@@ -3557,6 +3592,7 @@ const WailBrewApp = () => {
                                 onClearSearch={() => setSearchQuery("")}
                                 actions={
                                     <button
+                                        type="button"
                                         className="doctor-button"
                                         onClick={async () => {
                                             setServicesLoaded(false);

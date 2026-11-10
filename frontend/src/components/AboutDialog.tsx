@@ -164,7 +164,7 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
                 </div>
 
                 <div className="about-footer">
-                    <button onClick={onClose} className="about-close-button">
+                    <button type="button" onClick={onClose} className="about-close-button">
                         {t("buttons.close")}
                     </button>
                 </div>

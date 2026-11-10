@@ -41,10 +41,10 @@ const HomebrewView: React.FC<HomebrewViewProps> = ({
                     </div>
                 </div>
                 <div className="header-actions">
-                    <button className="doctor-button" onClick={onClearLog}>
+                    <button type="button" className="doctor-button" onClick={onClearLog}>
                         {t("buttons.clearLog")}
                     </button>
-                    <button className="doctor-button" onClick={onUpdateHomebrew}>
+                    <button type="button" className="doctor-button" onClick={onUpdateHomebrew}>
                         {t("buttons.updateHomebrew")}
                     </button>
                 </div>

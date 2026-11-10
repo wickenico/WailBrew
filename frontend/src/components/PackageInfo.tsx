@@ -89,8 +89,8 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
         }
 
         // Cache hit → instant, no network needed
-        if (analyticsCache.has(name)) {
-            const cached = analyticsCache.get(name)!;
+        const cached = analyticsCache.get(name);
+        if (cached) {
             setAnalytics(cached.analytics);
             setBrewPageUrl(cached.brewPageUrl);
             setLoadingAnalytics(false);
@@ -205,6 +205,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
         );
     }
 
+    const homepage = packageEntry.homepage;
     const isLoading = loadingDetailsFor === packageTarget(packageEntry);
     const typeLabel = packageEntry.isCask ? "Cask" : "Formula";
     const typeBadgeClass = packageEntry.isCask ? "pi-type-badge cask" : "pi-type-badge formula";
@@ -282,16 +283,16 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
                         <span className="pi-row-label">{t("packageInfo.labelHomepage")}</span>
                         {isLoading ? (
                             <span className="pi-skel pi-skel-url" />
-                        ) : packageEntry.homepage && isValidUrl(packageEntry.homepage) ? (
+                        ) : homepage && isValidUrl(homepage) ? (
                             <span
                                 className="pi-link"
-                                onClick={() => BrowserOpenURL(packageEntry.homepage!)}
-                                onKeyDown={(e) => activateOnKey(e, () => BrowserOpenURL(packageEntry.homepage!))}
+                                onClick={() => BrowserOpenURL(homepage)}
+                                onKeyDown={(e) => activateOnKey(e, () => BrowserOpenURL(homepage))}
                                 role="link"
                                 tabIndex={0}
-                                title={packageEntry.homepage}
+                                title={homepage}
                             >
-                                {shortenUrl(packageEntry.homepage)}
+                                {shortenUrl(homepage)}
                                 <ExternalLink size={10} className="pi-link-icon" />
                             </span>
                         ) : (
@@ -399,6 +400,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
                         {/* Dependencies: brew deps --installed */}
                         <div className="installed-deps-section">
                             <button
+                                type="button"
                                 className={`installed-deps-toggle${showInstalledDeps ? " open" : ""}`}
                                 onClick={() => {
                                     setShowInstalledDeps((prev) => !prev);
@@ -441,6 +443,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
                         {/* Dependents: brew uses --installed */}
                         <div className="installed-deps-section">
                             <button
+                                type="button"
                                 className={`installed-deps-toggle${showInstalledDependents ? " open" : ""}`}
                                 onClick={() => {
                                     setShowInstalledDependents((prev) => !prev);

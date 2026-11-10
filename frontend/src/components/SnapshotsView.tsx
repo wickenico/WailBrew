@@ -51,7 +51,7 @@ const SnapshotsView: React.FC<SnapshotsViewProps> = ({
                     <h3>{t("headers.snapshots", { count: snapshots.length })}</h3>
                 </div>
                 <div className="header-actions">
-                    <button className="doctor-button" onClick={onNew} disabled={creating}>
+                    <button type="button" className="doctor-button" onClick={onNew} disabled={creating}>
                         {creating ? t("snapshots.creating") : t("buttons.newSnapshot")}
                     </button>
                 </div>
@@ -90,6 +90,7 @@ const SnapshotsView: React.FC<SnapshotsViewProps> = ({
                                             <td>
                                                 <div className="action-buttons">
                                                     <button
+                                                        type="button"
                                                         className="action-button install-button"
                                                         onClick={() => onRestore(snapshot)}
                                                         title={t("snapshots.buttons.restore", {
@@ -99,6 +100,7 @@ const SnapshotsView: React.FC<SnapshotsViewProps> = ({
                                                         <RotateCcw size={20} />
                                                     </button>
                                                     <button
+                                                        type="button"
                                                         className="action-button info-button"
                                                         onClick={() => onReveal(snapshot)}
                                                         title={t("snapshots.buttons.reveal", {
@@ -108,6 +110,7 @@ const SnapshotsView: React.FC<SnapshotsViewProps> = ({
                                                         <FolderOpen size={20} />
                                                     </button>
                                                     <button
+                                                        type="button"
                                                         className="action-button uninstall-button"
                                                         onClick={() => onDelete(snapshot)}
                                                         title={t("snapshots.buttons.delete", {

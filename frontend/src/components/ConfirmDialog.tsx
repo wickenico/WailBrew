@@ -163,10 +163,12 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                     </div>
                 )}
                 <div className="confirm-actions">
-                    <button className={destructive ? "destructive" : ""} onClick={onConfirm}>
+                    <button type="button" className={destructive ? "destructive" : ""} onClick={onConfirm}>
                         {defaultConfirmLabel}
                     </button>
-                    <button onClick={onCancel}>{defaultCancelLabel}</button>
+                    <button type="button" onClick={onCancel}>
+                        {defaultCancelLabel}
+                    </button>
                 </div>
             </div>
         </div>

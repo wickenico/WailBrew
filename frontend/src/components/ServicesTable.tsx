@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, Bug, Info, Play, RotateCw, Square } from "lucide-re
 import type React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { compareSortValues, getFieldValue, toSortValue } from "../utils/tableSort";
 
 export interface ServiceEntry {
     name: string;
@@ -97,11 +98,12 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
         resizingRef.current = { colKey, startX: e.clientX, startWidth };
 
         const onMouseMove = (moveEvent: MouseEvent) => {
-            if (!resizingRef.current) return;
-            const delta = moveEvent.clientX - resizingRef.current.startX;
+            const resizing = resizingRef.current;
+            if (!resizing) return;
+            const delta = moveEvent.clientX - resizing.startX;
             if (Math.abs(delta) > 2) didDragRef.current = true;
-            const newWidth = Math.max(60, resizingRef.current.startWidth + delta);
-            setColumnWidths((prev) => ({ ...prev, [resizingRef.current!.colKey]: `${newWidth}px` }));
+            const newWidth = Math.max(60, resizing.startWidth + delta);
+            setColumnWidths((prev) => ({ ...prev, [resizing.colKey]: `${newWidth}px` }));
         };
 
         const onMouseUp = () => {
@@ -164,17 +166,10 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
         if (!sortKey) return services;
 
         return [...services].sort((a, b) => {
-            let aValue: any = (a as any)[sortKey];
-            let bValue: any = (b as any)[sortKey];
+            const aValue = toSortValue(getFieldValue(a, sortKey));
+            const bValue = toSortValue(getFieldValue(b, sortKey));
 
-            if (aValue === undefined || aValue === null) aValue = "";
-            if (bValue === undefined || bValue === null) bValue = "";
-
-            let comparison = 0;
-            if (aValue < bValue) comparison = -1;
-            if (aValue > bValue) comparison = 1;
-
-            return sortDirection === "asc" ? comparison : -comparison;
+            return compareSortValues(aValue, bValue, sortDirection);
         });
     }, [services, sortKey, sortDirection]);
 
@@ -215,6 +210,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                 <div className="action-buttons">
                     {onStart && !isStarted && (
                         <button
+                            type="button"
                             className="action-button install-button"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -227,6 +223,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                     )}
                     {onStop && canStop && (
                         <button
+                            type="button"
                             className="action-button uninstall-button"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -239,6 +236,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                     )}
                     {onRestart && canRestart && (
                         <button
+                            type="button"
                             className="action-button info-button"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -251,6 +249,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                     )}
                     {onRun && (
                         <button
+                            type="button"
                             className="action-button info-button"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -263,6 +262,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                     )}
                     {onShowInfo && (
                         <button
+                            type="button"
                             className="action-button info-button"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -276,7 +276,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({
                 </div>
             );
         }
-        return (service as any)[col.key];
+        return getFieldValue(service, col.key) as React.ReactNode;
     };
 
     return (

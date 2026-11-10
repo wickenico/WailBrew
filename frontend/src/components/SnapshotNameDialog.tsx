@@ -89,8 +89,12 @@ const SnapshotNameDialog: React.FC<SnapshotNameDialogProps> = ({ open, onConfirm
                     </p>
                 </div>
                 <div className="confirm-actions">
-                    <button onClick={handleConfirm}>{t("buttons.newSnapshot")}</button>
-                    <button onClick={onCancel}>{t("buttons.cancel")}</button>
+                    <button type="button" onClick={handleConfirm}>
+                        {t("buttons.newSnapshot")}
+                    </button>
+                    <button type="button" onClick={onCancel}>
+                        {t("buttons.cancel")}
+                    </button>
                 </div>
             </div>
         </div>

@@ -124,6 +124,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
                 {entries.map((entry, index) => (
                     <div
                         className={`log-entry log-entry--${getEntrySeverity(entry)}`}
+                        // biome-ignore lint/suspicious/noArrayIndexKey: log entries have no stable id, may repeat and are never reordered
                         key={`entry-${index}-${entry.substring(0, 32)}`}
                     >
                         <span className="log-entry-text">{entry}</span>
@@ -151,7 +152,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
         // If no clickable packages, render as plain text
         if (clickablePackages.length === 0 || !onPackageClick) {
             return (
-                <div className="log-output" ref={logRef as any}>
+                <div className="log-output" ref={logRef}>
                     {log}
                 </div>
             );
@@ -176,6 +177,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
                             // Add clickable package link
                             elements.push(
                                 <button
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: log lines have no stable id and are never reordered
                                     key={`${lineIndex}-${packageName}-${index}`}
                                     type="button"
                                     onClick={() => onPackageClick(packageName)}
@@ -216,7 +218,10 @@ const LogDialog: React.FC<LogDialogProps> = ({
                         elements.push(line);
                     }
 
-                    return <div key={`line-${lineIndex}-${line.substring(0, 20)}`}>{elements}</div>;
+                    return (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: log lines have no stable id and are never reordered
+                        <div key={`line-${lineIndex}-${line.substring(0, 20)}`}>{elements}</div>
+                    );
                 })}
             </div>
         );
@@ -314,7 +319,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
 
                 {/* OK button centered */}
                 <div className="confirm-actions log-dialog-actions">
-                    <button onClick={onClose} className="log-dialog-btn">
+                    <button type="button" onClick={onClose} className="log-dialog-btn">
                         {t("buttons.ok")}
                     </button>
                 </div>

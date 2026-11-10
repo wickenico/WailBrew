@@ -29,6 +29,7 @@ If you want to build WailBrew from source, you'll need:
   ```bash
   npm install -g pnpm
   ```
+  The exact version is pinned via `packageManager` in `frontend/package.json`; pnpm switches to it automatically.
 
 - **Wails CLI** - Install with:
   ```bash

@@ -100,6 +100,7 @@ const DoctorView: React.FC<DoctorViewProps> = ({
             )}
             <div className="doctor-log" role="log" aria-live="polite">
                 {(doctorLog || t("dialogs.noDoctorOutput")).split("\n").map((line, lineIndex) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: log lines have no stable id, may repeat and are never reordered
                     <div className="doctor-log-line" key={`${lineIndex}-${line}`}>
                         {parseDoctorLogLine(line).map((part, partIndex) =>
                             part.type === "command" ? (
@@ -107,6 +108,7 @@ const DoctorView: React.FC<DoctorViewProps> = ({
                                     type="button"
                                     className="doctor-command"
                                     disabled={runningCommand !== null}
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: parts of a log line have no stable id and are never reordered
                                     key={`${partIndex}-${part.value}`}
                                     onClick={() => onRunCommand(part.value)}
                                     title={t("buttons.runDoctorCommand", { command: part.value })}
@@ -119,6 +121,7 @@ const DoctorView: React.FC<DoctorViewProps> = ({
                                     <code>{part.value}</code>
                                 </button>
                             ) : (
+                                // biome-ignore lint/suspicious/noArrayIndexKey: parts of a log line have no stable id and are never reordered
                                 <span key={`${partIndex}-${part.value}`}>{part.value}</span>
                             ),
                         )}

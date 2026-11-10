@@ -54,13 +54,13 @@ const CleanupView: React.FC<CleanupViewProps> = ({
                     </h3>
                 </div>
                 <div className="header-actions">
-                    <button className="doctor-button" onClick={onClearLog}>
+                    <button type="button" className="doctor-button" onClick={onClearLog}>
                         {t("buttons.clearLog")}
                     </button>
-                    <button className="doctor-button" onClick={onRunDryRun}>
+                    <button type="button" className="doctor-button" onClick={onRunDryRun}>
                         {t("buttons.runDryRun")}
                     </button>
-                    <button className="doctor-button" onClick={onRunCleanup}>
+                    <button type="button" className="doctor-button" onClick={onRunCleanup}>
                         {t("buttons.runCleanup")}
                     </button>
                 </div>

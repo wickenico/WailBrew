@@ -21,6 +21,7 @@ import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import type { PackageEntry } from "../types";
 import { formatShortcut } from "../utils/shortcuts";
+import { compareSortValues, getFieldValue, toSortValue } from "../utils/tableSort";
 
 // Estimated row height in px, used as a starting point before rows are measured.
 const ESTIMATED_ROW_HEIGHT = 41;
@@ -223,11 +224,12 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
             resizingRef.current = { colKey, startX: e.clientX, startWidth };
 
             const onMouseMove = (moveEvent: MouseEvent) => {
-                if (!resizingRef.current) return;
-                const delta = moveEvent.clientX - resizingRef.current.startX;
+                const resizing = resizingRef.current;
+                if (!resizing) return;
+                const delta = moveEvent.clientX - resizing.startX;
                 if (Math.abs(delta) > 2) didDragRef.current = true;
-                const newWidth = Math.max(60, resizingRef.current.startWidth + delta);
-                setColumnWidths((prev) => ({ ...prev, [resizingRef.current!.colKey]: `${newWidth}px` }));
+                const newWidth = Math.max(60, resizing.startWidth + delta);
+                setColumnWidths((prev) => ({ ...prev, [resizing.colKey]: `${newWidth}px` }));
             };
 
             const onMouseUp = () => {
@@ -286,31 +288,16 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                 if (!sortKey) return list;
 
                 return [...list].sort((a, b) => {
-                    let aValue: any = (a as any)[sortKey];
-                    let bValue: any = (b as any)[sortKey];
+                    const aRaw = getFieldValue(a, sortKey);
+                    const bRaw = getFieldValue(b, sortKey);
 
-                    // Special handling for size column
-                    if (sortKey === "size") {
-                        aValue = parseSizeToBytes(aValue);
-                        bValue = parseSizeToBytes(bValue);
-                    }
+                    // Special handling for size column; undefined/null and boolean values are normalized
+                    const aValue =
+                        sortKey === "size" ? parseSizeToBytes(aRaw as string | undefined) : toSortValue(aRaw);
+                    const bValue =
+                        sortKey === "size" ? parseSizeToBytes(bRaw as string | undefined) : toSortValue(bRaw);
 
-                    // Handle undefined/null values
-                    if (aValue === undefined || aValue === null) aValue = "";
-                    if (bValue === undefined || bValue === null) bValue = "";
-
-                    // Handle boolean values
-                    if (typeof aValue === "boolean") {
-                        aValue = aValue ? 1 : 0;
-                        bValue = bValue ? 1 : 0;
-                    }
-
-                    // Compare
-                    let comparison = 0;
-                    if (aValue < bValue) comparison = -1;
-                    if (aValue > bValue) comparison = 1;
-
-                    return sortDirection === "asc" ? comparison : -comparison;
+                    return compareSortValues(aValue, bValue, sortDirection);
                 });
             };
 
@@ -353,15 +340,14 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
         // Expose focus method via ref
         React.useImperativeHandle(
             ref,
-            () =>
-                ({
-                    focus: () => {
-                        if (sortedPackages.length > 0) {
-                            setFocusedRowIndex(0);
-                            focusRow(0, "center");
-                        }
-                    },
-                }) as any,
+            (): PackageTableRef => ({
+                focus: () => {
+                    if (sortedPackages.length > 0) {
+                        setFocusedRowIndex(0);
+                        focusRow(0, "center");
+                    }
+                },
+            }),
         );
 
         // Handle arrow key navigation
@@ -435,6 +421,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                     <div className="action-buttons">
                         {onUpdate && (
                             <button
+                                type="button"
                                 className="action-button update-button"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -447,6 +434,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                         )}
                         {onTogglePin && pkg.isInstalled !== false && (
                             <button
+                                type="button"
                                 className="action-button pin-button"
                                 style={pkg.isPinned ? { color: "#FF7043" } : undefined}
                                 onClick={(e) => {
@@ -464,6 +452,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                         )}
                         {onUninstall && (
                             <button
+                                type="button"
                                 className="action-button uninstall-button"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -476,6 +465,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                         )}
                         {onInstall && !pkg.isInstalled && (
                             <button
+                                type="button"
                                 className="action-button install-button"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -488,6 +478,7 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                         )}
                         {onShowInfo && (
                             <button
+                                type="button"
                                 className="action-button info-button"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -545,10 +536,10 @@ const PackageTable = React.forwardRef<PackageTableRef, PackageTableProps>(
                 return pkg.name;
             }
             if (col.key === "installedVersion" || col.key === "latestVersion" || col.key === "size") {
-                const value = ((pkg as any)[col.key] ?? "") as string;
+                const value = String(getFieldValue(pkg, col.key) ?? "");
                 return <span title={value}>{value}</span>;
             }
-            return (pkg as any)[col.key];
+            return getFieldValue(pkg, col.key) as React.ReactNode;
         };
 
         return (

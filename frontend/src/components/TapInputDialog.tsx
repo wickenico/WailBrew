@@ -167,8 +167,12 @@ const TapInputDialog: React.FC<TapInputDialogProps> = ({ open, onConfirm, onCanc
                     </p>
                 </div>
                 <div className="confirm-actions">
-                    <button onClick={handleConfirm}>{t("buttons.tap")}</button>
-                    <button onClick={onCancel}>{t("buttons.cancel")}</button>
+                    <button type="button" onClick={handleConfirm}>
+                        {t("buttons.tap")}
+                    </button>
+                    <button type="button" onClick={onCancel}>
+                        {t("buttons.cancel")}
+                    </button>
                 </div>
             </div>
         </div>

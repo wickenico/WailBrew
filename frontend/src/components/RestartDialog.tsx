@@ -59,10 +59,10 @@ const RestartDialog: React.FC<RestartDialogProps> = ({ isOpen, onClose }) => {
 
                 <div className="about-footer">
                     <div className="action-buttons">
-                        <button className="btn btn-secondary" onClick={onClose}>
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>
                             {t("restartDialog.later")}
                         </button>
-                        <button className="btn btn-primary" onClick={handleRestart}>
+                        <button type="button" className="btn btn-primary" onClick={handleRestart}>
                             {t("restartDialog.restartNow")}
                         </button>
                     </div>

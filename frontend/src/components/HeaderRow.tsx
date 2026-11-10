@@ -126,7 +126,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     };
 
     // Handle removing a history item
-    const handleRemoveHistory = (e: React.MouseEvent, item: string) => {
+    const handleRemoveHistory = (e: React.SyntheticEvent, item: string) => {
         e.stopPropagation(); // Prevent selecting the item
         e.preventDefault(); // Prevent any default behavior
         try {
@@ -250,9 +250,9 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                         </div>
                         {searchHistory
                             .filter((item) => !searchQuery || item.toLowerCase().includes(searchQuery.toLowerCase()))
-                            .map((item, index) => (
+                            .map((item) => (
                                 <div
-                                    key={`${item}-${index}`}
+                                    key={item}
                                     role="button"
                                     tabIndex={0}
                                     className="search-history-item"
@@ -293,7 +293,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                                             if (e.key === "Enter" || e.key === " ") {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                handleRemoveHistory(e as any, item);
+                                                handleRemoveHistory(e, item);
                                             }
                                         }}
                                         title={t("search.removeFromHistory", { item })}
