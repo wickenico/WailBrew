@@ -20,7 +20,7 @@ If you want to build WailBrew from source, you'll need:
   brew install go
   ```
 
-- **Node.js** (for frontend development) - Install with Homebrew:
+- **Node.js** (version 26 or higher, see `.nvmrc`) - for frontend development. Install with Homebrew:
   ```bash
   brew install node
   ```
