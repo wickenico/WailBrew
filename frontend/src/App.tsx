@@ -3829,7 +3829,17 @@ const WailBrewApp = () => {
                         />
                     )}
                     {view === "dashboard" && (
-                        <DashboardView formulaeCount={packages.length} casksCount={casks.length} loading={loading} />
+                        <DashboardView
+                            formulae={packages}
+                            casks={casks}
+                            updatablePackages={updatablePackages}
+                            securityCount={vulnerabilityReport ? vulnerabilityReport.findings.length : -1}
+                            loading={loading}
+                            onNavigate={(nextView) => {
+                                setView(nextView);
+                                clearSelection();
+                            }}
+                        />
                     )}
                     {view === "snapshots" && (
                         <SnapshotsView
