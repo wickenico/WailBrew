@@ -230,7 +230,7 @@ export function UnpinBrewPackage(arg1:string):Promise<string>;
 
 export function UntapBrewRepository(arg1:string):Promise<string>;
 
-export function UpdateAllBrewPackages():Promise<string>;
+export function UpdateAllBrewPackages(arg1:string):Promise<string>;
 
 export function UpdateBrewDatabase():Promise<void>;
 

@@ -62,8 +62,17 @@ func BuildUpgradeSelectedArgs(names []string) []string {
 }
 
 // BuildUpgradeAllArgs builds the arguments for upgrading everything outdated.
-func BuildUpgradeAllArgs(outdatedFlag string) []string {
-	return append([]string{"upgrade"}, greedyFlags(outdatedFlag)...)
+func BuildUpgradeAllArgs(outdatedFlag string, packageType ...string) []string {
+	args := append([]string{"upgrade"}, greedyFlags(outdatedFlag)...)
+	if len(packageType) > 0 {
+		switch packageType[0] {
+		case "formula":
+			args = append(args, "--formula")
+		case "cask":
+			args = append(args, "--cask")
+		}
+	}
+	return args
 }
 
 // BuildTapArgs builds the arguments for tapping a repository. The URL is

@@ -449,13 +449,13 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 }
 
 // UpdateAllBrewPackages upgrades all outdated packages with live progress updates
-func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context) string {
+func (s *ActionsService) UpdateAllBrewPackages(ctx context.Context, packageType string) string {
 	// Emit initial progress
 	startMessage := s.getBackendMsg("backend.updateAll.start", map[string]string{})
 	s.eventEmitter.Emit("packageUpdateProgress", startMessage)
 
 	// Build upgrade command respecting the user's Outdated Detection Mode setting
-	upgradeArgs := BuildUpgradeAllArgs(s.getOutdatedFlag())
+	upgradeArgs := BuildUpgradeAllArgs(s.getOutdatedFlag(), packageType)
 	cmd := exec.Command(s.brewPath, upgradeArgs...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 

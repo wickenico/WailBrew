@@ -148,6 +148,12 @@
     "newSnapshot": "Nuova istantanea"
   },
   "filters": {
+    "packageType": "Filtra per tipo di pacchetto",
+    "updateMode": "Modalità di aggiornamento",
+    "show": "Mostra",
+    "all": "Tutti",
+    "formulae": "Formule",
+    "casks": "Cask",
     "onRequest": "Su richiesta ({{count}})",
     "asDependency": "Come dipendenza ({{count}})",
     "toggleOnRequest": "Attiva/disattiva il filtro: installati su richiesta",

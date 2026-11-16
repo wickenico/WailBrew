@@ -51,7 +51,7 @@ type Service interface {
 	RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string
 	UpdateBrewPackage(ctx context.Context, packageName string) string
 	UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string
-	UpdateAllBrewPackages(ctx context.Context) string
+	UpdateAllBrewPackages(ctx context.Context, packageType string) string
 	PinBrewPackage(packageName string) string
 	UnpinBrewPackage(packageName string) string
 
@@ -365,8 +365,8 @@ func (s *serviceImpl) UpdateSelectedBrewPackages(ctx context.Context, packageNam
 	return s.actionsService.UpdateSelectedBrewPackages(ctx, packageNames)
 }
 
-func (s *serviceImpl) UpdateAllBrewPackages(ctx context.Context) string {
-	return s.actionsService.UpdateAllBrewPackages(ctx)
+func (s *serviceImpl) UpdateAllBrewPackages(ctx context.Context, packageType string) string {
+	return s.actionsService.UpdateAllBrewPackages(ctx, packageType)
 }
 
 // PinBrewPackage pins an installed formula or cask so brew upgrade skips it.

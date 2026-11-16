@@ -148,6 +148,12 @@
     "newSnapshot": "Yeni Anlık Görüntü"
   },
   "filters": {
+    "packageType": "Paket türüne göre filtrele",
+    "updateMode": "Güncelleme modu",
+    "show": "Göster",
+    "all": "Tümü",
+    "formulae": "Formüller",
+    "casks": "Cask’ler",
     "onRequest": "İstekle kurulan ({{count}})",
     "asDependency": "Bağımlılık olarak ({{count}})",
     "toggleOnRequest": "Filtreyi değiştir: istekle kurulanlar",

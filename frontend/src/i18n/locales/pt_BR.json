@@ -148,6 +148,12 @@
     "newSnapshot": "Novo Snapshot"
   },
   "filters": {
+    "packageType": "Filtrar por tipo de pacote",
+    "updateMode": "Modo de atualização",
+    "show": "Exibir",
+    "all": "Todos",
+    "formulae": "Fórmulas",
+    "casks": "Casks",
     "onRequest": "Por solicitação ({{count}})",
     "asDependency": "Como dependência ({{count}})",
     "toggleOnRequest": "Alternar filtro: instalado por solicitação",

@@ -148,6 +148,12 @@
     "newSnapshot": "新建快照"
   },
   "filters": {
+    "packageType": "按软件包类型筛选",
+    "updateMode": "更新模式",
+    "show": "显示",
+    "all": "全部",
+    "formulae": "Formulae",
+    "casks": "Cask",
     "onRequest": "按需安装 ({{count}})",
     "asDependency": "作为依赖 ({{count}})",
     "toggleOnRequest": "切换筛选：按需安装",

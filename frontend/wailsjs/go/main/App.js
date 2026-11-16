@@ -454,8 +454,8 @@ export function UntapBrewRepository(arg1) {
   return window['go']['main']['App']['UntapBrewRepository'](arg1);
 }
 
-export function UpdateAllBrewPackages() {
-  return window['go']['main']['App']['UpdateAllBrewPackages']();
+export function UpdateAllBrewPackages(arg1) {
+  return window['go']['main']['App']['UpdateAllBrewPackages'](arg1);
 }
 
 export function UpdateBrewDatabase() {

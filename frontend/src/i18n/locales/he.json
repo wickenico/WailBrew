@@ -148,6 +148,12 @@
     "newSnapshot": "תמונת מצב חדשה"
   },
   "filters": {
+    "packageType": "סינון לפי סוג חבילה",
+    "updateMode": "מצב עדכון",
+    "show": "הצגה",
+    "all": "הכול",
+    "formulae": "נוסחאות",
+    "casks": "Cask",
     "onRequest": "לפי בקשה ({{count}})",
     "asDependency": "כתלות ({{count}})",
     "toggleOnRequest": "החלף מסנן: הותקן לפי בקשה",

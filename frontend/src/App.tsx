@@ -215,6 +215,7 @@ const WailBrewApp = () => {
     const [updatableError, setUpdatableError] = useState<string>("");
     const [leavesError, setLeavesError] = useState<string>("");
     const [installedFilter, setInstalledFilter] = useState<"all" | "on_request" | "dependency">("all");
+    const [updatableTypeFilter, setUpdatableTypeFilter] = useState<"all" | "formulae" | "casks">("all");
     const [favorites, setFavorites] = useState<Set<string>>(new Set());
     const [sortFavoritesToTop, setSortFavoritesToTop] = useState<boolean>(false);
     const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
@@ -1407,6 +1408,11 @@ const WailBrewApp = () => {
     const activeRepositories = getActiveRepositories();
     const debouncedSearchQuery = useDebouncedValue(searchQuery, 200);
 
+    const updatableTypePackages = useMemo(() => {
+        if (view !== "updatable" || updatableTypeFilter === "all") return activePackages;
+        return activePackages.filter((pkg) => (updatableTypeFilter === "casks" ? pkg.isCask : !pkg.isCask));
+    }, [view, activePackages, updatableTypeFilter]);
+
     const installedFilteredPackages = useMemo(() => {
         if (view !== "installed") return activePackages;
         return activePackages.filter((pkg) => {
@@ -1418,7 +1424,7 @@ const WailBrewApp = () => {
 
     const filteredPackages = useMemo(() => {
         const query = debouncedSearchQuery.toLowerCase();
-        return installedFilteredPackages
+        return (view === "updatable" ? updatableTypePackages : installedFilteredPackages)
             .filter((pkg) => pkg.name.toLowerCase().includes(query))
             .map((pkg) => {
                 const withFavorite =
@@ -1432,6 +1438,8 @@ const WailBrewApp = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         installedFilteredPackages,
+        updatableTypePackages,
+        view,
         debouncedSearchQuery,
         favorites,
         showFavoritesOnly,
@@ -1440,8 +1448,8 @@ const WailBrewApp = () => {
     ]);
 
     const selectedTargets = useMemo(
-        () => updatablePackages.filter((pkg) => selectedPackages.has(pkg.name)).map(packageTarget),
-        [selectedPackages, updatablePackages],
+        () => updatableTypePackages.filter((pkg) => selectedPackages.has(pkg.name)).map(packageTarget),
+        [selectedPackages, updatableTypePackages],
     );
 
     const filteredRepositories = activeRepositories.filter((repo) =>
@@ -1825,7 +1833,13 @@ const WailBrewApp = () => {
 
         // Start the update all process
         try {
-            await UpdateAllBrewPackages();
+            await UpdateAllBrewPackages(
+                view === "updatable" && updatableTypeFilter !== "all"
+                    ? updatableTypeFilter === "casks"
+                        ? "cask"
+                        : "formula"
+                    : "",
+            );
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
             updateOp.resultRef.current = errorMsg;
@@ -3295,16 +3309,16 @@ const WailBrewApp = () => {
                                         </button>
                                         {updatablePackages.length > 0 &&
                                             !switchingOutdatedMode &&
-                                            (selectedPackages.size > 0 ? (
+                                            (selectedTargets.length > 0 ? (
                                                 <button
                                                     type="button"
                                                     className="update-selected-button"
                                                     onClick={handleUpdateSelected}
                                                     title={t("buttons.updateSelected", {
-                                                        count: selectedPackages.size,
+                                                        count: selectedTargets.length,
                                                     })}
                                                 >
-                                                    {t("buttons.updateSelected", { count: selectedPackages.size })}
+                                                    {t("buttons.updateSelected", { count: selectedTargets.length })}
                                                 </button>
                                             ) : (
                                                 <button
@@ -3322,34 +3336,56 @@ const WailBrewApp = () => {
                                 onSearchChange={setSearchQuery}
                                 onClearSearch={() => setSearchQuery("")}
                             />
-                            <div
-                                className="outdated-mode-tabs"
-                                role="group"
-                                aria-label={t("settings.outdatedFlag.selectFlag")}
-                            >
-                                {(
-                                    [
-                                        ["none", "none"],
-                                        ["greedy", "greedy"],
-                                        ["greedy-auto-updates", "greedyAutoUpdates"],
-                                    ] as const
-                                ).map(([mode, label]) => (
-                                    <button
-                                        key={mode}
-                                        type="button"
-                                        className={`outdated-mode-tab ${outdatedMode === mode ? "active" : ""}`}
-                                        aria-pressed={outdatedMode === mode}
+                            <div className="update-filters-row">
+                                <label className="update-filter-field">
+                                    <span>{t("filters.updateMode")}</span>
+                                    <select
+                                        value={outdatedMode}
                                         disabled={switchingOutdatedMode}
-                                        onClick={() => void switchOutdatedMode(mode)}
+                                        onChange={(event) =>
+                                            void switchOutdatedMode(event.target.value as typeof outdatedMode)
+                                        }
                                     >
-                                        {t(`settings.outdatedFlag.options.${label}`)}
-                                        <span className="outdated-mode-count">
-                                            {outdatedCounts[mode] === undefined || outdatedCounts[mode] < 0
-                                                ? "—"
-                                                : outdatedCounts[mode]}
-                                        </span>
-                                    </button>
-                                ))}
+                                        {(
+                                            [
+                                                ["none", "none"],
+                                                ["greedy", "greedy"],
+                                                ["greedy-auto-updates", "greedyAutoUpdates"],
+                                            ] as const
+                                        ).map(([mode, label]) => {
+                                            const count = outdatedCounts[mode];
+                                            return (
+                                                <option key={mode} value={mode}>
+                                                    {t(`settings.outdatedFlag.options.${label}`)} (
+                                                    {count === undefined || count < 0 ? "—" : count})
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </label>
+                                <label className="update-filter-field">
+                                    <span>{t("filters.packageType")}</span>
+                                    <select
+                                        value={updatableTypeFilter}
+                                        onChange={(event) =>
+                                            setUpdatableTypeFilter(event.target.value as typeof updatableTypeFilter)
+                                        }
+                                    >
+                                        {(["all", "formulae", "casks"] as const).map((type) => {
+                                            const count =
+                                                type === "all"
+                                                    ? updatablePackages.length
+                                                    : updatablePackages.filter((pkg) =>
+                                                          type === "casks" ? pkg.isCask : !pkg.isCask,
+                                                      ).length;
+                                            return (
+                                                <option key={type} value={type}>
+                                                    {t(`filters.${type}`)} ({count})
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </label>
                             </div>
                             {error && <div className="result error">{error}</div>}
                             {updatableError && <div className="result error">{updatableError}</div>}
@@ -3873,10 +3909,10 @@ const WailBrewApp = () => {
                     />
                     <ConfirmDialog
                         open={showUpdateSelectedConfirm}
-                        message={t("dialogs.confirmUpdateSelected", { count: selectedPackages.size })}
+                        message={t("dialogs.confirmUpdateSelected", { count: selectedTargets.length })}
                         onConfirm={handleUpdateSelectedConfirmed}
                         onCancel={() => setShowUpdateSelectedConfirm(false)}
-                        confirmLabel={t("buttons.yesUpdateSelected", { count: selectedPackages.size })}
+                        confirmLabel={t("buttons.yesUpdateSelected", { count: selectedTargets.length })}
                         commandSpec={{ action: "upgrade-selected", targets: selectedTargets }}
                     />
                     <ConfirmDialog

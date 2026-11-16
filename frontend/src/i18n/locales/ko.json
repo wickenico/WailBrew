@@ -148,6 +148,12 @@
     "newSnapshot": "새 스냅샷"
   },
   "filters": {
+    "packageType": "패키지 유형으로 필터링",
+    "updateMode": "업데이트 모드",
+    "show": "표시",
+    "all": "전체",
+    "formulae": "수식",
+    "casks": "캐스크",
     "onRequest": "요청 설치 ({{count}})",
     "asDependency": "의존성 설치 ({{count}})",
     "toggleOnRequest": "필터 전환: 요청으로 설치됨",

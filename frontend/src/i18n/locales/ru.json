@@ -148,6 +148,12 @@
     "newSnapshot": "Новый снимок"
   },
   "filters": {
+    "packageType": "Фильтр по типу пакета",
+    "updateMode": "Режим обновления",
+    "show": "Показать",
+    "all": "Все",
+    "formulae": "Формулы",
+    "casks": "Casks",
     "onRequest": "Установлено вручную ({{count}})",
     "asDependency": "Как зависимость ({{count}})",
     "toggleOnRequest": "Переключить фильтр: установлено вручную",

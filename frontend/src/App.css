@@ -1302,6 +1302,62 @@ body {
   margin: -2px 0 10px 0;
 }
 
+.update-filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+  margin: -6px 0 12px;
+}
+
+.update-filter-field {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+}
+
+.update-filter-field select {
+  height: 30px;
+  padding: 0 26px 0 9px;
+  border: 1px solid var(--glass-border);
+  border-radius: 7px;
+  appearance: none;
+  background-color: var(--input-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m2 4 4 4 4-4' fill='none' stroke='%2399a1aa' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  color: var(--text-main);
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.update-filter-field:first-child select {
+  width: 218px;
+}
+
+.update-filter-field:last-child select {
+  width: 150px;
+}
+
+.update-filter-field select:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 1px;
+}
+
+.update-filter-field select:hover:not(:disabled) {
+  border-color: var(--glass-border-strong);
+  background-color: var(--bg-secondary-strong);
+}
+
+.update-filter-field select:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .installed-filter-pill {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--glass-border);

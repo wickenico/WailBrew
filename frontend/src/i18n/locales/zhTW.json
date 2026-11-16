@@ -148,6 +148,12 @@
     "newSnapshot": "新增快照"
   },
   "filters": {
+    "packageType": "依套件類型篩選",
+    "updateMode": "更新模式",
+    "show": "顯示",
+    "all": "全部",
+    "formulae": "Formulae",
+    "casks": "Cask",
     "onRequest": "按需安裝 ({{count}})",
     "asDependency": "作為相依套件 ({{count}})",
     "toggleOnRequest": "切換篩選：按需安裝",

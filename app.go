@@ -629,8 +629,8 @@ func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
 	return a.brewService.UpdateSelectedBrewPackages(a.ctx, packageNames)
 }
 
-func (a *App) UpdateAllBrewPackages() string {
-	return a.brewService.UpdateAllBrewPackages(a.ctx)
+func (a *App) UpdateAllBrewPackages(packageType string) string {
+	return a.brewService.UpdateAllBrewPackages(a.ctx, packageType)
 }
 
 func (a *App) PinBrewPackage(packageName string) string {
