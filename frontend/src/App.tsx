@@ -266,10 +266,6 @@ const WailBrewApp = () => {
             console.error("WailBrew update check failed:", error);
         }
     };
-    // biome-ignore lint/correctness/useExhaustiveDependencies: check once on startup
-    useEffect(() => {
-        refreshAppUpdateInfo();
-    }, []);
     const [cleanupLog, setCleanupLog] = useState<string>("");
     const [cleanupEstimate, setCleanupEstimate] = useState<string>("");
     const [showAbout, setShowAbout] = useState<boolean>(false);
@@ -475,6 +471,10 @@ const WailBrewApp = () => {
         startupDataPromise.current
             .then((startupData) => {
                 if (cancelled) return;
+                // Check after startup's Homebrew database refresh. Checking on
+                // mount can read the previous cask metadata and miss a newly
+                // available WailBrew update until the next app launch.
+                void refreshAppUpdateInfo();
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
                 const safeInstalled = startupData.packages || [];
                 const safeInstalledCasks = startupData.casks || [];
