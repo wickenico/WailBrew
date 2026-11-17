@@ -65,8 +65,9 @@ export function installedCaskEntries(rows: string[][]): PackageEntry[] {
     }));
 }
 
-export function updatablePackageEntries(rows: string[][]): PackageEntry[] {
-    return rows.map(([name, installedVersion, latestVersion, size, warning, type, fullName]) => ({
+export function updatablePackageEntries(rows: string[][] | null): PackageEntry[] {
+    // Go's nil slice is serialized as null when no outdated packages remain.
+    return (rows ?? []).map(([name, installedVersion, latestVersion, size, warning, type, fullName]) => ({
         name,
         fullName,
         installedVersion,

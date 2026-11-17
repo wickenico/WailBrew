@@ -121,6 +121,10 @@ describe("installedCaskEntries", () => {
 });
 
 describe("updatablePackageEntries", () => {
+    it("accepts a nil Go slice after the last outdated package is upgraded", () => {
+        expect(updatablePackageEntries(null)).toEqual([]);
+    });
+
     it("cask and formula names", () => {
         const packages = updatablePackageEntries([
             ["orca", "1.4.224", "1.4.226", "794M", "auto updates", "cask", "stablyai/orca/orca"],
