@@ -94,6 +94,9 @@ func Build(app AppInterface) *menu.Menu {
 	ViewMenu.AddText(getT("menu.view.allCasks"), keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "allCasks")
 	})
+	ViewMenu.AddText(getT("menu.view.adoptable"), keys.Combo("a", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
+		rt.EventsEmit(getCtx(), "setView", "adoptable")
+	})
 	ViewMenu.AddSeparator()
 	ViewMenu.AddText(getT("menu.view.homebrew"), keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
 		rt.EventsEmit(getCtx(), "setView", "homebrew")

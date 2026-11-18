@@ -23,6 +23,7 @@
     "all": "כל הנוסחאות",
     "allFormulae": "כל הנוסחאות",
     "allCasks": "כל ה-Casks",
+    "adoptable": "אפליקציות לאימוץ",
     "leaves": "עלים",
     "repositories": "מאגרים",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "נוסחאות ו-Casks מיושנים",
     "allFormulas": "נוסחאות",
     "allCasks": "כל ה-Casks",
+    "adoptable": "אפליקציות לאימוץ",
     "leaves": "עלים",
     "repositories": "מאגרים",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "נוסחאות מיושנות",
       "all": "כל הנוסחאות",
       "allCasks": "כל ה-Casks",
+      "adoptable": "אפליקציות לאימוץ",
       "leaves": "עלים",
       "repositories": "מאגרים",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "הצג נעוצים בלבד",
     "pin": "נעץ את \"{{name}}\" (חסימת עדכונים)",
     "unpin": "בטל נעיצה של \"{{name}}\" (אפשור עדכונים)",
-    "newSnapshot": "תמונת מצב חדשה"
+    "newSnapshot": "תמונת מצב חדשה",
+    "yesAdopt": "כן, לאמץ",
+    "yesReplace": "כן, להחליף",
+    "openSystemSettings": "פתיחת הגדרות המערכת"
   },
   "filters": {
     "packageType": "סינון לפי סוג חבילה",
@@ -269,6 +275,45 @@
     "badge": "{{count}} פגיעויות ידועות. החומרה הגבוהה ביותר: {{severity}}",
     "packageSection": "פגיעויות"
   },
+  "adoptable": {
+    "searchPlaceholder": "חיפוש אפליקציות או casks",
+    "scanning": "סורק...",
+    "rescan": "סריקה מחדש",
+    "scanningDetail": "סורק את האפליקציות המותקנות ומשווה אותן לקטלוג ה-casks של Homebrew...",
+    "error": "לא ניתן היה לסרוק אפליקציות לאימוץ",
+    "intro": "אפליקציות ב-{{dir}} שהותקנו מחוץ ל-Homebrew ויש להן cask תואם. אימוץ רושם את האפליקציה הקיימת ב-Homebrew בלי להתקין אותה מחדש, כך שאפשר לעדכן ולהסיר אותה כמו כל cask אחר. ההגדרות והנתונים שלך לא משתנים.",
+    "catalogStale": "לא ניתן היה לרענן את קטלוג ה-casks. מוצגות תוצאות מהעותק האחרון שהורד.",
+    "filterLabel": "סינון לפי סטטוס",
+    "filter": {
+      "all": "הכול",
+      "ready": "מוכנות",
+      "versionMismatch": "גרסה שונה",
+      "uncertain": "התאמה לא ודאית"
+    },
+    "status": {
+      "ready": "מוכנה לאימוץ",
+      "versionMismatch": "גרסה שונה",
+      "uncertain": "התאמה לא ודאית"
+    },
+    "detail": {
+      "readySame": "אותה גרסה כמו ב-cask ({{version}}). האפליקציה הקיימת נשמרת כמו שהיא.",
+      "readyAutoUpdates": "מותקנת {{installed}}, cask {{version}}. האפליקציה מתעדכנת בעצמה, ולכן Homebrew מאמץ אותה ללא קשר לגרסה.",
+      "versionMismatch": "מותקנת {{installed}}, cask {{version}}. Homebrew מאמץ רק גרסאות זהות. אם הוא מסרב, אפשר להחליף את האפליקציה בגרסת ה-cask.",
+      "uncertain": "אין התאמה מדויקת ל-cask, רק השם דומה. כדאי לוודא שזו אותה אפליקציה לפני האימוץ."
+    },
+    "none": "לא נמצאו אפליקציות לאימוץ. כל האפליקציות עם cask תואם כבר מנוהלות על ידי Homebrew.",
+    "filteredEmpty": "אין אפליקציות שתואמות לחיפוש או לסינון הנוכחי.",
+    "openHomepage": "פתיחת דף הבית של {{name}}",
+    "chooseCask": "בחירת cask עבור {{name}}",
+    "deprecated": "הוצא משימוש",
+    "adopt": "אימוץ",
+    "unmatched": "אפליקציות ללא cask תואם: {{count}}",
+    "footer": {
+      "managed": "כבר מנוהלות על ידי Homebrew: {{count}}",
+      "appStore": "מנוהלות על ידי App Store: {{names}}",
+      "idle": "מוצא אפליקציות שהותקנו מחוץ ל-Homebrew ושאפשר לאמץ כ-casks."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "האם באמת ברצונך להסיר את \"{{name}}\"?",
     "zapUninstall": "הסר גם את כל נתוני היישום (--zap)",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "למחוק את תמונת המצב \"{{name}}\"? לא ניתן לבטל פעולה זו.",
     "newSnapshotTitle": "תמונת מצב חדשה",
     "newSnapshotPlaceholder": "תווית (אופציונלי), למשל לפני-שדרוג-macOS",
-    "newSnapshotHint": "שומר את הנוסחאות, ה-cask-ים וה-tap-ים המותקנים כעת לקובץ Brewfile מתויג בזמן שניתן לשחזר מאוחר יותר."
+    "newSnapshotHint": "שומר את הנוסחאות, ה-cask-ים וה-tap-ים המותקנים כעת לקובץ Brewfile מתויג בזמן שניתן לשחזר מאוחר יותר.",
+    "adoptLogs": "יומני אימוץ עבור {{name}}",
+    "adopting": "מאמץ את \"{{app}}\" כ-cask \"{{name}}\"...\nנא להמתין...",
+    "confirmAdopt": "לאמץ את \"{{app}}\" עם ה-cask של Homebrew \"{{name}}\"? Homebrew מוריד את ה-cask פעם אחת לאימות ושומר את האפליקציה הקיימת שלך.",
+    "confirmAdoptMismatch": "לאמץ את \"{{app}}\" עם ה-cask של Homebrew \"{{name}}\"? הגרסה המותקנת ({{installed}}) שונה מגרסת ה-cask ({{version}}), ולכן Homebrew כנראה יסרב. לאחר מכן אפשר להחליף את האפליקציה בגרסת ה-cask.",
+    "confirmAdoptUncertain": "\"{{name}}\" נמצא רק לפי השם ועשוי להיות אפליקציה אחרת מ-\"{{app}}\". לאמץ בכל זאת?",
+    "confirmAdoptReplace": "Homebrew לא אימץ את \"{{app}}\" כי הגרסה המותקנת שונה מה-cask \"{{name}}\". להחליף את האפליקציה בגרסת ה-cask {{version}}? רק חבילת האפליקציה מוחלפת, ההגדרות והנתונים שלך נשמרים.",
+    "appManagementRequired": "macOS לא מאפשר ל-WailBrew לשנות את \"{{app}}\". Homebrew משנה את ההרשאות של האפליקציה בזמן האימוץ, ולכן WailBrew צריך את ההרשאה \"ניהול אפליקציות\". יש לאשר את WailBrew בהגדרות המערכת › פרטיות ואבטחה › ניהול אפליקציות, להפעיל מחדש את WailBrew ולנסות שוב. אם WailBrew הופעל ממסוף או מ-IDE, יש לאשר את האפליקציה הזו במקום זאת ולהפעיל אותה מחדש."
   },
   "errors": {
     "loadingFormulas": "❌ שגיאה בטעינת נוסחאות!",
@@ -396,6 +448,7 @@
       "all": "כל הנוסחאות",
       "allFormulae": "כל הנוסחאות",
       "allCasks": "כל ה-Casks",
+      "adoptable": "אפליקציות לאימוץ",
       "leaves": "עלים",
       "repositories": "מאגרים",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 מתחיל התקנה עבור '{{name}}'...",
       "success": "✅ ההתקנה עבור '{{name}}' הושלמה בהצלחה!",
       "failed": "❌ ההתקנה עבור '{{name}}' נכשלה: {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 מאמץ את האפליקציה הקיימת עבור ה-cask '{{name}}'...",
+      "replaceStart": "🔄 מחליף את האפליקציה הקיימת ב-cask '{{name}}'...",
+      "success": "✅ '{{name}}' מנוהל עכשיו על ידי Homebrew!",
+      "failed": "❌ אימוץ '{{name}}' נכשל: {{error}}"
     },
     "uninstall": {
       "start": "🔄 מתחיל הסרה עבור '{{name}}'...",

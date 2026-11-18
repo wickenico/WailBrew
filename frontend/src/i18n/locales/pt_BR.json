@@ -23,6 +23,7 @@
     "all": "Fórmulas",
     "allFormulae": "Todas as Fórmulas",
     "allCasks": "Todos os Casks",
+    "adoptable": "Apps adotáveis",
     "leaves": "Leaves",
     "repositories": "Repositórios",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "Fórmulas e Casks Desatualizados",
     "allFormulas": "Fórmulas",
     "allCasks": "Todos os Casks",
+    "adoptable": "Apps adotáveis",
     "leaves": "Leaves",
     "repositories": "Repositórios",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "Fórmulas Desatualizadas",
       "all": "Todas as Fórmulas",
       "allCasks": "Todos os Casks",
+      "adoptable": "Apps adotáveis",
       "leaves": "Leaves",
       "repositories": "Repositórios",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "Mostrar apenas fixados",
     "pin": "Fixar \"{{name}}\" (bloquear atualizações)",
     "unpin": "Desafixar \"{{name}}\" (permitir atualizações)",
-    "newSnapshot": "Novo Snapshot"
+    "newSnapshot": "Novo Snapshot",
+    "yesAdopt": "Sim, adotar",
+    "yesReplace": "Sim, substituir",
+    "openSystemSettings": "Abrir Ajustes do Sistema"
   },
   "filters": {
     "packageType": "Filtrar por tipo de pacote",
@@ -269,6 +275,45 @@
     "badge": "{{count}} vulnerabilidades conhecidas. Maior gravidade: {{severity}}",
     "packageSection": "Vulnerabilidades"
   },
+  "adoptable": {
+    "searchPlaceholder": "Buscar apps ou casks",
+    "scanning": "Verificando...",
+    "rescan": "Verificar novamente",
+    "scanningDetail": "Verificando os apps instalados e comparando com o catálogo de casks do Homebrew...",
+    "error": "Não foi possível procurar apps adotáveis",
+    "intro": "Apps em {{dir}} instalados fora do Homebrew que têm um cask correspondente. Ao adotar, o app existente é registrado no Homebrew sem reinstalação, podendo ser atualizado e desinstalado como qualquer outro cask. Suas configurações e dados não são alterados.",
+    "catalogStale": "Não foi possível atualizar o catálogo de casks. Exibindo resultados da última cópia baixada.",
+    "filterLabel": "Filtrar por status",
+    "filter": {
+      "all": "Todos",
+      "ready": "Prontos",
+      "versionMismatch": "Versão diferente",
+      "uncertain": "Correspondência incerta"
+    },
+    "status": {
+      "ready": "Pronto para adotar",
+      "versionMismatch": "Versão diferente",
+      "uncertain": "Correspondência incerta"
+    },
+    "detail": {
+      "readySame": "Mesma versão do cask ({{version}}). O app existente é mantido como está.",
+      "readyAutoUpdates": "Instalado {{installed}}, cask {{version}}. O app se atualiza sozinho, então o Homebrew o adota independentemente da versão.",
+      "versionMismatch": "Instalado {{installed}}, cask {{version}}. O Homebrew só adota versões idênticas. Se ele recusar, você pode substituir o app pela versão do cask.",
+      "uncertain": "Nenhum cask corresponde exatamente, apenas o nome é parecido. Confira se este cask é o mesmo app antes de adotar."
+    },
+    "none": "Nenhum app adotável encontrado. Todos os apps com cask correspondente já são gerenciados pelo Homebrew.",
+    "filteredEmpty": "Nenhum app corresponde à busca ou ao filtro atual.",
+    "openHomepage": "Abrir a página de {{name}}",
+    "chooseCask": "Escolher o cask para {{name}}",
+    "deprecated": "obsoleto",
+    "adopt": "Adotar",
+    "unmatched": "Apps sem cask correspondente: {{count}}",
+    "footer": {
+      "managed": "Já gerenciados pelo Homebrew: {{count}}",
+      "appStore": "Gerenciados pela App Store: {{names}}",
+      "idle": "Encontra apps instalados fora do Homebrew que podem ser adotados como casks."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "Você realmente deseja desinstalar \"{{name}}\"?",
     "zapUninstall": "Remover também todos os dados do aplicativo (--zap)",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "Excluir o snapshot \"{{name}}\"? Esta ação não pode ser desfeita.",
     "newSnapshotTitle": "Novo Snapshot",
     "newSnapshotPlaceholder": "Rótulo (opcional), ex. antes-do-upgrade-macOS",
-    "newSnapshotHint": "Salva as fórmulas, casks e taps atualmente instalados em um Brewfile com data e hora que você pode restaurar depois."
+    "newSnapshotHint": "Salva as fórmulas, casks e taps atualmente instalados em um Brewfile com data e hora que você pode restaurar depois.",
+    "adoptLogs": "Logs de adoção de {{name}}",
+    "adopting": "Adotando \"{{app}}\" como cask \"{{name}}\"...\nAguarde...",
+    "confirmAdopt": "Adotar \"{{app}}\" com o cask do Homebrew \"{{name}}\"? O Homebrew baixa o cask uma vez para verificá-lo e mantém seu app existente.",
+    "confirmAdoptMismatch": "Adotar \"{{app}}\" com o cask do Homebrew \"{{name}}\"? A versão instalada ({{installed}}) é diferente da do cask ({{version}}), então o Homebrew provavelmente vai recusar. Depois você pode substituir o app pela versão do cask.",
+    "confirmAdoptUncertain": "\"{{name}}\" foi encontrado apenas pelo nome e pode ser um app diferente de \"{{app}}\". Adotar mesmo assim?",
+    "confirmAdoptReplace": "O Homebrew não adotou \"{{app}}\" porque a versão instalada é diferente do cask \"{{name}}\". Substituir o app pela versão {{version}} do cask? Apenas o pacote do app é substituído; suas configurações e dados são mantidos.",
+    "appManagementRequired": "O macOS não permite que o WailBrew modifique \"{{app}}\". O Homebrew ajusta as permissões do app ao adotá-lo, por isso o WailBrew precisa da permissão Gerenciamento de Apps. Permita o WailBrew em Ajustes do Sistema › Privacidade e Segurança › Gerenciamento de Apps, reinicie o WailBrew e tente novamente. Se o WailBrew foi iniciado por um terminal ou uma IDE, permita esse app e reinicie-o."
   },
   "errors": {
     "loadingFormulas": "❌ Erro ao carregar fórmulas!",
@@ -396,6 +448,7 @@
       "all": "Todas as Fórmulas",
       "allFormulae": "Todas as Fórmulas",
       "allCasks": "Todos os Casks",
+      "adoptable": "Apps adotáveis",
       "leaves": "Leaves",
       "repositories": "Repositórios",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 Iniciando a instalação de '{{name}}'...",
       "success": "✅ Instalação de '{{name}}' foi concluída com sucesso!",
       "failed": "❌ Instalação de '{{name}}' falhou: {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 Adotando o app existente para o cask '{{name}}'...",
+      "replaceStart": "🔄 Substituindo o app existente pelo cask '{{name}}'...",
+      "success": "✅ '{{name}}' agora é gerenciado pelo Homebrew!",
+      "failed": "❌ Falha ao adotar '{{name}}': {{error}}"
     },
     "uninstall": {
       "start": "🔄 Iniciando a desinstalação de '{{name}}'...",

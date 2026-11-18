@@ -102,6 +102,19 @@ func BuildUnpinArgs(name string) []string {
 	return []string{"unpin", name}
 }
 
+// BuildAdoptArgs builds the arguments for bringing an app installed outside
+// Homebrew under cask management. --adopt keeps the existing bundle and only
+// succeeds when its version matches the cask (or the cask auto-updates).
+// replace is the fallback for a version mismatch: --force overwrites the app
+// bundle with the cask's version. Homebrew rejects combining the two flags.
+// User data in ~/Library is untouched either way.
+func BuildAdoptArgs(token string, replace bool) []string {
+	if replace {
+		return []string{"install", "--cask", "--force", token}
+	}
+	return []string{"install", "--cask", "--adopt", token}
+}
+
 // BuildTrustArgs builds the arguments for trusting a tap.
 func BuildTrustArgs(name string) []string {
 	return []string{"trust", name}

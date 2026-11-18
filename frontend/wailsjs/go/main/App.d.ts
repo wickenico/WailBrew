@@ -4,6 +4,10 @@ import {main} from '../models';
 import {brew} from '../models';
 import {context} from '../models';
 
+export function AdoptBrewCask(arg1:string,arg2:boolean):Promise<string>;
+
+export function CanModifyApp(arg1:string):Promise<boolean>;
+
 export function CheckBrewLocation():Promise<main.BrewLocationSuggestion>;
 
 export function CheckForNewPackages():Promise<brew.NewPackagesInfo>;
@@ -26,9 +30,13 @@ export function ExportBrewfile(arg1:string):Promise<void>;
 
 export function GetAdminUsername():Promise<string>;
 
+export function GetAdoptableApps():Promise<brew.AdoptScanResult>;
+
 export function GetAllBrewCasks():Promise<Array<any>>;
 
 export function GetAllBrewPackages():Promise<Array<any>>;
+
+export function GetAppIcon(arg1:string):Promise<string>;
 
 export function GetAppVersion():Promise<string>;
 
@@ -139,6 +147,8 @@ export function IsConfigDirectoryOverridden():Promise<boolean>;
 export function ListSnapshots():Promise<Array<brew.SnapshotEntry>>;
 
 export function MoveConfigDirectory(arg1:string):Promise<string>;
+
+export function OpenAppManagementSettings():Promise<void>;
 
 export function OpenConfigFile():Promise<void>;
 

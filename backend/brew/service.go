@@ -48,6 +48,7 @@ type Service interface {
 
 	// Actions
 	InstallBrewPackage(ctx context.Context, packageName string, isCask bool) string
+	AdoptBrewCask(ctx context.Context, token string, replace bool) string
 	RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string
 	UpdateBrewPackage(ctx context.Context, packageName string) string
 	UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string
@@ -74,6 +75,9 @@ type Service interface {
 	GetBrewPackageInfo(packageName string) string
 	GetInstalledDependencies(packageName string) []string
 	GetInstalledDependents(packageName string) []string
+
+	// Adoptable apps
+	GetAdoptableApps(ctx context.Context, appDir string) (*AdoptScanResult, error)
 
 	// Other operations
 	GetBrewVulnerabilities() (*VulnerabilityReport, error)
@@ -136,6 +140,7 @@ type serviceImpl struct {
 	startupService  *StartupService
 	snapshotService *SnapshotService
 	installedState  *InstalledStateService
+	caskCatalog     *caskCatalog
 }
 
 // NewService creates a new brew service
@@ -250,6 +255,7 @@ func NewService(
 		startupService:  startupService,
 		snapshotService: snapshotService,
 		installedState:  NewInstalledStateService(executor),
+		caskCatalog:     newCaskCatalog(getBrewEnvFunc),
 	}
 }
 
@@ -351,6 +357,36 @@ func (s *serviceImpl) ExtractFailedPackagesFromError(stderrOutput string) []stri
 // Action methods
 func (s *serviceImpl) InstallBrewPackage(ctx context.Context, packageName string, isCask bool) string {
 	return s.actionsService.InstallBrewPackage(ctx, packageName, isCask)
+}
+
+func (s *serviceImpl) AdoptBrewCask(ctx context.Context, token string, replace bool) string {
+	return s.actionsService.AdoptBrewCask(ctx, token, replace)
+}
+
+// GetAdoptableApps scans appDir for apps installed outside Homebrew and
+// matches them against the cask catalog.
+func (s *serviceImpl) GetAdoptableApps(ctx context.Context, appDir string) (*AdoptScanResult, error) {
+	if appDir == "" {
+		appDir = "/Applications"
+	}
+	if err := s.validateFunc(); err != nil {
+		return nil, err
+	}
+	catalog, stale, err := s.caskCatalog.Load(ctx)
+	if err != nil {
+		return nil, err
+	}
+	managed, err := managedAppNames(s.executor)
+	if err != nil {
+		return nil, err
+	}
+	apps, err := scanAppDir(appDir, readInfoPlist)
+	if err != nil {
+		return nil, err
+	}
+	result := buildAdoptResult(appDir, apps, catalog, managed)
+	result.CatalogStale = stale
+	return result, nil
 }
 
 func (s *serviceImpl) RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string {

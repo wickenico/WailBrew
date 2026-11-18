@@ -617,6 +617,18 @@ func (a *App) InstallBrewPackage(packageName string, isCask bool) string {
 	return a.brewService.InstallBrewPackage(a.ctx, packageName, isCask)
 }
 
+// GetAdoptableApps lists apps in the cask app directory that were installed
+// outside Homebrew, each with the casks that could adopt it.
+func (a *App) GetAdoptableApps() (*brew.AdoptScanResult, error) {
+	return a.brewService.GetAdoptableApps(a.ctx, a.GetCaskAppDir())
+}
+
+// AdoptBrewCask brings an existing app under Homebrew management. replace
+// overwrites the app with the cask's version when plain adoption refused.
+func (a *App) AdoptBrewCask(token string, replace bool) string {
+	return a.brewService.AdoptBrewCask(a.ctx, token, replace)
+}
+
 func (a *App) RemoveBrewPackage(packageName string, zap bool) string {
 	return a.brewService.RemoveBrewPackage(a.ctx, packageName, zap)
 }
@@ -655,9 +667,10 @@ func (a *App) TrustBrewTap(tapName string) string {
 }
 
 // PreviewBrewCommand returns the exact brew command an action will run, so the
-// confirmation dialogs can show it. Supported actions: install, uninstall,
-// upgrade, upgrade-selected, upgrade-all, tap, untap, trust. For tap, targets is
-// [name] or [name, url]; all other single-target actions take [name].
+// confirmation dialogs can show it. Supported actions: install, adopt,
+// adopt-replace, uninstall, upgrade, upgrade-selected, upgrade-all, tap, untap,
+// trust. For tap, targets is [name] or [name, url]; all other single-target
+// actions take [name].
 func (a *App) PreviewBrewCommand(action string, targets []string, isCask bool, zap bool) string {
 	target := ""
 	if len(targets) > 0 {
@@ -670,6 +683,11 @@ func (a *App) PreviewBrewCommand(action string, targets []string, isCask bool, z
 			return ""
 		}
 		return brew.FormatCommand(brew.BuildInstallArgs(target, isCask))
+	case "adopt", "adopt-replace":
+		if target == "" {
+			return ""
+		}
+		return brew.FormatCommand(brew.BuildAdoptArgs(target, action == "adopt-replace"))
 	case "uninstall":
 		if target == "" {
 			return ""
@@ -1201,6 +1219,49 @@ func (a *App) GetCaskIcon(caskName string) string {
 		return ""
 	}
 	return icon
+}
+
+// GetAppIcon returns the icon of an app bundle directly inside the cask app
+// directory as a small PNG data URL, or "" when it cannot be read. Used by the
+// adoptable apps view, whose apps are not managed by a cask yet.
+func (a *App) GetAppIcon(appPath string) string {
+	appPath, ok := a.bundleInAppDir(appPath)
+	if !ok {
+		return ""
+	}
+	icon, err := system.CaskIconDataURL(appPath)
+	if err != nil {
+		return ""
+	}
+	return icon
+}
+
+// bundleInAppDir cleans appPath and reports whether it is an .app bundle
+// directly inside the cask app directory, the only place adoption looks.
+func (a *App) bundleInAppDir(appPath string) (string, bool) {
+	appDir := a.GetCaskAppDir()
+	if appDir == "" {
+		appDir = "/Applications"
+	}
+	appPath = filepath.Clean(appPath)
+	return appPath, strings.HasSuffix(appPath, ".app") && filepath.Dir(appPath) == filepath.Clean(appDir)
+}
+
+// CanModifyApp reports whether macOS' App Management protection lets WailBrew
+// (and the brew commands it runs) change an existing app in the app directory.
+// Adoption fails without it, so the UI checks before starting a download.
+func (a *App) CanModifyApp(appPath string) bool {
+	appPath, ok := a.bundleInAppDir(appPath)
+	if !ok {
+		return true
+	}
+	return system.CanModifyAppBundle(appPath)
+}
+
+// OpenAppManagementSettings opens System Settings › Privacy & Security ›
+// App Management, where WailBrew can be allowed to update other apps.
+func (a *App) OpenAppManagementSettings() error {
+	return system.OpenAppManagementSettings()
 }
 
 func (a *App) SetCaskAppDir(appDir string) error {

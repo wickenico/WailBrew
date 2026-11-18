@@ -23,6 +23,7 @@
     "all": "Todo",
     "allFormulae": "Todos CLI",
     "allCasks": "Todos GUI",
+    "adoptable": "Apps adoptables",
     "leaves": "Instalados manualmente",
     "repositories": "Repositorios",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "Programas CLI y Casks actualizables",
     "allFormulas": "Todos los programas CLI",
     "allCasks": "Todos los programas GUI",
+    "adoptable": "Apps adoptables",
     "leaves": "Instalados manualmente",
     "repositories": "Repositorios",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "Actualizables",
       "all": "Todo",
       "allCasks": "Todos GUI",
+      "adoptable": "Apps adoptables",
       "leaves": "Instalados manualmente",
       "repositories": "Repositorios",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "Mostrar solo anclados",
     "pin": "Anclar \"{{name}}\" (bloquear actualizaciones)",
     "unpin": "Desanclar \"{{name}}\" (permitir actualizaciones)",
-    "newSnapshot": "Nueva instantánea"
+    "newSnapshot": "Nueva instantánea",
+    "yesAdopt": "Sí, adoptar",
+    "yesReplace": "Sí, reemplazar",
+    "openSystemSettings": "Abrir Ajustes del Sistema"
   },
   "filters": {
     "packageType": "Filtrar por tipo de paquete",
@@ -269,6 +275,45 @@
     "badge": "{{count}} vulnerabilidades conocidas. Gravedad más alta: {{severity}}",
     "packageSection": "Vulnerabilidades"
   },
+  "adoptable": {
+    "searchPlaceholder": "Buscar apps o casks",
+    "scanning": "Escaneando...",
+    "rescan": "Volver a escanear",
+    "scanningDetail": "Escaneando las apps instaladas y comparándolas con el catálogo de casks de Homebrew...",
+    "error": "No se pudieron buscar apps adoptables",
+    "intro": "Apps en {{dir}} instaladas fuera de Homebrew que tienen un cask correspondiente. Al adoptarlas, la app existente se registra en Homebrew sin reinstalarla, para que pueda actualizarse y desinstalarse como cualquier otro cask. Tus ajustes y datos no se modifican.",
+    "catalogStale": "No se pudo actualizar el catálogo de casks. Se muestran resultados de la última copia descargada.",
+    "filterLabel": "Filtrar por estado",
+    "filter": {
+      "all": "Todas",
+      "ready": "Listas",
+      "versionMismatch": "Versión distinta",
+      "uncertain": "Coincidencia dudosa"
+    },
+    "status": {
+      "ready": "Lista para adoptar",
+      "versionMismatch": "Versión distinta",
+      "uncertain": "Coincidencia dudosa"
+    },
+    "detail": {
+      "readySame": "Misma versión que el cask ({{version}}). La app existente se conserva tal cual.",
+      "readyAutoUpdates": "Instalada {{installed}}, cask {{version}}. La app se actualiza sola, así que Homebrew la adopta sin importar la versión.",
+      "versionMismatch": "Instalada {{installed}}, cask {{version}}. Homebrew solo adopta versiones idénticas. Si lo rechaza, puedes reemplazar la app por la versión del cask.",
+      "uncertain": "No hay coincidencia exacta de cask, solo el nombre es parecido. Comprueba que este cask sea la misma app antes de adoptarla."
+    },
+    "none": "No se encontraron apps adoptables. Todas las apps con un cask correspondiente ya las gestiona Homebrew.",
+    "filteredEmpty": "Ninguna app coincide con la búsqueda o el filtro actual.",
+    "openHomepage": "Abrir la página web de {{name}}",
+    "chooseCask": "Elegir el cask para {{name}}",
+    "deprecated": "obsoleto",
+    "adopt": "Adoptar",
+    "unmatched": "Apps sin cask correspondiente: {{count}}",
+    "footer": {
+      "managed": "Ya gestionadas por Homebrew: {{count}}",
+      "appStore": "Gestionadas por la App Store: {{names}}",
+      "idle": "Encuentra apps instaladas fuera de Homebrew que se pueden adoptar como casks."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "¿Realmente desea desinstalar \"{{name}}\"?",
     "zapUninstall": "Eliminar también todos los datos de la aplicación (--zap)",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "¿Eliminar la instantánea \"{{name}}\"? Esta acción no se puede deshacer.",
     "newSnapshotTitle": "Nueva instantánea",
     "newSnapshotPlaceholder": "Etiqueta (opcional), p. ej. antes-de-actualizar-macOS",
-    "newSnapshotHint": "Guarda las fórmulas, casks y taps instalados actualmente en un Brewfile con marca de tiempo que podrás restaurar más adelante."
+    "newSnapshotHint": "Guarda las fórmulas, casks y taps instalados actualmente en un Brewfile con marca de tiempo que podrás restaurar más adelante.",
+    "adoptLogs": "Registros de adopción de {{name}}",
+    "adopting": "Adoptando \"{{app}}\" como cask \"{{name}}\"...\nEspera un momento...",
+    "confirmAdopt": "¿Adoptar \"{{app}}\" con el cask de Homebrew \"{{name}}\"? Homebrew descarga el cask una vez para verificarlo y conserva tu app existente.",
+    "confirmAdoptMismatch": "¿Adoptar \"{{app}}\" con el cask de Homebrew \"{{name}}\"? La versión instalada ({{installed}}) es distinta a la del cask ({{version}}), así que es probable que Homebrew lo rechace. Después podrás reemplazar la app por la versión del cask.",
+    "confirmAdoptUncertain": "\"{{name}}\" solo coincide por nombre y podría ser una app distinta de \"{{app}}\". ¿Adoptarla de todos modos?",
+    "confirmAdoptReplace": "Homebrew no adoptó \"{{app}}\" porque la versión instalada es distinta a la del cask \"{{name}}\". ¿Reemplazar la app por la versión {{version}} del cask? Solo se reemplaza el paquete de la app; tus ajustes y datos se conservan.",
+    "appManagementRequired": "macOS no permite que WailBrew modifique \"{{app}}\". Homebrew ajusta los permisos de la app al adoptarla, así que WailBrew necesita el permiso de Gestión de apps. Permite WailBrew en Ajustes del Sistema › Privacidad y seguridad › Gestión de apps, reinicia WailBrew y vuelve a intentarlo. Si iniciaste WailBrew desde una terminal o un IDE, permite esa app en su lugar y reiníciala."
   },
   "errors": {
     "loadingFormulas": "❌ Error al cargar programas CLI!",
@@ -396,6 +448,7 @@
       "all": "Todos los programas",
       "allFormulae": "Todos los programas",
       "allCasks": "Todos los programas GUI",
+      "adoptable": "Apps adoptables",
       "leaves": "Leaves",
       "repositories": "Repositorios",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 Iniciando instalación para '{{name}}'...",
       "success": "✅ Instalación para '{{name}}' completada exitosamente!",
       "failed": "❌ Instalación para '{{name}}' fallida: {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 Adoptando la app existente para el cask '{{name}}'...",
+      "replaceStart": "🔄 Reemplazando la app existente por el cask '{{name}}'...",
+      "success": "✅ ¡Homebrew ya gestiona '{{name}}'!",
+      "failed": "❌ Error al adoptar '{{name}}': {{error}}"
     },
     "uninstall": {
       "start": "🔄 Iniciando desinstalación para '{{name}}'...",

@@ -7,7 +7,17 @@ import { PreviewBrewCommand } from "../../wailsjs/go/main/App";
 import { useModalA11y } from "../hooks/useModalA11y";
 
 export interface CommandSpec {
-    action: "install" | "uninstall" | "upgrade" | "upgrade-selected" | "upgrade-all" | "tap" | "untap" | "trust";
+    action:
+        | "install"
+        | "adopt"
+        | "adopt-replace"
+        | "uninstall"
+        | "upgrade"
+        | "upgrade-selected"
+        | "upgrade-all"
+        | "tap"
+        | "untap"
+        | "trust";
     targets: string[];
     isCask?: boolean;
     zap?: boolean;

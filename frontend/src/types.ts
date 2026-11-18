@@ -65,12 +65,56 @@ export interface VulnerabilityReport {
     unscannedFormulae: Record<string, string>;
 }
 
+export type AdoptMatchKind = "app" | "bundleId" | "name";
+export type AdoptVersionStatus = "same" | "older" | "newer" | "unknown";
+export type AdoptStatus = "ready" | "versionMismatch" | "uncertain";
+
+export interface AdoptCandidate {
+    token: string;
+    fullToken: string;
+    name: string;
+    desc: string;
+    homepage: string;
+    version: string;
+    autoUpdates: boolean;
+    deprecated: boolean;
+    matchKind: AdoptMatchKind;
+    versionStatus: AdoptVersionStatus;
+}
+
+export interface AdoptableApp {
+    appName: string;
+    path: string;
+    bundleId: string;
+    version: string;
+    status: AdoptStatus;
+    candidates: AdoptCandidate[];
+}
+
+export interface UnmatchedApp {
+    appName: string;
+    path: string;
+    bundleId: string;
+    version: string;
+}
+
+export interface AdoptScanResult {
+    appDir: string;
+    apps: AdoptableApp[];
+    unmatched: UnmatchedApp[];
+    managedCount: number;
+    appStoreApps: string[];
+    systemCount: number;
+    catalogStale: boolean;
+}
+
 export type View =
     | "installed"
     | "casks"
     | "updatable"
     | "all"
     | "allCasks"
+    | "adoptable"
     | "leaves"
     | "repositories"
     | "services"

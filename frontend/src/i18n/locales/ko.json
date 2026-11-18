@@ -23,6 +23,7 @@
     "all": "Formulae",
     "allFormulae": "모든 Formulae",
     "allCasks": "모든 Casks",
+    "adoptable": "가져올 수 있는 앱",
     "leaves": "Leaves",
     "repositories": "Repositories",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "업데이트 필요한 Formulae 및 Casks",
     "allFormulas": "Formulae",
     "allCasks": "모든 Casks",
+    "adoptable": "가져올 수 있는 앱",
     "leaves": "Leaves",
     "repositories": "Repositories",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "업데이트 필요한 Formulae",
       "all": "모든 Formulae",
       "allCasks": "모든 Casks",
+      "adoptable": "가져올 수 있는 앱",
       "leaves": "Leaves",
       "repositories": "Repositories",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "고정된 항목만 표시",
     "pin": "\"{{name}}\" 고정 (업데이트 차단)",
     "unpin": "\"{{name}}\" 고정 해제 (업데이트 허용)",
-    "newSnapshot": "새 스냅샷"
+    "newSnapshot": "새 스냅샷",
+    "yesAdopt": "예, 가져오기",
+    "yesReplace": "예, 교체",
+    "openSystemSettings": "시스템 설정 열기"
   },
   "filters": {
     "packageType": "패키지 유형으로 필터링",
@@ -269,6 +275,45 @@
     "badge": "알려진 취약점 {{count}}건. 가장 높은 심각도: {{severity}}",
     "packageSection": "취약점"
   },
+  "adoptable": {
+    "searchPlaceholder": "앱 또는 cask 검색",
+    "scanning": "검사 중...",
+    "rescan": "다시 검사",
+    "scanningDetail": "설치된 앱을 검사하고 Homebrew cask 카탈로그와 비교하는 중...",
+    "error": "가져올 수 있는 앱을 검사하지 못했습니다",
+    "intro": "{{dir}}에 Homebrew 밖에서 설치되었지만 일치하는 cask가 있는 앱입니다. 가져오기를 하면 기존 앱을 다시 설치하지 않고 Homebrew에 등록하므로 다른 cask처럼 업데이트하고 제거할 수 있습니다. 설정과 데이터는 그대로 유지됩니다.",
+    "catalogStale": "cask 카탈로그를 새로 고치지 못했습니다. 마지막으로 다운로드한 사본의 결과를 표시합니다.",
+    "filterLabel": "상태별 필터",
+    "filter": {
+      "all": "전체",
+      "ready": "준비됨",
+      "versionMismatch": "버전 다름",
+      "uncertain": "불확실한 일치"
+    },
+    "status": {
+      "ready": "가져오기 준비됨",
+      "versionMismatch": "버전 다름",
+      "uncertain": "불확실한 일치"
+    },
+    "detail": {
+      "readySame": "cask와 같은 버전({{version}})입니다. 기존 앱이 그대로 유지됩니다.",
+      "readyAutoUpdates": "설치됨 {{installed}}, cask {{version}}. 앱이 스스로 업데이트하므로 Homebrew가 버전과 관계없이 가져옵니다.",
+      "versionMismatch": "설치됨 {{installed}}, cask {{version}}. Homebrew는 동일한 버전만 가져옵니다. 거부되면 앱을 cask 버전으로 교체할 수 있습니다.",
+      "uncertain": "정확히 일치하는 cask가 없고 이름만 비슷합니다. 가져오기 전에 같은 앱인지 확인하세요."
+    },
+    "none": "가져올 수 있는 앱이 없습니다. 일치하는 cask가 있는 모든 앱은 이미 Homebrew에서 관리하고 있습니다.",
+    "filteredEmpty": "현재 검색어나 필터와 일치하는 앱이 없습니다.",
+    "openHomepage": "{{name}} 홈페이지 열기",
+    "chooseCask": "{{name}}의 cask 선택",
+    "deprecated": "지원 중단",
+    "adopt": "가져오기",
+    "unmatched": "일치하는 cask가 없는 앱: {{count}}",
+    "footer": {
+      "managed": "이미 Homebrew에서 관리 중: {{count}}",
+      "appStore": "App Store에서 관리 중: {{names}}",
+      "idle": "Homebrew 밖에서 설치되어 cask로 가져올 수 있는 앱을 찾습니다."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "정말로 \"{{name}}\"을(를) 제거하시겠습니까?",
     "zapUninstall": "앱 데이터도 모두 삭제 (--zap)",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "스냅샷 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
     "newSnapshotTitle": "새 스냅샷",
     "newSnapshotPlaceholder": "라벨(선택 사항), 예: macOS-업그레이드-전",
-    "newSnapshotHint": "현재 설치된 포뮬러, 캐스크, 탭을 나중에 복원할 수 있는 타임스탬프가 찍힌 Brewfile로 저장합니다."
+    "newSnapshotHint": "현재 설치된 포뮬러, 캐스크, 탭을 나중에 복원할 수 있는 타임스탬프가 찍힌 Brewfile로 저장합니다.",
+    "adoptLogs": "{{name}} 가져오기 로그",
+    "adopting": "\"{{app}}\"을(를) cask \"{{name}}\"(으)로 가져오는 중...\n잠시 기다려 주세요...",
+    "confirmAdopt": "\"{{app}}\"을(를) Homebrew cask \"{{name}}\"(으)로 가져올까요? Homebrew가 확인을 위해 cask를 한 번 다운로드하고 기존 앱을 유지합니다.",
+    "confirmAdoptMismatch": "\"{{app}}\"을(를) Homebrew cask \"{{name}}\"(으)로 가져올까요? 설치된 버전({{installed}})이 cask 버전({{version}})과 달라 Homebrew가 거부할 가능성이 큽니다. 그 후 앱을 cask 버전으로 교체할 수 있습니다.",
+    "confirmAdoptUncertain": "\"{{name}}\"은(는) 이름으로만 일치하며 \"{{app}}\"과(와) 다른 앱일 수 있습니다. 그래도 가져올까요?",
+    "confirmAdoptReplace": "설치된 버전이 cask \"{{name}}\"과(와) 달라 Homebrew가 \"{{app}}\"을(를) 가져오지 않았습니다. 앱을 cask 버전 {{version}}(으)로 교체할까요? 앱 번들만 교체되며 설정과 데이터는 유지됩니다.",
+    "appManagementRequired": "macOS에서 WailBrew가 \"{{app}}\"을(를) 수정하도록 허용하지 않습니다. Homebrew는 가져오기 중에 앱의 권한을 조정하므로 WailBrew에 앱 관리 권한이 필요합니다. 시스템 설정 › 개인정보 보호 및 보안 › 앱 관리에서 WailBrew를 허용하고 WailBrew를 다시 시작한 다음 다시 시도하세요. 터미널이나 IDE에서 WailBrew를 실행했다면 대신 해당 앱을 허용하고 다시 시작하세요."
   },
   "errors": {
     "loadingFormulas": "❌ Formulae 로딩 오류!",
@@ -396,6 +448,7 @@
       "all": "모든 Formulae",
       "allFormulae": "모든 Formulae",
       "allCasks": "모든 Casks",
+      "adoptable": "가져올 수 있는 앱",
       "leaves": "Leaves",
       "repositories": "Repositories",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 '{{name}}' 설치 시작 중...",
       "success": "✅ '{{name}}' 설치가 성공적으로 완료되었습니다!",
       "failed": "❌ '{{name}}' 설치 실패: {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 cask '{{name}}'에 기존 앱을 가져오는 중...",
+      "replaceStart": "🔄 기존 앱을 cask '{{name}}'(으)로 교체하는 중...",
+      "success": "✅ 이제 Homebrew가 '{{name}}'을(를) 관리합니다!",
+      "failed": "❌ '{{name}}' 가져오기 실패: {{error}}"
     },
     "uninstall": {
       "start": "🔄 '{{name}}' 제거 시작 중...",

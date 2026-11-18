@@ -23,6 +23,7 @@
     "all": "Formules",
     "allFormulae": "Toutes les Formules",
     "allCasks": "Tous les Casks",
+    "adoptable": "Apps adoptables",
     "leaves": "Feuilles",
     "repositories": "Dépôts",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "Formules et Casks obsolètes",
     "allFormulas": "Formules",
     "allCasks": "Tous les Casks",
+    "adoptable": "Apps adoptables",
     "leaves": "Feuilles",
     "repositories": "Dépôts",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "Formules obsolètes",
       "all": "Toutes les formules",
       "allCasks": "Tous les Casks",
+      "adoptable": "Apps adoptables",
       "leaves": "Leaves",
       "repositories": "Dépôts",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "Afficher uniquement les épinglés",
     "pin": "Épingler \"{{name}}\" (bloquer les mises à jour)",
     "unpin": "Désépingler \"{{name}}\" (autoriser les mises à jour)",
-    "newSnapshot": "Nouvel instantané"
+    "newSnapshot": "Nouvel instantané",
+    "yesAdopt": "Oui, adopter",
+    "yesReplace": "Oui, remplacer",
+    "openSystemSettings": "Ouvrir Réglages Système"
   },
   "filters": {
     "packageType": "Filtrer par type de paquet",
@@ -269,6 +275,45 @@
     "badge": "{{count}} vulnérabilités connues. Sévérité la plus haute : {{severity}}",
     "packageSection": "Vulnérabilités"
   },
+  "adoptable": {
+    "searchPlaceholder": "Rechercher des apps ou des casks",
+    "scanning": "Analyse...",
+    "rescan": "Relancer l'analyse",
+    "scanningDetail": "Analyse des apps installées et comparaison avec le catalogue de casks Homebrew...",
+    "error": "Impossible de rechercher les apps adoptables",
+    "intro": "Apps de {{dir}} installées en dehors de Homebrew mais disposant d'un cask correspondant. L'adoption enregistre l'app existante auprès de Homebrew sans la réinstaller, afin de pouvoir la mettre à jour et la désinstaller comme n'importe quel cask. Vos réglages et données restent intacts.",
+    "catalogStale": "Le catalogue de casks n'a pas pu être actualisé. Les résultats proviennent de la dernière copie téléchargée.",
+    "filterLabel": "Filtrer par statut",
+    "filter": {
+      "all": "Toutes",
+      "ready": "Prêtes",
+      "versionMismatch": "Version différente",
+      "uncertain": "Correspondance incertaine"
+    },
+    "status": {
+      "ready": "Prête à adopter",
+      "versionMismatch": "Version différente",
+      "uncertain": "Correspondance incertaine"
+    },
+    "detail": {
+      "readySame": "Même version que le cask ({{version}}). L'app existante est conservée telle quelle.",
+      "readyAutoUpdates": "Installée {{installed}}, cask {{version}}. L'app se met à jour elle-même, Homebrew l'adopte donc quelle que soit la version.",
+      "versionMismatch": "Installée {{installed}}, cask {{version}}. Homebrew n'adopte que des versions identiques. En cas de refus, vous pouvez remplacer l'app par la version du cask.",
+      "uncertain": "Aucun cask ne correspond exactement, seul le nom est similaire. Vérifiez qu'il s'agit bien de la même app avant de l'adopter."
+    },
+    "none": "Aucune app adoptable trouvée. Toutes les apps disposant d'un cask sont déjà gérées par Homebrew.",
+    "filteredEmpty": "Aucune app ne correspond à la recherche ou au filtre actuel.",
+    "openHomepage": "Ouvrir la page d'accueil de {{name}}",
+    "chooseCask": "Choisir le cask pour {{name}}",
+    "deprecated": "obsolète",
+    "adopt": "Adopter",
+    "unmatched": "Apps sans cask correspondant : {{count}}",
+    "footer": {
+      "managed": "Déjà gérées par Homebrew : {{count}}",
+      "appStore": "Gérées par l'App Store : {{names}}",
+      "idle": "Trouve les apps installées en dehors de Homebrew qui peuvent être adoptées comme casks."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "Voulez-vous vraiment désinstaller \"{{name}}\" ?",
     "zapUninstall": "Supprimer également toutes les données de l'application (--zap)",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "Supprimer l'instantané « {{name}} » ? Cette action est irréversible.",
     "newSnapshotTitle": "Nouvel instantané",
     "newSnapshotPlaceholder": "Libellé (facultatif), ex. avant-mise-a-jour-macOS",
-    "newSnapshotHint": "Enregistre les formules, casks et taps actuellement installés dans un Brewfile horodaté que vous pourrez restaurer plus tard."
+    "newSnapshotHint": "Enregistre les formules, casks et taps actuellement installés dans un Brewfile horodaté que vous pourrez restaurer plus tard.",
+    "adoptLogs": "Journaux d'adoption de {{name}}",
+    "adopting": "Adoption de \"{{app}}\" en tant que cask \"{{name}}\"...\nVeuillez patienter...",
+    "confirmAdopt": "Adopter \"{{app}}\" avec le cask Homebrew \"{{name}}\" ? Homebrew télécharge le cask une fois pour le vérifier et conserve votre app existante.",
+    "confirmAdoptMismatch": "Adopter \"{{app}}\" avec le cask Homebrew \"{{name}}\" ? La version installée ({{installed}}) diffère de celle du cask ({{version}}), Homebrew refusera donc probablement. Vous pourrez ensuite remplacer l'app par la version du cask.",
+    "confirmAdoptUncertain": "\"{{name}}\" n'a été trouvé que par son nom et pourrait être une autre app que \"{{app}}\". L'adopter quand même ?",
+    "confirmAdoptReplace": "Homebrew n'a pas adopté \"{{app}}\" car la version installée diffère du cask \"{{name}}\". Remplacer l'app par la version {{version}} du cask ? Seul le bundle de l'app est remplacé, vos réglages et données sont conservés.",
+    "appManagementRequired": "macOS n'autorise pas WailBrew à modifier \"{{app}}\". Homebrew ajuste les autorisations de l'app lors de l'adoption, WailBrew a donc besoin de l'autorisation Gestion des apps. Autorisez WailBrew dans Réglages Système › Confidentialité et sécurité › Gestion des apps, redémarrez WailBrew puis réessayez. Si WailBrew a été lancé depuis un terminal ou un IDE, autorisez plutôt cette app et redémarrez-la."
   },
   "errors": {
     "loadingFormulas": "❌ Erreur lors du chargement des formules !",
@@ -396,6 +448,7 @@
       "all": "Toutes les Formules",
       "allFormulae": "Toutes les Formules",
       "allCasks": "Tous les Casks",
+      "adoptable": "Apps adoptables",
       "leaves": "Feuilles",
       "repositories": "Dépôts",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 Démarrage de l'installation pour '{{name}}'...",
       "success": "✅ Installation pour '{{name}}' terminée avec succès !",
       "failed": "❌ Échec de l'installation pour '{{name}}' : {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 Adoption de l'app existante pour le cask '{{name}}'...",
+      "replaceStart": "🔄 Remplacement de l'app existante par le cask '{{name}}'...",
+      "success": "✅ '{{name}}' est désormais géré par Homebrew !",
+      "failed": "❌ L'adoption de '{{name}}' a échoué : {{error}}"
     },
     "uninstall": {
       "start": "🔄 Démarrage de la désinstallation pour '{{name}}'...",

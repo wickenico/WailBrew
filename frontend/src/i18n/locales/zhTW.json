@@ -23,6 +23,7 @@
     "all": "全部套件",
     "allFormulae": "所有套件",
     "allCasks": "所有 Casks",
+    "adoptable": "可接管的 App",
     "leaves": "獨立套件",
     "repositories": "軟體庫",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "可更新 Formulae 與 Casks",
     "allFormulas": "全部套件",
     "allCasks": "所有 Casks",
+    "adoptable": "可接管的 App",
     "leaves": "獨立套件",
     "repositories": "軟體庫",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "過時的公式",
       "all": "所有公式",
       "allCasks": "所有 Casks",
+      "adoptable": "可接管的 App",
       "leaves": "Leaves",
       "repositories": "儲存庫",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "僅顯示已釘選",
     "pin": "釘選 \"{{name}}\"（封鎖更新）",
     "unpin": "取消釘選 \"{{name}}\"（允許更新）",
-    "newSnapshot": "新增快照"
+    "newSnapshot": "新增快照",
+    "yesAdopt": "是，接管",
+    "yesReplace": "是，取代",
+    "openSystemSettings": "打開系統設定"
   },
   "filters": {
     "packageType": "依套件類型篩選",
@@ -269,6 +275,45 @@
     "badge": "{{count}} 個已知漏洞。最高嚴重性：{{severity}}",
     "packageSection": "漏洞"
   },
+  "adoptable": {
+    "searchPlaceholder": "搜尋 App 或 cask",
+    "scanning": "正在掃描...",
+    "rescan": "重新掃描",
+    "scanningDetail": "正在掃描已安裝的 App 並與 Homebrew cask 目錄比對...",
+    "error": "無法掃描可接管的 App",
+    "intro": "{{dir}} 中在 Homebrew 之外安裝、但有相符 cask 的 App。接管會將現有 App 登記到 Homebrew 而不需重新安裝，之後就能像其他 cask 一樣更新與解除安裝。你的設定和資料不會受到影響。",
+    "catalogStale": "無法重新整理 cask 目錄，目前顯示的是上次下載副本的結果。",
+    "filterLabel": "依狀態篩選",
+    "filter": {
+      "all": "全部",
+      "ready": "可接管",
+      "versionMismatch": "版本不同",
+      "uncertain": "比對不確定"
+    },
+    "status": {
+      "ready": "可以接管",
+      "versionMismatch": "版本不同",
+      "uncertain": "比對不確定"
+    },
+    "detail": {
+      "readySame": "與 cask 版本相同（{{version}}），現有 App 將維持不變。",
+      "readyAutoUpdates": "已安裝 {{installed}}，cask 為 {{version}}。此 App 會自動更新，因此 Homebrew 會忽略版本差異直接接管。",
+      "versionMismatch": "已安裝 {{installed}}，cask 為 {{version}}。Homebrew 只會接管版本完全相同的 App。若遭拒絕，可以用 cask 版本取代此 App。",
+      "uncertain": "沒有完全相符的 cask，只是名稱相似。接管前請確認這個 cask 是同一個 App。"
+    },
+    "none": "找不到可接管的 App。所有有相符 cask 的 App 都已由 Homebrew 管理。",
+    "filteredEmpty": "沒有符合目前搜尋或篩選條件的 App。",
+    "openHomepage": "開啟 {{name}} 的首頁",
+    "chooseCask": "為 {{name}} 選擇 cask",
+    "deprecated": "已棄用",
+    "adopt": "接管",
+    "unmatched": "沒有相符 cask 的 App：{{count}}",
+    "footer": {
+      "managed": "已由 Homebrew 管理：{{count}}",
+      "appStore": "由 App Store 管理：{{names}}",
+      "idle": "尋找在 Homebrew 之外安裝、可以作為 cask 接管的 App。"
+    }
+  },
   "dialogs": {
     "confirmUninstall": "您確定要解除安裝 \"{{name}}\" 嗎？",
     "zapUninstall": "同時移除所有應用程式資料（--zap）",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "刪除快照「{{name}}」？此操作無法復原。",
     "newSnapshotTitle": "新增快照",
     "newSnapshotPlaceholder": "標籤（選填），例如：macOS-升級前",
-    "newSnapshotHint": "將目前已安裝的 formula、cask 和 tap 儲存為附時間戳記的 Brewfile，供之後還原。"
+    "newSnapshotHint": "將目前已安裝的 formula、cask 和 tap 儲存為附時間戳記的 Brewfile，供之後還原。",
+    "adoptLogs": "{{name}} 的接管紀錄",
+    "adopting": "正在將「{{app}}」接管為 cask「{{name}}」...\n請稍候...",
+    "confirmAdopt": "要使用 Homebrew cask「{{name}}」接管「{{app}}」嗎？Homebrew 會下載一次 cask 進行驗證，並保留你現有的 App。",
+    "confirmAdoptMismatch": "要使用 Homebrew cask「{{name}}」接管「{{app}}」嗎？已安裝版本（{{installed}}）與 cask 版本（{{version}}）不同，Homebrew 很可能會拒絕。之後你可以用 cask 版本取代此 App。",
+    "confirmAdoptUncertain": "「{{name}}」僅依名稱比對，可能與「{{app}}」不是同一個 App。仍要接管嗎？",
+    "confirmAdoptReplace": "由於已安裝版本與 cask「{{name}}」不同，Homebrew 未接管「{{app}}」。要用 cask 版本 {{version}} 取代此 App 嗎？只會取代 App 套件，你的設定和資料會保留。",
+    "appManagementRequired": "macOS 不允許 WailBrew 修改「{{app}}」。Homebrew 在接管時會調整 App 的權限，因此 WailBrew 需要「App 管理」權限。請在「系統設定 › 隱私權與安全性 › App 管理」中允許 WailBrew，然後重新啟動 WailBrew 再試一次。如果 WailBrew 是從終端機或 IDE 啟動的，請改為允許該 App 並將其重新啟動。"
   },
   "errors": {
     "loadingFormulas": "❌ 載入套件時發生錯誤！",
@@ -396,6 +448,7 @@
       "all": "全部套件",
       "allFormulae": "所有套件",
       "allCasks": "所有 Casks",
+      "adoptable": "可接管的 App",
       "leaves": "獨立套件",
       "repositories": "軟體庫",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 正在為 '{{name}}' 開始安裝...",
       "success": "✅ '{{name}}' 的安裝已成功完成！",
       "failed": "❌ '{{name}}' 的安裝失敗：{{error}}"
+    },
+    "adopt": {
+      "start": "🔄 正在為 cask '{{name}}' 接管現有 App...",
+      "replaceStart": "🔄 正在以 cask '{{name}}' 取代現有 App...",
+      "success": "✅ '{{name}}' 現已由 Homebrew 管理！",
+      "failed": "❌ 接管 '{{name}}' 失敗：{{error}}"
     },
     "uninstall": {
       "start": "🔄 正在為 '{{name}}' 開始解除安裝...",

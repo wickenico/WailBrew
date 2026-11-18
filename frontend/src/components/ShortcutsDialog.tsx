@@ -43,6 +43,7 @@ const ShortcutsDialog: React.FC<ShortcutsDialogProps> = ({ open, onClose }) => {
                 { action: t("shortcuts.navigation.repositories"), keys: formatShortcut("5") },
                 { action: t("shortcuts.navigation.all"), keys: formatShortcut("6") },
                 { action: t("shortcuts.navigation.allCasks"), keys: formatShortcut("7") },
+                { action: t("shortcuts.navigation.adoptable"), keys: formatShortcut("A", { shift: true }) },
                 { action: t("shortcuts.navigation.homebrew"), keys: formatShortcut("8") },
                 { action: t("shortcuts.navigation.doctor"), keys: formatShortcut("9") },
                 { action: t("shortcuts.navigation.security"), keys: formatShortcut("V", { shift: true }) },

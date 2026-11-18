@@ -10,6 +10,7 @@ import {
     Library,
     type LucideIcon,
     Package,
+    PackagePlus,
     RefreshCw,
     Rocket,
     ShieldAlert,
@@ -31,6 +32,7 @@ interface SidebarProps {
     updatableCount: number;
     allCount: number;
     allCasksCount: number;
+    adoptableCount: number;
     leavesCount: number;
     repositoriesCount: number;
     servicesCount: number;
@@ -67,6 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     updatableCount,
     allCount,
     allCasksCount,
+    adoptableCount,
     leavesCount,
     repositoriesCount,
     servicesCount,
@@ -126,6 +129,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                     label: t("sidebar.allCasks"),
                     badge: allCasksCount === -1 ? "—" : allCasksCount,
                     shortcut: "7",
+                },
+                {
+                    view: "adoptable",
+                    icon: PackagePlus,
+                    label: t("sidebar.adoptable"),
+                    badge: adoptableCount >= 0 ? adoptableCount : undefined,
+                    shortcut: "A",
+                    shift: true,
                 },
             ],
         },

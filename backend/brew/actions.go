@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
 
 	"WailBrew/backend/system"
@@ -156,11 +157,75 @@ func (s *ActionsService) postInstallCask(packageName, progressEvent string) {
 // should be true when the caller knows the target is a cask, so --cask is
 // passed and Homebrew doesn't default to a same-named formula instead.
 func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName string, isCask bool) string {
+	return s.runInstall(packageName, BuildInstallArgs(packageName, isCask), installMessages, nil)
+}
+
+// installMessageKeys are the translation keys runInstall reports with.
+type installMessageKeys struct {
+	start, success, failed string
+}
+
+var (
+	installMessages      = installMessageKeys{"backend.install.start", "backend.install.success", "backend.install.failed"}
+	adoptMessages        = installMessageKeys{"backend.adopt.start", "backend.adopt.success", "backend.adopt.failed"}
+	adoptReplaceMessages = installMessageKeys{"backend.adopt.replaceStart", "backend.adopt.success", "backend.adopt.failed"}
+)
+
+// AdoptBrewCask brings an app installed outside Homebrew under management of
+// the given cask. It reuses the install events, so the UI shows the same live
+// log. When --adopt refuses because the existing app differs from the cask,
+// packageAdoptMismatch is emitted so the UI can offer to replace the app
+// (replace=true, which runs --force instead).
+func (s *ActionsService) AdoptBrewCask(ctx context.Context, token string, replace bool) string {
+	messages := adoptMessages
+	if replace {
+		messages = adoptReplaceMessages
+	}
+	return s.runInstall(token, BuildAdoptArgs(token, replace), messages, func(stderr string) {
+		// macOS refused to let brew touch the existing bundle. This is checked
+		// first: a replace would fail the same way.
+		if appPath, denied := AppManagementDeniedPath(stderr); denied {
+			if payload, err := json.Marshal(map[string]string{"package": token, "app": appPath}); err == nil {
+				s.eventEmitter.Emit("packageAppManagementRequired", string(payload))
+			}
+			return
+		}
+		if !replace && IsAdoptMismatchError(stderr) {
+			if payload, err := json.Marshal(map[string]string{"package": token}); err == nil {
+				s.eventEmitter.Emit("packageAdoptMismatch", string(payload))
+			}
+		}
+	})
+}
+
+var appManagementDenied = regexp.MustCompile(`(?m): (/[^:\n]*?\.app)(?:/[^:\n]*)?: Operation not permitted$`)
+
+// AppManagementDeniedPath reports whether brew failed because macOS' App
+// Management protection blocked changes to an app bundle (e.g. `chgrp:
+// /Applications/Keka.app/Contents/MacOS/Keka: Operation not permitted`), and
+// returns that bundle's path.
+func AppManagementDeniedPath(stderr string) (string, bool) {
+	match := appManagementDenied.FindStringSubmatch(stderr)
+	if match == nil {
+		return "", false
+	}
+	return match[1], true
+}
+
+// IsAdoptMismatchError reports whether brew refused --adopt because the
+// existing app bundle is not the version the cask would install.
+func IsAdoptMismatchError(stderr string) bool {
+	return strings.Contains(stderr, "is different from the one being installed")
+}
+
+// runInstall runs a brew install command with live progress events.
+// onRunError is called with stderr when the command itself failed.
+func (s *ActionsService) runInstall(packageName string, args []string, messages installMessageKeys, onRunError func(stderr string)) string {
 	// Emit initial progress
-	startMessage := s.getBackendMsg("backend.install.start", map[string]string{"name": packageName})
+	startMessage := s.getBackendMsg(messages.start, map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageInstallProgress", startMessage)
 
-	cmd := exec.Command(s.brewPath, BuildInstallArgs(packageName, isCask)...)
+	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
 
 	phase, stderrStr, err := runStreamingCommandLogged(s.logCallback, cmd,
@@ -193,14 +258,17 @@ func (s *ActionsService) InstallBrewPackage(ctx context.Context, packageName str
 				s.eventEmitter.Emit("packageInstallTrustRequired", string(payload))
 			}
 		}
-		errorMsg := s.getBackendMsg("backend.install.failed", map[string]string{"name": packageName, "error": err.Error()})
+		if onRunError != nil {
+			onRunError(stderrStr)
+		}
+		errorMsg := s.getBackendMsg(messages.failed, map[string]string{"name": packageName, "error": err.Error()})
 		s.eventEmitter.Emit("packageInstallProgress", errorMsg)
 		s.eventEmitter.Emit("packageInstallComplete", errorMsg)
 		return errorMsg
 	}
 
 	// Success
-	successMsg := s.getBackendMsg("backend.install.success", map[string]string{"name": packageName})
+	successMsg := s.getBackendMsg(messages.success, map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageInstallProgress", successMsg)
 
 	// Post-install: remove quarantine attribute for casks

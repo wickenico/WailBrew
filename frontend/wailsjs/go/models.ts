@@ -1,5 +1,136 @@
 export namespace brew {
 	
+	export class AdoptCandidate {
+	    token: string;
+	    fullToken: string;
+	    name: string;
+	    desc: string;
+	    homepage: string;
+	    version: string;
+	    autoUpdates: boolean;
+	    deprecated: boolean;
+	    matchKind: string;
+	    versionStatus: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new AdoptCandidate(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.token = source["token"];
+	        this.fullToken = source["fullToken"];
+	        this.name = source["name"];
+	        this.desc = source["desc"];
+	        this.homepage = source["homepage"];
+	        this.version = source["version"];
+	        this.autoUpdates = source["autoUpdates"];
+	        this.deprecated = source["deprecated"];
+	        this.matchKind = source["matchKind"];
+	        this.versionStatus = source["versionStatus"];
+	    }
+	}
+	export class UnmatchedApp {
+	    appName: string;
+	    path: string;
+	    bundleId: string;
+	    version: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UnmatchedApp(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.appName = source["appName"];
+	        this.path = source["path"];
+	        this.bundleId = source["bundleId"];
+	        this.version = source["version"];
+	    }
+	}
+	export class AdoptableApp {
+	    appName: string;
+	    path: string;
+	    bundleId: string;
+	    version: string;
+	    status: string;
+	    candidates: AdoptCandidate[];
+	
+	    static createFrom(source: any = {}) {
+	        return new AdoptableApp(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.appName = source["appName"];
+	        this.path = source["path"];
+	        this.bundleId = source["bundleId"];
+	        this.version = source["version"];
+	        this.status = source["status"];
+	        this.candidates = this.convertValues(source["candidates"], AdoptCandidate);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class AdoptScanResult {
+	    appDir: string;
+	    apps: AdoptableApp[];
+	    unmatched: UnmatchedApp[];
+	    managedCount: number;
+	    appStoreApps: string[];
+	    systemCount: number;
+	    catalogStale: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new AdoptScanResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.appDir = source["appDir"];
+	        this.apps = this.convertValues(source["apps"], AdoptableApp);
+	        this.unmatched = this.convertValues(source["unmatched"], UnmatchedApp);
+	        this.managedCount = source["managedCount"];
+	        this.appStoreApps = source["appStoreApps"];
+	        this.systemCount = source["systemCount"];
+	        this.catalogStale = source["catalogStale"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
 	export class Vulnerability {
 	    id: string;
 	    severity: string;
@@ -110,6 +241,7 @@ export namespace brew {
 	        this.taps = source["taps"];
 	    }
 	}
+	
 	
 	export class VulnerabilityReport {
 	    findings: FormulaFindings[];

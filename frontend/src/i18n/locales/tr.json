@@ -23,6 +23,7 @@
     "all": "Tüm Formüller",
     "allFormulae": "Tüm Formüller",
     "allCasks": "Tüm Casks",
+    "adoptable": "Sahiplenilebilir Uygulamalar",
     "leaves": "Yapraklar",
     "repositories": "Depolar",
     "homebrew": "Homebrew",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "Eski Formüller ve Cask'ler",
     "allFormulas": "Formül",
     "allCasks": "Tüm Casks",
+    "adoptable": "Sahiplenilebilir Uygulamalar",
     "leaves": "Yaprak",
     "repositories": "Depo",
     "homebrew": "Homebrew",
@@ -75,6 +77,7 @@
       "outdated": "Güncel Olmayan Formüller",
       "all": "Tüm Formüller",
       "allCasks": "Tüm Casks",
+      "adoptable": "Sahiplenilebilir Uygulamalar",
       "leaves": "Leaves",
       "repositories": "Depolar",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "Yalnızca sabitlenenleri göster",
     "pin": "\"{{name}}\" öğesini sabitle (güncellemeleri engelle)",
     "unpin": "\"{{name}}\" öğesinin sabitlemesini kaldır (güncellemelere izin ver)",
-    "newSnapshot": "Yeni Anlık Görüntü"
+    "newSnapshot": "Yeni Anlık Görüntü",
+    "yesAdopt": "Evet, sahiplen",
+    "yesReplace": "Evet, değiştir",
+    "openSystemSettings": "Sistem Ayarları'nı aç"
   },
   "filters": {
     "packageType": "Paket türüne göre filtrele",
@@ -269,6 +275,45 @@
     "badge": "{{count}} bilinen güvenlik açığı. En yüksek önem: {{severity}}",
     "packageSection": "Güvenlik açıkları"
   },
+  "adoptable": {
+    "searchPlaceholder": "Uygulama veya cask ara",
+    "scanning": "Taranıyor...",
+    "rescan": "Yeniden tara",
+    "scanningDetail": "Yüklü uygulamalar taranıyor ve Homebrew cask kataloğuyla eşleştiriliyor...",
+    "error": "Sahiplenilebilir uygulamalar taranamadı",
+    "intro": "{{dir}} içinde Homebrew dışında yüklenmiş ancak eşleşen bir cask'i olan uygulamalar. Sahiplenme, mevcut uygulamayı yeniden yüklemeden Homebrew'a kaydeder; böylece diğer cask'ler gibi güncellenip kaldırılabilir. Ayarlarınız ve verileriniz değişmez.",
+    "catalogStale": "Cask kataloğu yenilenemedi. Son indirilen kopyadaki sonuçlar gösteriliyor.",
+    "filterLabel": "Duruma göre filtrele",
+    "filter": {
+      "all": "Tümü",
+      "ready": "Hazır",
+      "versionMismatch": "Sürüm farklı",
+      "uncertain": "Belirsiz eşleşme"
+    },
+    "status": {
+      "ready": "Sahiplenmeye hazır",
+      "versionMismatch": "Sürüm farklı",
+      "uncertain": "Belirsiz eşleşme"
+    },
+    "detail": {
+      "readySame": "Cask ile aynı sürüm ({{version}}). Mevcut uygulama olduğu gibi korunur.",
+      "readyAutoUpdates": "Yüklü {{installed}}, cask {{version}}. Uygulama kendini güncellediği için Homebrew onu sürümden bağımsız olarak sahiplenir.",
+      "versionMismatch": "Yüklü {{installed}}, cask {{version}}. Homebrew yalnızca aynı sürümleri sahiplenir. Reddederse uygulamayı cask sürümüyle değiştirebilirsiniz.",
+      "uncertain": "Tam bir cask eşleşmesi yok, yalnızca ad benzer. Sahiplenmeden önce bu cask'in aynı uygulama olduğunu kontrol edin."
+    },
+    "none": "Sahiplenilebilir uygulama bulunamadı. Eşleşen cask'i olan tüm uygulamalar zaten Homebrew tarafından yönetiliyor.",
+    "filteredEmpty": "Geçerli arama veya filtreyle eşleşen uygulama yok.",
+    "openHomepage": "{{name}} ana sayfasını aç",
+    "chooseCask": "{{name}} için cask seç",
+    "deprecated": "kullanımdan kaldırıldı",
+    "adopt": "Sahiplen",
+    "unmatched": "Eşleşen cask'i olmayan uygulamalar: {{count}}",
+    "footer": {
+      "managed": "Zaten Homebrew tarafından yönetilen: {{count}}",
+      "appStore": "App Store tarafından yönetilen: {{names}}",
+      "idle": "Homebrew dışında yüklenmiş ve cask olarak sahiplenilebilecek uygulamaları bulur."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "Gerçekten \"{{name}}\" paketini silmek istiyor musun?",
     "zapUninstall": "Uygulama verilerini de kaldır (--zap)",
@@ -334,7 +379,14 @@
     "confirmDeleteSnapshot": "\"{{name}}\" anlık görüntüsü silinsin mi? Bu işlem geri alınamaz.",
     "newSnapshotTitle": "Yeni Anlık Görüntü",
     "newSnapshotPlaceholder": "Etiket (isteğe bağlı), örn. macOS-yükseltme-öncesi",
-    "newSnapshotHint": "Şu anda yüklü olan formülleri, cask'leri ve tap'leri, daha sonra geri yükleyebileceğiniz zaman damgalı bir Brewfile'a kaydeder."
+    "newSnapshotHint": "Şu anda yüklü olan formülleri, cask'leri ve tap'leri, daha sonra geri yükleyebileceğiniz zaman damgalı bir Brewfile'a kaydeder.",
+    "adoptLogs": "{{name}} için sahiplenme günlükleri",
+    "adopting": "\"{{app}}\", \"{{name}}\" cask'i olarak sahipleniliyor...\nLütfen bekleyin...",
+    "confirmAdopt": "\"{{app}}\" Homebrew cask'i \"{{name}}\" ile sahiplenilsin mi? Homebrew doğrulama için cask'i bir kez indirir ve mevcut uygulamanızı korur.",
+    "confirmAdoptMismatch": "\"{{app}}\" Homebrew cask'i \"{{name}}\" ile sahiplenilsin mi? Yüklü sürüm ({{installed}}) cask sürümünden ({{version}}) farklı olduğu için Homebrew büyük olasılıkla reddedecek. Ardından uygulamayı cask sürümüyle değiştirebilirsiniz.",
+    "confirmAdoptUncertain": "\"{{name}}\" yalnızca adıyla eşleşti ve \"{{app}}\" uygulamasından farklı bir uygulama olabilir. Yine de sahiplenilsin mi?",
+    "confirmAdoptReplace": "Yüklü sürüm \"{{name}}\" cask'inden farklı olduğu için Homebrew \"{{app}}\" uygulamasını sahiplenmedi. Uygulama {{version}} cask sürümüyle değiştirilsin mi? Yalnızca uygulama paketi değiştirilir, ayarlarınız ve verileriniz korunur.",
+    "appManagementRequired": "macOS, WailBrew'un \"{{app}}\" uygulamasını değiştirmesine izin vermiyor. Homebrew sahiplenme sırasında uygulamanın izinlerini düzenlediği için WailBrew'un Uygulama Yönetimi iznine ihtiyacı var. Sistem Ayarları › Gizlilik ve Güvenlik › Uygulama Yönetimi bölümünde WailBrew'a izin verin, WailBrew'u yeniden başlatın ve tekrar deneyin. WailBrew bir terminalden veya IDE'den başlatıldıysa bunun yerine o uygulamaya izin verin ve yeniden başlatın."
   },
   "errors": {
     "loadingFormulas": "❌ Formüller yüklenirken bir hata oluştu.!",
@@ -396,6 +448,7 @@
       "all": "Tüm Formüller",
       "allFormulae": "Tüm Formüller",
       "allCasks": "Tüm Casks",
+      "adoptable": "Sahiplenilebilir Uygulamalar",
       "leaves": "Yapraklar",
       "repositories": "Depolar",
       "homebrew": "Homebrew",
@@ -720,6 +773,12 @@
       "start": "🔄 '{{name}}' için kurulum başlatılıyor...",
       "success": "✅ '{{name}}' için kurulum başarıyla tamamlandı!",
       "failed": "❌ '{{name}}' için kurulum başarısız: {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 Mevcut uygulama '{{name}}' cask'i için sahipleniliyor...",
+      "replaceStart": "🔄 Mevcut uygulama '{{name}}' cask'iyle değiştiriliyor...",
+      "success": "✅ '{{name}}' artık Homebrew tarafından yönetiliyor!",
+      "failed": "❌ '{{name}}' sahiplenilemedi: {{error}}"
     },
     "uninstall": {
       "start": "🔄 '{{name}}' için kaldırma başlatılıyor...",

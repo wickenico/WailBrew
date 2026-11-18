@@ -23,6 +23,7 @@
     "all": "Formulae",
     "allFormulae": "All Formulae",
     "allCasks": "All Casks",
+    "adoptable": "Adoptable Apps",
     "leaves": "Leaves",
     "repositories": "Repositories",
     "services": "Services",
@@ -43,6 +44,7 @@
     "outdatedFormulas": "Outdated Formulae and Casks",
     "allFormulas": "Formulae",
     "allCasks": "All Casks",
+    "adoptable": "Adoptable Apps",
     "leaves": "Leaves",
     "repositories": "Repositories",
     "services": "Services",
@@ -75,6 +77,7 @@
       "outdated": "Outdated Formulae",
       "all": "All Formulae",
       "allCasks": "All Casks",
+      "adoptable": "Adoptable Apps",
       "leaves": "Leaves",
       "repositories": "Repositories",
       "homebrew": "Homebrew",
@@ -145,7 +148,10 @@
     "togglePinnedOnly": "Show pinned only",
     "pin": "Pin \"{{name}}\" (block updates)",
     "unpin": "Unpin \"{{name}}\" (allow updates)",
-    "newSnapshot": "New Snapshot"
+    "newSnapshot": "New Snapshot",
+    "yesAdopt": "Yes, adopt",
+    "yesReplace": "Yes, replace",
+    "openSystemSettings": "Open System Settings"
   },
   "filters": {
     "packageType": "Filter by package type",
@@ -269,6 +275,45 @@
     "badge": "{{count}} known vulnerabilities. Highest severity: {{severity}}",
     "packageSection": "Vulnerabilities"
   },
+  "adoptable": {
+    "searchPlaceholder": "Search apps or casks",
+    "scanning": "Scanning...",
+    "rescan": "Rescan",
+    "scanningDetail": "Scanning installed apps and matching them against the Homebrew cask catalog...",
+    "error": "Could not scan for adoptable apps",
+    "intro": "Apps in {{dir}} that were installed outside Homebrew but have a matching cask. Adopting registers the existing app with Homebrew without reinstalling it, so it can be updated and uninstalled like any other cask. Your settings and data stay untouched.",
+    "catalogStale": "The cask catalog could not be refreshed. Showing results from the last downloaded copy.",
+    "filterLabel": "Filter by status",
+    "filter": {
+      "all": "All",
+      "ready": "Ready",
+      "versionMismatch": "Version differs",
+      "uncertain": "Uncertain match"
+    },
+    "status": {
+      "ready": "Ready to adopt",
+      "versionMismatch": "Version differs",
+      "uncertain": "Uncertain match"
+    },
+    "detail": {
+      "readySame": "Same version as the cask ({{version}}). The existing app is kept as it is.",
+      "readyAutoUpdates": "Installed {{installed}}, cask {{version}}. The app updates itself, so Homebrew adopts it regardless of the version.",
+      "versionMismatch": "Installed {{installed}}, cask {{version}}. Homebrew only adopts identical versions. If it refuses, you can replace the app with the cask version.",
+      "uncertain": "No exact cask match, only the name is similar. Check that this cask is the same app before adopting."
+    },
+    "none": "No adoptable apps found. Every app with a matching cask is already managed by Homebrew.",
+    "filteredEmpty": "No apps match the current search or filter.",
+    "openHomepage": "Open the homepage of {{name}}",
+    "chooseCask": "Choose the cask for {{name}}",
+    "deprecated": "deprecated",
+    "adopt": "Adopt",
+    "unmatched": "Apps without a matching cask: {{count}}",
+    "footer": {
+      "managed": "Already managed by Homebrew: {{count}}",
+      "appStore": "Managed by the App Store: {{names}}",
+      "idle": "Finds apps installed outside Homebrew that can be adopted as casks."
+    }
+  },
   "dialogs": {
     "confirmUninstall": "Do you really want to uninstall \"{{name}}\"?",
     "zapUninstall": "Also remove all app data (--zap)",
@@ -334,7 +379,14 @@
     "runningDryRun": "Running brew cleanup --dry-run…\nPlease wait...",
     "noHomebrewOutput": "No output yet. Click \"Update Homebrew\".",
     "noDoctorOutput": "No output yet. Click \"Run doctor\".",
-    "noCleanupOutput": "No output yet. Click \"Run cleanup\"."
+    "noCleanupOutput": "No output yet. Click \"Run cleanup\".",
+    "adoptLogs": "Adopt logs for {{name}}",
+    "adopting": "Adopting \"{{app}}\" as cask \"{{name}}\"...\nPlease wait...",
+    "confirmAdopt": "Adopt \"{{app}}\" with the Homebrew cask \"{{name}}\"? Homebrew downloads the cask once to verify it and keeps your existing app.",
+    "confirmAdoptMismatch": "Adopt \"{{app}}\" with the Homebrew cask \"{{name}}\"? The installed version ({{installed}}) differs from the cask ({{version}}), so Homebrew will probably refuse. You can then replace the app with the cask version.",
+    "confirmAdoptUncertain": "\"{{name}}\" was only matched by name and might be a different app than \"{{app}}\". Adopt it anyway?",
+    "confirmAdoptReplace": "Homebrew did not adopt \"{{app}}\" because the installed version differs from the cask \"{{name}}\". Replace the app with the cask version {{version}}? Only the app bundle is replaced, your settings and data are kept.",
+    "appManagementRequired": "macOS does not allow WailBrew to modify \"{{app}}\". Homebrew adjusts the app's permissions when adopting it, so WailBrew needs the App Management permission. Allow WailBrew under System Settings › Privacy & Security › App Management, then restart WailBrew and try again. If WailBrew was started from a terminal or an IDE, allow that app instead and restart it."
   },
   "errors": {
     "loadingFormulas": "❌ Error loading formulae!",
@@ -396,6 +448,7 @@
       "all": "All Formulae",
       "allFormulae": "All Formulae",
       "allCasks": "All Casks",
+      "adoptable": "Adoptable Apps",
       "leaves": "Leaves",
       "repositories": "Repositories",
       "services": "Services",
@@ -773,6 +826,12 @@
       "start": "🔄 Starting installation for '{{name}}'...",
       "success": "✅ Installation for '{{name}}' completed successfully!",
       "failed": "❌ Installation for '{{name}}' failed: {{error}}"
+    },
+    "adopt": {
+      "start": "🔄 Adopting the existing app for cask '{{name}}'...",
+      "replaceStart": "🔄 Replacing the existing app with cask '{{name}}'...",
+      "success": "✅ '{{name}}' is now managed by Homebrew!",
+      "failed": "❌ Adopting '{{name}}' failed: {{error}}"
     },
     "uninstall": {
       "start": "🔄 Starting uninstallation for '{{name}}'...",

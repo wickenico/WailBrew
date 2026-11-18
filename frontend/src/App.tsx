@@ -14,6 +14,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import {
+    AdoptBrewCask,
+    CanModifyApp,
     CheckBrewLocation,
     CheckForUpdates,
     CheckHomebrewUpdate,
@@ -21,6 +23,7 @@ import {
     CreateSnapshot,
     DeleteSnapshot,
     ExecuteBrewDoctorCommand,
+    GetAdoptableApps,
     GetAllBrewCasks,
     GetAllBrewPackages,
     GetAppVersion,
@@ -54,6 +57,7 @@ import {
     GetUninstallCaskWithZap,
     InstallBrewPackage,
     ListSnapshots,
+    OpenAppManagementSettings,
     PinBrewPackage,
     RemoveBrewPackage,
     RestartBrewService,
@@ -101,6 +105,7 @@ import "./App.css";
 import "./style.css";
 
 import AboutDialog from "./components/AboutDialog";
+import AdoptableAppsView from "./components/AdoptableAppsView";
 import CleanupView from "./components/CleanupView";
 import ConfirmDialog from "./components/ConfirmDialog";
 import DashboardView from "./components/DashboardView";
@@ -128,7 +133,18 @@ import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
 import XcodeLicenseBanner from "./components/XcodeLicenseBanner";
 import { mapToSupportedLanguage } from "./i18n/languageUtils";
-import type { PackageDetails, PackageEntry, RepositoryEntry, SnapshotEntry, View, VulnerabilityReport } from "./types";
+import type {
+    AdoptableApp,
+    AdoptCandidate,
+    AdoptScanResult,
+    PackageDetails,
+    PackageEntry,
+    RepositoryEntry,
+    SnapshotEntry,
+    View,
+    VulnerabilityReport,
+} from "./types";
+import { displayCaskVersion } from "./utils/adopt";
 import { isXcodeLicenseError } from "./utils/xcodeLicense";
 
 const WailBrewApp = () => {
@@ -209,6 +225,17 @@ const WailBrewApp = () => {
     const [vulnerabilityReport, setVulnerabilityReport] = useState<VulnerabilityReport | null>(null);
     const [vulnerabilityError, setVulnerabilityError] = useState<string | null>(null);
     const [scanningVulnerabilities, setScanningVulnerabilities] = useState(false);
+    const [adoptResult, setAdoptResult] = useState<AdoptScanResult | null>(null);
+    const [adoptError, setAdoptError] = useState<string | null>(null);
+    const [scanningAdoptable, setScanningAdoptable] = useState(false);
+    const [adoptPrompt, setAdoptPrompt] = useState<{
+        app: AdoptableApp;
+        candidate: AdoptCandidate;
+        replace: boolean;
+    } | null>(null);
+    const adoptScanRequestedRef = useRef(false);
+    // Name of the app macOS' App Management protection blocked, if any.
+    const [appManagementBlockedApp, setAppManagementBlockedApp] = useState<string | null>(null);
     const [runningDoctorCommand, setRunningDoctorCommand] = useState<string | null>(null);
     const [deprecatedFormulae, setDeprecatedFormulae] = useState<string[]>([]);
     const [selectedDeprecatedPackage, setSelectedDeprecatedPackage] = useState<PackageEntry | null>(null);
@@ -2337,6 +2364,15 @@ const WailBrewApp = () => {
         await TapBrewRepository(tapName, tapURL);
     };
 
+    // Scan for adoptable apps the first time the view is opened; later scans
+    // are triggered by the rescan button or after an adoption.
+    // biome-ignore lint/correctness/useExhaustiveDependencies: run only when the view changes
+    useEffect(() => {
+        if (view === "adoptable" && !adoptScanRequestedRef.current) {
+            void scanAdoptableApps();
+        }
+    }, [view]);
+
     const handleInstallPackage = (pkg: PackageEntry) => {
         if (revealRunningInstall()) return;
         setSelectedPackage(pkg);
@@ -2413,6 +2449,111 @@ const WailBrewApp = () => {
             setInstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
             setIsInstallRunning(false);
         }
+    };
+
+    const scanAdoptableApps = async () => {
+        adoptScanRequestedRef.current = true;
+        setScanningAdoptable(true);
+        setAdoptError(null);
+        try {
+            // The generated binding types the status fields as plain strings.
+            setAdoptResult((await GetAdoptableApps()) as AdoptScanResult);
+        } catch (err) {
+            setAdoptError(String(err));
+        } finally {
+            setScanningAdoptable(false);
+        }
+    };
+
+    const handleAdoptApp = async (app: AdoptableApp, candidate: AdoptCandidate) => {
+        if (revealRunningInstall()) return;
+        // Homebrew changes the app's permissions after adopting it. Without the
+        // App Management permission macOS blocks that and brew rolls back, so
+        // check up front instead of letting the user wait for the download.
+        if (!(await CanModifyApp(app.path))) {
+            setAppManagementBlockedApp(app.appName);
+            return;
+        }
+        setAdoptPrompt({ app, candidate, replace: false });
+    };
+
+    // Runs `brew install --cask --adopt` (or --force when replace is set) through
+    // the install log dialog. If Homebrew refuses to adopt because the existing
+    // app differs from the cask, the replace confirmation is offered afterwards.
+    const handleAdoptConfirmed = async () => {
+        if (!adoptPrompt) return;
+        const { app, candidate, replace } = adoptPrompt;
+        setAdoptPrompt(null);
+        if (revealRunningInstall()) return;
+        const token = candidate.token;
+        const runId = ++installRunIdRef.current;
+        let mismatch = false;
+        let appManagementBlocked = false;
+        setInstallLogTitle(t("dialogs.adoptLogs", { name: app.appName }));
+        installOp.setIsHidden(false);
+        installOp.resultRef.current = null;
+        setInstallLogs(t("dialogs.adopting", { app: app.appName, name: token }));
+        setIsInstallRunning(true);
+
+        const progressListener = EventsOn("packageInstallProgress", (progress: string) => {
+            setInstallLogs((prevLogs) => (prevLogs ? `${prevLogs}\n${progress}` : progress));
+        });
+        const mismatchListener = EventsOn("packageAdoptMismatch", () => {
+            mismatch = true;
+        });
+        const appManagementListener = EventsOn("packageAppManagementRequired", () => {
+            appManagementBlocked = true;
+        });
+        const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
+            progressListener();
+            completeListener();
+            mismatchListener();
+            appManagementListener();
+            if (runId !== installRunIdRef.current) return;
+            installOp.resultRef.current = finalMessage;
+
+            await handleRefreshPackages();
+            void scanAdoptableApps();
+
+            if (runId === installRunIdRef.current) {
+                setIsInstallRunning(false);
+            }
+            if (appManagementBlocked) {
+                setAppManagementBlockedApp(app.appName);
+            } else if (mismatch) {
+                setAdoptPrompt({ app, candidate, replace: true });
+            }
+        });
+
+        try {
+            await AdoptBrewCask(token, replace);
+        } catch (error) {
+            progressListener();
+            completeListener();
+            mismatchListener();
+            appManagementListener();
+            if (runId !== installRunIdRef.current) return;
+            const errorMsg = `❌ Operation failed: ${String(error)}`;
+            installOp.resultRef.current = errorMsg;
+            setInstallLogs((prev) => (prev ? `${prev}\n${errorMsg}` : errorMsg));
+            setIsInstallRunning(false);
+        }
+    };
+
+    const adoptPromptMessage = (): string => {
+        if (!adoptPrompt) return "";
+        const { app, candidate, replace } = adoptPrompt;
+        const params = {
+            app: app.appName,
+            name: candidate.token,
+            installed: app.version || "?",
+            version: displayCaskVersion(candidate.version),
+        };
+        if (replace) return t("dialogs.confirmAdoptReplace", params);
+        if (candidate.matchKind === "name") return t("dialogs.confirmAdoptUncertain", params);
+        if (!candidate.autoUpdates && candidate.versionStatus !== "same")
+            return t("dialogs.confirmAdoptMismatch", params);
+        return t("dialogs.confirmAdopt", params);
     };
 
     const handleTrustConfirmed = async () => {
@@ -3081,6 +3222,7 @@ const WailBrewApp = () => {
                     updatableCount={updatablePackages.length}
                     allCount={allPackagesLoaded ? allPackages.length : -1}
                     allCasksCount={allCasksLoaded ? allCasksAll.length : -1}
+                    adoptableCount={adoptResult ? adoptResult.apps.length : -1}
                     leavesCount={leavesPackages.length}
                     repositoriesCount={repositories.length}
                     servicesCount={services.length}
@@ -3710,6 +3852,16 @@ const WailBrewApp = () => {
                             }}
                         />
                     )}
+                    {view === "adoptable" && (
+                        <AdoptableAppsView
+                            result={adoptResult}
+                            error={adoptError}
+                            scanning={scanningAdoptable}
+                            adoptDisabled={isInstallRunning}
+                            onScan={() => void scanAdoptableApps()}
+                            onAdopt={handleAdoptApp}
+                        />
+                    )}
                     {view === "security" && (
                         <SecurityView
                             report={vulnerabilityReport}
@@ -3946,6 +4098,29 @@ const WailBrewApp = () => {
                         commandSpec={{
                             action: "trust",
                             targets: trustPrompt ? [trustPrompt.tap] : [],
+                        }}
+                    />
+                    <ConfirmDialog
+                        open={appManagementBlockedApp !== null}
+                        message={t("dialogs.appManagementRequired", { app: appManagementBlockedApp })}
+                        onConfirm={() => {
+                            setAppManagementBlockedApp(null);
+                            void OpenAppManagementSettings();
+                        }}
+                        onCancel={() => setAppManagementBlockedApp(null)}
+                        confirmLabel={t("buttons.openSystemSettings")}
+                    />
+                    <ConfirmDialog
+                        open={adoptPrompt !== null}
+                        message={adoptPromptMessage()}
+                        onConfirm={() => void handleAdoptConfirmed()}
+                        onCancel={() => setAdoptPrompt(null)}
+                        confirmLabel={adoptPrompt?.replace ? t("buttons.yesReplace") : t("buttons.yesAdopt")}
+                        destructive={adoptPrompt?.replace}
+                        commandSpec={{
+                            action: adoptPrompt?.replace ? "adopt-replace" : "adopt",
+                            targets: adoptPrompt ? [adoptPrompt.candidate.token] : [],
+                            isCask: true,
                         }}
                     />
                     <SnapshotNameDialog
