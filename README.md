@@ -135,8 +135,10 @@ brew uninstall --cask wailbrew
 
 WailBrew supports the following macOS versions:
 
-- **Apple Silicon (ARM):** macOS 11.0 (Big Sur) and later
-- **Intel:** macOS 11.0 (Big Sur) and later
+- **Apple Silicon (ARM):** macOS 12.0 (Monterey) and later
+- **Intel:** macOS 12.0 (Monterey) and later
+
+The minimum is set by the Go toolchain (Go 1.25 and newer require macOS 12).
 
 [Homebrew](https://brew.sh) must be installed. While the app is primarily tested on the latest macOS versions, we strive to maintain compatibility with older supported versions. If you encounter any issues on your macOS version, please let us know by [opening an issue](https://github.com/wickenico/WailBrew/issues) or providing feedback.
 

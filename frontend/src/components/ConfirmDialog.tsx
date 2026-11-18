@@ -3,7 +3,7 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { PreviewBrewCommand } from "../../wailsjs/go/main/App";
+import { PreviewBrewCommand } from "../../bindings/WailBrew/app";
 import { useModalA11y } from "../hooks/useModalA11y";
 
 export interface CommandSpec {

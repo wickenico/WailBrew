@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { GetSessionLogEntries } from "../../wailsjs/go/main/App";
-import { EventsOn } from "../../wailsjs/runtime";
+import { GetSessionLogEntries } from "../../bindings/WailBrew/app";
+import { onEvent } from "../utils/events";
 import { isXcodeLicenseError } from "../utils/xcodeLicense";
 
 export function useXcodeLicenseError() {
@@ -10,7 +10,7 @@ export function useXcodeLicenseError() {
     useEffect(() => {
         let cancelled = false;
         const generation = retryGeneration.current;
-        const unlisten = EventsOn("sessionLogError", (entry: string) => {
+        const unlisten = onEvent("sessionLogError", (entry: string) => {
             if (isXcodeLicenseError(entry)) setHasXcodeLicenseError(true);
         });
 

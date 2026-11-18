@@ -51,7 +51,7 @@ log()  { printf "\n\033[1;34m[INFO]\033[0m %s\n" "$*"; }
 warn() { printf "\n\033[1;33m[WARN]\033[0m %s\n" "$*"; }
 die()  { printf "\n\033[1;31m[ERR]\033[0m  %s\n" "$*"; exit 1; }
 
-[[ -d "$APP" ]] || die "App-Bundle nicht gefunden: $APP (erst 'make' oder 'wails build' ausführen?)"
+[[ -d "$APP" ]] || die "App-Bundle nicht gefunden: $APP (erst 'make build' ausführen?)"
 
 # 1) Developer-ID-Identität ermitteln (falls nicht vorgegeben)
 if [[ -z "${IDENTITY}" ]]; then

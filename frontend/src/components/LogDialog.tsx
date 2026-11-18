@@ -1,9 +1,9 @@
+import { Browser, System } from "@wailsio/runtime";
 import { Bug, Check, Copy } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { BrowserOpenURL, Environment } from "../../wailsjs/runtime";
 import { useModalA11y } from "../hooks/useModalA11y";
 
 // GitHub silently truncates very long prefilled issue bodies, so the embedded
@@ -12,7 +12,7 @@ const MAX_BUG_REPORT_LOG_CHARS = 3000;
 const WAILBREW_ISSUES_URL = "https://github.com/wickenico/WailBrew/issues/new";
 
 // encodeURIComponent deliberately leaves ! ~ * ' ( ) unescaped (they're valid
-// unreserved URI characters), but Wails' BrowserOpenURL rejects any of them
+// unreserved URI characters), but Wails' Browser.OpenURL rejects any of them
 // outright as shell metacharacters before shelling out to `open`. Escape them
 // too so a log entry or template containing one doesn't break the whole link.
 const strictEncodeURIComponent = (value: string): string =>
@@ -68,8 +68,8 @@ const LogDialog: React.FC<LogDialogProps> = ({
 
         let platform = "";
         try {
-            const env = await Environment();
-            platform = `${env.platform} (${env.arch})`;
+            const env = await System.Environment();
+            platform = `${env.OS} (${env.Arch})`;
         } catch {
             // Environment info is a nice-to-have; proceed without it if it fails.
         }
@@ -85,7 +85,7 @@ const LogDialog: React.FC<LogDialogProps> = ({
             .map(([key, value]) => `${key}=${strictEncodeURIComponent(value)}`)
             .join("&");
         const url = `${WAILBREW_ISSUES_URL}?${query}`;
-        BrowserOpenURL(url);
+        Browser.OpenURL(url);
     };
 
     // Auto-scroll to bottom when log content changes

@@ -27,3 +27,6 @@ Thumbs.db
 
 # Project analysis
 TODO.md
+
+# Wails v3 task runner cache
+.task/

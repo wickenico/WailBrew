@@ -1,0 +1,36 @@
+version: '3'
+
+vars:
+  APP_NAME: "WailBrew"
+  # Keep the v2 output location so scripts/release.sh and `make install` keep working.
+  BIN_DIR: "build/bin"
+  PACKAGE_MANAGER: '{{.PACKAGE_MANAGER | default "pnpm"}}'
+  VITE_PORT: '{{.WAILS_VITE_PORT | default 9245}}'
+  VERSION:
+    sh: node ./get-version.js
+  GOOS: '{{.GOOS | default OS}}'
+
+includes:
+  common: ./build/Taskfile.yml
+  darwin: ./build/darwin/Taskfile.yml
+
+tasks:
+  build:
+    summary: Builds the application binary
+    cmds:
+      - task: "{{.GOOS}}:build"
+
+  package:
+    summary: Packages a production build of the application into build/bin/WailBrew.app
+    cmds:
+      - task: "{{.GOOS}}:package"
+
+  run:
+    summary: Runs the application
+    cmds:
+      - task: "{{.GOOS}}:run"
+
+  dev:
+    summary: Runs the application in development mode with hot reload
+    cmds:
+      - wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}

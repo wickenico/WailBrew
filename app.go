@@ -14,8 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/wailsapp/wails/v2/pkg/menu"
-	rt "github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/wailsapp/wails/v3/pkg/application"
 
 	"WailBrew/backend/brew"
 	"WailBrew/backend/config"
@@ -44,16 +43,14 @@ const brewEnvNoAutoUpdate = "HOMEBREW_NO_AUTO_UPDATE=1"
 // sudo passwords are still supplied via SUDO_ASKPASS.
 const brewEnvNonInteractive = "NONINTERACTIVE=1"
 
-// wailsEventEmitter implements brew.EventEmitter for Wails
-// It stores the exact context from Wails lifecycle hooks
+// wailsEventEmitter implements brew.EventEmitter for Wails.
 type wailsEventEmitter struct {
-	ctx context.Context
+	app *application.App
 }
 
 func (e *wailsEventEmitter) Emit(event string, data string) {
-	// Use the stored context directly - it's the exact context from startup()
-	if e.ctx != nil {
-		rt.EventsEmit(e.ctx, event, data)
+	if e.app != nil {
+		e.app.Event.Emit(event, data)
 	}
 }
 
@@ -80,6 +77,8 @@ type Config = config.Config
 type App struct {
 	configFolderMu    sync.RWMutex // Prevent relocation during snapshot operations.
 	ctx               context.Context
+	wailsApp          *application.App
+	mainWindow        *application.WebviewWindow
 	brewPath          string
 	currentLanguage   string
 	config            *config.Config
@@ -89,6 +88,14 @@ type App struct {
 	brewService       brew.Service
 	i18nManager       *i18n.Manager
 	eventEmitter      *wailsEventEmitter
+}
+
+func (a *App) setApplication(app *application.App) {
+	a.wailsApp = app
+}
+
+func (a *App) setMainWindow(window *application.WebviewWindow) {
+	a.mainWindow = window
 }
 
 // detectBrewPathByArchitecture detects the brew binary path based on system architecture
@@ -259,10 +266,8 @@ func (a *App) buildCaskOpts() string {
 	return strings.Join(opts, " ")
 }
 
-// startup saves the application context and sets up services
-func (a *App) startup(ctx context.Context) {
-	// Store the exact context from Wails lifecycle hook
-	// This context must be used for all EventsEmit calls
+// ServiceStartup saves the application context and sets up services.
+func (a *App) ServiceStartup(ctx context.Context, _ application.ServiceOptions) error {
 	a.ctx = ctx
 
 	// Load config from file
@@ -318,60 +323,52 @@ func (a *App) startup(ctx context.Context) {
 		}
 	}
 
-	// Create event emitter with the exact context from lifecycle hook
-	// Wails requires this exact context instance for EventsEmit to work
-	a.eventEmitter = &wailsEventEmitter{ctx: ctx}
+	a.eventEmitter = &wailsEventEmitter{app: a.wailsApp}
 
 	// Initialize brew executor + service with all dependencies
 	a.reconfigureBrew()
 
-	// Restore last-known window position. Width/Height (and maximized state)
-	// are already applied via options.App in main.go to avoid first-frame
-	// flicker; Wails v2 has no initial-position option, so position is
-	// restored here. Only restore if values look sane — protects against
-	// disconnected external monitors leaving the window off-screen.
-	if a.config.WindowX != 0 || a.config.WindowY != 0 {
-		if isOnScreen(a.config.WindowX, a.config.WindowY) {
-			rt.WindowSetPosition(ctx, a.config.WindowX, a.config.WindowY)
-		}
-	}
+	return nil
 }
 
-// isOnScreen sanity-checks saved window coordinates so a disconnected
-// external monitor cannot leave the window stranded off-screen. We avoid
-// enumerating displays (not exposed by Wails v2) and use a generous bounds
-// check; anything obviously absurd is rejected and the OS default is used.
+// isOnScreen rejects obviously stale coordinates from disconnected displays.
 func isOnScreen(x, y int) bool {
 	const minCoord, maxCoord = -200, 10000
 	return x >= minCoord && y >= minCoord && x < maxCoord && y < maxCoord
 }
 
-// shutdown cleans up resources when the application exits
-func (a *App) shutdown(ctx context.Context) {
-	// Persist current window geometry so the next launch can restore it.
-	// Skip when minimized — those bounds aren't meaningful. When maximized,
-	// keep the last "restored" bounds so unmaximizing on next launch returns
-	// to a sensible size.
-	if a.ctx != nil && !rt.WindowIsMinimised(a.ctx) {
-		a.config.WindowMaximized = rt.WindowIsMaximised(a.ctx)
-		if !a.config.WindowMaximized {
-			w, h := rt.WindowGetSize(a.ctx)
-			x, y := rt.WindowGetPosition(a.ctx)
-			if w > 0 && h > 0 {
-				a.config.WindowWidth, a.config.WindowHeight = w, h
-				a.config.WindowX, a.config.WindowY = x, y
-			}
-		}
-		if err := a.config.Save(); err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to save window geometry: %v\n", err)
-		}
-	}
+// ServiceShutdown cleans up resources when the application exits.
+func (a *App) ServiceShutdown() error {
+	a.persistWindowGeometry()
 
 	if a.askpassManager != nil {
 		a.askpassManager.Cleanup()
 	}
 	if a.sessionLogManager != nil {
 		a.sessionLogManager.Clear()
+	}
+	return nil
+}
+
+// persistWindowGeometry saves the main window's bounds so the next launch can
+// restore them. It runs on WindowClosing and again on shutdown (Cmd+Q does not
+// close the window first). Minimized bounds aren't meaningful, and a destroyed
+// window reports a zero size; both are skipped. When maximized, the last
+// "restored" bounds are kept so unmaximizing on next launch returns to a
+// sensible size.
+func (a *App) persistWindowGeometry() {
+	w := a.mainWindow
+	if w == nil || w.IsMinimised() {
+		return
+	}
+	width, height := w.Size()
+	if width <= 0 || height <= 0 {
+		return
+	}
+	maximized := w.IsMaximised()
+	x, y := w.Position()
+	if err := a.SaveWindowGeometry(width, height, x, y, maximized); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to save window geometry: %v\n", err)
 	}
 }
 
@@ -389,13 +386,8 @@ func (a *App) SaveWindowGeometry(width, height, x, y int, maximized bool) error 
 }
 
 // menu builds the application menu using the UI module
-func (a *App) menu() *menu.Menu {
-	return ui.Build(a)
-}
-
-// GetContext returns the application context (for ui.AppInterface)
-func (a *App) GetContext() context.Context {
-	return a.ctx
+func (a *App) menu() *application.Menu {
+	return ui.Build(a.wailsApp, a)
 }
 
 // GetTranslation returns a translation (for ui.AppInterface)
@@ -408,7 +400,9 @@ func (a *App) GetTranslation(key string, params map[string]string) string {
 
 // OpenURL opens a URL in the browser
 func (a *App) OpenURL(url string) {
-	rt.BrowserOpenURL(a.ctx, url)
+	if a.wailsApp != nil {
+		_ = a.wailsApp.Browser.OpenURL(url)
+	}
 }
 
 // SetWindowTheme updates the native macOS window title bar appearance to match the app theme
@@ -429,8 +423,10 @@ func (a *App) SetLanguage(language string) {
 		}
 	}
 	// Rebuild the menu with new language
-	newMenu := a.menu()
-	rt.MenuSetApplicationMenu(a.ctx, newMenu)
+	// Bound methods run off the main thread; AppKit menus must be built on it.
+	if a.wailsApp != nil && runtime.GOOS != "linux" {
+		application.InvokeSync(func() { a.wailsApp.Menu.Set(a.menu()) })
+	}
 }
 
 // GetCurrentLanguage returns the current language
@@ -598,13 +594,13 @@ func (a *App) GetBrewUpdatablePackagesWithUpdate() [][]string {
 		}
 
 		// Emit event only once if new packages were discovered
-		if shouldEmitEvent && newPackages != nil && a.ctx != nil {
+		if shouldEmitEvent && newPackages != nil && a.wailsApp != nil {
 			eventData := map[string]interface{}{
 				"newFormulae": newPackages.NewFormulae,
 				"newCasks":    newPackages.NewCasks,
 			}
 			jsonData, _ := json.Marshal(eventData)
-			rt.EventsEmit(a.ctx, "newPackagesDiscovered", string(jsonData))
+			a.wailsApp.Event.Emit("newPackagesDiscovered", string(jsonData))
 		}
 	*/
 	_ = updateOutput // Suppress unused variable warning
@@ -890,7 +886,7 @@ func (a *App) IsConfigDirectoryOverridden() bool {
 }
 
 func (a *App) SelectConfigDirectory() (string, error) {
-	if a.ctx == nil {
+	if a.wailsApp == nil {
 		return "", fmt.Errorf("application context not available")
 	}
 	dir, err := a.GetConfigDirectory()
@@ -900,10 +896,15 @@ func (a *App) SelectConfigDirectory() (string, error) {
 	if _, err := os.Stat(dir); err != nil {
 		dir = ""
 	}
-	return rt.OpenDirectoryDialog(a.ctx, rt.OpenDialogOptions{
-		Title: "Select Configuration Folder", DefaultDirectory: dir,
-		CanCreateDirectories: true, ShowHiddenFiles: true,
-	})
+	return a.wailsApp.Dialog.OpenFileWithOptions(&application.OpenFileDialogOptions{
+		Title:                "Select Configuration Folder",
+		Directory:            dir,
+		CanChooseDirectories: true,
+		CanChooseFiles:       false,
+		CanCreateDirectories: true,
+		ShowHiddenFiles:      true,
+		Window:               a.mainWindow,
+	}).PromptForSingleSelection()
 }
 
 // MoveConfigDirectory returns a cleanup warning only after a successful move.
@@ -1287,7 +1288,7 @@ func (a *App) SetCaskAppDir(appDir string) error {
 }
 
 func (a *App) SelectCaskAppDir() (string, error) {
-	if a.ctx == nil {
+	if a.wailsApp == nil {
 		return "", fmt.Errorf("application context not available")
 	}
 
@@ -1296,11 +1297,14 @@ func (a *App) SelectCaskAppDir() (string, error) {
 		defaultDir = "/Applications"
 	}
 
-	selectedDir, err := rt.OpenDirectoryDialog(a.ctx, rt.OpenDialogOptions{
+	selectedDir, err := a.wailsApp.Dialog.OpenFileWithOptions(&application.OpenFileDialogOptions{
 		Title:                "Select Cask Application Directory",
-		DefaultDirectory:     defaultDir,
+		Directory:            defaultDir,
+		CanChooseDirectories: true,
+		CanChooseFiles:       false,
 		CanCreateDirectories: true,
-	})
+		Window:               a.mainWindow,
+	}).PromptForSingleSelection()
 
 	if err != nil {
 		return "", fmt.Errorf("failed to open directory dialog: %w", err)
@@ -1587,7 +1591,9 @@ func (a *App) RestartApp() error {
 		}
 
 		time.Sleep(1 * time.Second)
-		rt.Quit(a.ctx)
+		if a.wailsApp != nil {
+			a.wailsApp.Quit()
+		}
 	}()
 
 	return nil

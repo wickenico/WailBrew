@@ -1,3 +1,4 @@
+import { System, Window } from "@wailsio/runtime";
 import {
     AlertTriangle,
     CheckSquare,
@@ -85,12 +86,12 @@ import {
     UpdateBrewPackage,
     UpdateHomebrew,
     UpdateSelectedBrewPackages,
-} from "../wailsjs/go/main/App";
-import type { main } from "../wailsjs/go/models";
-import { Environment, EventsOn, WindowGetPosition, WindowGetSize, WindowIsMaximised } from "../wailsjs/runtime";
+} from "../bindings/WailBrew/app";
+import type * as main from "../bindings/WailBrew/models";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { useHideableOperation } from "./hooks/useHideableOperation";
 import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
+import { onEvent } from "./utils/events";
 import {
     carryOverSizes,
     installedCaskEntries,
@@ -153,7 +154,7 @@ const WailBrewApp = () => {
     const [casks, setCasks] = useState<PackageEntry[]>([]);
     const [updatablePackages, setUpdatablePackages] = useState<PackageEntry[]>([]);
     const [outdatedMode, setOutdatedMode] = useState<"none" | "greedy" | "greedy-auto-updates">("greedy-auto-updates");
-    const [outdatedCounts, setOutdatedCounts] = useState<Record<string, number>>({});
+    const [outdatedCounts, setOutdatedCounts] = useState<Record<string, number | undefined>>({});
     const [switchingOutdatedMode, setSwitchingOutdatedMode] = useState(false);
     const [allPackages, setAllPackages] = useState<PackageEntry[]>([]);
     const [allPackagesLoaded, setAllPackagesLoaded] = useState<boolean>(false);
@@ -355,9 +356,9 @@ const WailBrewApp = () => {
     // normal title bar and don't need the extra top clearance.
     const [isMacInsetTitleBar, setIsMacInsetTitleBar] = useState(false);
     useEffect(() => {
-        Environment()
+        System.Environment()
             .then((env) => {
-                if (env.platform === "darwin") setIsMacInsetTitleBar(true);
+                if (env.OS === "darwin") setIsMacInsetTitleBar(true);
             })
             .catch(() => {});
     }, []);
@@ -455,11 +456,11 @@ const WailBrewApp = () => {
             timer = setTimeout(async () => {
                 try {
                     const [size, pos, maximised] = await Promise.all([
-                        WindowGetSize(),
-                        WindowGetPosition(),
-                        WindowIsMaximised(),
+                        Window.Size(),
+                        Window.Position(),
+                        Window.IsMaximised(),
                     ]);
-                    await SaveWindowGeometry(size.w, size.h, pos.x, pos.y, maximised);
+                    await SaveWindowGeometry(size.width, size.height, pos.x, pos.y, maximised);
                 } catch (err) {
                     console.error("Failed to persist window geometry:", err);
                 }
@@ -503,11 +504,11 @@ const WailBrewApp = () => {
                 // available WailBrew update until the next app launch.
                 void refreshAppUpdateInfo();
                 // Ensure all responses are arrays, default to empty arrays if null/undefined
-                const safeInstalled = startupData.packages || [];
-                const safeInstalledCasks = startupData.casks || [];
-                const safeUpdatable = startupData.updatable || [];
-                const safeLeaves = startupData.leaves || [];
-                const safeRepos = startupData.taps || [];
+                const safeInstalled = startupData?.packages || [];
+                const safeInstalledCasks = startupData?.casks || [];
+                const safeUpdatable = startupData?.updatable || [];
+                const safeLeaves = startupData?.leaves || [];
+                const safeRepos = startupData?.taps || [];
 
                 // Check for errors in the responses
                 if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
@@ -593,7 +594,7 @@ const WailBrewApp = () => {
                 if (installedFormatted.length > 0) {
                     const packageNames = installedFormatted.map((pkg) => pkg.name);
                     GetBrewPackageSizes(packageNames)
-                        .then((sizes: Record<string, string>) => {
+                        .then((sizes: Record<string, string | undefined>) => {
                             setPackages((prevPackages) =>
                                 prevPackages.map((pkg) => ({
                                     ...pkg,
@@ -618,7 +619,7 @@ const WailBrewApp = () => {
                 if (casksFormatted.length > 0) {
                     const caskNames = casksFormatted.map((cask) => cask.name);
                     GetBrewCaskSizes(caskNames)
-                        .then((sizes: Record<string, string>) => {
+                        .then((sizes: Record<string, string | undefined>) => {
                             setCasks((prevCasks) =>
                                 prevCasks.map((cask) => ({
                                     ...cask,
@@ -1070,20 +1071,20 @@ const WailBrewApp = () => {
     }, []);
 
     useEffect(() => {
-        const unlisten = EventsOn("setView", (data: string) => {
+        const unlisten = onEvent("setView", (data: string) => {
             setView(data as View);
             clearSelection();
         });
-        const unlistenRefresh = EventsOn("refreshPackages", () => {
+        const unlistenRefresh = onEvent("refreshPackages", () => {
             window.location.reload();
         });
-        const unlistenRefreshPackages = EventsOn("refreshPackagesData", () => {
+        const unlistenRefreshPackages = onEvent("refreshPackagesData", () => {
             handleRefreshPackages();
         });
         // Homebrew 5.1.15+: a list failed because a tap is not trusted. The
         // backend only emits this when `brew trust` actually exists, so the
         // prompt is never offered where it could not be carried out.
-        const unlistenListTrust = EventsOn("packageListTrustRequired", (payload: string) => {
+        const unlistenListTrust = onEvent("packageListTrustRequired", (payload: string) => {
             let tap = "";
             try {
                 tap = (JSON.parse(payload) as { tap?: string }).tap || "";
@@ -1097,20 +1098,20 @@ const WailBrewApp = () => {
                 });
             }
         });
-        const unlistenAbout = EventsOn("showAbout", () => {
+        const unlistenAbout = onEvent("showAbout", () => {
             setShowAbout(true);
         });
-        const unlistenUpdate = EventsOn("checkForUpdates", () => {
+        const unlistenUpdate = onEvent("checkForUpdates", () => {
             setShowUpdate(true);
         });
-        const unlistenWailbrewUpdated = EventsOn("wailbrewUpdated", () => {
+        const unlistenWailbrewUpdated = onEvent("wailbrewUpdated", () => {
             setShowRestart(true);
         });
-        const unlistenShortcuts = EventsOn("showShortcuts", () => {
+        const unlistenShortcuts = onEvent("showShortcuts", () => {
             setShowShortcuts((prev) => !prev);
         });
-        const unlistenSessionLogs = EventsOn("showSessionLogs", openSessionLogs);
-        const unlistenSessionLogError = EventsOn("sessionLogError", (entry: string) => {
+        const unlistenSessionLogs = onEvent("showSessionLogs", openSessionLogs);
+        const unlistenSessionLogError = onEvent("sessionLogError", (entry: string) => {
             if (isXcodeLicenseError(entry)) return;
             toast(
                 (t_obj) => (
@@ -1149,7 +1150,7 @@ const WailBrewApp = () => {
                 },
             );
         });
-        const unlistenNewPackages = EventsOn("newPackagesDiscovered", (data: string) => {
+        const unlistenNewPackages = onEvent("newPackagesDiscovered", (data: string) => {
             try {
                 const packageInfo = JSON.parse(data);
                 const { newFormulae = [], newCasks = [] } = packageInfo;
@@ -1588,7 +1589,7 @@ const WailBrewApp = () => {
         setIsUninstallRunning(true);
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("packageUninstallProgress", (progress: string) => {
+        const progressListener = onEvent("packageUninstallProgress", (progress: string) => {
             setUninstallLogs((prevLogs) => {
                 if (!prevLogs) {
                     return `${t("dialogs.uninstallLogs", { name: packageName })}\n${progress}`;
@@ -1597,7 +1598,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUninstallComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("packageUninstallComplete", async (finalMessage: string) => {
             uninstallOp.resultRef.current = finalMessage;
             // Unsubscribe first so nothing emitted during the refresh below lands here
             progressListener();
@@ -1752,7 +1753,7 @@ const WailBrewApp = () => {
         setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
+        const progressListener = onEvent("packageUpdateProgress", (progress: string) => {
             setUpdateLogs((prevLogs) => {
                 if (!prevLogs) {
                     return `${t("dialogs.updateLogs", { name: packageName })}\n${progress}`;
@@ -1761,7 +1762,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("packageUpdateComplete", async (finalMessage: string) => {
             updateOp.resultRef.current = finalMessage;
             // Clear cache and update the package lists after successful update
             await ClearBrewCache();
@@ -1822,7 +1823,7 @@ const WailBrewApp = () => {
         setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
+        const progressListener = onEvent("packageUpdateProgress", (progress: string) => {
             // Parse the progress message to detect which package is being updated
             // Brew typically outputs lines like "==> Upgrading <package>" or "==> Downloading <package>"
             const upgradingRegex = /==> (?:Upgrading|Pouring|Installing|Downloading) ([^\s]+)/;
@@ -1841,7 +1842,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("packageUpdateComplete", async (finalMessage: string) => {
             updateOp.resultRef.current = finalMessage;
             // Update all package lists after successful update
             await handleRefreshPackages();
@@ -1948,7 +1949,7 @@ const WailBrewApp = () => {
         setIsUpdateRunning(true);
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("packageUpdateProgress", (progress: string) => {
+        const progressListener = onEvent("packageUpdateProgress", (progress: string) => {
             setUpdateLogs((prevLogs) => {
                 if (!prevLogs) {
                     return progress;
@@ -1957,7 +1958,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("packageUpdateComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("packageUpdateComplete", async (finalMessage: string) => {
             updateOp.resultRef.current = finalMessage;
             // Update the package list after successful update
             await handleRefreshPackages();
@@ -2077,7 +2078,7 @@ const WailBrewApp = () => {
         const logsRef = { current: t("dialogs.untapping", { name: selectedRepository.name }) };
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("repositoryUntapProgress", (progress: string) => {
+        const progressListener = onEvent("repositoryUntapProgress", (progress: string) => {
             setUntapLogs((prevLogs) => {
                 const newLogs = prevLogs
                     ? `${prevLogs}\n${progress}`
@@ -2087,7 +2088,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("repositoryUntapComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("repositoryUntapComplete", async (finalMessage: string) => {
             // Get the final accumulated logs including the final message
             const allLogs = `${logsRef.current}\n${finalMessage}`;
 
@@ -2190,7 +2191,7 @@ const WailBrewApp = () => {
         const oldCasksSet = new Set(oldCasks.map(([name]: string[]) => name));
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("repositoryTapProgress", (progress: string) => {
+        const progressListener = onEvent("repositoryTapProgress", (progress: string) => {
             setTapLogs((prevLogs) => {
                 if (!prevLogs) {
                     return `${t("dialogs.tapLogs", { name: tapName })}\n${progress}`;
@@ -2200,14 +2201,14 @@ const WailBrewApp = () => {
         });
 
         // Homebrew 6: tap blocked because it is not trusted -> offer to trust and retry
-        const trustListener = EventsOn("repositoryTapTrustRequired", (tap: string) => {
+        const trustListener = onEvent("repositoryTapTrustRequired", (tap: string) => {
             setTrustPrompt({
                 tap: tap || tapName,
                 retry: () => handleTapConfirmed(tapName, tapURL),
             });
         });
 
-        const completeListener = EventsOn("repositoryTapComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("repositoryTapComplete", async (finalMessage: string) => {
             // Check if tap was successful (not an error message)
             const isSuccess = !finalMessage.includes("❌") && !finalMessage.includes("failed");
 
@@ -2394,7 +2395,7 @@ const WailBrewApp = () => {
         setIsInstallRunning(true);
 
         // Set up event listeners for live progress
-        const progressListener = EventsOn("packageInstallProgress", (progress: string) => {
+        const progressListener = onEvent("packageInstallProgress", (progress: string) => {
             setInstallLogs((prevLogs) => {
                 if (!prevLogs) {
                     return `${t("dialogs.installLogs", { name: packageName })}\n${progress}`;
@@ -2404,7 +2405,7 @@ const WailBrewApp = () => {
         });
 
         // Homebrew 6: install blocked because the package's tap is not trusted
-        const trustListener = EventsOn("packageInstallTrustRequired", (payload: string) => {
+        const trustListener = onEvent("packageInstallTrustRequired", (payload: string) => {
             let tap = "";
             try {
                 tap = (JSON.parse(payload) as { tap?: string }).tap || "";
@@ -2419,7 +2420,7 @@ const WailBrewApp = () => {
             }
         });
 
-        const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("packageInstallComplete", async (finalMessage: string) => {
             // Unsubscribe first so a trust retry started during the refresh below
             // doesn't feed its events into this install
             progressListener();
@@ -2495,16 +2496,16 @@ const WailBrewApp = () => {
         setInstallLogs(t("dialogs.adopting", { app: app.appName, name: token }));
         setIsInstallRunning(true);
 
-        const progressListener = EventsOn("packageInstallProgress", (progress: string) => {
+        const progressListener = onEvent("packageInstallProgress", (progress: string) => {
             setInstallLogs((prevLogs) => (prevLogs ? `${prevLogs}\n${progress}` : progress));
         });
-        const mismatchListener = EventsOn("packageAdoptMismatch", () => {
+        const mismatchListener = onEvent("packageAdoptMismatch", () => {
             mismatch = true;
         });
-        const appManagementListener = EventsOn("packageAppManagementRequired", () => {
+        const appManagementListener = onEvent("packageAppManagementRequired", () => {
             appManagementBlocked = true;
         });
-        const completeListener = EventsOn("packageInstallComplete", async (finalMessage: string) => {
+        const completeListener = onEvent("packageInstallComplete", async (finalMessage: string) => {
             progressListener();
             completeListener();
             mismatchListener();
@@ -2715,7 +2716,7 @@ const WailBrewApp = () => {
         // patterns once the action completes (state updates are async).
         const logsRef = { current: initialLog };
 
-        const progressListener = EventsOn("serviceActionProgress", (progress: string) => {
+        const progressListener = onEvent("serviceActionProgress", (progress: string) => {
             setServiceActionLogs((prevLogs) => {
                 const next = prevLogs ? `${prevLogs}\n${progress}` : progress;
                 logsRef.current = next;
@@ -2723,7 +2724,7 @@ const WailBrewApp = () => {
             });
         });
 
-        const completeListener = EventsOn("serviceActionComplete", async () => {
+        const completeListener = onEvent("serviceActionComplete", async () => {
             // Surface a friendly hint when launchd refuses to bootstrap the
             // service (already loaded, or needs root for privileged ports).
             const bootstrapFailure =
@@ -2904,11 +2905,11 @@ const WailBrewApp = () => {
             const startupData = await GetStartupDataWithUpdate();
 
             // Process the data same as in useEffect
-            const safeInstalled = startupData.packages || [];
-            const safeInstalledCasks = startupData.casks || [];
-            const safeUpdatable = startupData.updatable || [];
-            const safeLeaves = startupData.leaves || [];
-            const safeRepos = startupData.taps || [];
+            const safeInstalled = startupData?.packages || [];
+            const safeInstalledCasks = startupData?.casks || [];
+            const safeUpdatable = startupData?.updatable || [];
+            const safeLeaves = startupData?.leaves || [];
+            const safeRepos = startupData?.taps || [];
 
             if (safeInstalled.length === 1 && safeInstalled[0][0] === "Error") {
                 setError(safeInstalled[0][1]);
@@ -2922,7 +2923,7 @@ const WailBrewApp = () => {
                 if (formatted.length > 0) {
                     const packageNames = formatted.map((pkg) => pkg.name);
                     GetBrewPackageSizes(packageNames)
-                        .then((sizes: Record<string, string>) => {
+                        .then((sizes: Record<string, string | undefined>) => {
                             setPackages((prevPackages) =>
                                 prevPackages.map((pkg) => ({
                                     ...pkg,
@@ -2956,7 +2957,7 @@ const WailBrewApp = () => {
                 if (casksFormatted.length > 0) {
                     const caskNames = casksFormatted.map((cask) => cask.name);
                     GetBrewCaskSizes(caskNames)
-                        .then((sizes: Record<string, string>) => {
+                        .then((sizes: Record<string, string | undefined>) => {
                             setCasks((prevCasks) =>
                                 prevCasks.map((cask) => ({
                                     ...cask,
@@ -3082,7 +3083,7 @@ const WailBrewApp = () => {
                 }
                 if (needsSize.length > 0) {
                     GetBrewPackageSizes(needsSize)
-                        .then((sizes: Record<string, string>) => {
+                        .then((sizes: Record<string, string | undefined>) => {
                             const withSize = (pkg: PackageEntry) =>
                                 sizes[pkg.name] ? { ...pkg, size: sizes[pkg.name] } : pkg;
                             setPackages((prev) => prev.map(withSize));
@@ -3103,7 +3104,7 @@ const WailBrewApp = () => {
                 }
                 if (needsSize.length > 0) {
                     GetBrewCaskSizes(needsSize)
-                        .then((sizes: Record<string, string>) => {
+                        .then((sizes: Record<string, string | undefined>) => {
                             setCasks((prev) =>
                                 prev.map((cask) => (sizes[cask.name] ? { ...cask, size: sizes[cask.name] } : cask)),
                             );
@@ -3812,7 +3813,7 @@ const WailBrewApp = () => {
                                 setHomebrewLog(t("dialogs.runningHomebrewUpdate"));
 
                                 // Set up event listeners for live progress
-                                const progressListener = EventsOn("homebrewUpdateProgress", (progress: string) => {
+                                const progressListener = onEvent("homebrewUpdateProgress", (progress: string) => {
                                     setHomebrewLog((prevLogs) => {
                                         if (!prevLogs) {
                                             return `${t("dialogs.homebrewUpdateLogs")}\n${progress}`;
@@ -3821,7 +3822,7 @@ const WailBrewApp = () => {
                                     });
                                 });
 
-                                const completeListener = EventsOn(
+                                const completeListener = onEvent(
                                     "homebrewUpdateComplete",
                                     async (finalMessage: string) => {
                                         setHomebrewLog((prevLogs) => `${prevLogs}\n${finalMessage}`);

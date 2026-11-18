@@ -2,77 +2,82 @@ package main
 
 import (
 	"embed"
+	"log"
 	"runtime"
 
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/menu"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"github.com/wailsapp/wails/v2/pkg/options/mac"
+	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
-	// Create an instance of the app structure
-	app := NewApp()
+	service := NewApp()
 
-	// Restore last-known window size from config (NewApp already loaded it).
-	// Width/Height are applied here so the window opens at the correct size on
-	// the very first frame, avoiding a visible resize after open. Position is
-	// restored later via runtime.WindowSetPosition in startup() because Wails v2
-	// has no initial-position option.
 	width, height := 1024, 768
-	if app.config.WindowWidth >= 600 && app.config.WindowHeight >= 450 {
-		width = app.config.WindowWidth
-		height = app.config.WindowHeight
-	}
-	startState := options.Normal
-	if app.config.WindowMaximized {
-		startState = options.Maximised
+	if service.config.WindowWidth >= 600 && service.config.WindowHeight >= 450 {
+		width = service.config.WindowWidth
+		height = service.config.WindowHeight
 	}
 
-	// Create application with options
-	err := wails.Run(&options.App{
-		Title:            "WailBrew",
-		Width:            width,
-		Height:           height,
-		MinWidth:         600,
-		MinHeight:        450,
-		WindowStartState: startState,
-		Frameless:        runtime.GOOS == "linux",
-		AssetServer: &assetserver.Options{
-			Assets: assets,
+	startState := application.WindowStateNormal
+	if service.config.WindowMaximized {
+		startState = application.WindowStateMaximised
+	}
+
+	app := application.New(application.Options{
+		Name: "WailBrew",
+		Assets: application.AssetOptions{
+			Handler: application.AssetFileServerFS(assets),
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
-		OnShutdown:       app.shutdown,
-		Menu: func() *menu.Menu {
-			if runtime.GOOS == "linux" {
-				return nil
-			}
-			return app.menu()
-		}(),
-		Bind: []interface{}{
-			app,
-		},
-		Mac: &mac.Options{
-			TitleBar: &mac.TitleBar{
-				TitlebarAppearsTransparent: true,
-				HideTitle:                  true,
-				HideTitleBar:               false,
-				FullSizeContent:            true,
-				UseToolbar:                 false,
-				HideToolbarSeparator:       false,
-			},
-			Appearance:           mac.DefaultAppearance,
-			WebviewIsTransparent: false,
-			WindowIsTranslucent:  false,
+		Mac: application.MacOptions{
+			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
 	})
+	service.setApplication(app)
+	app.RegisterService(application.NewService(service))
 
+	windowOptions := application.WebviewWindowOptions{
+		Name:               "main",
+		Title:              "WailBrew",
+		Width:              width,
+		Height:             height,
+		MinWidth:           600,
+		MinHeight:          450,
+		StartState:         startState,
+		Frameless:          runtime.GOOS == "linux",
+		BackgroundColour:   application.NewRGBA(27, 38, 54, 1),
+		UseApplicationMenu: runtime.GOOS != "linux",
+		URL:                "/",
+		Mac: application.MacWindow{
+			TitleBar: application.MacTitleBar{
+				AppearsTransparent:   true,
+				HideTitle:            true,
+				FullSizeContent:      true,
+				UseToolbar:           false,
+				HideToolbarSeparator: false,
+			},
+			Appearance: application.DefaultAppearance,
+		},
+	}
+	if (service.config.WindowX != 0 || service.config.WindowY != 0) && isOnScreen(service.config.WindowX, service.config.WindowY) {
+		windowOptions.InitialPosition = application.WindowXY
+		windowOptions.X = service.config.WindowX
+		windowOptions.Y = service.config.WindowY
+	}
+
+	mainWindow := app.Window.NewWithOptions(windowOptions)
+	mainWindow.RegisterHook(events.Common.WindowClosing, func(*application.WindowEvent) {
+		service.persistWindowGeometry()
+	})
+	service.setMainWindow(mainWindow)
+	if runtime.GOOS != "linux" {
+		app.Menu.Set(service.menu())
+	}
+
+	err := app.Run()
 	if err != nil {
-		println("Error:", err.Error())
+		log.Fatal(err)
 	}
 }

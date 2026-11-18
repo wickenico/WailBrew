@@ -2,7 +2,7 @@ import { CheckCircle2 } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { RestartApp } from "../../wailsjs/go/main/App";
+import { RestartApp } from "../../bindings/WailBrew/app";
 import { useModalA11y } from "../hooks/useModalA11y";
 
 interface RestartDialogProps {

@@ -62,7 +62,7 @@ export interface VulnerabilityReport {
     checked: number;
     complete: boolean;
     outdatedWithoutSbom: string[];
-    unscannedFormulae: Record<string, string>;
+    unscannedFormulae: Record<string, string | undefined>;
 }
 
 export type AdoptMatchKind = "app" | "bundleId" | "name";
