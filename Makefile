@@ -11,7 +11,7 @@ else
 	SED_I := sed -i
 endif
 
-.PHONY: i build build-universal dev bindings clean bump bump-minor update-deps update-cli install release release-universal
+.PHONY: i build build-universal dev bindings clean bump bump-minor update-deps update-cli install release-check release release-universal release-notes
 
 i:
 	cd frontend && pnpm install
@@ -76,12 +76,25 @@ install: build
 	@echo "Installing WailBrew to /Applications"
 	cp -r build/bin/WailBrew.app /Applications/
 
-release: build
+# Checks branch, clean tree, pushed state, version, tag and signing identity
+# without changing anything; the release targets run it before building.
+release-check:
+	./scripts/release.sh --preflight $(VERSION)
+
+# Build, sign, notarize, tag v$(VERSION) and publish the GitHub release with
+# the zip. NOTES_FILE=path uses hand-written notes; YES=1 skips the prompt.
+release: release-check
 	@echo "==> Releasing WailBrew version: $(VERSION)"
+	$(MAKE) build
 	./scripts/release.sh $(VERSION) build/bin/WailBrew.app
 
-release-universal: build-universal
+release-universal: release-check
 	@echo "==> Releasing WailBrew universal binary version: $(VERSION)"
+	$(MAKE) build-universal
 	./scripts/release.sh $(VERSION) build/bin/WailBrew.app
+
+# Preview the generated release notes for the current version.
+release-notes:
+	@./scripts/release-notes.sh $(VERSION)
 
 .DEFAULT_GOAL := build

@@ -73,6 +73,17 @@ make clean     # Remove build/bin
 make install   # Build and install to /Applications
 ```
 
+### Releasing (maintainers)
+
+Releases are built, signed and published from a Mac with the Developer ID certificate, a `wailbrew-notary` notarytool profile and an authenticated `gh`:
+
+```bash
+make bump-minor        # or: make bump — then commit and push to main
+make release           # or: make release-universal
+```
+
+`make release` first runs `make release-check` (on `main`, clean and pushed, version matches `frontend/package.json`, tag and release don't exist yet, signing identity present), then builds, signs, notarizes and zips the app, shows the generated release notes (edit them with `e`, or pass `NOTES_FILE=notes.md`), and after confirmation pushes the `v<version>` tag and creates the GitHub release with the zip. Homebrew's BrewTestBot then bumps the official `wailbrew` cask. `make release-notes` previews the notes.
+
 ## 🧪 Testing
 
 Frontend utility functions are tested with [Vitest](https://vitest.dev/), which shares the same Vite configuration used for development builds.

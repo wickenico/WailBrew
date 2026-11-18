@@ -2,79 +2,99 @@
 set -euo pipefail
 
 # ===========================
-# WailBrew Release Helper
-# Sign -> Zip -> Notarize -> Staple -> Re-Zip -> SHA256
-# Optional: Cask-Datei (homebrew-wailbrew) aktualisieren
+# WailBrew Release
+# Preflight -> Sign -> Zip -> Notarize -> Staple -> Re-Zip -> Tag -> GitHub Release
 # ===========================
 #
+# Normally run via `make release`, which runs the preflight checks, builds the
+# app and then this script. Homebrew's BrewTestBot bumps the official
+# `wailbrew` cask once the release (with its zip) is published.
+#
 # Voraussetzungen (einmalig):
-#   1) Apple-ID App-Passwort & notarytool-Profile:
+#   1) Apple-ID App-Passwort & notarytool-Profil:
 #        xcrun notarytool store-credentials "wailbrew-notary" \
 #          --apple-id "deine.apple.id@example.com" \
 #          --team-id "TEAMID" \
 #          --password "app-spezifisches-passwort"
-#   2) Developer ID Application Zertifikat in Login-Keychain.
+#   2) Developer ID Application Zertifikat in der Login-Keychain.
+#   3) GitHub CLI angemeldet: gh auth login
 #
 # Aufruf:
-#   ./release.sh <VERSION> [APP_PATH]
-#
-# Beispiele:
-#   ./release.sh 0.6.2
-#   ./release.sh 0.6.2 build/bin/WailBrew.app
+#   scripts/release.sh --preflight <VERSION>   # nur prüfen, nichts verändern
+#   scripts/release.sh <VERSION> [APP_PATH]    # signieren, notarisieren, veröffentlichen
 #
 # Optionale Umgebungsvariablen:
 #   IDENTITY="Developer ID Application: Dein Name (TEAMID)"
 #   NOTARY_PROFILE="wailbrew-notary"
-#   CASK_FILE="../homebrew-wailbrew/Casks/wailbrew.rb"   # falls du automatisch Version+SHA setzen willst
-#   BUNDLE_ID_HINT="io.github.wickenico.wailbrew"        # nur für Logs/Checks
-#
-# Hinweis:
-#   Nach Erfolg das ZIP als Release-Asset hochladen.
-#   Falls CASK_FILE gesetzt ist, wird Version & SHA direkt ersetzt (Backup .bak wird angelegt).
-
-VERSION="${1:-}"
-APP="${2:-build/bin/WailBrew.app}"
-
-if [[ -z "${VERSION}" ]]; then
-  echo "Usage: $0 <VERSION> [APP_PATH]"
-  exit 1
-fi
-
-IDENTITY="${IDENTITY:-}"
-NOTARY_PROFILE="${NOTARY_PROFILE:-wailbrew-notary}"
-ZIP="releases/wailbrew-v${VERSION}.zip"
-
-# Ensure releases directory exists
-mkdir -p releases
+#   NOTES_FILE="path/to/notes.md"   # eigene Release-Notes statt der generierten
+#   YES=1                           # ohne Rückfrage veröffentlichen
 
 log()  { printf "\n\033[1;34m[INFO]\033[0m %s\n" "$*"; }
 warn() { printf "\n\033[1;33m[WARN]\033[0m %s\n" "$*"; }
 die()  { printf "\n\033[1;31m[ERR]\033[0m  %s\n" "$*"; exit 1; }
 
-[[ -d "$APP" ]] || die "App-Bundle nicht gefunden: $APP (erst 'make build' ausführen?)"
+PREFLIGHT_ONLY=0
+if [[ "${1:-}" == "--preflight" ]]; then
+  PREFLIGHT_ONLY=1
+  shift
+fi
 
-# 1) Developer-ID-Identität ermitteln (falls nicht vorgegeben)
+VERSION="${1:-}"
+APP="${2:-build/bin/WailBrew.app}"
+[[ -n "$VERSION" ]] || die "Usage: $0 [--preflight] <VERSION> [APP_PATH]"
+
+TAG="v${VERSION}"
+IDENTITY="${IDENTITY:-}"
+NOTARY_PROFILE="${NOTARY_PROFILE:-wailbrew-notary}"
+ZIP="releases/wailbrew-${TAG}.zip"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# ---------- Preflight: fail before the long build, never after tagging ----------
+preflight() {
+  log "Prüfe Voraussetzungen für ${TAG}…"
+
+  command -v gh >/dev/null || die "GitHub CLI (gh) fehlt: brew install gh"
+  gh auth status >/dev/null 2>&1 || die "gh ist nicht angemeldet: gh auth login"
+
+  local pkg_version
+  pkg_version="$(node "${SCRIPT_DIR}/../get-version.js")"
+  [[ "$pkg_version" == "$VERSION" ]] \
+    || die "Version ${VERSION} passt nicht zu frontend/package.json (${pkg_version}). Erst 'make bump' / 'make bump-minor'?"
+
+  [[ "$(git branch --show-current)" == "main" ]] || die "Releases nur von 'main' (aktuell: $(git branch --show-current))."
+  [[ -z "$(git status --porcelain --untracked-files=no)" ]] || die "Uncommittete Änderungen vorhanden."
+
+  git fetch --quiet origin main || die "git fetch origin main fehlgeschlagen."
+  [[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]] \
+    || die "Lokales main entspricht nicht origin/main (erst pushen bzw. pullen)."
+
+  # Ask GitHub directly: local tags can diverge from the remote ones.
+  if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null \
+    || [[ -n "$(git ls-remote --tags origin "refs/tags/${TAG}")" ]]; then
+    die "Tag ${TAG} existiert bereits (lokal oder auf GitHub)."
+  fi
+  if gh release view "$TAG" >/dev/null 2>&1; then
+    die "GitHub-Release ${TAG} existiert bereits."
+  fi
+
+  security find-identity -p codesigning -v 2>/dev/null | grep -q "Developer ID Application" \
+    || die "Keine 'Developer ID Application' Identität in der Keychain."
+
+  log "Preflight ok."
+}
+
+preflight
+[[ "$PREFLIGHT_ONLY" == 1 ]] && exit 0
+
+[[ -d "$APP" ]] || die "App-Bundle nicht gefunden: $APP (erst 'make build' ausführen?)"
+mkdir -p releases
+
+# ---------- Sign ----------
 if [[ -z "${IDENTITY}" ]]; then
-  log "Suche Developer ID Application in der Keychain…"
-  if ! security find-identity -p codesigning -v >/tmp/_ids 2>/dev/null; then
-    die "Keine Codesigning-Identitäten gefunden (Zertifikat korrekt installiert?)"
-  fi
-  if ! grep -q "Developer ID Application" /tmp/_ids; then
-    cat /tmp/_ids
-    die "Keine 'Developer ID Application' Identität gefunden."
-  fi
-  # Nimm die erste passende Identität
-  IDENTITY=$(grep "Developer ID Application" /tmp/_ids | head -n1 | sed -E 's/.*"(.+)"/\1/')
+  IDENTITY=$(security find-identity -p codesigning -v | grep "Developer ID Application" | head -n1 | sed -E 's/.*"(.+)"/\1/')
 fi
 log "Verwende Signatur-Identität: $IDENTITY"
 
-# (Optional) Bundle-ID-Check fürs Log
-if [[ -n "${BUNDLE_ID_HINT:-}" ]]; then
-  BID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Contents/Info.plist" 2>/dev/null || echo "")
-  [[ -n "$BID" ]] && log "Bundle Identifier: $BID" || warn "Konnte Bundle ID nicht lesen."
-fi
-
-# 2) Signieren
 log "Signiere App (codesign --deep --options runtime --timestamp)…"
 codesign --force --deep --options runtime --timestamp --sign "$IDENTITY" "$APP"
 
@@ -82,57 +102,53 @@ log "Verifiziere Signatur…"
 codesign --verify --deep --strict --verbose=2 "$APP" || die "codesign verify fehlgeschlagen"
 spctl --assess --type execute --verbose=4 "$APP" || warn "spctl Warnung (ok, wird durch Notarisierung behoben)"
 
-# 3) Erstes ZIP erstellen (für Notarisierung)
-log "Erzeuge ZIP: $ZIP"
+# ---------- Notarize ----------
+log "Erzeuge ZIP für die Notarisierung: $ZIP"
 rm -f "$ZIP"
 ditto -c -k --keepParent "$APP" "$ZIP"
 
-# 4) Notarisieren
 log "Reiche ZIP zur Notarisierung ein (Profil: $NOTARY_PROFILE)…"
 xcrun notarytool submit "$ZIP" --keychain-profile "$NOTARY_PROFILE" --wait || die "Notarisierung fehlgeschlagen"
 
-# 5) Stapeln
 log "Stapele Notarisierung ins App-Bundle…"
 xcrun stapler staple "$APP" || die "Stapling fehlgeschlagen"
 xcrun stapler validate "$APP" || warn "Stapler validate Warnung"
 
-# 6) Finales ZIP (gestapeltes Bundle!)
 log "Erzeuge finales ZIP (gestapeltes Bundle): $ZIP"
 rm -f "$ZIP"
 ditto -c -k --keepParent "$APP" "$ZIP"
-
-# 7) SHA256 ausgeben
-log "Berechne SHA256…"
 SHA=$(shasum -a 256 "$ZIP" | awk '{print $1}')
-echo ""
-echo "=============================="
-echo "Version : ${VERSION}"
-echo "ZIP     : ${ZIP}"
-echo "SHA256  : ${SHA}"
-echo "=============================="
-echo ""
+log "SHA256: ${SHA}"
 
-# 8) (Optional) Cask-Datei aktualisieren
-if [[ -n "${CASK_FILE:-}" ]]; then
-  if [[ -f "$CASK_FILE" ]]; then
-    log "Aktualisiere Cask-Datei: $CASK_FILE"
-    cp "$CASK_FILE" "${CASK_FILE}.bak"
-
-    # Version ersetzen: version "x.y.z"
-    sed -i '' -E "s/(^ *version \")([^\"]+)(\".*)/\1${VERSION}\3/" "$CASK_FILE"
-
-    # sha256 ersetzen: sha256 "…"
-    sed -i '' -E "s/(^ *sha256 \")([a-f0-9]+)(\".*)/\1${SHA}\3/" "$CASK_FILE"
-
-    echo "→ Änderungsdiff:"
-    git -C "$(dirname "$CASK_FILE")" --no-pager diff -- "$CASK_FILE" || true
-    echo ""
-    echo "Jetzt committen & pushen, z. B.:"
-    echo "  cd $(dirname "$CASK_FILE")"
-    echo "  git add $(basename "$CASK_FILE") && git commit -m \"Bump wailbrew to ${VERSION}\" && git push"
-  else
-    warn "CASK_FILE gesetzt, aber nicht gefunden: $CASK_FILE (überspringe Update)"
-  fi
+# ---------- Release notes ----------
+NOTES="releases/notes-${TAG}.md"
+if [[ -n "${NOTES_FILE:-}" ]]; then
+  cp "$NOTES_FILE" "$NOTES"
+else
+  "${SCRIPT_DIR}/release-notes.sh" "$VERSION" > "$NOTES"
 fi
 
-log "FERTIG. Lade nun $ZIP als Release-Asset hoch und (falls gesetzt) pushe das Cask-Update."
+if [[ "${YES:-}" != 1 ]]; then
+  while true; do
+    printf "\n----- Release-Notes %s -----\n" "$TAG"
+    cat "$NOTES"
+    printf -- "----------------------------\n"
+    read -r -p "${TAG} mit ${ZIP} veröffentlichen? [y]es / [e]dit / [N]o: " answer
+    case "$answer" in
+      y|Y|yes) break ;;
+      e|E) "${VISUAL:-${EDITOR:-nano}}" "$NOTES" ;;
+      *) die "Abgebrochen. Signiertes ZIP liegt in $ZIP; nichts wurde getaggt oder veröffentlicht." ;;
+    esac
+  done
+fi
+
+# ---------- Tag + GitHub release ----------
+log "Erstelle und pushe Tag ${TAG}…"
+git tag "$TAG"
+git push --quiet origin "$TAG"
+
+log "Erstelle GitHub-Release ${TAG}…"
+gh release create "$TAG" "$ZIP" --verify-tag --title "$TAG" --notes-file "$NOTES"
+
+log "FERTIG: $(gh release view "$TAG" --json url --jq .url)"
+log "Homebrew (BrewTestBot) aktualisiert den offiziellen Cask automatisch."
