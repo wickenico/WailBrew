@@ -21,6 +21,8 @@ tasks:
       - task: common:generate:icons
     cmds:
       - wails3 tool prepare-macos-output --dir "{{.BIN_DIR}}"
+      # go build refuses to overwrite a lipo'd universal binary from build:universal.
+      - rm -f -- "{{.OUTPUT}}"
       - go build {{.BUILD_FLAGS}} -o "{{.OUTPUT}}"
     vars:
       VERSION_LDFLAG: '-X main.Version={{.VERSION}}'

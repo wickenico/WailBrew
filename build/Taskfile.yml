@@ -82,7 +82,8 @@ tasks:
       - task: install:frontend:deps
     dir: frontend
     cmds:
-      - pnpm dev --port {{.VITE_PORT}} --strictPort
+      # Wails proxies to 127.0.0.1; "localhost" may make Vite listen on ::1 only.
+      - pnpm dev --host 127.0.0.1 --port {{.VITE_PORT}} --strictPort
 
   update:build-assets:
     summary: Regenerates build assets from build/config.yml (overwrites local changes)
