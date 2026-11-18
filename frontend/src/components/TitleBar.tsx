@@ -1,3 +1,4 @@
+import { Application, System, Window } from "@wailsio/runtime";
 import {
     CircleArrowDown,
     CircleArrowUp,
@@ -12,7 +13,6 @@ import {
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Environment, Quit, WindowMinimise, WindowToggleMaximise } from "../../wailsjs/runtime";
 import type { View } from "../types";
 import BackgroundCheckIndicator from "./BackgroundCheckIndicator";
 import TitleBarActions from "./TitleBarActions";
@@ -68,10 +68,10 @@ const TitleBar: React.FC<TitleBarProps> = ({
     const [platform, setPlatform] = useState<"linux" | "darwin" | "other" | null>(null);
 
     useEffect(() => {
-        Environment()
+        System.Environment()
             .then((env) => {
-                if (env.platform === "linux") setPlatform("linux");
-                else if (env.platform === "darwin") setPlatform("darwin");
+                if (env.OS === "linux") setPlatform("linux");
+                else if (env.OS === "darwin") setPlatform("darwin");
                 else setPlatform("other");
             })
             .catch((err) => {
@@ -164,7 +164,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
                 <button
                     type="button"
                     className="titlebar-btn minimize"
-                    onClick={WindowMinimise}
+                    onClick={() => Window.Minimise()}
                     title="Minimize"
                     aria-label="Minimize"
                 >
@@ -173,13 +173,19 @@ const TitleBar: React.FC<TitleBarProps> = ({
                 <button
                     type="button"
                     className="titlebar-btn maximize"
-                    onClick={WindowToggleMaximise}
+                    onClick={() => Window.ToggleMaximise()}
                     title="Maximize"
                     aria-label="Maximize"
                 >
                     <Square size={13} />
                 </button>
-                <button type="button" className="titlebar-btn close" onClick={Quit} title="Close" aria-label="Close">
+                <button
+                    type="button"
+                    className="titlebar-btn close"
+                    onClick={() => Application.Quit()}
+                    title="Close"
+                    aria-label="Close"
+                >
                     <X size={16} />
                 </button>
             </div>

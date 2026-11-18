@@ -53,6 +53,22 @@ jobs:
         with:
           go-version-file: go.mod
 
+      # Wails v3 compiles its Linux backend by default (v2 needed -tags desktop),
+      # so cgo needs the GTK4/WebKitGTK 6 headers for build, test and lint.
+      - name: Install Linux webview dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgtk-4-dev libwebkitgtk-6.0-dev
+
+      - name: Verify generated bindings are up to date
+        if: runner.os == 'macOS'
+        run: |
+          go install github.com/wailsapp/wails/v3/cmd/wails3@$(go list -m -f '{{.Version}}' github.com/wailsapp/wails/v3)
+          wails3 generate bindings -ts -clean=true
+          git add -N frontend/bindings
+          git diff --exit-code -- frontend/bindings
+
       - name: Verify Go modules are tidy
         run: |
           go mod tidy

@@ -1,9 +1,9 @@
+import { Browser } from "@wailsio/runtime";
 import { ArrowRight, ArrowUpRight, Check, Copy, Package, Terminal, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { GetCaskIcon } from "../../wailsjs/go/main/App";
-import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { GetCaskIcon } from "../../bindings/WailBrew/app";
 import { useModalA11y } from "../hooks/useModalA11y";
 import type { PackageEntry } from "../types";
 import { parseInfoLog } from "../utils/parseInfoLog";
@@ -85,7 +85,7 @@ export default function PackageInfoDialog({
                 href={url}
                 onClick={(event) => {
                     event.preventDefault();
-                    BrowserOpenURL(url);
+                    Browser.OpenURL(url);
                 }}
             >
                 {text}

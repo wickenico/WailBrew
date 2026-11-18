@@ -1,8 +1,8 @@
+import { Browser } from "@wailsio/runtime";
 import { ExternalLink, LoaderCircle, ShieldAlert, ShieldCheck } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import type { VulnerabilityReport } from "../types";
 import {
     type FixFilter,
@@ -168,7 +168,7 @@ const SecurityView: React.FC<SecurityViewProps> = ({ report, error, scanning, on
                                                         <button
                                                             type="button"
                                                             className="security-advisory-link"
-                                                            onClick={() => BrowserOpenURL(osvUrl(vulnerability.id))}
+                                                            onClick={() => Browser.OpenURL(osvUrl(vulnerability.id))}
                                                             aria-label={t("security.openAdvisory", {
                                                                 id: vulnerability.id,
                                                             })}

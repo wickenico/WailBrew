@@ -1,6 +1,6 @@
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { SetWindowTheme } from "../../wailsjs/go/main/App";
+import { SetWindowTheme } from "../../bindings/WailBrew/app";
 
 type Theme = "dark" | "light";
 

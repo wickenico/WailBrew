@@ -31,11 +31,11 @@ If you want to build WailBrew from source, you'll need:
   ```
   The exact version is pinned via `packageManager` in `frontend/package.json`; pnpm switches to it automatically.
 
-- **Wails CLI** - Install with:
+- **Wails v3 CLI** (`wails3`) - Install the version pinned in `go.mod` with:
   ```bash
-  go install github.com/wailsapp/wails/v2/cmd/wails@latest
+  make update-cli
   ```
-  Make sure `~/go/bin` is in your PATH.
+  Make sure `~/go/bin` is in your PATH. `wails3 doctor` checks your setup.
 
 ### Getting Started
 
@@ -52,25 +52,25 @@ cd frontend && pnpm install
 
 # Start the app in development mode
 cd .. && make dev
-# or alternatively: wails dev
+# or alternatively: wails3 dev -config ./build/config.yml
 ```
 
 ### Production Build
 
 ```bash
-wails build
-
-# The built app will be in the build/bin/ directory
+make build            # build/bin/WailBrew.app for the current architecture
+make build-universal  # universal (arm64 + amd64) app bundle
 ```
 
-**Note**: Use `make` for production builds as it automatically reads the version from `frontend/package.json` and embeds it in the binary. This ensures the About dialog displays the correct version in production.
+Builds run through the Wails v3 Taskfiles (`Taskfile.yml`, `build/Taskfile.yml`, `build/darwin/Taskfile.yml`). They read the version from `frontend/package.json` and embed it in the binary, so the About dialog shows the correct version. Project metadata lives in `build/config.yml`; `make bump` / `make bump-minor` keep it and the darwin plists in sync with `frontend/package.json`.
 
 ### Available Make Commands
 
 ```bash
-make dev     # Start development server
-make clean   # Clean build directory
-make install # Build and install to /Applications
+make dev       # Start development server
+make bindings  # Regenerate frontend/bindings after changing exported App methods
+make clean     # Remove build/bin
+make install   # Build and install to /Applications
 ```
 
 ## 🧪 Testing
@@ -100,13 +100,17 @@ Pure utility functions (no Wails bindings, no DOM) use `environment: 'node'` and
 
 ### Live Development
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect to this in your browser, and you can call your Go code from devtools.
+To run in live development mode, run `make dev` in the project directory. This runs a Vite development server with fast hot reload for frontend changes and rebuilds the app when Go files change.
+
+The frontend talks to Go through generated TypeScript bindings in `frontend/bindings` (committed, checked in CI) and the [`@wailsio/runtime`](https://www.npmjs.com/package/@wailsio/runtime) package for events, window and browser helpers. After adding or changing an exported method on `App`, run `make bindings`. Subscribe to backend events with `onEvent` from `frontend/src/utils/events.ts`.
 
 ### Project Structure
 
 - `/frontend` - React + TypeScript frontend
   - `/src/components` - React components
   - `/src/i18n` - Internationalization files
+  - `/bindings` - Generated Go bindings (do not edit)
+- `/build` - Wails v3 build config, Taskfiles and macOS plists/icons
 - `/main.go` - Go backend entry point
 - `/app.go` - Main application logic
 

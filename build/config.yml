@@ -1,0 +1,43 @@
+# Wails v3 project configuration (replaces the v2 wails.json).
+# `info` feeds `wails3 task common:update:build-assets`, which regenerates build/darwin/*
+# and overwrites local changes there. `make bump` keeps the version here and in the
+# darwin plists in sync with frontend/package.json.
+version: '3'
+
+info:
+  companyName: "Nico Wickersheim"
+  productName: "WailBrew"
+  productIdentifier: "io.github.wickenico.wailbrew"
+  description: "A Homebrew GUI for macOS"
+  copyright: "Copyright © Nico Wickersheim"
+  comments: "WailBrew"
+  version: "0.14.3"
+
+# Dev mode configuration (`wails3 dev` / `make dev`)
+dev_mode:
+  root_path: .
+  log_level: warn
+  debounce: 1000
+  ignore:
+    dir:
+      - .git
+      - node_modules
+      - frontend
+      - bin
+      - releases
+    file:
+      - .DS_Store
+      - .gitignore
+      - .gitkeep
+      - "*_test.go"
+    watched_extension:
+      - "*.go"
+    git_ignore: true
+  executes:
+    - cmd: wails3 build DEV=true
+      type: blocking
+    - cmd: wails3 task common:dev:frontend
+      type: background
+    - cmd: wails3 task run
+      type: primary
+      exit_policy: shutdown

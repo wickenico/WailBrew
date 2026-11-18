@@ -2,63 +2,27 @@
 <plist version="1.0">
     <dict>
         <key>CFBundlePackageType</key>
-        <string>APPL</string>
+            <string>APPL</string>
         <key>CFBundleName</key>
-        <string>{{.Info.ProductName}}</string>
+            <string>WailBrew</string>
         <key>CFBundleExecutable</key>
-        <string>{{.Name}}</string>
+            <string>WailBrew</string>
         <key>CFBundleIdentifier</key>
-        <string>com.wails.{{.Name}}</string>
+            <string>io.github.wickenico.wailbrew</string>
         <key>CFBundleVersion</key>
-        <string>{{.Info.ProductVersion}}</string>
+            <string>0.14.3</string>
         <key>CFBundleGetInfoString</key>
-        <string>{{.Info.Comments}}</string>
+            <string>WailBrew</string>
         <key>CFBundleShortVersionString</key>
-        <string>{{.Info.ProductVersion}}</string>
+            <string>0.14.3</string>
         <key>CFBundleIconFile</key>
-        <string>iconfile</string>
+            <string>icons</string>
         <key>LSMinimumSystemVersion</key>
-        <string>10.13.0</string>
+            <string>12.0.0</string>
         <key>NSHighResolutionCapable</key>
-        <string>true</string>
+            <string>true</string>
         <key>NSHumanReadableCopyright</key>
-        <string>{{.Info.Copyright}}</string>
-        {{if .Info.FileAssociations}}
-        <key>CFBundleDocumentTypes</key>
-        <array>
-          {{range .Info.FileAssociations}}
-          <dict>
-            <key>CFBundleTypeExtensions</key>
-            <array>
-              <string>{{.Ext}}</string>
-            </array>
-            <key>CFBundleTypeName</key>
-            <string>{{.Name}}</string>
-            <key>CFBundleTypeRole</key>
-            <string>{{.Role}}</string>
-            <key>CFBundleTypeIconFile</key>
-            <string>{{.IconName}}</string>
-          </dict>
-          {{end}}
-        </array>
-        {{end}}
-        {{if .Info.Protocols}}
-        <key>CFBundleURLTypes</key>
-        <array>
-          {{range .Info.Protocols}}
-            <dict>
-                <key>CFBundleURLName</key>
-                <string>com.wails.{{.Scheme}}</string>
-                <key>CFBundleURLSchemes</key>
-                <array>
-                    <string>{{.Scheme}}</string>
-                </array>
-                <key>CFBundleTypeRole</key>
-                <string>{{.Role}}</string>
-            </dict>
-          {{end}}
-        </array>
-        {{end}}
+            <string>Copyright © Nico Wickersheim</string>
         <key>NSAppTransportSecurity</key>
         <dict>
             <key>NSAllowsLocalNetworking</key>

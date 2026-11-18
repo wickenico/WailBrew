@@ -7,7 +7,7 @@ import {
     IsConfigDirectoryOverridden,
     MoveConfigDirectory,
     SelectConfigDirectory,
-} from "../../wailsjs/go/main/App";
+} from "../../bindings/WailBrew/app";
 
 export default function ConfigDirectorySetting() {
     const { t } = useTranslation();

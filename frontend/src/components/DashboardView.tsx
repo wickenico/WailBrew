@@ -3,7 +3,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { GetBrewPath, GetHomebrewVersion } from "../../wailsjs/go/main/App";
+import { GetBrewPath, GetHomebrewVersion } from "../../bindings/WailBrew/app";
 import { mapToSupportedLanguage } from "../i18n/languageUtils";
 import type { PackageEntry, View } from "../types";
 import "./DashboardView.css";

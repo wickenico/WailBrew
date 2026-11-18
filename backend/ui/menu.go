@@ -1,18 +1,14 @@
 package ui
 
 import (
-	"context"
 	"fmt"
 	"runtime"
 
-	"github.com/wailsapp/wails/v2/pkg/menu"
-	"github.com/wailsapp/wails/v2/pkg/menu/keys"
-	rt "github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
-// AppInterface defines the interface needed for menu building
+// AppInterface defines the application operations used by the native menu.
 type AppInterface interface {
-	GetContext() context.Context
 	OpenURL(url string)
 	GetTranslation(key string, params map[string]string) string
 	ExportBrewfile(filePath string) error
@@ -21,233 +17,191 @@ type AppInterface interface {
 	ClearConfigFile() error
 }
 
-// Build creates the application menu
-func Build(app AppInterface) *menu.Menu {
-	getT := func(key string) string {
-		return app.GetTranslation(key, nil)
+// Build creates the application menu using the v3 menu and dialog APIs.
+func Build(wailsApp *application.App, app AppInterface) *application.Menu {
+	menu := wailsApp.Menu.New()
+	getT := func(key string) string { return app.GetTranslation(key, nil) }
+	emit := func(name string, data ...any) {
+		wailsApp.Event.Emit(name, data...)
+	}
+	add := func(parent *application.Menu, label, accelerator string, callback func()) {
+		item := parent.Add(label).OnClick(func(_ *application.Context) { callback() })
+		if accelerator != "" {
+			item.SetAccelerator(accelerator)
+		}
+	}
+	showError := func(title, message string) {
+		wailsApp.Dialog.Error().SetTitle(title).SetMessage(message).Show()
+	}
+	showInfo := func(title, message string) {
+		wailsApp.Dialog.Info().SetTitle(title).SetMessage(message).Show()
 	}
 
-	// Helper to get context dynamically when callback executes
-	getCtx := func() context.Context {
-		return app.GetContext()
-	}
-
-	AppMenu := menu.NewMenu()
-
-	// App Menu (macOS-like)
-	AppSubmenu := AppMenu.AddSubmenu("WailBrew")
-	AppSubmenu.AddText(getT("menu.app.about"), nil, func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "showAbout")
-	})
-	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText(getT("menu.view.settings"), keys.CmdOrCtrl(","), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "settings")
-	})
-	AppSubmenu.AddText(getT("menu.view.shortcuts"), keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "showShortcuts")
-	})
-	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText(getT("menu.app.checkUpdates"), nil, func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "checkForUpdates")
-	})
-	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText(getT("menu.app.visitWebsite"), nil, func(cd *menu.CallbackData) {
-		app.OpenURL("https://wailbrew.app")
-	})
-	AppSubmenu.AddText(getT("menu.app.visitGitHub"), nil, func(cd *menu.CallbackData) {
-		app.OpenURL("https://github.com/wickenico/WailBrew")
-	})
-	AppSubmenu.AddText(getT("menu.app.reportBug"), nil, func(cd *menu.CallbackData) {
+	appMenu := menu.AddSubmenu("WailBrew")
+	add(appMenu, getT("menu.app.about"), "", func() { emit("showAbout") })
+	appMenu.AddSeparator()
+	add(appMenu, getT("menu.view.settings"), "CmdOrCtrl+,", func() { emit("setView", "settings") })
+	add(appMenu, getT("menu.view.shortcuts"), "CmdOrCtrl+Shift+S", func() { emit("showShortcuts") })
+	appMenu.AddSeparator()
+	add(appMenu, getT("menu.app.checkUpdates"), "", func() { emit("checkForUpdates") })
+	appMenu.AddSeparator()
+	add(appMenu, getT("menu.app.visitWebsite"), "", func() { app.OpenURL("https://wailbrew.app") })
+	add(appMenu, getT("menu.app.visitGitHub"), "", func() { app.OpenURL("https://github.com/wickenico/WailBrew") })
+	add(appMenu, getT("menu.app.reportBug"), "", func() {
 		app.OpenURL("https://github.com/wickenico/WailBrew/issues/new?template=bug_report.yml")
 	})
-	AppSubmenu.AddText(getT("menu.app.visitSubreddit"), nil, func(cd *menu.CallbackData) {
-		app.OpenURL("https://www.reddit.com/r/WailBrew/")
-	})
-	AppSubmenu.AddText(getT("menu.app.sponsorProject"), nil, func(cd *menu.CallbackData) {
-		app.OpenURL("https://github.com/sponsors/wickenico")
-	})
-	AppSubmenu.AddSeparator()
-	AppSubmenu.AddText(getT("menu.app.quit"), keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) {
-		rt.Quit(getCtx())
-	})
+	add(appMenu, getT("menu.app.visitSubreddit"), "", func() { app.OpenURL("https://www.reddit.com/r/WailBrew/") })
+	add(appMenu, getT("menu.app.sponsorProject"), "", func() { app.OpenURL("https://github.com/sponsors/wickenico") })
+	appMenu.AddSeparator()
+	add(appMenu, getT("menu.app.quit"), "CmdOrCtrl+Q", wailsApp.Quit)
 
-	ViewMenu := AppMenu.AddSubmenu(getT("menu.view.title"))
-	ViewMenu.AddText(getT("menu.view.installed"), keys.CmdOrCtrl("1"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "installed")
-	})
-	ViewMenu.AddText(getT("menu.view.casks"), keys.CmdOrCtrl("2"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "casks")
-	})
-	ViewMenu.AddText(getT("menu.view.outdated"), keys.CmdOrCtrl("3"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "updatable")
-	})
-	ViewMenu.AddText(getT("menu.view.leaves"), keys.CmdOrCtrl("4"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "leaves")
-	})
-	ViewMenu.AddText(getT("menu.view.repositories"), keys.CmdOrCtrl("5"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "repositories")
-	})
-	ViewMenu.AddSeparator()
-	ViewMenu.AddText(getT("menu.view.allFormulae"), keys.CmdOrCtrl("6"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "all")
-	})
-	ViewMenu.AddText(getT("menu.view.allCasks"), keys.CmdOrCtrl("7"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "allCasks")
-	})
-	ViewMenu.AddText(getT("menu.view.adoptable"), keys.Combo("a", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "adoptable")
-	})
-	ViewMenu.AddSeparator()
-	ViewMenu.AddText(getT("menu.view.homebrew"), keys.CmdOrCtrl("8"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "homebrew")
-	})
-	ViewMenu.AddText(getT("menu.view.services"), keys.CmdOrCtrl("p"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "services")
-	})
-	ViewMenu.AddText(getT("menu.view.doctor"), keys.CmdOrCtrl("9"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "doctor")
-	})
-	ViewMenu.AddText(getT("menu.view.security"), keys.Combo("v", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "security")
-	})
-	ViewMenu.AddText(getT("menu.view.cleanup"), keys.CmdOrCtrl("0"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "cleanup")
-	})
-	ViewMenu.AddText(getT("menu.view.snapshots"), keys.CmdOrCtrl("b"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "snapshots")
-	})
-	ViewMenu.AddText(getT("menu.view.dashboard"), keys.CmdOrCtrl("d"), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "setView", "dashboard")
-	})
-
-	// Tools Menu
-	ToolsMenu := AppMenu.AddSubmenu(getT("menu.tools.title"))
-	ToolsMenu.AddText(getT("menu.tools.refreshPackages"), keys.Combo("r", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "refreshPackagesData")
-	})
-	ToolsMenu.AddSeparator()
-	ToolsMenu.AddText(getT("menu.tools.exportBrewfile"), keys.CmdOrCtrl("e"), func(cd *menu.CallbackData) {
-		ctx := getCtx()
-		// Open file picker dialog to save Brewfile
-		saveDialog, err := rt.SaveFileDialog(ctx, rt.SaveDialogOptions{
-			DefaultFilename:      "Brewfile",
-			Title:                getT("menu.tools.exportBrewfile"),
-			CanCreateDirectories: true,
-		})
-
-		if err == nil && saveDialog != "" {
-			err := app.ExportBrewfile(saveDialog)
-			if err != nil {
-				_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-					Type:    rt.ErrorDialog,
-					Title:   getT("menu.tools.exportFailed"),
-					Message: fmt.Sprintf("Failed to export Brewfile: %v", err),
-				})
-			} else {
-				_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-					Type:    rt.InfoDialog,
-					Title:   getT("menu.tools.exportSuccess"),
-					Message: fmt.Sprintf(getT("menu.tools.exportMessage"), saveDialog),
-				})
-			}
-		}
-	})
-	ToolsMenu.AddText(getT("menu.tools.importBrewfile"), keys.Combo("i", keys.CmdOrCtrlKey, keys.ShiftKey), func(cd *menu.CallbackData) {
-		ctx := getCtx()
-		// Open file picker dialog to choose a Brewfile to import
-		openDialog, err := rt.OpenFileDialog(ctx, rt.OpenDialogOptions{
-			Title:                getT("menu.tools.importBrewfile"),
-			CanCreateDirectories: false,
-		})
-		if err != nil || openDialog == "" {
-			return
-		}
-
-		cleanupChoice, _ := rt.MessageDialog(ctx, rt.MessageDialogOptions{
-			Type:          rt.QuestionDialog,
-			Title:         getT("menu.tools.importCleanupConfirmTitle"),
-			Message:       getT("menu.tools.importCleanupConfirmMessage"),
-			Buttons:       []string{getT("menu.tools.importCleanupYes"), getT("menu.tools.importKeepExtra"), getT("buttons.cancel")},
-			DefaultButton: getT("menu.tools.importKeepExtra"),
-			CancelButton:  getT("buttons.cancel"),
-		})
-		if cleanupChoice == getT("buttons.cancel") {
-			return
-		}
-		cleanup := cleanupChoice == getT("menu.tools.importCleanupYes")
-
-		if err := app.ImportBrewfile(openDialog, cleanup); err != nil {
-			_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-				Type:    rt.ErrorDialog,
-				Title:   getT("menu.tools.importFailed"),
-				Message: fmt.Sprintf("Failed to import Brewfile: %v", err),
-			})
-		} else {
-			_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-				Type:    rt.InfoDialog,
-				Title:   getT("menu.tools.importSuccess"),
-				Message: fmt.Sprintf(getT("menu.tools.importMessage"), openDialog),
-			})
-		}
-	})
-	ToolsMenu.AddText(getT("menu.tools.openConfigFile"), nil, func(cd *menu.CallbackData) {
-		ctx := getCtx()
-		err := app.OpenConfigFile()
-		if err != nil {
-			_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-				Type:    rt.ErrorDialog,
-				Title:   getT("menu.tools.openConfigFailed"),
-				Message: fmt.Sprintf("Failed to open config file: %v", err),
-			})
-		}
-	})
-	ToolsMenu.AddText(getT("menu.tools.clearConfigFile"), nil, func(cd *menu.CallbackData) {
-		ctx := getCtx()
-		result, _ := rt.MessageDialog(ctx, rt.MessageDialogOptions{
-			Type:          rt.QuestionDialog,
-			Title:         getT("menu.tools.clearConfigConfirmTitle"),
-			Message:       getT("menu.tools.clearConfigConfirmMessage"),
-			Buttons:       []string{getT("buttons.yes"), getT("buttons.cancel")},
-			DefaultButton: getT("buttons.cancel"),
-			CancelButton:  getT("buttons.cancel"),
-		})
-		if result != getT("buttons.yes") {
-			return
-		}
-		if err := app.ClearConfigFile(); err != nil {
-			_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-				Type:    rt.ErrorDialog,
-				Title:   getT("menu.tools.clearConfigFailed"),
-				Message: fmt.Sprintf("Failed to clear config file: %v", err),
-			})
-			return
-		}
-		_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-			Type:    rt.InfoDialog,
-			Title:   getT("menu.tools.clearConfigSuccess"),
-			Message: getT("menu.tools.clearConfigSuccessMessage"),
-		})
-	})
-	ToolsMenu.AddSeparator()
-	ToolsMenu.AddText(getT("menu.tools.viewSessionLogs"), nil, func(cd *menu.CallbackData) {
-		rt.EventsEmit(getCtx(), "showSessionLogs")
-	})
-
-	// Edit-Menu (optional)
-	if runtime.GOOS == "darwin" {
-		AppMenu.Append(menu.EditMenu())
-		AppMenu.Append(menu.WindowMenu())
+	viewMenu := menu.AddSubmenu(getT("menu.view.title"))
+	for _, item := range []struct {
+		key, accelerator, view string
+	}{
+		{"menu.view.installed", "CmdOrCtrl+1", "installed"},
+		{"menu.view.casks", "CmdOrCtrl+2", "casks"},
+		{"menu.view.outdated", "CmdOrCtrl+3", "updatable"},
+		{"menu.view.leaves", "CmdOrCtrl+4", "leaves"},
+		{"menu.view.repositories", "CmdOrCtrl+5", "repositories"},
+	} {
+		item := item
+		add(viewMenu, getT(item.key), item.accelerator, func() { emit("setView", item.view) })
+	}
+	viewMenu.AddSeparator()
+	for _, item := range []struct {
+		key, accelerator, view string
+	}{
+		{"menu.view.allFormulae", "CmdOrCtrl+6", "all"},
+		{"menu.view.allCasks", "CmdOrCtrl+7", "allCasks"},
+		{"menu.view.adoptable", "CmdOrCtrl+Shift+A", "adoptable"},
+	} {
+		item := item
+		add(viewMenu, getT(item.key), item.accelerator, func() { emit("setView", item.view) })
+	}
+	viewMenu.AddSeparator()
+	for _, item := range []struct {
+		key, accelerator, view string
+	}{
+		{"menu.view.homebrew", "CmdOrCtrl+8", "homebrew"},
+		{"menu.view.services", "CmdOrCtrl+P", "services"},
+		{"menu.view.doctor", "CmdOrCtrl+9", "doctor"},
+		{"menu.view.security", "CmdOrCtrl+Shift+V", "security"},
+		{"menu.view.cleanup", "CmdOrCtrl+0", "cleanup"},
+		{"menu.view.snapshots", "CmdOrCtrl+B", "snapshots"},
+		{"menu.view.dashboard", "CmdOrCtrl+D", "dashboard"},
+	} {
+		item := item
+		add(viewMenu, getT(item.key), item.accelerator, func() { emit("setView", item.view) })
 	}
 
-	HelpMenu := AppMenu.AddSubmenu(getT("menu.help.title"))
-	HelpMenu.AddText(getT("menu.help.wailbrewHelp"), nil, func(cd *menu.CallbackData) {
-		ctx := getCtx()
-		_, _ = rt.MessageDialog(ctx, rt.MessageDialogOptions{
-			Type:    rt.InfoDialog,
-			Title:   getT("menu.help.helpTitle"),
-			Message: getT("menu.help.helpMessage"),
-		})
+	toolsMenu := menu.AddSubmenu(getT("menu.tools.title"))
+	add(toolsMenu, getT("menu.tools.refreshPackages"), "CmdOrCtrl+Shift+R", func() { emit("refreshPackagesData") })
+	toolsMenu.AddSeparator()
+	add(toolsMenu, getT("menu.tools.exportBrewfile"), "CmdOrCtrl+E", func() {
+		path, err := wailsApp.Dialog.SaveFileWithOptions(&application.SaveFileDialogOptions{
+			Title:                getT("menu.tools.exportBrewfile"),
+			Filename:             "Brewfile",
+			CanCreateDirectories: true,
+		}).PromptForSingleSelection()
+		if err != nil || path == "" {
+			return
+		}
+		if err := app.ExportBrewfile(path); err != nil {
+			showError(getT("menu.tools.exportFailed"), fmt.Sprintf("Failed to export Brewfile: %v", err))
+			return
+		}
+		showInfo(getT("menu.tools.exportSuccess"), fmt.Sprintf(getT("menu.tools.exportMessage"), path))
+	})
+	add(toolsMenu, getT("menu.tools.importBrewfile"), "CmdOrCtrl+Shift+I", func() {
+		path, err := wailsApp.Dialog.OpenFileWithOptions(&application.OpenFileDialogOptions{
+			Title:                getT("menu.tools.importBrewfile"),
+			CanChooseDirectories: false,
+			CanChooseFiles:       true,
+		}).PromptForSingleSelection()
+		if err != nil || path == "" {
+			return
+		}
+		promptImportCleanup(wailsApp, app, getT, path, showError, showInfo)
+	})
+	add(toolsMenu, getT("menu.tools.openConfigFile"), "", func() {
+		if err := app.OpenConfigFile(); err != nil {
+			showError(getT("menu.tools.openConfigFailed"), fmt.Sprintf("Failed to open config file: %v", err))
+		}
+	})
+	add(toolsMenu, getT("menu.tools.clearConfigFile"), "", func() {
+		promptClearConfig(wailsApp, app, getT, showError, showInfo)
+	})
+	toolsMenu.AddSeparator()
+	add(toolsMenu, getT("menu.tools.viewSessionLogs"), "", func() { emit("showSessionLogs") })
+
+	if runtime.GOOS == "darwin" {
+		menu.AddRole(application.EditMenu)
+		menu.AddRole(application.WindowMenu)
+	}
+
+	helpMenu := menu.AddSubmenu(getT("menu.help.title"))
+	add(helpMenu, getT("menu.help.wailbrewHelp"), "", func() {
+		showInfo(getT("menu.help.helpTitle"), getT("menu.help.helpMessage"))
 	})
 
-	return AppMenu
+	return menu
+}
+
+func promptImportCleanup(
+	wailsApp *application.App,
+	app AppInterface,
+	getT func(string) string,
+	path string,
+	showError func(string, string),
+	showInfo func(string, string),
+) {
+	dialog := wailsApp.Dialog.Question().SetTitle(getT("menu.tools.importCleanupConfirmTitle")).
+		SetMessage(getT("menu.tools.importCleanupConfirmMessage"))
+	yes := dialog.AddButton(getT("menu.tools.importCleanupYes"))
+	yes.OnClick(func() { importBrewfile(app, path, true, getT, showError, showInfo) })
+	keep := dialog.AddButton(getT("menu.tools.importKeepExtra"))
+	keep.OnClick(func() { importBrewfile(app, path, false, getT, showError, showInfo) })
+	dialog.SetDefaultButton(keep)
+	cancel := dialog.AddButton(getT("buttons.cancel"))
+	dialog.SetCancelButton(cancel)
+	dialog.Show()
+}
+
+func importBrewfile(
+	app AppInterface,
+	path string,
+	cleanup bool,
+	getT func(string) string,
+	showError func(string, string),
+	showInfo func(string, string),
+) {
+	if err := app.ImportBrewfile(path, cleanup); err != nil {
+		showError(getT("menu.tools.importFailed"), fmt.Sprintf("Failed to import Brewfile: %v", err))
+		return
+	}
+	showInfo(getT("menu.tools.importSuccess"), fmt.Sprintf(getT("menu.tools.importMessage"), path))
+}
+
+func promptClearConfig(
+	wailsApp *application.App,
+	app AppInterface,
+	getT func(string) string,
+	showError func(string, string),
+	showInfo func(string, string),
+) {
+	dialog := wailsApp.Dialog.Question().SetTitle(getT("menu.tools.clearConfigConfirmTitle")).
+		SetMessage(getT("menu.tools.clearConfigConfirmMessage"))
+	yes := dialog.AddButton(getT("buttons.yes"))
+	yes.OnClick(func() {
+		if err := app.ClearConfigFile(); err != nil {
+			showError(getT("menu.tools.clearConfigFailed"), fmt.Sprintf("Failed to clear config file: %v", err))
+			return
+		}
+		showInfo(getT("menu.tools.clearConfigSuccess"), getT("menu.tools.clearConfigSuccessMessage"))
+	})
+	cancel := dialog.AddButton(getT("buttons.cancel"))
+	dialog.SetDefaultButton(cancel)
+	dialog.SetCancelButton(cancel)
+	dialog.Show()
 }

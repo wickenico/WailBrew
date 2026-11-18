@@ -1,3 +1,4 @@
+import { Browser } from "@wailsio/runtime";
 import {
     AppWindow,
     ChevronDown,
@@ -12,8 +13,7 @@ import {
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GetAppIcon } from "../../wailsjs/go/main/App";
-import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { GetAppIcon } from "../../bindings/WailBrew/app";
 import type { AdoptableApp, AdoptCandidate, AdoptScanResult, AdoptStatus } from "../types";
 import {
     ADOPT_STATUS_FILTERS,
@@ -197,7 +197,7 @@ const AdoptableAppsView: React.FC<AdoptableAppsViewProps> = ({
                                                             <button
                                                                 type="button"
                                                                 className="adopt-homepage"
-                                                                onClick={() => BrowserOpenURL(candidate.homepage)}
+                                                                onClick={() => Browser.OpenURL(candidate.homepage)}
                                                                 aria-label={t("adoptable.openHomepage", {
                                                                     name: candidate.name,
                                                                 })}

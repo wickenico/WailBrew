@@ -1,9 +1,9 @@
+import { Browser } from "@wailsio/runtime";
 import { BarChart3, Calendar, ChevronDown, ExternalLink, GitBranch, Package, TrendingUp } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GetInstalledDependencies, GetInstalledDependents } from "../../wailsjs/go/main/App";
-import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { GetInstalledDependencies, GetInstalledDependents } from "../../bindings/WailBrew/app";
 import type { PackageEntry, Vulnerability } from "../types";
 import { packageTarget } from "../utils/packages";
 import { osvUrl } from "../utils/vulnerabilities";
@@ -247,7 +247,7 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
                                     <button
                                         type="button"
                                         className="pi-link"
-                                        onClick={() => BrowserOpenURL(osvUrl(vulnerability.id))}
+                                        onClick={() => Browser.OpenURL(osvUrl(vulnerability.id))}
                                         title={vulnerability.summary}
                                     >
                                         {vulnerability.id}
@@ -286,8 +286,8 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
                         ) : homepage && isValidUrl(homepage) ? (
                             <span
                                 className="pi-link"
-                                onClick={() => BrowserOpenURL(homepage)}
-                                onKeyDown={(e) => activateOnKey(e, () => BrowserOpenURL(homepage))}
+                                onClick={() => Browser.OpenURL(homepage)}
+                                onKeyDown={(e) => activateOnKey(e, () => Browser.OpenURL(homepage))}
                                 role="link"
                                 tabIndex={0}
                                 title={homepage}
@@ -310,8 +310,8 @@ const PackageInfo: React.FC<PackageInfoProps> = ({
                         ) : brewPageUrl ? (
                             <span
                                 className="pi-link"
-                                onClick={() => BrowserOpenURL(brewPageUrl)}
-                                onKeyDown={(e) => activateOnKey(e, () => BrowserOpenURL(brewPageUrl))}
+                                onClick={() => Browser.OpenURL(brewPageUrl)}
+                                onKeyDown={(e) => activateOnKey(e, () => Browser.OpenURL(brewPageUrl))}
                                 role="link"
                                 tabIndex={0}
                                 title={brewPageUrl}

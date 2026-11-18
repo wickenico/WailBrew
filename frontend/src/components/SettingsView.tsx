@@ -58,7 +58,7 @@ import {
     SetSortFavoritesToTop,
     SetUninstallCaskWithZap,
     TestProxyConnection,
-} from "../../wailsjs/go/main/App";
+} from "../../bindings/WailBrew/app";
 
 import ConfigDirectorySetting from "./ConfigDirectorySetting";
 

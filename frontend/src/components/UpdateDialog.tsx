@@ -1,10 +1,10 @@
+import { Browser } from "@wailsio/runtime";
 import { ArrowRight, CheckCircle2, CircleArrowUp, ExternalLink, PartyPopper, TriangleAlert } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CheckForUpdates } from "../../wailsjs/go/main/App";
-import type { main } from "../../wailsjs/go/models";
-import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
+import { CheckForUpdates } from "../../bindings/WailBrew/app";
+import type * as main from "../../bindings/WailBrew/models";
 import { useModalA11y } from "../hooks/useModalA11y";
 import "./UpdateDialog.css";
 
@@ -14,7 +14,7 @@ interface UpdateDialogProps {
     /** Starts `brew upgrade --cask wailbrew` through the regular update flow. */
     onUpdateNow: () => void;
     /** Reports each check's result, so the title bar button stays in sync. */
-    onChecked?: (info: main.UpdateInfo) => void;
+    onChecked?: (info: main.UpdateInfo | null) => void;
 }
 
 const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose, onUpdateNow, onChecked }) => {
@@ -52,7 +52,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({ isOpen, onClose, onUpdateNo
     const isAvailable = !isChecking && !error && updateInfo?.available === true;
     const canUpdateInApp = isAvailable && updateInfo?.installedViaHomebrew === true;
     const openReleasePage = () => {
-        if (updateInfo?.releaseUrl) BrowserOpenURL(updateInfo.releaseUrl);
+        if (updateInfo?.releaseUrl) Browser.OpenURL(updateInfo.releaseUrl);
     };
 
     const renderContent = () => {

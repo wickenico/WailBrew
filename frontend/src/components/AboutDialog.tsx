@@ -1,7 +1,7 @@
+import { Browser } from "@wailsio/runtime";
 import type React from "react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import appIcon from "../assets/images/appicon_256.png";
 import { useModalA11y } from "../hooks/useModalA11y";
 
@@ -18,13 +18,13 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ open, onClose, appVersion }) 
     useModalA11y(open, onClose, dialogRef);
 
     const handleLinkClick = (url: string) => {
-        BrowserOpenURL(url);
+        Browser.OpenURL(url);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent, url: string) => {
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            BrowserOpenURL(url);
+            Browser.OpenURL(url);
         }
     };
 

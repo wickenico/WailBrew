@@ -6,9 +6,6 @@ on:
       version:
         description: 'Version (e.g. 0.8.3)'
         required: true
-      sha256:
-        description: 'SHA256 of wailbrew-v<version>.zip'
-        required: true
 
 permissions:
   contents: write
@@ -23,13 +20,6 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-
-      - name: Checkout homebrew-wailbrew tap
-        uses: actions/checkout@v7
-        with:
-          repository: wickenico/homebrew-wailbrew
-          path: homebrew-wailbrew
-          token: ${{ secrets.HOMEBREW_TAP_PAT }}
 
       - name: Determine previous tag
         id: meta
@@ -74,31 +64,7 @@ jobs:
           echo "EOF" >> "$GITHUB_OUTPUT"
           echo "changelog_link=$CHANGELOG_LINK" >> "$GITHUB_OUTPUT"
 
-      - name: Update Homebrew cask
-        working-directory: homebrew-wailbrew
-        run: |
-          VERSION="${{ github.event.inputs.version }}"
-          SHA="${{ github.event.inputs.sha256 }}"
-          CASK_FILE="Casks/wailbrew.rb"
-
-          # bump version
-          sed -i -E "s/(version \")[^\"]+(\")/\1${VERSION}\2/" "$CASK_FILE"
-          # bump sha256
-          sed -i -E "s/(sha256 \")[^\"]+(\")/\1${SHA}\2/" "$CASK_FILE"
-
-          echo "Updated cask file:"
-          cat "$CASK_FILE"
-
-      - name: Commit and push updated cask
-        working-directory: homebrew-wailbrew
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add Casks/wailbrew.rb
-          git commit -m "Bump wailbrew to ${{ github.event.inputs.version }}" || echo "No changes to commit"
-          git push
-
+      # The official homebrew/cask "wailbrew" cask is bumped automatically by BrewTestBot.
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
