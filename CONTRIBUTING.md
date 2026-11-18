@@ -52,7 +52,7 @@ cd frontend && pnpm install
 
 # Start the app in development mode
 cd .. && make dev
-# or alternatively: wails3 dev -config ./build/config.yml
+# or alternatively: wails3 dev
 ```
 
 ### Production Build

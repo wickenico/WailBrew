@@ -27,7 +27,7 @@ build-universal:
 	$(WAILS) task darwin:package:universal
 
 dev:
-	$(WAILS) dev -config ./build/config.yml
+	$(WAILS) dev
 
 # Regenerate frontend/bindings after changing exported App methods.
 bindings:
