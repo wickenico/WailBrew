@@ -3187,6 +3187,13 @@ const WailBrewApp = () => {
     ];
     const columnsLeaves = columnsInstalled;
 
+    // Hide the outdated filters when there is nothing to filter. Keep the mode
+    // picker while another mode (e.g. greedy) still reports outdated packages,
+    // otherwise there would be no way to switch to it.
+    const nothingOutdated = updatablePackages.length === 0 && !loading && !switchingOutdatedMode && !updatableError;
+    const showUpdateModeFilter = !nothingOutdated || Object.values(outdatedCounts).some((count) => (count ?? 0) > 0);
+    const showPackageTypeFilter = !nothingOutdated;
+
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100vw" }}>
             <TitleBar
@@ -3479,57 +3486,65 @@ const WailBrewApp = () => {
                                 onSearchChange={setSearchQuery}
                                 onClearSearch={() => setSearchQuery("")}
                             />
-                            <div className="update-filters-row">
-                                <label className="update-filter-field">
-                                    <span>{t("filters.updateMode")}</span>
-                                    <select
-                                        value={outdatedMode}
-                                        disabled={switchingOutdatedMode}
-                                        onChange={(event) =>
-                                            void switchOutdatedMode(event.target.value as typeof outdatedMode)
-                                        }
-                                    >
-                                        {(
-                                            [
-                                                ["none", "none"],
-                                                ["greedy", "greedy"],
-                                                ["greedy-auto-updates", "greedyAutoUpdates"],
-                                            ] as const
-                                        ).map(([mode, label]) => {
-                                            const count = outdatedCounts[mode];
-                                            return (
-                                                <option key={mode} value={mode}>
-                                                    {t(`settings.outdatedFlag.options.${label}`)} (
-                                                    {count === undefined || count < 0 ? "—" : count})
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </label>
-                                <label className="update-filter-field">
-                                    <span>{t("filters.packageType")}</span>
-                                    <select
-                                        value={updatableTypeFilter}
-                                        onChange={(event) =>
-                                            setUpdatableTypeFilter(event.target.value as typeof updatableTypeFilter)
-                                        }
-                                    >
-                                        {(["all", "formulae", "casks"] as const).map((type) => {
-                                            const count =
-                                                type === "all"
-                                                    ? updatablePackages.length
-                                                    : updatablePackages.filter((pkg) =>
-                                                          type === "casks" ? pkg.isCask : !pkg.isCask,
-                                                      ).length;
-                                            return (
-                                                <option key={type} value={type}>
-                                                    {t(`filters.${type}`)} ({count})
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </label>
-                            </div>
+                            {(showUpdateModeFilter || showPackageTypeFilter) && (
+                                <div className="update-filters-row">
+                                    {showUpdateModeFilter && (
+                                        <label className="update-filter-field">
+                                            <span>{t("filters.updateMode")}</span>
+                                            <select
+                                                value={outdatedMode}
+                                                disabled={switchingOutdatedMode}
+                                                onChange={(event) =>
+                                                    void switchOutdatedMode(event.target.value as typeof outdatedMode)
+                                                }
+                                            >
+                                                {(
+                                                    [
+                                                        ["none", "none"],
+                                                        ["greedy", "greedy"],
+                                                        ["greedy-auto-updates", "greedyAutoUpdates"],
+                                                    ] as const
+                                                ).map(([mode, label]) => {
+                                                    const count = outdatedCounts[mode];
+                                                    return (
+                                                        <option key={mode} value={mode}>
+                                                            {t(`settings.outdatedFlag.options.${label}`)} (
+                                                            {count === undefined || count < 0 ? "—" : count})
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </label>
+                                    )}
+                                    {showPackageTypeFilter && (
+                                        <label className="update-filter-field">
+                                            <span>{t("filters.packageType")}</span>
+                                            <select
+                                                value={updatableTypeFilter}
+                                                onChange={(event) =>
+                                                    setUpdatableTypeFilter(
+                                                        event.target.value as typeof updatableTypeFilter,
+                                                    )
+                                                }
+                                            >
+                                                {(["all", "formulae", "casks"] as const).map((type) => {
+                                                    const count =
+                                                        type === "all"
+                                                            ? updatablePackages.length
+                                                            : updatablePackages.filter((pkg) =>
+                                                                  type === "casks" ? pkg.isCask : !pkg.isCask,
+                                                              ).length;
+                                                    return (
+                                                        <option key={type} value={type}>
+                                                            {t(`filters.${type}`)} ({count})
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </label>
+                                    )}
+                                </div>
+                            )}
                             {error && <div className="result error">{error}</div>}
                             {updatableError && <div className="result error">{updatableError}</div>}
                             {updatablePackages.length === 0 && !loading && !switchingOutdatedMode && !updatableError ? (
