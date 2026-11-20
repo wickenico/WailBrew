@@ -179,6 +179,10 @@ export function GetBrewLeaves(): $CancellablePromise<string[]> {
     });
 }
 
+export function GetBrewPackageFiles(packageName: string, isCask: boolean): $CancellablePromise<string> {
+    return $Call.ByID(2360014660, packageName, isCask);
+}
+
 export function GetBrewPackageInfo(packageName: string): $CancellablePromise<string> {
     return $Call.ByID(2614212033, packageName);
 }

@@ -73,6 +73,7 @@ type Service interface {
 	// Package info
 	GetBrewPackageInfoAsJson(packageName string) map[string]interface{}
 	GetBrewPackageInfo(packageName string) string
+	GetBrewPackageFiles(packageName string, isCask bool) string
 	GetInstalledDependencies(packageName string) []string
 	GetInstalledDependents(packageName string) []string
 
@@ -538,6 +539,21 @@ func (s *serviceImpl) GetBrewPackageInfo(packageName string) string {
 	output, err := s.executor.Run("info", packageName)
 	if err != nil {
 		return fmt.Sprintf("Error: Failed to get package info: %v", err)
+	}
+	return string(output)
+}
+
+// GetBrewPackageFiles returns the `brew ls` output for an installed package:
+// the files in its keg (formula) or Caskroom entry (cask). Large directories
+// stay summarised by Homebrew, which keeps the list readable.
+func (s *serviceImpl) GetBrewPackageFiles(packageName string, isCask bool) string {
+	kind := "--formula"
+	if isCask {
+		kind = "--cask"
+	}
+	output, err := s.executor.Run("ls", kind, packageName)
+	if err != nil {
+		return fmt.Sprintf("Error: Failed to list package files: %v\n%s", err, strings.TrimSpace(string(output)))
 	}
 	return string(output)
 }

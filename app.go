@@ -768,6 +768,10 @@ func (a *App) GetBrewPackageInfo(packageName string) string {
 	return a.brewService.GetBrewPackageInfo(packageName)
 }
 
+func (a *App) GetBrewPackageFiles(packageName string, isCask bool) string {
+	return a.brewService.GetBrewPackageFiles(packageName, isCask)
+}
+
 func (a *App) GetInstalledDependencies(packageName string) []string {
 	return a.brewService.GetInstalledDependencies(packageName)
 }

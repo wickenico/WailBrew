@@ -1,11 +1,12 @@
 import { Browser } from "@wailsio/runtime";
-import { ArrowRight, ArrowUpRight, Check, Copy, Package, Terminal, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Copy, FolderTree, Package, Terminal, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { GetCaskIcon } from "../../bindings/WailBrew/app";
+import { GetBrewPackageFiles, GetCaskIcon } from "../../bindings/WailBrew/app";
 import { useModalA11y } from "../hooks/useModalA11y";
 import type { PackageEntry } from "../types";
+import { packageTarget } from "../utils/packages";
 import { parseInfoLog } from "../utils/parseInfoLog";
 
 interface Props {
@@ -30,7 +31,8 @@ export default function PackageInfoDialog({
     onSelectDependency,
 }: Props) {
     const { t } = useTranslation();
-    const [raw, setRaw] = useState(false);
+    const [view, setView] = useState<"overview" | "files" | "raw">("overview");
+    const [files, setFiles] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
     const [caskIcon, setCaskIcon] = useState("");
     const boxRef = useRef<HTMLDivElement>(null);
@@ -44,10 +46,31 @@ export default function PackageInfoDialog({
     useModalA11y(open, onClose, boxRef);
     useEffect(() => {
         if (open) {
-            setRaw(false);
+            setView("overview");
+            setFiles(null);
             setCopied(false);
         }
     }, [open, packageEntry?.name]);
+    const switchView = (next: typeof view) => {
+        setView(next);
+        setCopied(false);
+    };
+    const filesTarget = packageEntry ? packageTarget(packageEntry) : name;
+    useEffect(() => {
+        // `brew ls` only runs once the Files tab is opened, so the inspector stays fast.
+        if (!open || view !== "files" || files !== null) return;
+        let cancelled = false;
+        GetBrewPackageFiles(filesTarget, isCask)
+            .then((output) => {
+                if (!cancelled) setFiles(output.trim() || "—");
+            })
+            .catch((error) => {
+                if (!cancelled) setFiles(`Error: ${String(error)}`);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [open, view, files, filesTarget, isCask]);
     useEffect(() => {
         let cancelled = false;
         setCaskIcon("");
@@ -75,6 +98,9 @@ export default function PackageInfoDialog({
     const isInstalled = packageEntry?.isInstalled === true || Boolean(version);
     const hasUpdate = version && available && version !== available;
     const valid = !isRunning && /^==> /m.test(log || "");
+    const showFiles = view === "files" && isInstalled && valid;
+    const raw = view === "raw";
+    const copyText = showFiles ? files : log;
     const metadata = [
         [label("license", "License"), field("License")],
         [label("aliases", "Aliases"), field("Aliases")],
@@ -132,10 +158,16 @@ export default function PackageInfoDialog({
                 </header>
                 <div className="inspector-nav">
                     <div className="inspector-switch">
-                        <button type="button" aria-pressed={!raw} onClick={() => setRaw(false)}>
+                        <button type="button" aria-pressed={view === "overview"} onClick={() => switchView("overview")}>
                             {label("overview", "Overview")}
                         </button>
-                        <button type="button" aria-pressed={raw} onClick={() => setRaw(true)}>
+                        {isInstalled && valid && (
+                            <button type="button" aria-pressed={view === "files"} onClick={() => switchView("files")}>
+                                <FolderTree size={13} />
+                                {label("files", "Files")}
+                            </button>
+                        )}
+                        <button type="button" aria-pressed={raw} onClick={() => switchView("raw")}>
                             <Terminal size={13} />
                             {label("raw", "Raw output")}
                         </button>
@@ -158,7 +190,11 @@ export default function PackageInfoDialog({
                     ) : null}
                 </div>
                 <div className="inspector-body" aria-busy={isRunning}>
-                    {raw || !valid ? (
+                    {showFiles ? (
+                        <pre className="inspector-raw" aria-busy={files === null}>
+                            {files ?? label("loadingFiles", "Loading files…")}
+                        </pre>
+                    ) : raw || !valid ? (
                         <pre className="inspector-raw">{log}</pre>
                     ) : (
                         <>
@@ -336,14 +372,14 @@ export default function PackageInfoDialog({
                 <footer className="inspector-footer">
                     <span className="inspector-command">
                         <Terminal size={13} />
-                        brew info {name}
+                        {showFiles ? `brew ls ${isCask ? "--cask" : "--formula"} ${filesTarget}` : `brew info ${name}`}
                     </span>
                     <button
                         type="button"
-                        disabled={!log || isRunning}
+                        disabled={!copyText || isRunning}
                         onClick={async () => {
                             try {
-                                await navigator.clipboard.writeText(log || "");
+                                await navigator.clipboard.writeText(copyText || "");
                                 setCopied(true);
                             } catch {
                                 toast.error(t("logDialog.copyFailed"));
@@ -351,7 +387,11 @@ export default function PackageInfoDialog({
                         }}
                     >
                         {copied ? <Check size={14} /> : <Copy size={14} />}{" "}
-                        {copied ? t("logDialog.copiedToClipboard") : label("copy", "Copy raw output")}
+                        {copied
+                            ? t("logDialog.copiedToClipboard")
+                            : showFiles
+                              ? label("copyFiles", "Copy file list")
+                              : label("copy", "Copy raw output")}
                     </button>
                 </footer>
             </div>
