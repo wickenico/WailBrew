@@ -10,5 +10,5 @@ require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/godbus/dbus/v5 v5.2.4 // indirect
 	golang.org/x/sys v0.50.0 // indirect
-	golang.org/x/term v0.46.0 // indirect
+	golang.org/x/term v0.48.0 // indirect
 )
