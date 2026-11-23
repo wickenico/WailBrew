@@ -22,7 +22,7 @@
     ]
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.14.26",
+    "@tanstack/react-virtual": "^3.14.28",
     "@wailsio/runtime": "3.1.0",
     "i18next": "^27.2.2",
     "i18next-browser-languagedetector": "^8.3.1",
