@@ -217,7 +217,8 @@ const WailBrewApp = () => {
     const [infoLogs, setInfoLogs] = useState<string | null>(null);
     const [isInfoRunning, setIsInfoRunning] = useState<boolean>(false);
     const [repositoryInfoLogs, setRepositoryInfoLogs] = useState<string | null>(null);
-    const [showRepositoryInfo, setShowRepositoryInfo] = useState<boolean>(false);
+    const [infoRepository, setInfoRepository] = useState<RepositoryEntry | null>(null);
+    const [isRepositoryInfoRunning, setIsRepositoryInfoRunning] = useState<boolean>(false);
     const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
     const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
     const [showUpdateSelectedConfirm, setShowUpdateSelectedConfirm] = useState<boolean>(false);
@@ -332,6 +333,7 @@ const WailBrewApp = () => {
 
     // Track info request to prevent reopening dialog after close
     const infoRequestIdRef = useRef<number>(0);
+    const repositoryInfoRequestIdRef = useRef<number>(0);
 
     // Sidebar resize state
     const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
@@ -2168,14 +2170,24 @@ const WailBrewApp = () => {
     };
 
     const handleShowRepositoryInfo = async (repo: RepositoryEntry) => {
-        setShowRepositoryInfo(true);
+        const currentRequestId = ++repositoryInfoRequestIdRef.current;
+        setInfoRepository(repo);
+        setIsRepositoryInfoRunning(true);
         setRepositoryInfoLogs(t("dialogs.gettingInfo", { name: repo.name }));
 
         try {
             const info = await GetBrewTapInfo(repo.name);
-            setRepositoryInfoLogs(info);
+            if (currentRequestId === repositoryInfoRequestIdRef.current) {
+                setRepositoryInfoLogs(info);
+            }
         } catch (error) {
-            setRepositoryInfoLogs(`${t("dialogs.packageInfo")}\nError: ${error}`);
+            if (currentRequestId === repositoryInfoRequestIdRef.current) {
+                setRepositoryInfoLogs(`${t("dialogs.packageInfo")}\nError: ${error}`);
+            }
+        } finally {
+            if (currentRequestId === repositoryInfoRequestIdRef.current) {
+                setIsRepositoryInfoRunning(false);
+            }
         }
     };
 
@@ -4288,14 +4300,16 @@ const WailBrewApp = () => {
                         }}
                     />
                     <LogDialog
-                        open={showRepositoryInfo}
-                        title={t("dialogs.repositoryInfo", { name: selectedRepository?.name || "" })}
+                        open={infoRepository !== null}
+                        title={t("dialogs.repositoryInfo", { name: infoRepository?.name || "" })}
                         log={repositoryInfoLogs}
                         onClose={() => {
+                            repositoryInfoRequestIdRef.current++;
                             setRepositoryInfoLogs(null);
-                            setShowRepositoryInfo(false);
+                            setInfoRepository(null);
+                            setIsRepositoryInfoRunning(false);
                         }}
-                        isRunning={false}
+                        isRunning={isRepositoryInfoRunning}
                     />
                     <LogDialog
                         open={serviceActionLogs !== null}
