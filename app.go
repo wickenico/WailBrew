@@ -625,16 +625,23 @@ func (a *App) AdoptBrewCask(token string, replace bool) string {
 	return a.brewService.AdoptBrewCask(a.ctx, token, replace)
 }
 
-func (a *App) RemoveBrewPackage(packageName string, zap bool) string {
-	return a.brewService.RemoveBrewPackage(a.ctx, packageName, zap)
+// RemoveBrewPackage uninstalls a package. isCask comes from the list the
+// package was picked from, so a cask token that also matches a formula is
+// still uninstalled as the cask.
+func (a *App) RemoveBrewPackage(packageName string, zap bool, isCask bool) string {
+	return a.brewService.RemoveBrewPackage(a.ctx, packageName, zap, isCask)
 }
 
-func (a *App) UpdateBrewPackage(packageName string) string {
-	return a.brewService.UpdateBrewPackage(a.ctx, packageName)
+// UpdateBrewPackage upgrades a single package. isCask comes from the outdated
+// list, which separates formulae and casks reliably.
+func (a *App) UpdateBrewPackage(packageName string, isCask bool) string {
+	return a.brewService.UpdateBrewPackage(a.ctx, packageName, isCask)
 }
 
-func (a *App) UpdateSelectedBrewPackages(packageNames []string) string {
-	return a.brewService.UpdateSelectedBrewPackages(a.ctx, packageNames)
+// UpdateSelectedBrewPackages upgrades the selected formulae and casks. They are
+// passed separately so the casks can be upgraded with --cask.
+func (a *App) UpdateSelectedBrewPackages(formulae []string, casks []string) string {
+	return a.brewService.UpdateSelectedBrewPackages(a.ctx, formulae, casks)
 }
 
 func (a *App) UpdateAllBrewPackages(packageType string) string {
@@ -666,8 +673,10 @@ func (a *App) TrustBrewTap(tapName string) string {
 // confirmation dialogs can show it. Supported actions: install, adopt,
 // adopt-replace, uninstall, upgrade, upgrade-selected, upgrade-all, tap, untap,
 // trust. For tap, targets is [name] or [name, url]; all other single-target
-// actions take [name].
-func (a *App) PreviewBrewCommand(action string, targets []string, isCask bool, zap bool) string {
+// actions take [name]. For upgrade-selected, targets holds the formulae and
+// caskTargets the casks, mirroring the two brew runs UpdateSelectedBrewPackages
+// makes.
+func (a *App) PreviewBrewCommand(action string, targets []string, isCask bool, zap bool, caskTargets []string) string {
 	target := ""
 	if len(targets) > 0 {
 		target = targets[0]
@@ -695,10 +704,15 @@ func (a *App) PreviewBrewCommand(action string, targets []string, isCask bool, z
 		}
 		return brew.FormatCommand(brew.BuildUpgradeArgs(target, isCask, a.GetOutdatedFlag(), false))
 	case "upgrade-selected":
-		if len(targets) == 0 {
-			return ""
+		var commands []string
+		if len(targets) > 0 {
+			commands = append(commands, brew.FormatCommand(brew.BuildUpgradeSelectedArgs(targets, false)))
 		}
-		return brew.FormatCommand(brew.BuildUpgradeSelectedArgs(targets))
+		if len(caskTargets) > 0 {
+			commands = append(commands, brew.FormatCommand(brew.BuildUpgradeSelectedArgs(caskTargets, true)))
+		}
+		// "; " rather than "&&": the casks are upgraded even if the formulae fail.
+		return strings.Join(commands, "; ")
 	case "upgrade-all":
 		return brew.FormatCommand(brew.BuildUpgradeAllArgs(a.GetOutdatedFlag()))
 	case "tap":

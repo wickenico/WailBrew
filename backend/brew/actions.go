@@ -280,16 +280,16 @@ func (s *ActionsService) runInstall(packageName string, args []string, messages 
 	return successMsg
 }
 
-// RemoveBrewPackage uninstalls a package with live progress updates.
+// RemoveBrewPackage uninstalls a package with live progress updates. isCask
+// comes from the caller, which knows the package type from the list it was
+// picked from; casks get --cask so the token cannot resolve to a formula.
 // When zap is true and the package is a cask, --zap is passed so Homebrew also
 // removes leftover preferences, caches and support files.
-func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string {
+func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName string, zap, isCask bool) string {
 	// Emit initial progress
 	startMessage := s.getBackendMsg("backend.uninstall.start", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUninstallProgress", startMessage)
 
-	// isPackageCask shells out to brew, so only probe when zap was requested.
-	isCask := zap && s.isPackageCask(packageName)
 	args := BuildUninstallArgs(packageName, zap, isCask)
 
 	cmd := exec.Command(s.brewPath, args...)
@@ -330,9 +330,11 @@ func (s *ActionsService) RemoveBrewPackage(ctx context.Context, packageName stri
 	return successMsg
 }
 
-// RunUpdateCommand executes the brew upgrade command and returns the result
-func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (finalMessage string, wailbrewUpdated bool, shouldRetry bool) {
-	args := BuildUpgradeArgs(packageName, s.isPackageCask(packageName), s.getOutdatedFlag(), useForce)
+// RunUpdateCommand executes the brew upgrade command and returns the result.
+// isCask must come from the caller: probing brew by name is unreliable for
+// tokens that also match a formula or a renamed formula.
+func (s *ActionsService) RunUpdateCommand(packageName string, isCask, useForce bool) (finalMessage string, wailbrewUpdated bool, shouldRetry bool) {
+	args := BuildUpgradeArgs(packageName, isCask, s.getOutdatedFlag(), useForce)
 
 	cmd := exec.Command(s.brewPath, args...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
@@ -369,7 +371,7 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 	s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
 
 	// Post-upgrade: remove quarantine attribute for casks
-	if s.isPackageCask(packageName) {
+	if isCask {
 		s.postInstallCask(packageName, "packageUpdateProgress")
 	}
 
@@ -382,18 +384,18 @@ func (s *ActionsService) RunUpdateCommand(packageName string, useForce bool) (fi
 }
 
 // UpdateBrewPackage upgrades a package with live progress updates
-func (s *ActionsService) UpdateBrewPackage(ctx context.Context, packageName string) string {
+func (s *ActionsService) UpdateBrewPackage(ctx context.Context, packageName string, isCask bool) string {
 	// Emit initial progress
 	startMessage := s.getBackendMsg("backend.update.start", map[string]string{"name": packageName})
 	s.eventEmitter.Emit("packageUpdateProgress", startMessage)
 
 	// Try normal upgrade first
-	finalMessage, wailbrewUpdated, shouldRetry := s.RunUpdateCommand(packageName, false)
+	finalMessage, wailbrewUpdated, shouldRetry := s.RunUpdateCommand(packageName, isCask, false)
 
 	// If update failed with "app already exists" error and it's a cask, retry with --force
-	if shouldRetry && s.isPackageCask(packageName) {
+	if shouldRetry && isCask {
 		s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("backend.update.retryingWithForce", map[string]string{"name": packageName}))
-		finalMessage, wailbrewUpdated, _ = s.RunUpdateCommand(packageName, true)
+		finalMessage, wailbrewUpdated, _ = s.RunUpdateCommand(packageName, true, true)
 	}
 
 	// Signal completion
@@ -407,8 +409,11 @@ func (s *ActionsService) UpdateBrewPackage(ctx context.Context, packageName stri
 	return finalMessage
 }
 
-// UpdateSelectedBrewPackages upgrades specific packages with live progress updates
-func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string {
+// UpdateSelectedBrewPackages upgrades specific packages with live progress
+// updates. Formulae and casks are upgraded in separate brew runs so casks can
+// be passed with --cask; without it Homebrew resolves a token shared with a
+// formula (or a renamed formula) to the formula.
+func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, formulae, casks []string) string {
 	// Validate brew installation first
 	if err := s.validateFunc(); err != nil {
 		msg := fmt.Sprintf("❌ Homebrew validation failed: %v", err)
@@ -417,27 +422,72 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 		return msg
 	}
 
-	if len(packageNames) == 0 {
+	total := len(formulae) + len(casks)
+	if total == 0 {
 		msg := "❌ No packages selected for update"
 		s.eventEmitter.Emit("packageUpdateProgress", msg)
 		s.eventEmitter.Emit("packageUpdateComplete", msg)
 		return msg
 	}
 
-	// Build brew upgrade command with specific packages
-	args := BuildUpgradeSelectedArgs(packageNames)
+	batches := []struct {
+		names  []string
+		isCask bool
+	}{
+		{formulae, false},
+		{casks, true},
+	}
 
-	cmd := exec.Command(s.brewPath, args...)
+	wailbrewUpdated := false
+	var failures []string
+	for _, batch := range batches {
+		if len(batch.names) == 0 {
+			continue
+		}
+		errMsg, aborted, updated := s.upgradeSelectedBatch(batch.names, batch.isCask)
+		wailbrewUpdated = wailbrewUpdated || updated
+		if aborted {
+			s.eventEmitter.Emit("packageUpdateProgress", errMsg)
+			s.eventEmitter.Emit("packageUpdateComplete", errMsg)
+			return errMsg
+		}
+		if errMsg != "" {
+			failures = append(failures, errMsg)
+		}
+	}
+
+	var finalMessage string
+	if len(failures) > 0 {
+		finalMessage = strings.Join(failures, "\n")
+	} else {
+		finalMessage = fmt.Sprintf("✅ Successfully updated %d selected package(s)", total)
+	}
+	s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
+
+	// Signal completion
+	s.eventEmitter.Emit("packageUpdateComplete", finalMessage)
+
+	// If WailBrew was updated, emit event to show restart dialog
+	if wailbrewUpdated {
+		s.eventEmitter.Emit("wailbrewUpdated", "")
+	}
+
+	return finalMessage
+}
+
+// upgradeSelectedBatch runs a single brew upgrade for packages of one type.
+// errMsg is empty on success. aborted reports that brew could not be started
+// at all, so no further batch should run. Casks that fail because the app
+// already exists are retried individually with --force.
+func (s *ActionsService) upgradeSelectedBatch(names []string, isCask bool) (errMsg string, aborted bool, wailbrewUpdated bool) {
+	cmd := exec.Command(s.brewPath, BuildUpgradeSelectedArgs(names, isCask)...)
 	system.ApplyEnvironment(cmd, s.getBrewEnvFunc())
-
-	// Track which packages were updated (especially wailbrew)
-	updatedPackages := make(map[string]bool)
 
 	phase, stderrStr, err := runStreamingCommandLogged(s.logCallback, cmd,
 		func(line string) {
 			s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("📦 %s", line))
 			if detectWailbrewSelfUpdate(line) {
-				updatedPackages["wailbrew"] = true
+				wailbrewUpdated = true
 			}
 		},
 		func(line string) { s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("⚠️ %s", line)) },
@@ -445,75 +495,38 @@ func (s *ActionsService) UpdateSelectedBrewPackages(ctx context.Context, package
 
 	switch phase {
 	case phaseStdoutPipe:
-		msg := fmt.Sprintf("❌ Error creating output pipe: %v", err)
-		s.eventEmitter.Emit("packageUpdateProgress", msg)
-		s.eventEmitter.Emit("packageUpdateComplete", msg)
-		return msg
+		return fmt.Sprintf("❌ Error creating output pipe: %v", err), true, wailbrewUpdated
 	case phaseStderrPipe:
-		msg := fmt.Sprintf("❌ Error creating error pipe: %v", err)
-		s.eventEmitter.Emit("packageUpdateProgress", msg)
-		s.eventEmitter.Emit("packageUpdateComplete", msg)
-		return msg
+		return fmt.Sprintf("❌ Error creating error pipe: %v", err), true, wailbrewUpdated
 	case phaseStart:
-		msg := fmt.Sprintf("❌ Error starting update: %v", err)
-		s.eventEmitter.Emit("packageUpdateProgress", msg)
-		s.eventEmitter.Emit("packageUpdateComplete", msg)
-		return msg
-	}
-
-	var finalMessage string
-	if phase == phaseRun {
-		// Check if this is the "app already exists" error
-		if s.isAppExistsError(stderrStr) {
-			// Extract failed package names
-			failedPackages := s.extractFailed(stderrStr)
-			// Filter to only casks
-			var failedCasks []string
-			for _, pkg := range failedPackages {
-				if s.isPackageCask(pkg) {
-					failedCasks = append(failedCasks, pkg)
-				}
-			}
-
-			// Retry failed casks with --force
-			if len(failedCasks) > 0 {
+		return fmt.Sprintf("❌ Error starting update: %v", err), true, wailbrewUpdated
+	case phaseRun:
+		if isCask && s.isAppExistsError(stderrStr) {
+			if failedCasks := s.extractFailed(stderrStr); len(failedCasks) > 0 {
 				s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("backend.update.retryingFailedCasks", map[string]string{"count": fmt.Sprintf("%d", len(failedCasks))}))
 				for _, pkg := range failedCasks {
 					s.eventEmitter.Emit("packageUpdateProgress", s.getBackendMsg("backend.update.retryingWithForce", map[string]string{"name": pkg}))
-					_, _, _ = s.RunUpdateCommand(pkg, true)
+					if _, updated, _ := s.RunUpdateCommand(pkg, true, true); updated {
+						wailbrewUpdated = true
+					}
 				}
-				finalMessage = fmt.Sprintf("✅ Retried %d failed cask(s) with --force", len(failedCasks))
-			} else {
-				finalMessage = fmt.Sprintf("❌ Update failed for selected packages: %v", err)
+				s.eventEmitter.Emit("packageUpdateProgress", fmt.Sprintf("✅ Retried %d failed cask(s) with --force", len(failedCasks)))
+				return "", false, wailbrewUpdated
 			}
-		} else {
-			finalMessage = fmt.Sprintf("❌ Update failed for selected packages: %v", err)
 		}
-		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
-	} else {
-		finalMessage = fmt.Sprintf("✅ Successfully updated %d selected package(s)", len(packageNames))
-		s.eventEmitter.Emit("packageUpdateProgress", finalMessage)
+		return fmt.Sprintf("❌ Update failed for selected packages: %v", err), false, wailbrewUpdated
+	}
 
-		// Post-upgrade: run quarantine removal for each upgraded cask.
-		// UpdateSelectedBrewPackages uses a single bulk brew command, so
-		// postInstallCask is NOT triggered transitively via RunUpdateCommand.
-		// We must loop here explicitly.
-		for _, pkg := range packageNames {
-			if s.isPackageCask(pkg) {
-				s.postInstallCask(pkg, "packageUpdateProgress")
-			}
+	// Post-upgrade: run quarantine removal for each upgraded cask. The bulk
+	// brew command does not go through RunUpdateCommand, so postInstallCask
+	// is not triggered transitively and must run here.
+	if isCask {
+		for _, pkg := range names {
+			s.postInstallCask(pkg, "packageUpdateProgress")
 		}
 	}
 
-	// Signal completion
-	s.eventEmitter.Emit("packageUpdateComplete", finalMessage)
-
-	// If WailBrew was updated, emit event to show restart dialog
-	if updatedPackages["wailbrew"] {
-		s.eventEmitter.Emit("wailbrewUpdated", "")
-	}
-
-	return finalMessage
+	return "", false, wailbrewUpdated
 }
 
 // UpdateAllBrewPackages upgrades all outdated packages with live progress updates

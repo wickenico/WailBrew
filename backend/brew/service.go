@@ -49,9 +49,9 @@ type Service interface {
 	// Actions
 	InstallBrewPackage(ctx context.Context, packageName string, isCask bool) string
 	AdoptBrewCask(ctx context.Context, token string, replace bool) string
-	RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string
-	UpdateBrewPackage(ctx context.Context, packageName string) string
-	UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string
+	RemoveBrewPackage(ctx context.Context, packageName string, zap, isCask bool) string
+	UpdateBrewPackage(ctx context.Context, packageName string, isCask bool) string
+	UpdateSelectedBrewPackages(ctx context.Context, formulae, casks []string) string
 	UpdateAllBrewPackages(ctx context.Context, packageType string) string
 	PinBrewPackage(packageName string) string
 	UnpinBrewPackage(packageName string) string
@@ -390,16 +390,16 @@ func (s *serviceImpl) GetAdoptableApps(ctx context.Context, appDir string) (*Ado
 	return result, nil
 }
 
-func (s *serviceImpl) RemoveBrewPackage(ctx context.Context, packageName string, zap bool) string {
-	return s.actionsService.RemoveBrewPackage(ctx, packageName, zap)
+func (s *serviceImpl) RemoveBrewPackage(ctx context.Context, packageName string, zap, isCask bool) string {
+	return s.actionsService.RemoveBrewPackage(ctx, packageName, zap, isCask)
 }
 
-func (s *serviceImpl) UpdateBrewPackage(ctx context.Context, packageName string) string {
-	return s.actionsService.UpdateBrewPackage(ctx, packageName)
+func (s *serviceImpl) UpdateBrewPackage(ctx context.Context, packageName string, isCask bool) string {
+	return s.actionsService.UpdateBrewPackage(ctx, packageName, isCask)
 }
 
-func (s *serviceImpl) UpdateSelectedBrewPackages(ctx context.Context, packageNames []string) string {
-	return s.actionsService.UpdateSelectedBrewPackages(ctx, packageNames)
+func (s *serviceImpl) UpdateSelectedBrewPackages(ctx context.Context, formulae, casks []string) string {
+	return s.actionsService.UpdateSelectedBrewPackages(ctx, formulae, casks)
 }
 
 func (s *serviceImpl) UpdateAllBrewPackages(ctx context.Context, packageType string) string {

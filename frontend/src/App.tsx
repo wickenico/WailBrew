@@ -1477,9 +1477,17 @@ const WailBrewApp = () => {
         vulnerabilityReport,
     ]);
 
+    // Formulae and casks are upgraded in separate brew runs so casks get --cask.
+    const { selectedFormulaTargets, selectedCaskTargets } = useMemo(() => {
+        const selected = updatableTypePackages.filter((pkg) => selectedPackages.has(pkg.name));
+        return {
+            selectedFormulaTargets: selected.filter((pkg) => !pkg.isCask).map(packageTarget),
+            selectedCaskTargets: selected.filter((pkg) => pkg.isCask).map(packageTarget),
+        };
+    }, [selectedPackages, updatableTypePackages]);
     const selectedTargets = useMemo(
-        () => updatableTypePackages.filter((pkg) => selectedPackages.has(pkg.name)).map(packageTarget),
-        [selectedPackages, updatableTypePackages],
+        () => [...selectedFormulaTargets, ...selectedCaskTargets],
+        [selectedFormulaTargets, selectedCaskTargets],
     );
 
     const filteredRepositories = activeRepositories.filter((repo) =>
@@ -1631,7 +1639,7 @@ const WailBrewApp = () => {
 
         // Start the uninstall process
         try {
-            await RemoveBrewPackage(packageName, zap);
+            await RemoveBrewPackage(packageName, zap, uninstallIsCask);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
             uninstallOp.resultRef.current = errorMsg;
@@ -1791,7 +1799,7 @@ const WailBrewApp = () => {
 
         // Start the update process
         try {
-            await UpdateBrewPackage(packageName);
+            await UpdateBrewPackage(packageName, pkg.isCask ?? false);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
             updateOp.resultRef.current = errorMsg;
@@ -1983,7 +1991,7 @@ const WailBrewApp = () => {
 
         // Start the update process for selected packages
         try {
-            await UpdateSelectedBrewPackages(packageNames);
+            await UpdateSelectedBrewPackages(selectedFormulaTargets, selectedCaskTargets);
         } catch (error) {
             const errorMsg = `❌ Operation failed: ${String(error)}`;
             updateOp.resultRef.current = errorMsg;
@@ -4103,7 +4111,11 @@ const WailBrewApp = () => {
                         onConfirm={handleUpdateSelectedConfirmed}
                         onCancel={() => setShowUpdateSelectedConfirm(false)}
                         confirmLabel={t("buttons.yesUpdateSelected", { count: selectedTargets.length })}
-                        commandSpec={{ action: "upgrade-selected", targets: selectedTargets }}
+                        commandSpec={{
+                            action: "upgrade-selected",
+                            targets: selectedFormulaTargets,
+                            caskTargets: selectedCaskTargets,
+                        }}
                     />
                     <ConfirmDialog
                         open={showUntapConfirm}
