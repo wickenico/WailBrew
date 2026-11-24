@@ -1,7 +1,9 @@
 package brew
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -220,7 +222,13 @@ func (e *Executor) runActual(timeout time.Duration, stdoutOnly bool, args ...str
 
 	// Log result asynchronously (non-blocking, won't affect command execution)
 	if e.logCallback != nil {
-		if err != nil {
+		var exitErr *exec.ExitError
+		if err != nil && stdoutOnly && len(args) > 0 && args[0] == "vulns" &&
+			len(bytes.TrimSpace(output)) > 0 && errors.As(err, &exitErr) {
+			// brew vulns exits non-zero when it finds advisories; the report on
+			// stdout is still valid and parsed by the caller.
+			go e.logCallback(fmt.Sprintf("INFO: %s exited with %v and returned a report", cmdStr, err))
+		} else if err != nil {
 			outputStr := brewCommandErrorOutput(output, err)
 			if len(outputStr) > maxLoggedErrorOutput {
 				outputStr = outputStr[:maxLoggedErrorOutput] + "... (truncated)"
