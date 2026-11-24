@@ -30,22 +30,30 @@ func BuildInstallArgs(name string, isCask bool) []string {
 	return append(args, name)
 }
 
-// BuildUninstallArgs builds the arguments for uninstalling a package. --zap is
-// only valid for casks, so it is paired with --cask and ignored for formulae.
+// BuildUninstallArgs builds the arguments for uninstalling a package. Casks
+// always get --cask so a token shared with a formula (or a renamed formula)
+// cannot resolve to the formula. --zap is only valid for casks and ignored for
+// formulae.
 func BuildUninstallArgs(name string, zap, isCask bool) []string {
 	args := []string{"uninstall"}
-	if zap && isCask {
-		args = append(args, "--zap", "--cask")
+	if isCask {
+		if zap {
+			args = append(args, "--zap")
+		}
+		args = append(args, "--cask")
 	}
 	return append(args, name)
 }
 
-// BuildUpgradeArgs builds the arguments for upgrading a single package. The
+// BuildUpgradeArgs builds the arguments for upgrading a single package. Casks
+// get --cask because Homebrew treats an ambiguous token as a formula, e.g. the
+// onedrive cask resolves to the renamed onedrive-cli formula without it. The
 // greedy flags only affect casks; force is used when retrying an upgrade that
 // failed because the app already exists.
 func BuildUpgradeArgs(name string, isCask bool, outdatedFlag string, force bool) []string {
 	args := []string{"upgrade"}
 	if isCask {
+		args = append(args, "--cask")
 		args = append(args, greedyFlags(outdatedFlag)...)
 	}
 	if force {
@@ -55,10 +63,15 @@ func BuildUpgradeArgs(name string, isCask bool, outdatedFlag string, force bool)
 }
 
 // BuildUpgradeSelectedArgs builds the arguments for upgrading an explicit list
-// of packages. No greedy flag is passed here: casks that need it are retried
-// individually via BuildUpgradeArgs.
-func BuildUpgradeSelectedArgs(names []string) []string {
-	return append([]string{"upgrade"}, names...)
+// of packages of one type. Formulae and casks are upgraded in separate runs so
+// the casks can carry --cask. No greedy flag is passed here: casks that need it
+// are retried individually via BuildUpgradeArgs.
+func BuildUpgradeSelectedArgs(names []string, isCask bool) []string {
+	args := []string{"upgrade"}
+	if isCask {
+		args = append(args, "--cask")
+	}
+	return append(args, names...)
 }
 
 // BuildUpgradeAllArgs builds the arguments for upgrading everything outdated.

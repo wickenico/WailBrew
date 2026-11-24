@@ -517,14 +517,21 @@ export function PinBrewPackage(packageName: string): $CancellablePromise<string>
  * confirmation dialogs can show it. Supported actions: install, adopt,
  * adopt-replace, uninstall, upgrade, upgrade-selected, upgrade-all, tap, untap,
  * trust. For tap, targets is [name] or [name, url]; all other single-target
- * actions take [name].
+ * actions take [name]. For upgrade-selected, targets holds the formulae and
+ * caskTargets the casks, mirroring the two brew runs UpdateSelectedBrewPackages
+ * makes.
  */
-export function PreviewBrewCommand(action: string, targets: string[], isCask: boolean, zap: boolean): $CancellablePromise<string> {
-    return $Call.ByID(3189763784, action, targets, isCask, zap);
+export function PreviewBrewCommand(action: string, targets: string[], isCask: boolean, zap: boolean, caskTargets: string[]): $CancellablePromise<string> {
+    return $Call.ByID(3189763784, action, targets, isCask, zap, caskTargets);
 }
 
-export function RemoveBrewPackage(packageName: string, zap: boolean): $CancellablePromise<string> {
-    return $Call.ByID(4107447163, packageName, zap);
+/**
+ * RemoveBrewPackage uninstalls a package. isCask comes from the list the
+ * package was picked from, so a cask token that also matches a formula is
+ * still uninstalled as the cask.
+ */
+export function RemoveBrewPackage(packageName: string, zap: boolean, isCask: boolean): $CancellablePromise<string> {
+    return $Call.ByID(4107447163, packageName, zap, isCask);
 }
 
 export function RestartApp(): $CancellablePromise<void> {
@@ -749,16 +756,24 @@ export function UpdateBrewDatabaseWithOutput(): $CancellablePromise<string> {
     return $Call.ByID(1157989512);
 }
 
-export function UpdateBrewPackage(packageName: string): $CancellablePromise<string> {
-    return $Call.ByID(3478353152, packageName);
+/**
+ * UpdateBrewPackage upgrades a single package. isCask comes from the outdated
+ * list, which separates formulae and casks reliably.
+ */
+export function UpdateBrewPackage(packageName: string, isCask: boolean): $CancellablePromise<string> {
+    return $Call.ByID(3478353152, packageName, isCask);
 }
 
 export function UpdateHomebrew(): $CancellablePromise<string> {
     return $Call.ByID(2434129367);
 }
 
-export function UpdateSelectedBrewPackages(packageNames: string[]): $CancellablePromise<string> {
-    return $Call.ByID(1360732744, packageNames);
+/**
+ * UpdateSelectedBrewPackages upgrades the selected formulae and casks. They are
+ * passed separately so the casks can be upgraded with --cask.
+ */
+export function UpdateSelectedBrewPackages(formulae: string[], casks: string[]): $CancellablePromise<string> {
+    return $Call.ByID(1360732744, formulae, casks);
 }
 
 // Private type creation functions

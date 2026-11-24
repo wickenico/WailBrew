@@ -19,6 +19,8 @@ export interface CommandSpec {
         | "untap"
         | "trust";
     targets: string[];
+    // upgrade-selected only: casks, upgraded in their own run with --cask.
+    caskTargets?: string[];
     isCask?: boolean;
     zap?: boolean;
 }
@@ -67,6 +69,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     const zap = commandSpec?.zap ?? false;
     // Serialized so the effect compares target values instead of array identity.
     const targetKey = targets ? targets.join("\u0000") : "";
+    const caskTargets = commandSpec?.caskTargets;
+    const caskTargetKey = caskTargets ? caskTargets.join("\u0000") : "";
 
     useEffect(() => {
         if (!open || !action) {
@@ -77,8 +81,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
         let cancelled = false;
         const resolvedTargets = targetKey === "" ? [] : targetKey.split("\u0000");
+        const resolvedCaskTargets = caskTargetKey === "" ? [] : caskTargetKey.split("\u0000");
         Promise.resolve()
-            .then(() => PreviewBrewCommand(action, resolvedTargets, isCask, zap))
+            .then(() => PreviewBrewCommand(action, resolvedTargets, isCask, zap, resolvedCaskTargets))
             .then((preview) => {
                 if (!cancelled) setCommand(preview);
             })
@@ -89,7 +94,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         return () => {
             cancelled = true;
         };
-    }, [open, action, targetKey, isCask, zap]);
+    }, [open, action, targetKey, caskTargetKey, isCask, zap]);
 
     if (!open) return null;
 

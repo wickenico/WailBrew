@@ -290,29 +290,17 @@ func (s *OutdatedService) outdatedCount(mode string) int {
 	return count
 }
 
-// IsPackageCask checks if a package is a cask
+// IsPackageCask reports whether packageName is an installed cask. It asks
+// brew list with --cask instead of brew info, because brew info resolves a
+// token shared with a formula or a renamed formula (e.g. onedrive ->
+// onedrive-cli) to the formula. Uncached, since it runs right after installs
+// and upgrades that change the answer.
 func (s *OutdatedService) IsPackageCask(packageName string) bool {
-	output, err := s.executor.Run("info", "--json=v2", packageName)
-	if err != nil {
+	if strings.TrimSpace(packageName) == "" {
 		return false
 	}
-
-	outputStr := strings.TrimSpace(string(output))
-	jsonOutput, _, err := s.extractJSON(outputStr)
-	if err != nil {
-		return false
-	}
-
-	var result struct {
-		Formulae []map[string]interface{} `json:"formulae"`
-		Casks    []map[string]interface{} `json:"casks"`
-	}
-	if err := json.Unmarshal([]byte(jsonOutput), &result); err != nil {
-		return false
-	}
-
-	// If found in casks but not in formulae, it's a cask
-	return len(result.Casks) > 0 && len(result.Formulae) == 0
+	_, err := s.executor.RunNoCacheStdoutOnly("list", "--cask", "--versions", packageName)
+	return err == nil
 }
 
 // IsAppAlreadyExistsError checks if the error is the "app already exists" error

@@ -15,7 +15,8 @@ func TestBuildUninstallArgs(t *testing.T) {
 	}{
 		{"formula", "wget", false, false, []string{"uninstall", "wget"}},
 		{"formula with zap requested", "wget", true, false, []string{"uninstall", "wget"}},
-		{"cask without zap", "firefox", false, true, []string{"uninstall", "firefox"}},
+		{"cask without zap", "firefox", false, true, []string{"uninstall", "--cask", "firefox"}},
+		{"cask sharing a renamed formula token", "onedrive", false, true, []string{"uninstall", "--cask", "onedrive"}},
 		{"cask with zap", "firefox", true, true, []string{"uninstall", "--zap", "--cask", "firefox"}},
 	}
 
@@ -39,13 +40,14 @@ func TestBuildUpgradeArgs(t *testing.T) {
 		expected     []string
 	}{
 		{"formula ignores greedy", "wget", false, OutdatedFlagGreedy, false, []string{"upgrade", "wget"}},
-		{"cask standard mode", "firefox", true, OutdatedFlagNone, false, []string{"upgrade", "firefox"}},
-		{"cask greedy", "firefox", true, OutdatedFlagGreedy, false, []string{"upgrade", "--greedy", "firefox"}},
-		{"cask greedy auto updates", "firefox", true, OutdatedFlagGreedyAutoUpdate, false, []string{"upgrade", "--greedy-auto-updates", "firefox"}},
-		{"tap-qualified cask", "stablyai/orca/orca", true, OutdatedFlagGreedyAutoUpdate, false, []string{"upgrade", "--greedy-auto-updates", "stablyai/orca/orca"}},
-		{"cask retry with force", "firefox", true, OutdatedFlagGreedyAutoUpdate, true, []string{"upgrade", "--greedy-auto-updates", "--force", "firefox"}},
+		{"cask standard mode", "firefox", true, OutdatedFlagNone, false, []string{"upgrade", "--cask", "firefox"}},
+		{"cask sharing a renamed formula token", "onedrive", true, OutdatedFlagNone, false, []string{"upgrade", "--cask", "onedrive"}},
+		{"cask greedy", "firefox", true, OutdatedFlagGreedy, false, []string{"upgrade", "--cask", "--greedy", "firefox"}},
+		{"cask greedy auto updates", "firefox", true, OutdatedFlagGreedyAutoUpdate, false, []string{"upgrade", "--cask", "--greedy-auto-updates", "firefox"}},
+		{"tap-qualified cask", "stablyai/orca/orca", true, OutdatedFlagGreedyAutoUpdate, false, []string{"upgrade", "--cask", "--greedy-auto-updates", "stablyai/orca/orca"}},
+		{"cask retry with force", "firefox", true, OutdatedFlagGreedyAutoUpdate, true, []string{"upgrade", "--cask", "--greedy-auto-updates", "--force", "firefox"}},
 		{"formula retry with force", "wget", false, OutdatedFlagNone, true, []string{"upgrade", "--force", "wget"}},
-		{"unknown flag adds nothing", "firefox", true, "bogus", false, []string{"upgrade", "firefox"}},
+		{"unknown flag adds nothing", "firefox", true, "bogus", false, []string{"upgrade", "--cask", "firefox"}},
 	}
 
 	for _, tt := range tests {
@@ -62,16 +64,18 @@ func TestBuildUpgradeSelectedArgs(t *testing.T) {
 	tests := []struct {
 		name     string
 		pkgs     []string
+		isCask   bool
 		expected []string
 	}{
-		{"single", []string{"wget"}, []string{"upgrade", "wget"}},
-		{"multiple", []string{"wget", "firefox", "jq"}, []string{"upgrade", "wget", "firefox", "jq"}},
-		{"empty", nil, []string{"upgrade"}},
+		{"single formula", []string{"wget"}, false, []string{"upgrade", "wget"}},
+		{"multiple formulae", []string{"wget", "jq"}, false, []string{"upgrade", "wget", "jq"}},
+		{"casks", []string{"onedrive", "firefox"}, true, []string{"upgrade", "--cask", "onedrive", "firefox"}},
+		{"empty", nil, false, []string{"upgrade"}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := BuildUpgradeSelectedArgs(tt.pkgs)
+			got := BuildUpgradeSelectedArgs(tt.pkgs, tt.isCask)
 			if !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("BuildUpgradeSelectedArgs() = %v, want %v", got, tt.expected)
 			}
