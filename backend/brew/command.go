@@ -75,15 +75,22 @@ func BuildUpgradeSelectedArgs(names []string, isCask bool) []string {
 }
 
 // BuildUpgradeAllArgs builds the arguments for upgrading everything outdated.
+// The greedy flags only apply to casks, and Homebrew rejects them together
+// with --formula, so they are omitted for formula-only upgrades.
 func BuildUpgradeAllArgs(outdatedFlag string, packageType ...string) []string {
-	args := append([]string{"upgrade"}, greedyFlags(outdatedFlag)...)
+	args := []string{"upgrade"}
+	kind := ""
 	if len(packageType) > 0 {
-		switch packageType[0] {
-		case "formula":
-			args = append(args, "--formula")
-		case "cask":
-			args = append(args, "--cask")
-		}
+		kind = packageType[0]
+	}
+	if kind != "formula" {
+		args = append(args, greedyFlags(outdatedFlag)...)
+	}
+	switch kind {
+	case "formula":
+		args = append(args, "--formula")
+	case "cask":
+		args = append(args, "--cask")
 	}
 	return args
 }

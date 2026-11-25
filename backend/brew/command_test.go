@@ -105,6 +105,28 @@ func TestBuildUpgradeAllArgs(t *testing.T) {
 	}
 }
 
+func TestBuildUpgradeAllArgsPackageType(t *testing.T) {
+	tests := []struct {
+		name         string
+		outdatedFlag string
+		packageType  string
+		expected     []string
+	}{
+		{"formula omits greedy-auto-updates", OutdatedFlagGreedyAutoUpdate, "formula", []string{"upgrade", "--formula"}},
+		{"formula omits greedy", OutdatedFlagGreedy, "formula", []string{"upgrade", "--formula"}},
+		{"cask keeps greedy-auto-updates", OutdatedFlagGreedyAutoUpdate, "cask", []string{"upgrade", "--greedy-auto-updates", "--cask"}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := BuildUpgradeAllArgs(tt.outdatedFlag, tt.packageType)
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("BuildUpgradeAllArgs() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
 func TestBuildTapArgs(t *testing.T) {
 	tests := []struct {
 		name     string
