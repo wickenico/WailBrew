@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.9",
-    "@types/react": "19.3.2",
+    "@types/react": "19.3.3",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
     "lint-staged": "^17.6.2",
