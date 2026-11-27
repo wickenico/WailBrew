@@ -264,7 +264,7 @@ Every contribution, big or small, is genuinely appreciated and helps keep WailBr
 
 Thank you to everyone who has sponsored WailBrew on GitHub:
 
-<!-- sponsors -->No sponsors yet. [Be the first!](https://github.com/sponsors/wickenico)<!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/ptntp"><img src="https:&#x2F;&#x2F;github.com&#x2F;ptntp.png" width="60px" alt="User avatar: Yu8n" /></a><a href="https://github.com/phbusson"><img src="https:&#x2F;&#x2F;github.com&#x2F;phbusson.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/cortig"><img src="https:&#x2F;&#x2F;github.com&#x2F;cortig.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/andpia"><img src="https:&#x2F;&#x2F;github.com&#x2F;andpia.png" width="60px" alt="User avatar: Andrea Piattino" /></a><a href="https://github.com/Lampenbauer"><img src="https:&#x2F;&#x2F;github.com&#x2F;Lampenbauer.png" width="60px" alt="User avatar: Mario Meyer" /></a><!-- sponsors -->
 
 ## 🛠️ Contributing
 
