@@ -262,6 +262,8 @@ Every contribution, big or small, is genuinely appreciated and helps keep WailBr
 
 ### Sponsors
 
+Thank you to everyone who has sponsored WailBrew on GitHub:
+
 <!-- sponsors -->No sponsors yet. [Be the first!](https://github.com/sponsors/wickenico)<!-- sponsors -->
 
 ## 🛠️ Contributing

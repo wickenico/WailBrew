@@ -27,6 +27,7 @@ jobs:
         with:
           token: ${{ env.SPONSORS_TOKEN }}
           file: README.md
+          active-only: false
           fallback: 'No sponsors yet. [Be the first!](https://github.com/sponsors/wickenico)'
 
       - name: Commit changes
