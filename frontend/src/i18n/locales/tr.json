@@ -552,6 +552,14 @@
     "restartNow": "Şimdi Yeniden Başlat",
     "later": "Daha Sonra"
   },
+  "sponsorDialog": {
+    "title": "WailBrew'u beğendiniz mi?",
+    "message": "WailBrew şimdiye kadar sizin için {{count}} paketi güncelledi.",
+    "description": "WailBrew ücretsiz ve açık kaynaklıdır, boş zamanlarımda geliştiriyorum. Size zaman kazandırıyorsa, sponsorluk onun imzalı, onaylı ve bakımlı kalmasına yardımcı olur.",
+    "later": "Belki sonra",
+    "kofi": "Bana bir kahve ısmarla",
+    "sponsor": "GitHub'da sponsor ol"
+  },
   "toast": {
     "updateAvailable": "Güncelleme var!",
     "versionReady": "v{{version}} hazır",

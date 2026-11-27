@@ -552,6 +552,14 @@
     "restartNow": "立即重启",
     "later": "稍后"
   },
+  "sponsorDialog": {
+    "title": "喜欢 WailBrew 吗？",
+    "message": "到目前为止，WailBrew 已为你更新了 {{count}} 个软件包。",
+    "description": "WailBrew 是免费开源软件，由我利用业余时间开发。如果它为你节省了时间，赞助可以帮助它保持签名、公证和持续维护。",
+    "later": "以后再说",
+    "kofi": "请我喝杯咖啡",
+    "sponsor": "在 GitHub 上赞助"
+  },
   "toast": {
     "updateAvailable": "有可用的更新！",
     "versionReady": "v{{version}} 已准备好",

@@ -552,6 +552,14 @@
     "restartNow": "הפעל מחדש עכשיו",
     "later": "מאוחר יותר"
   },
+  "sponsorDialog": {
+    "title": "נהנים מ-WailBrew?",
+    "message": "WailBrew עדכן עבורך עד כה {{count}} חבילות.",
+    "description": "WailBrew חינמי וקוד פתוח, ואני מפתח אותו בזמני הפנוי. אם הוא חוסך לך זמן, חסות עוזרת לשמור עליו חתום, מאומת על ידי Apple ומתוחזק.",
+    "later": "אולי מאוחר יותר",
+    "kofi": "קנו לי קפה",
+    "sponsor": "תמיכה ב-GitHub"
+  },
   "toast": {
     "updateAvailable": "עדכון זמין!",
     "versionReady": "v{{version}} מוכן",
