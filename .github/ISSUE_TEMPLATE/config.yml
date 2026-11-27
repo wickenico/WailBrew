@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and help
+    url: https://www.reddit.com/r/WailBrew
+    about: Ask the community on r/WailBrew.
+  - name: Homebrew guides
+    url: https://www.wailbrew.app/guides
+    about: How to update, uninstall and clean up packages, manage services and more.
+  - name: Report a security vulnerability
+    url: https://github.com/wickenico/WailBrew/security/advisories/new
+    about: Please report security issues privately, not as a public issue.

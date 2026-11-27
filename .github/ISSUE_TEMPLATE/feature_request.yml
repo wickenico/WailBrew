@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an idea or improvement for WailBrew.
+labels: ["feature request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Give your idea a short, descriptive title.
+        For example: "Import packages from a Brewfile".
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      placeholder: "Example: When I set up a new Mac, I have to install all my packages one by one."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: How should it work?
+      placeholder: "Example: A button in Settings that lets me pick a Brewfile and installs everything in it."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: How do you solve this today?
+      description: A terminal command, another app or a workaround you currently use.
+      placeholder: "Example: I run brew bundle install --file=~/Brewfile in the terminal."
