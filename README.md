@@ -9,10 +9,18 @@
 </p>
 
 <p align="center">
+  <a href="https://www.wailbrew.app"><strong>wailbrew.app</strong></a>
+  ·
+  <a href="https://www.wailbrew.app/guides">Homebrew guides</a>
+  ·
+  <a href="https://www.wailbrew.app/changelog">Changelog</a>
+</p>
+
+<p align="center">
   <a href="https://github.com/wickenico/WailBrew/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/wickenico/WailBrew"></a>
   <a href="https://github.com/wickenico/WailBrew/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/wickenico/WailBrew/total"></a>
   <a href="https://github.com/wickenico/WailBrew/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/wickenico/WailBrew"></a>
-  <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%2011%2B-lightgrey?logo=apple">
+  <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%2012%2B-lightgrey?logo=apple">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/wickenico/WailBrew"></a>
   <br>
   <a href="https://github.com/sponsors/wickenico"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-pink"></a>
@@ -276,10 +284,12 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development setup, ho
 ### Support
 
 For issues, feature requests, or questions:
+- Read the [Homebrew guides](https://www.wailbrew.app/guides) on updating, uninstalling and cleaning up packages, managing services and backing up your setup
 - Visit [r/WailBrew](https://www.reddit.com/r/WailBrew) for community support
 - Check [existing issues](https://github.com/wickenico/WailBrew/issues) on GitHub
 - Create a [new issue](https://github.com/wickenico/WailBrew/issues/new) if needed
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on reporting bugs
+- Found a security issue? Please report it privately as described in [SECURITY.md](SECURITY.md)
 
 ## 📝 License
 
