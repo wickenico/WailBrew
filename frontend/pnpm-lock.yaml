@@ -176,8 +176,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       i18next:
-        specifier: ^27.2.6
-        version: 27.2.6(typescript@7.0.2)
+        specifier: ^27.2.9
+        version: 27.2.9(typescript@7.0.2)
       i18next-browser-languagedetector:
         specifier: ^8.3.1
         version: 8.3.1
@@ -195,7 +195,7 @@ importers:
         version: 2.6.1(@types/react-dom@19.3.0(@types/react@19.3.2))(@types/react@19.3.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-i18next:
         specifier: ^18.0.3
-        version: 18.0.3(@types/react@19.3.2)(i18next@27.2.6(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2)
+        version: 18.0.3(@types/react@19.3.2)(i18next@27.2.9(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2)
       recharts:
         specifier: ^3.11.1
         version: 3.11.1(@types/react@19.3.2)(react-dom@19.3.1(react@19.3.1))(react-is@19.3.1)(react@19.3.1)(redux@5.0.1)
@@ -748,8 +748,8 @@ packages:
   i18next-browser-languagedetector@8.3.1:
     resolution: {integrity: sha512-W7dfKWlmaxuy5zsKsu8vKm7SQ0R6T1Tw7XRMKCh3bt98q9m5Q73GKF1PiqtvcwzC+AZvfUCugbfcIYQkDfHeAg==}
 
-  i18next@27.2.6:
-    resolution: {integrity: sha512-ScRHHL/oAHaEgi78K770XIDQmOiq3BLjD4zxEoDeva4NLXXLPb83mzeSjFw7SefkwCEpLNC+560Pg0Q3BnCLsA==}
+  i18next@27.2.9:
+    resolution: {integrity: sha512-GOWWofCGYPSPEzUKJnRLJSoHrSUDa/NzYWqAOJJDZUaM7faLPd9VABlbHDZ+jv8uadu/fq1wsHFfZP6+0tFPkg==}
     engines: {node: '>=22'}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
@@ -1421,7 +1421,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.7
 
-  i18next@27.2.6(typescript@7.0.2):
+  i18next@27.2.9(typescript@7.0.2):
     optionalDependencies:
       typescript: 7.0.2
 
@@ -1525,10 +1525,10 @@ snapshots:
       '@types/react': 19.3.2
       '@types/react-dom': 19.3.0(@types/react@19.3.2)
 
-  react-i18next@18.0.3(@types/react@19.3.2)(i18next@27.2.6(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2):
+  react-i18next@18.0.3(@types/react@19.3.2)(i18next@27.2.9(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2):
     dependencies:
       html-parse-stringify: 4.0.1
-      i18next: 27.2.6(typescript@7.0.2)
+      i18next: 27.2.9(typescript@7.0.2)
       react: 19.3.1
     optionalDependencies:
       '@types/react': 19.3.2
