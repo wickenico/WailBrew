@@ -4,6 +4,9 @@
 
 <h1 align="center">WailBrew - Homebrew GUI Manager for macOS</h1>
 
+> [!NOTE]
+> Versions 0.15.1 and 0.15.2 were accidentally published for Apple Silicon only and don't launch on Intel Macs. Intel support is back from version 0.15.3 on ([#638](https://github.com/wickenico/WailBrew/issues/638)).
+
 <p align="center">
   A modern, native <strong>Homebrew GUI</strong> for macOS to install, update, and manage brew packages, casks, and services - an actively maintained, open-source <strong>Cakebrew alternative</strong>.
 </p>
@@ -143,9 +146,6 @@ WailBrew supports the following macOS versions:
 
 - **Apple Silicon (ARM):** macOS 12.0 (Monterey) and later
 - **Intel:** macOS 12.0 (Monterey) and later
-
-> [!NOTE]
-> Versions 0.15.1 and 0.15.2 were accidentally published for Apple Silicon only and don't launch on Intel Macs. Intel support is back from version 0.15.3 on ([#638](https://github.com/wickenico/WailBrew/issues/638)).
 
 The minimum is set by the Go toolchain (Go 1.25 and newer require macOS 12).
 
