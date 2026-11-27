@@ -605,6 +605,14 @@
     "restartNow": "Restart Now",
     "later": "Later"
   },
+  "sponsorDialog": {
+    "title": "Enjoying WailBrew?",
+    "message": "WailBrew has updated {{count}} packages for you so far.",
+    "description": "WailBrew is free and open source, built in my spare time. If it saves you time, a sponsorship helps keep it signed, notarized and maintained.",
+    "later": "Maybe later",
+    "kofi": "Buy me a coffee",
+    "sponsor": "Sponsor on GitHub"
+  },
   "toast": {
     "updateAvailable": "Update available!",
     "versionReady": "v{{version}} is ready",

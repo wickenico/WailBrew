@@ -264,6 +264,10 @@ If WailBrew saves you time, please consider supporting its development:
 
 Every contribution, big or small, is genuinely appreciated and helps keep WailBrew maintained. 🙏
 
+### Sponsors
+
+<!-- sponsors --><!-- sponsors -->
+
 ## 🛠️ Contributing
 
 Interested in contributing to WailBrew? We welcome contributions of all kinds!

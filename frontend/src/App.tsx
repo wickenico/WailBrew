@@ -90,6 +90,7 @@ import {
 import type * as main from "../bindings/WailBrew/models";
 import { useDebouncedValue } from "./hooks/useDebouncedValue";
 import { useHideableOperation } from "./hooks/useHideableOperation";
+import { useSponsorPrompt } from "./hooks/useSponsorPrompt";
 import { useXcodeLicenseError } from "./hooks/useXcodeLicenseError";
 import { onEvent } from "./utils/events";
 import {
@@ -129,6 +130,7 @@ import ShortcutsDialog from "./components/ShortcutsDialog";
 import Sidebar from "./components/Sidebar";
 import SnapshotNameDialog from "./components/SnapshotNameDialog";
 import SnapshotsView from "./components/SnapshotsView";
+import SponsorDialog from "./components/SponsorDialog";
 import TapInputDialog from "./components/TapInputDialog";
 import TitleBar from "./components/TitleBar";
 import UpdateDialog from "./components/UpdateDialog";
@@ -272,6 +274,10 @@ const WailBrewApp = () => {
         setCurrentlyUpdatingPackage(null);
         setIsUpdateAllOperation(false);
     });
+    const sponsorPrompt = useSponsorPrompt();
+    const recordIfSucceeded = (finalMessage: string, count: number) => {
+        if (finalMessage.startsWith("✅")) sponsorPrompt.recordUpdates(count);
+    };
     const installOp = useHideableOperation(isInstallRunning, () => {
         setInstallLogs(null);
         setInstallLogTitle(null);
@@ -1774,6 +1780,7 @@ const WailBrewApp = () => {
 
         const completeListener = onEvent("packageUpdateComplete", async (finalMessage: string) => {
             updateOp.resultRef.current = finalMessage;
+            recordIfSucceeded(finalMessage, 1);
             // Clear cache and update the package lists after successful update
             await ClearBrewCache();
             const [updated, installedCasks] = await Promise.all([GetBrewUpdatablePackages(), GetBrewCasks()]);
@@ -1819,6 +1826,10 @@ const WailBrewApp = () => {
     const handleUpdateAllConfirmed = async () => {
         setShowUpdateAllConfirm(false);
         if (revealRunningUpdate()) return;
+        const typeFilter = view === "updatable" ? updatableTypeFilter : "all";
+        const outdatedCount = updatablePackages.filter(
+            (pkg) => typeFilter === "all" || (typeFilter === "casks") === !!pkg.isCask,
+        ).length;
 
         // Clean up any existing listeners first (prevents duplicate listeners bug)
         if (updateListenersRef.current.progress) updateListenersRef.current.progress();
@@ -1854,6 +1865,7 @@ const WailBrewApp = () => {
 
         const completeListener = onEvent("packageUpdateComplete", async (finalMessage: string) => {
             updateOp.resultRef.current = finalMessage;
+            recordIfSucceeded(finalMessage, outdatedCount);
             // Update all package lists after successful update
             await handleRefreshPackages();
             await runAutoCleanupIfEnabled();
@@ -1970,6 +1982,7 @@ const WailBrewApp = () => {
 
         const completeListener = onEvent("packageUpdateComplete", async (finalMessage: string) => {
             updateOp.resultRef.current = finalMessage;
+            recordIfSucceeded(finalMessage, packageNames.length);
             // Update the package list after successful update
             await handleRefreshPackages();
 
@@ -4366,6 +4379,11 @@ const WailBrewApp = () => {
                         onChecked={setAppUpdateInfo}
                     />
                     <RestartDialog isOpen={showRestart} onClose={() => setShowRestart(false)} />
+                    <SponsorDialog
+                        isOpen={sponsorPrompt.isPending && updateLogs === null && !showRestart}
+                        updatedCount={sponsorPrompt.updatedCount}
+                        onClose={sponsorPrompt.dismiss}
+                    />
                     <ShortcutsDialog open={showShortcuts} onClose={() => setShowShortcuts(false)} />
                     <Toaster
                         position="bottom-center"

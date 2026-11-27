@@ -38,4 +38,8 @@ if [[ -n "$DEPENDENCIES" ]]; then
   echo "$DEPENDENCIES"
 fi
 echo
+echo "## Support WailBrew"
+echo
+echo "WailBrew is free, open source and built in my spare time. If it saves you time, please consider [sponsoring on GitHub](https://github.com/sponsors/wickenico) or [buying me a coffee](https://ko-fi.com/wickenico). Thank you! ❤️"
+echo
 echo "**Full Changelog**: ${REPO_URL}/compare/${PREV_TAG}...v${VERSION}"

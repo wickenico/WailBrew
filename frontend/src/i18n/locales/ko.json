@@ -552,6 +552,14 @@
     "restartNow": "지금 다시 시작",
     "later": "나중에"
   },
+  "sponsorDialog": {
+    "title": "WailBrew가 마음에 드시나요?",
+    "message": "WailBrew가 지금까지 패키지 {{count}}개를 업데이트했습니다.",
+    "description": "WailBrew는 여가 시간에 만드는 무료 오픈 소스 앱입니다. 시간을 아껴 드렸다면, 후원은 앱의 서명, 공증 및 유지 관리에 도움이 됩니다.",
+    "later": "나중에",
+    "kofi": "커피 한 잔 사주기",
+    "sponsor": "GitHub에서 후원하기"
+  },
   "toast": {
     "updateAvailable": "업데이트 가능!",
     "versionReady": "v{{version}} 준비됨",
