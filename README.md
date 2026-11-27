@@ -266,7 +266,7 @@ Every contribution, big or small, is genuinely appreciated and helps keep WailBr
 
 ### Sponsors
 
-<!-- sponsors --><!-- sponsors -->
+<!-- sponsors -->No sponsors yet. [Be the first!](https://github.com/sponsors/wickenico)<!-- sponsors -->
 
 ## 🛠️ Contributing
 
