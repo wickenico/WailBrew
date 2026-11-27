@@ -1,0 +1,42 @@
+name: Update sponsors
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sponsors:
+    runs-on: ubuntu-latest
+    # Reading GitHub Sponsors needs a classic personal access token with the
+    # read:user and read:org scopes; the default GITHUB_TOKEN can't see sponsorships.
+    env:
+      SPONSORS_TOKEN: ${{ secrets.SPONSORS_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        if: env.SPONSORS_TOKEN != ''
+        uses: actions/checkout@v7
+
+      - name: Write sponsors to README
+        if: env.SPONSORS_TOKEN != ''
+        uses: JamesIves/github-sponsors-readme-action@v1.6.1
+        with:
+          token: ${{ env.SPONSORS_TOKEN }}
+          file: README.md
+          fallback: 'No sponsors yet. [Be the first!](https://github.com/sponsors/wickenico)'
+
+      - name: Commit changes
+        if: env.SPONSORS_TOKEN != ''
+        run: |
+          if git diff --quiet README.md; then
+            echo "Sponsors unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "docs: update sponsors in README"
+          git push
