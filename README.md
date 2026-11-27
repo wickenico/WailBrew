@@ -28,9 +28,7 @@
   <a href="https://paypal.me/nicowickersheim"><img alt="PayPal" src="https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal&logoColor=white"></a>
 </p>
 
-<p align="center">
-  <img src="images/demo.gif" alt="WailBrew demo - browsing, installing, and upgrading Homebrew packages on macOS" width="720">
-</p>
+https://github.com/user-attachments/assets/94999cdd-adcf-44db-b4d7-4b52415dc0d8
 
 ## ⚡ Quick Install
 
