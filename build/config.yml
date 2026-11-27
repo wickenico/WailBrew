@@ -11,7 +11,7 @@ info:
   description: "A Homebrew GUI for macOS"
   copyright: "Copyright © Nico Wickersheim"
   comments: "WailBrew"
-  version: "0.15.2"
+  version: "0.15.3"
 
 # Dev mode configuration (`wails3 dev` / `make dev`)
 dev_mode:
