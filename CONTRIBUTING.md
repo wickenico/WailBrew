@@ -79,8 +79,10 @@ Releases are built, signed and published from a Mac with the Developer ID certif
 
 ```bash
 make bump-minor        # or: make bump — then commit and push to main
-make release           # or: make release-universal
+make release
 ```
+
+Releases are always universal (Apple Silicon and Intel); `scripts/release.sh` refuses to publish a binary that is missing `arm64` or `x86_64`.
 
 `make release` first runs `make release-check` (on `main`, clean and pushed, version matches `frontend/package.json`, tag and release don't exist yet, signing identity present), then builds, signs, notarizes and zips the app, shows the generated release notes (edit them with `e`, or pass `NOTES_FILE=notes.md`), and after confirmation pushes the `v<version>` tag and creates the GitHub release with the zip. Homebrew's BrewTestBot then bumps the official `wailbrew` cask. `make release-notes` previews the notes.
 

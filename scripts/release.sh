@@ -89,6 +89,15 @@ preflight
 [[ -d "$APP" ]] || die "App-Bundle nicht gefunden: $APP (erst 'make build' ausführen?)"
 mkdir -p releases
 
+# ---------- Architectures: releases must run on Apple Silicon and Intel ----------
+BIN="${APP}/Contents/MacOS/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "${APP}/Contents/Info.plist")"
+ARCHS="$(lipo -archs "$BIN")"
+for arch in arm64 x86_64; do
+  [[ " $ARCHS " == *" $arch "* ]] \
+    || die "Binary enthält kein ${arch} (gefunden: ${ARCHS}). Universal bauen: 'make build-universal'."
+done
+log "Architekturen: ${ARCHS}"
+
 # ---------- Sign ----------
 if [[ -z "${IDENTITY}" ]]; then
   IDENTITY=$(security find-identity -p codesigning -v | grep "Developer ID Application" | head -n1 | sed -E 's/.*"(.+)"/\1/')

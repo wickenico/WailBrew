@@ -82,16 +82,14 @@ release-check:
 	./scripts/release.sh --preflight $(VERSION)
 
 # Build, sign, notarize, tag v$(VERSION) and publish the GitHub release with
-# the zip. NOTES_FILE=path uses hand-written notes; YES=1 skips the prompt.
+# the zip. Always universal (arm64 + x86_64) so Intel Macs keep working.
+# NOTES_FILE=path uses hand-written notes; YES=1 skips the prompt.
 release: release-check
-	@echo "==> Releasing WailBrew version: $(VERSION)"
-	$(MAKE) build
-	./scripts/release.sh $(VERSION) build/bin/WailBrew.app
-
-release-universal: release-check
 	@echo "==> Releasing WailBrew universal binary version: $(VERSION)"
 	$(MAKE) build-universal
 	./scripts/release.sh $(VERSION) build/bin/WailBrew.app
+
+release-universal: release
 
 # Preview the generated release notes for the current version.
 release-notes:
