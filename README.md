@@ -144,6 +144,9 @@ WailBrew supports the following macOS versions:
 - **Apple Silicon (ARM):** macOS 12.0 (Monterey) and later
 - **Intel:** macOS 12.0 (Monterey) and later
 
+> [!NOTE]
+> Versions 0.15.1 and 0.15.2 were accidentally published for Apple Silicon only and don't launch on Intel Macs. Intel support is back from version 0.15.3 on ([#638](https://github.com/wickenico/WailBrew/issues/638)).
+
 The minimum is set by the Go toolchain (Go 1.25 and newer require macOS 12).
 
 [Homebrew](https://brew.sh) must be installed. While the app is primarily tested on the latest macOS versions, we strive to maintain compatibility with older supported versions. If you encounter any issues on your macOS version, please let us know by [opening an issue](https://github.com/wickenico/WailBrew/issues) or providing feedback.
@@ -208,7 +211,7 @@ new installations use the XDG location.
 Yes. WailBrew is completely free and open source under the MIT license.
 
 **Does it work on Apple Silicon (M1/M2/M3/M4)?**
-Yes - WailBrew runs natively on both Apple Silicon and Intel Macs.
+Yes - WailBrew runs natively on both Apple Silicon and Intel Macs. On Intel, use version 0.15.3 or later (0.15.1 and 0.15.2 were Apple Silicon only).
 
 **Do I still need Homebrew installed?**
 Yes. WailBrew is a graphical front-end for Homebrew, so `brew` must be installed. WailBrew auto-detects the brew path for your architecture.
